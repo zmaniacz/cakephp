@@ -22,6 +22,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>CakePHP Test Suite 2.2</title>
+		<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css">
 		<style type="text/css">
 			body h2 {color: #777;}
 			h3 {font-size: 170%; padding-top: 1em}
@@ -127,12 +128,13 @@
 			div.code-coverage-results span.result-bad { color: #a00; }
 			div.code-coverage-results span.result-ok { color: #fa0; }
 			div.code-coverage-results span.result-good { color: #0a0; }
-			
-			div#version {
-				padding-top: 2px;
-				float: right;
-				padding-left: 20px;
-			}
+
+			li.pass { background: green; }
+			li.fail { background: red; }
+			li.unknown { background: yellow; }
+
+			ul.floatingMenu { position: fixed; top: 100px; right: 100px; }
+			ul.floatingMenu li { display: inline; }
 		</style>
 		<link rel="stylesheet" type="text/css" href="<?php echo $baseDir; ?>css/cake.generic.css" />
 	</head>
