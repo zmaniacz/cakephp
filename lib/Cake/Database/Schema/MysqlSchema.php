@@ -213,9 +213,7 @@ class MysqlSchema {
 				break;
 			}
 		}
-		$hasLength = [
-			'integer', 'string', 'float'
-		];
+		$hasLength = ['integer', 'string', 'float'];
 		if (in_array($data['type'], $hasLength, true) && isset($data['length'])) {
 			$out .= '(' . $data['length'] . ')';
 		}
