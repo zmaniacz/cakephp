@@ -82,7 +82,7 @@ p {
 }
 #header h1 {
 	line-height:20px;
-	background: #003d4c url('../img/cake.icon.png') no-repeat left;
+	background: #003d4c url('../img/LF-logo1-shadow-small.png') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
 }
@@ -108,9 +108,6 @@ p {
 	clear: both;
 	padding: 6px 10px;
 	text-align: right;
-}
-#header a, #footer a {
-	color: #fff;
 }
 
 /** containers **/
