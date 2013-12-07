@@ -29,6 +29,10 @@
 			<th>Medic Hits</th>
 			<th>Shot Team</th>
 			<th>Accuracy</th>
+			<th>Nukes</th>
+			<th>Nuke Cancels</th>
+			<th>Boosts</th>
+			<th>Resupplies</th>
 			<th>MVP Points</th>
 		</thead>
 		<tbody>
@@ -51,9 +55,13 @@
 				echo "<td>".$score['times_zapped']."</td>";
 				echo "<td>".$score['missile_hits']."</td>";
 				echo "<td>".$score['times_missiled']."</td>";
-				echo "<td>".$score['medic_hits']."</td>";
+				echo "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
 				echo "<td>".$score['shot_team']."</td>";
 				echo "<td>".round($score['accuracy']*100,2)."%</td>";
+				echo "<td>".($score['position'] == 'Commander' ? $score['nukes_detonated']."/".$score['nukes_activated'] : "-")."</td>";
+				echo "<td>".($score['nukes_canceled'] > 0 ? $score['nukes_canceled'] : "-")."</td>";
+				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
+				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
 				echo "</tr>";
 			}
@@ -80,6 +88,10 @@
 			<th>Medic Hits</th>
 			<th>Shot Team</th>
 			<th>Accuracy</th>
+			<th>Nukes</th>
+			<th>Nuke Cancels</th>
+			<th>Boosts</th>
+			<th>Resupplies</th>
 			<th>MVP Points</th>
 		</thead>
 		<tbody>
@@ -102,9 +114,13 @@
 				echo "<td>".$score['times_zapped']."</td>";
 				echo "<td>".$score['missile_hits']."</td>";
 				echo "<td>".$score['times_missiled']."</td>";
-				echo "<td>".$score['medic_hits']."</td>";
+				echo "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
 				echo "<td>".$score['shot_team']."</td>";
 				echo "<td>".round($score['accuracy']*100,2)."%</td>";
+				echo "<td>".($score['position'] == 'Commander' ? $score['nukes_detonated']."/".$score['nukes_activated'] : "-")."</td>";
+				echo "<td>".($score['nukes_canceled'] > 0 ? $score['nukes_canceled'] : "-")."</td>";
+				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
+				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
 				echo "</tr>";
 			}
