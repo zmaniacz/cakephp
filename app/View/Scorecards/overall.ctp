@@ -184,26 +184,28 @@
 			</tbody>
 		</table>
 	</div>
+	<h3>Medic Hits</h3>
+	<div>
+		<table class="display">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Total Medic Hits</th>
+					<th>Average Medics Hits</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($medic_hits as $score): ?>
+				<tr>
+					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
+					<td><?php echo $score[0]['total_medic_hits']; ?></td>
+					<td><?php echo round($score[0]['medic_hits_per_game'],2); ?></td>
+				<?php endforeach; ?>
+				<?php unset($score); ?>
+			</tbody>
+		</table>
+	</div>
 </div>
-
-<table>
-	<caption>Medic Hits</caption>
-    <tr>
-        <th>Name</th>
-		<th>Total Medic Hits</th>
-		<th>Average Medics Hits</th>
-    </tr>
-	<?php $i = 0; ?>
-    <?php foreach ($medic_hits as $score): ?>
-	<?php $i++; ?>
-    <tr>
-        <td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-		<td><?php echo $score[0]['total_medic_hits']; ?></td>
-		<td><?php echo round($score[0]['medic_hits_per_game'],2); ?></td>
-	<?php if($i >= 25) {break;} ?>
-    <?php endforeach; ?>
-    <?php unset($score); ?>
-</table>
 <script type="text/javascript">
 	$( "#accordion" ).accordion( {
 		collapsible: true,

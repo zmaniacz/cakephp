@@ -288,9 +288,12 @@ class Scorecard extends AppModel {
 				'player_name',
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
 			),
-			'group' => 'player_name',
+			'conditions' => array(
+				"NOT" => array("position" => array("Medic", "Ammo Carrier"))
+			),
+			'group' => 'player_name HAVING total_medic_hits > 0',
 			'order' => 'total_medic_hits DESC'
 		));
 		return $scores;
@@ -300,6 +303,24 @@ class Scorecard extends AppModel {
 		$games = $this->find('all', array(
 			'conditions' => array('player_id' => $player_id),
 			'order' => 'Scorecard.game_datetime DESC',
+			'contain' => array(
+				'Game' => array()
+			)
+		));
+		
+		return $games;
+	}
+	
+	public function getPlayerTopGamesScorecardsById($player_id, $position = "") {
+		$conditions = array('player_id' => $player_id);
+		if($position != "" ) {
+			$conditions['position'] = $position;
+		}
+	
+		$games = $this->find('all', array(
+			'conditions' => $conditions,
+			'order' => 'Scorecard.mvp_points DESC',
+			'limit' => 5,
 			'contain' => array(
 				'Game' => array()
 			)

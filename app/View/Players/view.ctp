@@ -1,9 +1,7 @@
 <?php
-	echo $this->Html->script('jquery.jqplot.min.js');
-	echo $this->Html->script('plugins/jqplot.trendline.min.js');
 	echo $this->Html->script('highcharts.js');
 	echo $this->Html->script('highcharts-more.js');
-	echo $this->Html->css('jquery.jqplot.min');
+	echo $this->Html->script('regression.js');
 	
 	$wins = 0;
 	$losses = 0;
@@ -83,7 +81,6 @@
 
 <script class="code" type="text/javascript">
 $(document).ready(function(){
-	$.jqplot.config.enablePlugins = true;
 	
 	var line1 = <?php echo $overall_json; ?>;
 	var line2 = <?php echo $commander_json; ?>;
@@ -114,53 +111,197 @@ $(document).ready(function(){
 	(line5.length < 1) ? line5 = [null] : "";
 	(line6.length < 1) ? line6 = [null] : "";
 	
-	var plot1 = $.jqplot('overall_plot', [line1],
+	$('#overall_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Overall'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Overall',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line1
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line1).data;
+			})()
 		}
-	);
+		]
+	});
 	
-	var plot2 = $.jqplot('commander_plot', [line2],
+		$('#commander_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Commander'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Commander',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line2
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line2).data;
+			})()
 		}
-	);
+		]
+	});
 	
-	var plot3 = $.jqplot('heavy_plot', [line3],
+		$('#heavy_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Heavy Weapons'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Heavy Weapons',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line3
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line3).data;
+			})()
 		}
-	);
+		]
+	});
 	
-	var plot4 = $.jqplot('scout_plot', [line4],
+		$('#scout_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Scout'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Overall',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line4
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line4).data;
+			})()
 		}
-	);
+		]
+	});
 	
-	var plot5 = $.jqplot('ammo_plot', [line5],
+		$('#ammo_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Ammo Carrier'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Ammo Carrier',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line5
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line5).data;
+			})()
 		}
-	);
+		]
+	});
 	
-	var plot6 = $.jqplot('medic_plot', [line6],
+		$('#medic_plot').highcharts({
+		chart: {type: 'scatter'},
+		title: {text: 'Medic'},
+		legend: {enabled: false},
+		yAxis: {
+			title: {text: 'MVP Points'},
+			max: 40,
+			tickInterval: 5
+		},
+		xAxis: {
+			title: {text: 'Number of Games'},
+			maxPadding: 0.1,
+			minPadding: 0.1
+		},
+		series: [{
+			type: 'scatter',
+			marker: {radius: 2},
+			name: 'Medic',
+			tooltip: {pointFormat: 'MVP Points: {point.y}'},
+			data: line6
+		},
 		{
-			axes: {yaxis: {min: 0,max: 40,numberTicks: 9}},
-			series: {trendline: {show: true}},
-			seriesDefaults: {showLine: false,markerOptions: {size: 3}}
+			type: 'line',
+			marker: {enabled: false},
+			enableMouseTracking: false,
+			data: (function() {
+				return fitData(line6).data;
+			})()
 		}
-	);
+		]
+	});
 	
 	$('#win_loss_pie').highcharts({
 		chart: {
@@ -286,18 +427,149 @@ $(document).ready(function(){
 		<div id="position_spider" style="height: 500px; width: 800px"></div>
 	</div>
 	<div id="stat_plots_tab">
-		<h3>Overall</h3>
-		<div id="overall_plot" style="height:200px;width:400px; "></div>
-		<h3>Commander</h3>
-		<div id="commander_plot" style="height:200px;width:400px; "></div>
-		<h3>Heavy Weapons</h3>
-		<div id="heavy_plot" style="height:200px;width:400px; "></div>
-		<h3>Scout</h3>
-		<div id="scout_plot" style="height:200px;width:400px; "></div>
-		<h3>Ammo Carrier</h3>
-		<div id="ammo_plot" style="height:200px;width:400px; "></div>
-		<h3>Medic</h3>
-		<div id="medic_plot" style="height:200px;width:400px; "></div>
+		<span id="overall_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="overall_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_overall as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
+		<br />
+		<span id="commander_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="commander_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_commander as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
+		<br />
+		<span id="heavy_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="heavy_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_heavy as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
+		<br />
+		<span id="scout_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="scout_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_scout as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
+		<br />
+		<span id="ammo_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="ammo_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_ammo as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
+		<br />
+		<span id="medic_plot" style="display: inline-block;height:250px;width:500px; "></span>
+		<span id="medic_topgames" style="display: inline-block;width:500px">
+			<table>
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP Points</th>
+				</thead>
+				<tbody>
+					<?php foreach ($games_top5_medic as $game): ?>
+						<tr>
+							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+							<td><?php echo $game['Game']['game_datetime']; ?></td>
+							<td><?php echo $game['Scorecard']['position']; ?></td>
+							<td><?php echo $game['Scorecard']['score']; ?></td>
+							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</span>
 	</div>
 	<div id="game_list_tab">
 		<table class="gamelist">
