@@ -2,13 +2,12 @@
 /**
  * DboSourceTest file
  *
- * PHP 5
- *
  * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
- *	Licensed under The Open Group Test Suite License
- *	Redistributions of files must retain the above copyright notice.
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
@@ -116,7 +115,7 @@ class DboSourceTest extends CakeTestCase {
 /**
  * autoFixtures property
  *
- * @var bool false
+ * @var boolean
  */
 	public $autoFixtures = false;
 
@@ -684,6 +683,22 @@ class DboSourceTest extends CakeTestCase {
 	}
 
 /**
+ * Test that flushMethodCache works as expected
+ *
+ * @return void
+ */
+	public function testFlushMethodCache() {
+		$this->testDb->cacheMethods = true;
+		$this->testDb->cacheMethod('name', 'some-key', 'stuff');
+
+		Cache::write('method_cache', DboTestSource::$methodCache, '_cake_core_');
+
+		$this->testDb->flushMethodCache();
+		$result = $this->testDb->cacheMethod('name', 'some-key');
+		$this->assertNull($result);
+	}
+
+/**
  * testLog method
  *
  * @outputBuffering enabled
@@ -946,6 +961,31 @@ class DboSourceTest extends CakeTestCase {
 	}
 
 /**
+ * test that fields() method cache detects schema name changes
+ *
+ * @return void
+ */
+	public function testFieldsCacheKeyWithSchemanameChange() {
+		if ($this->db instanceof Postgres || $this->db instanceof Sqlserver) {
+			$this->markTestSkipped('Cannot run this test with SqlServer or Postgres');
+		}
+		Cache::delete('method_cache', '_cake_core_');
+		DboSource::$methodCache = array();
+		$Article = ClassRegistry::init('Article');
+
+		$ds = $Article->getDataSource();
+		$ds->cacheMethods = true;
+		$first = $ds->fields($Article);
+
+		$Article->schemaName = 'secondSchema';
+		$ds = $Article->getDataSource();
+		$ds->cacheMethods = true;
+		$second = $ds->fields($Article);
+
+		$this->assertEquals(2, count(DboSource::$methodCache['fields']));
+	}
+
+/**
  * Test that group works without a model
  *
  * @return void
@@ -1102,7 +1142,7 @@ class DboSourceTest extends CakeTestCase {
 			),
 			$this->Model
 		);
-		$expected = 'SELECT DISTINCT(AssetsTag.asset_id) FROM assets_tags AS AssetsTag   WHERE Tag.name = foo bar  GROUP BY AssetsTag.asset_id  ';
+		$expected = 'SELECT DISTINCT(AssetsTag.asset_id) FROM assets_tags AS AssetsTag   WHERE Tag.name = foo bar  GROUP BY AssetsTag.asset_id';
 		$this->assertEquals($expected, $subQuery);
 	}
 
