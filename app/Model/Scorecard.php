@@ -2,6 +2,19 @@
 
 class Scorecard extends AppModel {
 	public $belongsTo = array('Game','Player');
+
+	public $validate = array(
+		'player_name' => array(
+			'checkUnique' => array(
+				'rule' => array('checkUnique', array('player_name', 'game_datetime'))
+			)
+		),
+		'game_datetime' => array(
+			'checkUnique' => array(
+				'rule' => array('checkUnique', array('player_name', 'game_datetime'))
+			)
+		)
+	);
 	
 	public function generateMVP() {
 		$counter = 0;
