@@ -140,39 +140,43 @@ class Scorecard extends AppModel {
 				$game_counter = 1;
 				$current_date = $date;
 			}
-			
-			$winner = 'Green';
-			if($score['red']['score'] > $score['green']['score'])
-				$winner = 'Red';
-			
-			
+						
 			$red_elim = 0;
 			$green_elim = 0;
-			$red_adj = 0;
-			$green_adj = 0;
+			$red_elim_bonus = 0;
+			$green_elim_bonus = 0;
 			
 			if($score['red']['team_elim'] > 0) {
 				$red_elim = 1;
-				$green_adj += 10000;
+				$green_elim_bonus = 10000;
 			}
 	
 			if($score['green']['team_elim'] > 0) {
 				$green_elim = 1;
-				$red_adj = 10000;
+				$red_elim_bonus = 10000;
 			}
+			
+			$red_total = $score['red']['score'] + $red_elim_bonus;
+			$green_total = $score['green']['score'] + $green_elim_bonus;
+			
+			$winner = 'Green';
+			if($red_total > $green_total)
+				$winner = 'Red';
 
 			$this->Game->create();
 			$this->Game->set(array(
-				'game_name' => "G{$game_counter}",
+				'game_name' => "LTC_".$score['green']['game_datetime'],
 				'game_description' => "",
 				'game_datetime' => $score['green']['game_datetime'],
 				'green_score' => $score['green']['score'],
 				'red_score' => $score['red']['score'],
-				'red_adj' => $red_adj,
-				'green_adj' => $green_adj,
+				'red_elim_bonus' => $red_elim_bonus,
+				'green_elim_bonus' => $green_elim_bonus,
 				'red_eliminated' => $red_elim,
 				'green_eliminated' => $green_elim,
-				'winner' => $winner
+				'winner' => $winner,
+				'red_total_score' => $red_total,
+				'green_total_score' => $green_total
 			));
 			$this->Game->save();
 			

@@ -13,7 +13,7 @@
 </script>
 <h3><?php echo $game['Game']['game_name']." ".$game['Game']['game_datetime']." "; echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : ""; ?></h3>
 <div>
-	<h1>Score: <?php echo ($game['Game']['winner'] == 'Green') ? $game['Game']['green_score'] : $game['Game']['red_score']; ?></h1>
+	<h1>Score: <?php echo ($game['Game']['winner'] == 'Green') ? $game['Game']['green_total_score'] : $game['Game']['red_total_score']; ?></h1>
 	<table class="gamelist">
 		<thead>
 			<th>Rank</th>
