@@ -32,18 +32,4 @@ App::uses('Model', 'Model');
 class AppModel extends Model {
 	public $recursive = -1;
 	public $actsAs = array('Containable');
-	
-	function checkUnique($data, $fields) {
-		if (!is_array($fields)) {
-			$fields = array($fields);
-		}
-		foreach($fields as $key) {
-			$tmp[$key] = $this->data[$this->name][$key];
-		}
-		if (isset($this->data[$this->name][$this->primaryKey]) && $this->data[$this->name][$this->primaryKey] > 0) {
-			$tmp[$this->primaryKey." !="] = $this->data[$this->name][$this->primaryKey];
-		}
-		//return false;
-		return $this->isUnique($tmp, false); 
-	}
 }
