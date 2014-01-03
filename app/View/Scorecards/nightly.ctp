@@ -52,8 +52,8 @@
 				<tr class="<?php echo $color; ?>">
 					<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 					<td><?php echo $game['Game']['game_datetime']; ?></td>
-					<td><?php echo $game['Game']['red_total_score']; ?></td>
-					<td><?php echo $game['Game']['green_total_score']; ?></td>
+					<td><?php echo $game['Game']['red_score']; ?></td>
+					<td><?php echo $game['Game']['green_score']; ?></td>
 					<td><?php echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : ""; ?></td>
 				</tr>
 			<?php endforeach; ?>

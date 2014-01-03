@@ -7,7 +7,7 @@
 		echo $this->Html->script('jquery.dataTables.min.js');
 		echo $this->Html->script('jquery-ui-1.10.3.custom.min.js');
 		echo $this->Html->meta('icon');
-		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui-1.10.3.custom.min','jquery.dataTables_themeroller.css'));
+		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui-1.10.3.custom.min','jquery.dataTables.css','jquery.dataTables_themeroller.css'));
 	?>
 	<title>
 		<?php echo $title_for_layout; ?>

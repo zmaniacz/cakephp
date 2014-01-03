@@ -53,8 +53,7 @@ class ScorecardsController extends AppController {
 	
 	public function upload() {
 		if ($this->request->is('post')) {
-			$added=0;
-			$dupes=0;
+			$row=0;
 			$handle = fopen($this->data['Scorecard']['file']['tmp_name'],"r");
 			fgetcsv($handle);
 			while (($csvline = fgetcsv($handle)) !== FALSE) {
@@ -95,13 +94,8 @@ class ScorecardsController extends AppController {
 					'resupplies' => $csvline[31],
 					'rank' => $csvline[32],
 					'bases_destroyed' => $csvline[33]));
-
-				if($this->Scorecard->validates()) {
-					$this->Scorecard->save();
-					$added++;
-				} else {
-					$dupes++;
-				}
+				$this->Scorecard->save();
+				$row++;
 			}
 			fclose($handle);
 			
