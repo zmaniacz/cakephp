@@ -108,6 +108,80 @@ class ScorecardsController extends AppController {
 		}
 	}
 	
+	public function uploadpdf() {
+		if ($this->request->is('post')) {
+			foreach($this->data['Scorecard']['files'] as $file) {
+				$output[] = 
+				$filename = uniqid().".pdf";
+				move_uploaded_file($file['tmp_name'], "parser/input/$filename");
+				
+				//run the parser
+				unset($parser_output);
+				exec("java -jar parser/LFScoreParser.jar", $parser_output);
+				
+				//move the pdf to its final home
+				
+				//process the resulting csv
+				
+				//remove all files from output folder
+			}
+		/*
+			$row=0;
+			$handle = fopen($this->data['Scorecard']['file']['tmp_name'],"r");
+			fgetcsv($handle);
+			while (($csvline = fgetcsv($handle)) !== FALSE) {
+				$this->Scorecard->create();
+				$this->Scorecard->set(array(
+					'player_name' => $csvline[0], 
+					'game_datetime' => date("Y-m-d H-i-s",strtotime($csvline[1])), 
+					'team' => $csvline[2], 
+					'position' => $csvline[3], 
+					'score' => $csvline[4],
+					'game_type' => $csvline[5],
+					'shots_hit' => $csvline[6],
+					'shots_fired' => $csvline[7],
+					'accuracy' => ($csvline[6]/$csvline[7]),
+					'times_zapped' => $csvline[8],
+					'times_missiled' => $csvline[9],
+					'missile_hits' => $csvline[10],
+					'nukes_detonated' => $csvline[11],
+					'nukes_activated' => $csvline[12],
+					'nukes_canceled' => $csvline[13],
+					'medic_hits' => $csvline[14],
+					'own_medic_hits' => $csvline[15],
+					'medic_nukes' => $csvline[16],
+					'scout_rapid' => $csvline[17],
+					'life_boost' => $csvline[18],
+					'ammo_boost' => $csvline[19],
+					'lives_left' => $csvline[20],
+					'shots_left' => $csvline[21],
+					'penalties' => $csvline[22],
+					'shot_3hit' => $csvline[23],
+					'elim_other_team' => $csvline[24],
+					'team_elim' => $csvline[25],
+					'own_nuke_cancels' => $csvline[26],
+					'shot_opponent' => $csvline[27],
+					'shot_team' => $csvline[28],
+					'missiled_opponent' => $csvline[29],
+					'missiled_team' => $csvline[30],
+					'resupplies' => $csvline[31],
+					'rank' => $csvline[32],
+					'bases_destroyed' => $csvline[33])
+					'pdf_id' => $filename);
+				$this->Scorecard->save();
+				$row++;
+			}
+			fclose($handle);
+			
+			$this->Scorecard->generateMVP();
+			$this->Scorecard->generateGames();
+			$this->Scorecard->generatePlayers();
+			
+			$this->Session->setFlash("Added $row scorecards");
+			$this->redirect('/scorecards/nightly');*/
+		}
+	}
+	
 	public function rebuild() {
 		$mvps = $this->Scorecard->generateMVP();
 		$games = $this->Scorecard->generateGames();
