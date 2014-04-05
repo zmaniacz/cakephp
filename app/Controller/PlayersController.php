@@ -11,7 +11,6 @@ class PlayersController extends AppController {
 		if($id == null) {
 			$this->redirect(array('controller' => 'Players', 'action' => 'index'));
 		} else {
-			$this->set('game_list', $this->Player->getPlayerGames($id));
 			$this->set('overall', $this->Player->getPlayerStats($id));
 			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander'));
 			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons'));
@@ -29,6 +28,7 @@ class PlayersController extends AppController {
 			$this->set('games_top5_scout', $this->Player->Scorecard->getPlayerTopGamesScorecardsById($id,'Scout'));
 			$this->set('games_top5_ammo', $this->Player->Scorecard->getPlayerTopGamesScorecardsById($id,'Ammo Carrier'));
 			$this->set('games_top5_medic', $this->Player->Scorecard->getPlayerTopGamesScorecardsById($id,'Medic'));
+			$this->set('teammates',$this->Player->getMyTeammates($id));
 		}
 	}
 }
