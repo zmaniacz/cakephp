@@ -17,6 +17,7 @@
  */
 
 require_once dirname(__FILE__) . DS . 'ModelTestBase.php';
+
 App::uses('DboSource', 'Model/Datasource');
 App::uses('DboMock', 'Model/Datasource');
 
@@ -28,6 +29,8 @@ class DboMock extends DboSource {
 
 /**
  * Returns the $field without modifications
+ *
+ * @return string
  */
 	public function name($field) {
 		return $field;
@@ -35,6 +38,8 @@ class DboMock extends DboSource {
 
 /**
  * Returns true to fake a database connection
+ *
+ * @return boolean true
  */
 	public function connect() {
 		return true;
@@ -276,6 +281,8 @@ class ModelIntegrationTest extends BaseModelTest {
  * Tests cross database joins. Requires $test and $test2 to both be set in DATABASE_CONFIG
  * NOTE: When testing on MySQL, you must set 'persistent' => false on *both* database connections,
  * or one connection will step on the other.
+ *
+ * @return void
  */
 	public function testCrossDatabaseJoins() {
 		$config = ConnectionManager::enumConnectionObjects();

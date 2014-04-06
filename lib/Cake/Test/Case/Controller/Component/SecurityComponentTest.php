@@ -172,6 +172,7 @@ class SecurityComponentTest extends CakeTestCase {
  * visibility keyword in the blackhole callback
  *
  * @expectedException BadRequestException
+ * @return void
  */
 	public function testBlackholeWithBrokenCallback() {
 		$request = new CakeRequest('posts/index', false);
@@ -607,7 +608,7 @@ class SecurityComponentTest extends CakeTestCase {
 		$fields = '69f493434187b867ea14b901fdf58b55d27c935d%3A';
 		$unlocked = '';
 
-		$this->Controller->request->data = $data = array(
+		$this->Controller->request->data = array(
 			'Model' => array('username' => '', 'password' => ''),
 			'_Token' => compact('key', 'fields', 'unlocked')
 		);
@@ -830,7 +831,7 @@ class SecurityComponentTest extends CakeTestCase {
 /**
  * Test that validatePost fails when unlocked fields are changed.
  *
- * @return
+ * @return void
  */
 	public function testValidatePostFailDisabledFieldTampering() {
 		$this->Controller->Security->startup($this->Controller);

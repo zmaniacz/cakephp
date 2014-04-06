@@ -58,6 +58,7 @@ class MysqlTest extends CakeTestCase {
 /**
  * Sets up a Dbo class instance for testing
  *
+ * @return void
  */
 	public function setUp() {
 		parent::setUp();
@@ -73,6 +74,7 @@ class MysqlTest extends CakeTestCase {
 /**
  * Sets up a Dbo class instance for testing
  *
+ * @return void
  */
 	public function tearDown() {
 		parent::tearDown();
@@ -85,6 +87,7 @@ class MysqlTest extends CakeTestCase {
  * Test Dbo value method
  *
  * @group quoting
+ * @return void
  */
 	public function testQuoting() {
 		$result = $this->Dbo->fields($this->model);
@@ -2503,6 +2506,25 @@ class MysqlTest extends CakeTestCase {
 			'? BETWEEN Model.field1 AND Model.field2' => '2009-03-04'
 		)));
 		$expected = " WHERE '2009-03-04' BETWEEN Model.field1 AND Model.field2";
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * test conditions() with replacements.
+ *
+ * @return void
+ */
+	public function testConditionsWithReplacements() {
+		$result = $this->Dbo->conditions(array(
+			'score BETWEEN :0 AND :1' => array(90.1, 95.7)
+		));
+		$expected = " WHERE `score` BETWEEN 90.1 AND 95.7";
+		$this->assertEquals($expected, $result);
+
+		$result = $this->Dbo->conditions(array(
+			'score BETWEEN ? AND ?' => array(90.1, 95.7)
+		));
+		$expected = " WHERE `score` BETWEEN 90.1 AND 95.7";
 		$this->assertEquals($expected, $result);
 	}
 

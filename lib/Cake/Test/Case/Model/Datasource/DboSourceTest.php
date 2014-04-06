@@ -23,6 +23,7 @@ App::uses('DboSource', 'Model/Datasource');
 App::uses('DboTestSource', 'Model/Datasource');
 App::uses('DboSecondTestSource', 'Model/Datasource');
 App::uses('MockDataSource', 'Model/Datasource');
+
 require_once dirname(dirname(__FILE__)) . DS . 'models.php';
 
 /**
@@ -997,6 +998,8 @@ class DboSourceTest extends CakeTestCase {
 
 /**
  * Test getting the last error.
+ *
+ * @return void
  */
 	public function testLastError() {
 		$stmt = $this->getMock('PDOStatement');
