@@ -88,7 +88,7 @@ class Player extends AppModel {
 			inner join scorecards myTeammates
 			on myGames.game_id = myTeammates.game_id
 			and myGames.team = myTeammates.team
-			where myTeammates.player_id = scorecards.player_id
+			where myTeammates.player_id = players.id
 			and myGames.player_id = $id
 			and myTeammates.player_id != $id) as same_team_count,
 			(select count(myTeammates.game_datetime)
@@ -96,19 +96,18 @@ class Player extends AppModel {
 			inner join scorecards myTeammates
 			on myGames.game_id = myTeammates.game_id
 			and myGames.team != myTeammates.team
-			where myTeammates.player_id = scorecards.player_id
+			where myTeammates.player_id = players.id
 			and myGames.player_id = $id
 			and myTeammates.player_id != $id) as other_team_count
-			from scorecards
-			where player_id != $id
+			from players
 		");
 		
 		$teammates = array();
 		
 		foreach($results as $line) {
 			if($line[0]['same_team_count'] + $line[0]['other_team_count'] >= 10) {
-				$teammates[$line['scorecards']['player_name']] = array(
-					'player_name'		=> $line['scorecards']['player_name'],
+				$teammates[$line['players']['player_name']] = array(
+					'player_name'		=> $line['players']['player_name'],
 					'same_team_count' 	=> $line[0]['same_team_count'], 
 					'other_team_count' 	=> $line[0]['other_team_count'], 
 					'same_team_percent' => ($line[0]['same_team_count'] / ($line[0]['same_team_count'] + $line[0]['other_team_count']))
