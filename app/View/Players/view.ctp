@@ -145,10 +145,10 @@ $(document).ready(function(){
 		['Elim Losses from Green', <?php echo $green_losses_elim; ?>],
 		['Non-Elim Losses from Green', <?php echo $losses - $red_losses - $green_losses_elim; ?>]
 	];
-	var avg_mvp = [<?php echo $average_mvp['Ammo Carrier'].",".$average_mvp['Commander'].",".$average_mvp['Heavy Weapons'].",".$average_mvp['Medic'].",".$average_mvp['Scout']; ?>];
-	var avg_score = [<?php echo $average_score['Ammo Carrier'].",".$average_score['Commander'].",".$average_score['Heavy Weapons'].",".$average_score['Medic'].",".$average_score['Scout']; ?>];
-	var ctr_avg_mvp = [<?php echo $center_average_mvp['Ammo Carrier'].",".$center_average_mvp['Commander'].",".$center_average_mvp['Heavy Weapons'].",".$center_average_mvp['Medic'].",".$center_average_mvp['Scout']; ?>];
-	var ctr_avg_score = [<?php echo $center_average_score['Ammo Carrier'].",".$center_average_score['Commander'].",".$center_average_score['Heavy Weapons'].",".$center_average_score['Medic'].",".$center_average_score['Scout']; ?>];
+	var mdn_mvp = [<?php echo $mdn_ammo_mvp.",".$mdn_commander_mvp.",".$mdn_heavy_mvp.",".$mdn_medic_mvp.",".$mdn_scout_mvp; ?>];
+	var mdn_score = [<?php echo $mdn_ammo_score.",".$mdn_commander_score.",".$mdn_heavy_score.",".$mdn_medic_score.",".$mdn_scout_score; ?>];
+	var ctr_mdn_mvp = [<?php echo $center_mdn_ammo_mvp.",".$center_mdn_commander_mvp.",".$center_mdn_heavy_mvp.",".$center_mdn_medic_mvp.",".$center_mdn_scout_mvp; ?>];
+	var ctr_mdn_score = [<?php echo $center_mdn_ammo_score.",".$center_mdn_commander_score.",".$center_mdn_heavy_score.",".$center_mdn_medic_score.",".$center_mdn_scout_score; ?>];
 	
 	(line1.length < 1) ? line1 = [null] : "";
 	(line2.length < 1) ? line2 = [null] : "";
@@ -620,24 +620,24 @@ $(document).ready(function(){
 			}
 		}],
 		series: [{
-			name: 'Average MVP',
-			data: avg_mvp,
+			name: 'Median MVP',
+			data: mdn_mvp,
 			marker: {
                 symbol: 'circle'
             },
 			pointPlacement: 'on',
 			yAxis: 0
 		}, {
-			name: 'Average Score',
-			data: avg_score,
+			name: 'Median Score',
+			data: mdn_score,
 			marker: {
                 symbol: 'square'
             },
 			pointPlacement: 'on',
 			yAxis: 1
 		}, {
-			name: 'Center Average MVP',
-			data: ctr_avg_mvp,
+			name: 'Center Median MVP',
+			data: ctr_mdn_mvp,
 			marker: {
                 symbol: 'circle'
             },
@@ -645,8 +645,8 @@ $(document).ready(function(){
 			dashStyle: 'dash',
 			yAxis: 0
 		}, {
-			name: 'Center Average Score',
-			data: ctr_avg_score,
+			name: 'Center Median Score',
+			data: ctr_mdn_score,
 			marker: {
                 symbol: 'square'
             },

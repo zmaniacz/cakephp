@@ -57,6 +57,56 @@ class Player extends AppModel {
 		return $averages;
 	}
 	
+	public function getMedianScoreByPosition($position, $id = null) {
+		$conditions = array();
+		if(is_null($id)) {
+			$raw = $this->query("
+				SELECT  x.score 
+				FROM scorecards x, scorecards y
+				WHERE x.position = '$position' AND y.position = '$position'
+				GROUP BY  x.score
+				HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+				LIMIT 1
+			");
+		} else {
+			$raw = $this->query("
+				SELECT  x.score 
+				FROM scorecards x, scorecards y
+				WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
+				GROUP BY  x.score
+				HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+				LIMIT 1
+			");
+		}
+		
+		return $raw[0]['x']['score'];
+	}
+	
+	public function getMedianMVPByPosition($position, $id = null) {
+		$conditions = array();
+		if(is_null($id)) {
+			$raw = $this->query("
+				SELECT  x.mvp_points
+				FROM scorecards x, scorecards y
+				WHERE x.position = '$position' AND y.position = '$position'
+				GROUP BY  x.mvp_points
+				HAVING SUM(SIGN(1-SIGN(y.mvp_points-x.mvp_points)))/COUNT(*) > .5
+				LIMIT 1
+			");
+		} else {
+			$raw = $this->query("
+				SELECT  x.mvp_points 
+				FROM scorecards x, scorecards y
+				WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
+				GROUP BY  x.mvp_points
+				HAVING SUM(SIGN(1-SIGN(y.mvp_points-x.mvp_points)))/COUNT(*) > .5
+				LIMIT 1
+			");
+		}
+		
+		return $raw[0]['x']['mvp_points'];
+	}
+	
 	public function getAverageMVPByPosition($id = null) {
 		$conditions = array();
 		if(!is_null($id))
