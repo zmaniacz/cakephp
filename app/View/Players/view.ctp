@@ -2,45 +2,6 @@
 	echo $this->Html->script('highcharts.js');
 	echo $this->Html->script('highcharts-more.js');
 	echo $this->Html->script('regression.js');
-
-	$wins = 0;
-	$losses = 0;
-	$red_wins = 0;
-	$red_losses = 0;
-	$red_wins_elim = 0;
-	$green_wins_elim = 0;
-	$red_losses_elim = 0;
-	$green_losses_elim = 0;
-
-	foreach($games as $game) {
-		if($game['Scorecard']['team'] == 'Red') {
-			if($game['Game']['winner'] == 'Red') {
-				$wins++;
-				$red_wins++;
-				if($game['Game']['green_eliminated'] > 0) {
-					$red_wins_elim++;
-				}
-			} else {
-				$losses++;
-				$red_losses++;
-				if($game['Game']['red_eliminated'] > 0) {
-					$red_losses_elim++;
-				}
-			}
-		} else {
-			if($game['Game']['winner'] == 'Green') {
-				$wins++;
-				if($game['Game']['red_eliminated'] > 0) {
-					$green_wins_elim++;
-				}
-			} else {
-				$losses++;
-				if($game['Game']['green_eliminated'] > 0) {
-					$green_losses_elim++;
-				}
-			}
-		}
-	}
 	
 	$overall_plot = array();
 	foreach($overall[0]['Scorecard'] as $key => $val) {
@@ -118,7 +79,164 @@
 ?>
 
 <script class="code" type="text/javascript">
+function displayWinLossPie(data) {
+	var winloss = [
+		['Wins', data['winloss']['wins']],
+		['Losses', data['winloss']['losses']]
+	];
+	var winlossdetail = [
+		['Elim Wins from Red', data['winlossdetail']['elim_wins_from_red']],
+		['Non-Elim Wins from Red', data['winlossdetail']['non_elim_wins_from_red']],
+		['Elim Wins from Green', data['winlossdetail']['elim_wins_from_green']],
+		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
+		['Elim Losses from Red', data['winlossdetail']['elim_losses_from_red']],
+		['Non-Elim Losses from Red', data['winlossdetail']['non_elim_losses_from_red']],
+		['Elim Losses from Green', data['winlossdetail']['elim_losses_from_green']],
+		['Non-Elim Losses from Green', data['winlossdetail']['non_elim_losses_from_green']]
+	];
+	
+	$('#win_loss_pie').highcharts({
+		chart: {
+			type: 'pie'
+		},
+		title: {
+			text: 'Wins & Losses'
+		},
+		yAxis: {
+			title: {
+				text: 'Wins'
+			}
+		},
+		plotOptions: {
+			pie: {
+				shadow: false,
+				center: ['50%', '50%']
+			}
+		},
+		series: [{
+			data: winloss,
+			size: '40%',
+			dataLabels: {
+				formatter: function() {
+					return this.y > 0 ? this.point.name : null;
+				},
+				color: 'white',
+				distance: -30
+			}
+		}, {
+			data: winlossdetail,
+			colors: [
+				'#FF0000',
+				'#CC0000',
+				'#00FF00',
+				'#00CC00'
+			],
+			size: '60%',
+			innerSize: '40%',
+			dataLabels: {
+				formatter: function() {
+					return this.y > 0 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
+				}
+			}
+		}]
+	});
+}
+
+function displayPositionSpider(data) {
+	var mdn_mvp = [data['mdn_ammo_mvp'],data['mdn_commander_mvp'],data['mdn_heavy_mvp'],data['mdn_medic_mvp'],data['mdn_scout_mvp']];
+	var mdn_score = [data['mdn_ammo_score'],data['mdn_commander_score'],data['mdn_heavy_score'],data['mdn_medic_score'],data['mdn_scout_score']];
+	var ctr_mdn_mvp = [data['center_mdn_ammo_mvp'],data['center_mdn_commander_mvp'],data['center_mdn_heavy_mvp'],data['center_mdn_medic_mvp'],data['center_mdn_scout_mvp']];
+	var ctr_mdn_score = [data['center_mdn_ammo_score'],data['center_mdn_commander_score'],data['center_mdn_heavy_score'],data['center_mdn_medic_score'],data['center_mdn_scout_score']];
+	
+	$('#position_spider').highcharts({
+		chart: {
+			polar: true,
+			type: 'line'
+		},
+		title: {
+			text: 'Position Score vs MVP'
+		},
+		xAxis: {
+			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
+			tickmarkPlacement: 'on',
+			lineWidth: 0
+		},
+		yAxis: [{
+			min: 0,
+			max: 25,
+			labels: {
+				enabled: false
+			}
+		}, {
+			min: 0,
+			max: 10000,
+			labels: {
+				enabled: false
+			}
+		}],
+		series: [{
+			name: 'Median MVP',
+			data: mdn_mvp,
+			marker: {
+                symbol: 'circle'
+            },
+			pointPlacement: 'on',
+			yAxis: 0
+		}, {
+			name: 'Median Score',
+			data: mdn_score,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			yAxis: 1
+		}, {
+			name: 'Center Median MVP',
+			data: ctr_mdn_mvp,
+			marker: {
+                symbol: 'circle'
+            },
+			pointPlacement: 'on',
+			dashStyle: 'dash',
+			yAxis: 0
+		}, {
+			name: 'Center Median Score',
+			data: ctr_mdn_score,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			dashStyle: 'dash',
+			yAxis: 1
+		}]
+	});
+}
+
+
 $(document).ready(function(){
+	$.ajax({
+		type: 'get',
+		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		success: function(data) {
+			displayWinLossPie(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+	
+	$.ajax({
+		type: 'get',
+		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		success: function(data) {
+			displayPositionSpider(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
 	
 	var line1 = <?php echo $overall_json; ?>;
 	var line2 = <?php echo $commander_json; ?>;
@@ -133,22 +251,6 @@ $(document).ready(function(){
 	var line10 = <?php echo $scout_score_json; ?>;
 	var line11 = <?php echo $ammo_score_json; ?>;
 	var line12 = <?php echo $medic_score_json; ?>;
-	
-	var winloss = [['Wins', <?php echo $wins; ?>], ['Losses', <?php echo $losses; ?>]];
-	var winlossdetail = [
-		['Elim Wins from Red', <?php echo $red_wins_elim; ?>],
-		['Non-Elim Wins from Red', <?php echo $red_wins - $red_wins_elim; ?>],
-		['Elim Wins from Green', <?php echo $green_wins_elim; ?>],
-		['Non-Elim Wins from Green', <?php echo $wins - $red_wins - $green_wins_elim; ?>],
-		['Elim Losses from Red', <?php echo $red_losses_elim; ?>],
-		['Non-Elim Losses from Red', <?php echo $red_losses - $red_losses_elim; ?>],
-		['Elim Losses from Green', <?php echo $green_losses_elim; ?>],
-		['Non-Elim Losses from Green', <?php echo $losses - $red_losses - $green_losses_elim; ?>]
-	];
-	var mdn_mvp = [<?php echo $mdn_ammo_mvp.",".$mdn_commander_mvp.",".$mdn_heavy_mvp.",".$mdn_medic_mvp.",".$mdn_scout_mvp; ?>];
-	var mdn_score = [<?php echo $mdn_ammo_score.",".$mdn_commander_score.",".$mdn_heavy_score.",".$mdn_medic_score.",".$mdn_scout_score; ?>];
-	var ctr_mdn_mvp = [<?php echo $center_mdn_ammo_mvp.",".$center_mdn_commander_mvp.",".$center_mdn_heavy_mvp.",".$center_mdn_medic_mvp.",".$center_mdn_scout_mvp; ?>];
-	var ctr_mdn_score = [<?php echo $center_mdn_ammo_score.",".$center_mdn_commander_score.",".$center_mdn_heavy_score.",".$center_mdn_medic_score.",".$center_mdn_scout_score; ?>];
 	
 	(line1.length < 1) ? line1 = [null] : "";
 	(line2.length < 1) ? line2 = [null] : "";
@@ -545,115 +647,6 @@ $(document).ready(function(){
 			})()
 		}
 		]
-	});
-	
-	$('#win_loss_pie').highcharts({
-		chart: {
-			type: 'pie'
-		},
-		title: {
-			text: 'Wins & Losses'
-		},
-		yAxis: {
-			title: {
-				text: 'Wins'
-			}
-		},
-		plotOptions: {
-			pie: {
-				shadow: false,
-				center: ['50%', '50%']
-			}
-		},
-		series: [{
-			data: winloss,
-			size: '40%',
-			dataLabels: {
-				formatter: function() {
-					return this.y > 0 ? this.point.name : null;
-				},
-				color: 'white',
-				distance: -30
-			}
-		}, {
-			data: winlossdetail,
-			colors: [
-				'#FF0000',
-				'#CC0000',
-				'#00FF00',
-				'#00CC00'
-			],
-			size: '60%',
-			innerSize: '40%',
-			dataLabels: {
-				formatter: function() {
-					return this.y > 0 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
-				}
-			}
-		}]
-	});
-
-	$('#position_spider').highcharts({
-		chart: {
-			polar: true,
-			type: 'line'
-		},
-		title: {
-			text: 'Position Score vs MVP'
-		},
-		xAxis: {
-			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
-			tickmarkPlacement: 'on',
-			lineWidth: 0
-		},
-		yAxis: [{
-			min: 0,
-			max: 25,
-			labels: {
-				enabled: false
-			}
-		}, {
-			min: 0,
-			max: 10000,
-			labels: {
-				enabled: false
-			}
-		}],
-		series: [{
-			name: 'Median MVP',
-			data: mdn_mvp,
-			marker: {
-                symbol: 'circle'
-            },
-			pointPlacement: 'on',
-			yAxis: 0
-		}, {
-			name: 'Median Score',
-			data: mdn_score,
-			marker: {
-                symbol: 'square'
-            },
-			pointPlacement: 'on',
-			yAxis: 1
-		}, {
-			name: 'Center Median MVP',
-			data: ctr_mdn_mvp,
-			marker: {
-                symbol: 'circle'
-            },
-			pointPlacement: 'on',
-			dashStyle: 'dash',
-			yAxis: 0
-		}, {
-			name: 'Center Median Score',
-			data: ctr_mdn_score,
-			marker: {
-                symbol: 'square'
-            },
-			pointPlacement: 'on',
-			dashStyle: 'dash',
-			yAxis: 1
-		}]
 	});
 	
 	var gTable = $('.gamelist').dataTable( {
@@ -1056,4 +1049,3 @@ $(document).ready(function(){
 		</table>
 	</div>
 </div>
-

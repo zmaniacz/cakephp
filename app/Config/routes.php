@@ -20,6 +20,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 	Router::connect('/', array('controller' => 'scorecards', 'action' => 'nightly'));
+	Router::parseExtensions();
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on

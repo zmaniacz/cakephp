@@ -3,7 +3,7 @@
 class Game extends AppModel {
 	public $hasMany = 'Scorecard';
 	
-	public function getOverallStats($games_limit = null) {
+	public function getOverallStats($filter_type, $games_limit = null) {
 		if(is_null($games_limit)) {
 			$overall = $this->find('all', array(
 				'fields' => array(
@@ -18,7 +18,7 @@ class Game extends AppModel {
 					'green_eliminated'
 				)
 			));
-		} else {
+		} elseif($filter_type == 'numeric') {
 			$overall = $this->query("
 				SELECT winner,
 					red_eliminated,
@@ -35,6 +35,26 @@ class Game extends AppModel {
 				GROUP BY winner,
 					red_eliminated,
 					green_eliminated
+				ORDER BY game_datetime DESC
+			");
+		} elseif($filter_type == 'date') {
+			$overall = $this->query("
+				SELECT winner,
+					red_eliminated,
+					green_eliminated,
+					COUNT(game_datetime) as Total
+				FROM (
+					SELECT winner,
+						red_eliminated,
+						green_eliminated,
+						game_datetime
+					FROM games
+					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
+				) as Game
+				GROUP BY winner,
+					red_eliminated,
+					green_eliminated
+				ORDER BY game_datetime DESC
 			");
 		}
 		

@@ -299,14 +299,36 @@ class Scorecard extends AppModel {
 		return $scores;
 	}
 	
-	public function getPlayerGamesScorecardsById($player_id) {
-		$games = $this->find('all', array(
-			'conditions' => array('player_id' => $player_id),
-			'order' => 'Scorecard.game_datetime DESC',
-			'contain' => array(
-				'Game' => array()
-			)
-		));
+	public function getPlayerGamesScorecardsById($player_id, $games_limit = null, $filter_type = null) {
+		if(is_null($games_limit)) {
+			$games = $this->find('all', array(
+				'conditions' => array('player_id' => $player_id),
+				'order' => 'Scorecard.game_datetime DESC',
+				'contain' => array(
+					'Game' => array()
+				)
+			));
+		} elseif ($filter_type == 'numeric') {
+			$games = $this->find('all', array(
+				'conditions' => array('player_id' => $player_id),
+				'order' => 'Scorecard.game_datetime DESC',
+				'limit' => $games_limit,
+				'contain' => array(
+					'Game' => array()
+				)
+			));
+		} elseif ($filter_type == 'date') {
+			$games = $this->find('all', array(
+				'conditions' => array(
+					'player_id' => $player_id,
+					'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => $games_limit
+				),
+				'order' => 'Scorecard.game_datetime DESC',
+				'contain' => array(
+					'Game' => array()
+				)
+			));
+		}
 		
 		return $games;
 	}

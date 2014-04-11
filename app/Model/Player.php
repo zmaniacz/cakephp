@@ -57,33 +57,93 @@ class Player extends AppModel {
 		return $averages;
 	}
 	
-	public function getMedianScoreByPosition($position, $id = null) {
-		$conditions = array();
+	public function getMedianScoreByPosition($position, $id = null, $games_limit = null, $filter_type = null) {
 		if(is_null($id)) {
-			$raw = $this->query("
-				SELECT  x.score 
-				FROM scorecards x, scorecards y
-				WHERE x.position = '$position' AND y.position = '$position'
-				GROUP BY  x.score
-				HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-				LIMIT 1
-			");
+			if(is_null($games_limit)) {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM scorecards x, scorecards y
+					WHERE x.position = '$position' AND y.position = '$position'
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			} elseif($filter_type == 'numeric') {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM (
+						SELECT score, position
+						FROM scorecards
+						ORDER BY game_datetime DESC
+						LIMIT $games_limit
+					) x, (
+						SELECT score, position
+						FROM scorecards
+						ORDER BY game_datetime DESC
+						LIMIT $games_limit
+					) y
+					WHERE x.position = '$position' AND y.position = '$position'
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			} elseif($filter_type == 'date') {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM scorecards x, scorecards y
+					WHERE x.position = '$position' AND y.position = '$position' AND DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			}
 		} else {
-			$raw = $this->query("
-				SELECT  x.score 
-				FROM scorecards x, scorecards y
-				WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
-				GROUP BY  x.score
-				HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-				LIMIT 1
-			");
+			if(is_null($games_limit)) {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM scorecards x, scorecards y
+					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			} elseif($filter_type == 'numeric') {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM (
+						SELECT player_id, score, position
+						FROM scorecards
+						WHERE player_id = $id
+						ORDER BY game_datetime DESC
+						LIMIT $games_limit
+					) x, (
+						SELECT player_id, score, position
+						FROM scorecards
+						WHERE player_id = $id
+						ORDER BY game_datetime DESC
+						LIMIT $games_limit
+					) y
+					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			} elseif($filter_type == 'date') {
+				$raw = $this->query("
+					SELECT  x.score 
+					FROM scorecards x, scorecards y
+					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position' AND DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
+					GROUP BY  x.score
+					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
+					LIMIT 1
+				");
+			}
 		}
 		
 		return $raw[0]['x']['score'];
 	}
 	
-	public function getMedianMVPByPosition($position, $id = null) {
-		$conditions = array();
+	public function getMedianMVPByPosition($position, $id = null, $games_limit = null, $filter_type = null) {
 		if(is_null($id)) {
 			$raw = $this->query("
 				SELECT  x.mvp_points

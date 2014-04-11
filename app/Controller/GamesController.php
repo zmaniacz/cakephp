@@ -19,16 +19,13 @@ class GamesController extends AppController {
 	}
 	
 	public function overall() {
-		$this->set('overall', $this->Game->getOverallStats());
 	}
 	
-	public function overaller() {
-		$games_limit = null;
-
-		if(isset($this->request->data['Post']['games_limit'])) {
-			$games_limit = $this->request->data['Post']['games_limit'];
-			$this->layout = 'ajax';
+	public function overallWinLossDetail($filter_type, $games_limit = null) {
+		$this->request->onlyAllow('ajax');
+		if($games_limit == 0) {
+			$games_limit = null;
 		}
-		$this->set('overall', $this->Game->getOverallStats($games_limit));
+		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit));
 	}
 }
