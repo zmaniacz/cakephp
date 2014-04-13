@@ -29,32 +29,26 @@ class PlayersController extends AppController {
 		}
 	}
 	
-	public function playerWinLossDetail($id, $games_limit = null, $filter_type = null) {
-		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $games_limit, $filter_type));
+	public function playerWinLossDetail($id, $filter = null) {
+		//$this->request->onlyAllow('ajax');
+		
+		if($this->request->is('post')) {
+			$filter = $this->request->data;
+		}
+		
+		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $filter));
 	}
 	
-	public function playerPositionSpider($id, $games_limit = null, $filter_type = null) {
+	public function playerPositionSpider($id, $filter = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('mdn_commander_score', $this->Player->getMedianScoreByPosition('Commander', $id, $games_limit, $filter_type));
-		$this->set('mdn_heavy_score', $this->Player->getMedianScoreByPosition('Heavy Weapons', $id, $games_limit, $filter_type));
-		$this->set('mdn_scout_score', $this->Player->getMedianScoreByPosition('Scout', $id, $games_limit, $filter_type));
-		$this->set('mdn_ammo_score', $this->Player->getMedianScoreByPosition('Ammo Carrier', $id, $games_limit, $filter_type));
-		$this->set('mdn_medic_score', $this->Player->getMedianScoreByPosition('Medic', $id, $games_limit, $filter_type));
-		$this->set('center_mdn_commander_score', $this->Player->getMedianScoreByPosition('Commander', null, $games_limit, $filter_type));
-		$this->set('center_mdn_heavy_score', $this->Player->getMedianScoreByPosition('Heavy Weapons', null, $games_limit, $filter_type));
-		$this->set('center_mdn_scout_score', $this->Player->getMedianScoreByPosition('Scout', null, $games_limit, $filter_type));
-		$this->set('center_mdn_ammo_score', $this->Player->getMedianScoreByPosition('Ammo Carrier', null, $games_limit, $filter_type));
-		$this->set('center_mdn_medic_score', $this->Player->getMedianScoreByPosition('Medic', null,$games_limit, $filter_type));
-		$this->set('mdn_commander_mvp', $this->Player->getMedianMVPByPosition('Commander', $id, $games_limit, $filter_type));
-		$this->set('mdn_heavy_mvp', $this->Player->getMedianMVPByPosition('Heavy Weapons', $id, $games_limit, $filter_type));
-		$this->set('mdn_scout_mvp', $this->Player->getMedianMVPByPosition('Scout', $id, $games_limit, $filter_type));
-		$this->set('mdn_ammo_mvp', $this->Player->getMedianMVPByPosition('Ammo Carrier', $id, $games_limit, $filter_type));
-		$this->set('mdn_medic_mvp', $this->Player->getMedianMVPByPosition('Medic', $id, $games_limit, $filter_type));
-		$this->set('center_mdn_commander_mvp', $this->Player->getMedianMVPByPosition('Commander', null, $games_limit, $filter_type));
-		$this->set('center_mdn_heavy_mvp', $this->Player->getMedianMVPByPosition('Heavy Weapons', null, $games_limit, $filter_type));
-		$this->set('center_mdn_scout_mvp', $this->Player->getMedianMVPByPosition('Scout', null, $games_limit, $filter_type));
-		$this->set('center_mdn_ammo_mvp', $this->Player->getMedianMVPByPosition('Ammo Carrier', null, $games_limit, $filter_type));
-		$this->set('center_mdn_medic_mvp', $this->Player->getMedianMVPByPosition('Medic', null, $games_limit, $filter_type));
+		
+		if($this->request->is('post')) {
+			$filter = $this->request->data;
+		}
+		
+		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $filter));
+		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition());
+		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $filter));
+		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition());
 	}
 }

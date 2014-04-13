@@ -299,36 +299,33 @@ class Scorecard extends AppModel {
 		return $scores;
 	}
 	
-	public function getPlayerGamesScorecardsById($player_id, $games_limit = null, $filter_type = null) {
-		if(is_null($games_limit)) {
-			$games = $this->find('all', array(
-				'conditions' => array('player_id' => $player_id),
-				'order' => 'Scorecard.game_datetime DESC',
-				'contain' => array(
-					'Game' => array()
-				)
-			));
-		} elseif ($filter_type == 'numeric') {
-			$games = $this->find('all', array(
-				'conditions' => array('player_id' => $player_id),
-				'order' => 'Scorecard.game_datetime DESC',
-				'limit' => $games_limit,
-				'contain' => array(
-					'Game' => array()
-				)
-			));
-		} elseif ($filter_type == 'date') {
-			$games = $this->find('all', array(
-				'conditions' => array(
-					'player_id' => $player_id,
-					'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => $games_limit
-				),
-				'order' => 'Scorecard.game_datetime DESC',
-				'contain' => array(
-					'Game' => array()
-				)
-			));
+	public function getPlayerGamesScorecardsById($player_id, $filter = null) {
+		$conditions = array();
+		$limit = null;
+		
+		$conditions['player_id'] = $player_id;
+		
+		if(!is_null($filter)) {
+			if(isset($filter['numeric'])) {
+				if($filter['numeric'] > 0) {
+					$limit = $filter['numeric'];
+				}
+			}
+			if(isset($filter['date'])) {
+				if($filter['date'] > 0) {
+					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
+				}
+			}
 		}
+
+		$games = $this->find('all', array(
+			'conditions' => $conditions,
+			'order' => 'Scorecard.game_datetime DESC',
+			'limit' => $limit,
+			'contain' => array(
+				'Game' => array()
+			)
+		));
 		
 		return $games;
 	}

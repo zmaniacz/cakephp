@@ -57,116 +57,6 @@ class Player extends AppModel {
 		return $averages;
 	}
 	
-	public function getMedianScoreByPosition($position, $id = null, $games_limit = null, $filter_type = null) {
-		if(is_null($id)) {
-			if(is_null($games_limit)) {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM scorecards x, scorecards y
-					WHERE x.position = '$position' AND y.position = '$position'
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			} elseif($filter_type == 'numeric') {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM (
-						SELECT score, position
-						FROM scorecards
-						ORDER BY game_datetime DESC
-						LIMIT $games_limit
-					) x, (
-						SELECT score, position
-						FROM scorecards
-						ORDER BY game_datetime DESC
-						LIMIT $games_limit
-					) y
-					WHERE x.position = '$position' AND y.position = '$position'
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			} elseif($filter_type == 'date') {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM scorecards x, scorecards y
-					WHERE x.position = '$position' AND y.position = '$position' AND DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			}
-		} else {
-			if(is_null($games_limit)) {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM scorecards x, scorecards y
-					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			} elseif($filter_type == 'numeric') {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM (
-						SELECT player_id, score, position
-						FROM scorecards
-						WHERE player_id = $id
-						ORDER BY game_datetime DESC
-						LIMIT $games_limit
-					) x, (
-						SELECT player_id, score, position
-						FROM scorecards
-						WHERE player_id = $id
-						ORDER BY game_datetime DESC
-						LIMIT $games_limit
-					) y
-					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			} elseif($filter_type == 'date') {
-				$raw = $this->query("
-					SELECT  x.score 
-					FROM scorecards x, scorecards y
-					WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position' AND DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
-					GROUP BY  x.score
-					HAVING SUM(SIGN(1-SIGN(y.score-x.score)))/COUNT(*) > .5
-					LIMIT 1
-				");
-			}
-		}
-		
-		return $raw[0]['x']['score'];
-	}
-	
-	public function getMedianMVPByPosition($position, $id = null, $games_limit = null, $filter_type = null) {
-		if(is_null($id)) {
-			$raw = $this->query("
-				SELECT  x.mvp_points
-				FROM scorecards x, scorecards y
-				WHERE x.position = '$position' AND y.position = '$position'
-				GROUP BY  x.mvp_points
-				HAVING SUM(SIGN(1-SIGN(y.mvp_points-x.mvp_points)))/COUNT(*) > .5
-				LIMIT 1
-			");
-		} else {
-			$raw = $this->query("
-				SELECT  x.mvp_points 
-				FROM scorecards x, scorecards y
-				WHERE x.player_id = $id and y.player_id = $id AND x.position = '$position' AND y.position = '$position'
-				GROUP BY  x.mvp_points
-				HAVING SUM(SIGN(1-SIGN(y.mvp_points-x.mvp_points)))/COUNT(*) > .5
-				LIMIT 1
-			");
-		}
-		
-		return $raw[0]['x']['mvp_points'];
-	}
-	
 	public function getAverageMVPByPosition($id = null) {
 		$conditions = array();
 		if(!is_null($id))
@@ -188,6 +78,169 @@ class Player extends AppModel {
 		}
 		
 		return $averages;
+	}
+	
+	public function getMedianScoreByPosition($id = null, $filter = null) {
+		$fields = array('position','score');
+		$conditions = array();
+		$limit = null;
+		
+		if(!is_null($id)) {
+			$fields[] = 'player_id';
+			$conditions['player_id'] = $id;
+		}
+		
+		if(!is_null($filter)) {
+			if(isset($filter['numeric'])) {
+				if($filter['numeric'] > 0) {
+					$limit = $filter['numeric'];
+				}
+			}
+			if(isset($filter['date'])) {
+				if($filter['date'] > 0) {
+					$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = $filter['date'];
+				}
+			}
+			if(isset($filter['team'])) {
+				if($filter['team'] != 0) {
+					$conditions['team'] = $filter['team'];
+				}
+			}
+		}
+
+		$scores = $this->Scorecard->find('all', array(
+			'fields' => $fields,
+			'conditions' => $conditions,
+			'order' => 'score ASC'
+		));
+		
+		$commander = array();
+		$heavy = array();
+		$scout = array();
+		$ammo = array();
+		$medic = array();
+		
+		foreach($scores as $score) {
+			switch($score['Scorecard']['position']) {
+				case 'Commander':
+					//echo count($commander);
+					if( (is_null($limit)) || (!is_null($limit) && count($commander) <= $limit)) {
+						$commander[] = $score['Scorecard']['score'];
+					}
+					break;
+				case 'Heavy Weapons':
+					if( (is_null($limit)) || (!is_null($limit) && count($heavy) <= $limit)) {
+						$heavy[] = $score['Scorecard']['score'];
+					}
+					break;
+				case 'Scout':
+					if( (is_null($limit)) || (!is_null($limit) && count($scout) <= $limit)) {
+						$scout[] = $score['Scorecard']['score'];
+					}
+					break;
+				case 'Ammo Carrier':
+					if( (is_null($limit)) || (!is_null($limit) && count($ammo) <= $limit)) {
+						$ammo[] = $score['Scorecard']['score'];
+					}
+					break;
+				case 'Medic':
+					if( (is_null($limit)) || (!is_null($limit) && count($medic) <= $limit)) {
+						$medic[] = $score['Scorecard']['score'];
+					}
+					break;
+			}
+		}
+		
+		$results = array(
+			'commander' => (count($commander) > 0 ? $commander[floor((count($commander)-1)/2)] : 0),
+			'heavy' => (count($heavy) > 0 ? $heavy[floor((count($heavy)-1)/2)] : 0),
+			'scout' => (count($scout) > 0 ? $scout[floor((count($scout)-1)/2)] : 0),
+			'ammo' => (count($ammo) > 0 ? $ammo[floor((count($ammo)-1)/2)] : 0),
+			'medic' => (count($medic) > 0 ? $medic[floor((count($medic)-1)/2)] : 0)
+		);
+		
+		return $results;
+	}
+	
+	public function getMedianMVPByPosition($id = null, $filter = null) {
+		$fields = array('position','mvp_points');
+		$conditions = array();
+		$limit = null;
+		
+		if(!is_null($id)) {
+			$fields[] = 'player_id';
+			$conditions['player_id'] = $id;
+		}
+		
+		if(!is_null($filter)) {
+			if(isset($filter['numeric'])) {
+				if($filter['numeric'] > 0) {
+					$limit = $filter['numeric'];
+				}
+			}
+			if(isset($filter['date'])) {
+				if($filter['date'] > 0) {
+					$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = $filter['date'];
+				}
+			}
+			if(isset($filter['team'])) {
+				if($filter['team'] != 0) {
+					$conditions['team'] = $filter['team'];
+				}
+			}
+		}
+		
+		$scores = $this->Scorecard->find('all', array(
+			'fields' => $fields,
+			'conditions' => $conditions,
+			'order' => 'mvp_points ASC'
+		));
+		
+		$commander = array();
+		$heavy = array();
+		$scout = array();
+		$ammo = array();
+		$medic = array();
+		
+		foreach($scores as $score) {
+			switch($score['Scorecard']['position']) {
+				case 'Commander':
+					if( (is_null($limit)) || (!is_null($limit) && count($commander) <= $limit)) {
+						$commander[] = $score['Scorecard']['mvp_points'];
+					}
+					break;
+				case 'Heavy Weapons':
+					if( (is_null($limit)) || (!is_null($limit) && count($heavy) <= $limit)) {
+						$heavy[] = $score['Scorecard']['mvp_points'];
+					}
+					break;
+				case 'Scout':
+					if( (is_null($limit)) || (!is_null($limit) && count($scout) <= $limit)) {
+						$scout[] = $score['Scorecard']['mvp_points'];
+					}
+					break;
+				case 'Ammo Carrier':
+					if( (is_null($limit)) || (!is_null($limit) && count($ammo) <= $limit)) {
+						$ammo[] = $score['Scorecard']['mvp_points'];
+					}
+					break;
+				case 'Medic':
+					if( (is_null($limit)) || (!is_null($limit) && count($medic) <= $limit)) {
+						$medic[] = $score['Scorecard']['mvp_points'];
+					}
+					break;
+			}
+		}
+		
+		$results = array(
+			'commander' => (count($commander) > 0 ? $commander[floor((count($commander)-1)/2)] : 0),
+			'heavy' => (count($heavy) > 0 ? $heavy[floor((count($heavy)-1)/2)] : 0),
+			'scout' => (count($scout) > 0 ? $scout[floor((count($scout)-1)/2)] : 0),
+			'ammo' => (count($ammo) > 0 ? $ammo[floor((count($ammo)-1)/2)] : 0),
+			'medic' => (count($medic) > 0 ? $medic[floor((count($medic)-1)/2)] : 0)
+		);
+		
+		return $results;
 	}
 	
 	public function getMyTeammates($id) {

@@ -14,3 +14,7 @@ tr.gameRowGreen {
 tr.gameRowDead {
 	text-shadow: 0 0 1px #666666; 
 }
+
+div.input.select {
+	display: inline-block;
+}

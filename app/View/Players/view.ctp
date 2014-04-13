@@ -118,7 +118,7 @@ function displayWinLossPie(data) {
 			size: '40%',
 			dataLabels: {
 				formatter: function() {
-					return this.y > 0 ? this.point.name : null;
+					return this.point.name;
 				},
 				color: 'white',
 				distance: -30
@@ -135,7 +135,7 @@ function displayWinLossPie(data) {
 			innerSize: '40%',
 			dataLabels: {
 				formatter: function() {
-					return this.y > 0 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
+					return '<b>'+ this.point.name +':</b> '+ this.y;
 				}
 			}
 		}]
@@ -143,10 +143,10 @@ function displayWinLossPie(data) {
 }
 
 function displayPositionSpider(data) {
-	var mdn_mvp = [data['mdn_ammo_mvp'],data['mdn_commander_mvp'],data['mdn_heavy_mvp'],data['mdn_medic_mvp'],data['mdn_scout_mvp']];
-	var mdn_score = [data['mdn_ammo_score'],data['mdn_commander_score'],data['mdn_heavy_score'],data['mdn_medic_score'],data['mdn_scout_score']];
-	var ctr_mdn_mvp = [data['center_mdn_ammo_mvp'],data['center_mdn_commander_mvp'],data['center_mdn_heavy_mvp'],data['center_mdn_medic_mvp'],data['center_mdn_scout_mvp']];
-	var ctr_mdn_score = [data['center_mdn_ammo_score'],data['center_mdn_commander_score'],data['center_mdn_heavy_score'],data['center_mdn_medic_score'],data['center_mdn_scout_score']];
+	var mdn_mvp = [data['player_mdn_mvp']['ammo'],data['player_mdn_mvp']['commander'],data['player_mdn_mvp']['heavy'],data['player_mdn_mvp']['medic'],data['player_mdn_mvp']['scout']];
+	var mdn_score = [data['player_mdn_scores']['ammo'],data['player_mdn_scores']['commander'],data['player_mdn_scores']['heavy'],data['player_mdn_scores']['medic'],data['player_mdn_scores']['scout']];
+	var ctr_mdn_mvp = [data['center_mdn_mvp']['ammo'],data['center_mdn_mvp']['commander'],data['center_mdn_mvp']['heavy'],data['center_mdn_mvp']['medic'],data['center_mdn_mvp']['scout']];
+	var ctr_mdn_score = [data['center_mdn_scores']['ammo'],data['center_mdn_scores']['commander'],data['center_mdn_scores']['heavy'],data['center_mdn_scores']['medic'],data['center_mdn_scores']['scout']];
 	
 	$('#position_spider').highcharts({
 		chart: {
@@ -665,13 +665,51 @@ $(document).ready(function(){
 <div id="tabs">
 	<ul>
 		<li><a href="#overall_tab">Overall</a></li>
+		<li><a href="#teammates_tab">Teammates</a></li>
 		<li><a href="#stat_plots_tab">Stat Plots MVP</a></li>
 		<li><a href="#stat_plots_score_tab">Stat Plots Score</a></li>
 		<li><a href="#game_list_tab">Game List</a></li>
 	</ul>
 	<div id="overall_tab">
+		<?php
+			echo $this->Form->create('gamesLimit');
+			echo $this->Form->input('selectNumeric', array(
+				'label' => 'Select # of games',
+				'options' => array(
+					0 => 'All Games',
+					10 => 'Last 10',
+					25 => 'Last 25',
+					50 => 'Last 50',
+					100 => 'Last 100'
+				),
+				'selected' => 0
+			));
+			echo $this->Form->input('selectDate', array(
+				'label' => 'Select # of days',
+				'options' => array(
+					0 => 'All Dates',
+					30 => 'Last 30',
+					60 => 'Last 60',
+					90 => 'Last 90',
+					120 => 'Last 120'
+				),
+				'selected' => 0
+			));
+			echo $this->Form->input('selectTeam', array(
+				'label' => 'Select team',
+				'options' => array(
+					0 => 'All Teams',
+					'red' => 'Red',
+					'green' => 'Green'
+				),
+				'selected' => 0
+			));
+			echo $this->Form->end();
+		?>
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		<div id="position_spider" style="height: 500px; width: 800px"></div>
+	</div>
+	<div id="teammates_tab">
 		<?php
 			foreach($teammates as $key => $row) {
 				$same_team[$key] = $row['same_team_percent'];
@@ -1049,3 +1087,88 @@ $(document).ready(function(){
 		</table>
 	</div>
 </div>
+
+<script>
+$('#gamesLimitSelectNumeric').change(function() {
+	var numeric = $(this).val();
+	$('#gamesLimitSelectDate').val(0);
+	var team = $('#gamesLimitSelectTeam').val();
+	
+	$.ajax({
+		type: 'post',
+		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		data: {'numeric' : numeric, 'date' : 0},
+		success: function(data) {
+			displayWinLossPie(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+	
+	$.ajax({
+		type: 'post',
+		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		data: {'numeric' : numeric, 'team' : team, 'date' : 0},
+		success: function(data) {
+			displayPositionSpider(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+});
+
+$('#gamesLimitSelectDate').change(function() {
+	var date = $(this).val();
+	$('#gamesLimitSelectNumeric').val(0);
+	var team = $('#gamesLimitSelectTeam').val();
+	
+	$.ajax({
+		type: 'post',
+		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		data: {'numeric' : 0, 'date' : date},
+		success: function(data) {
+			displayWinLossPie(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+	
+	$.ajax({
+		type: 'post',
+		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		data: {'numeric' : 0, 'team' : team, 'date' : date},
+		success: function(data) {
+			displayPositionSpider(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+});
+
+$('#gamesLimitSelectTeam').change(function() {
+	var team = $(this).val();
+	var date = $('#gamesLimitSelectDate').val();
+	var numeric = $('#gamesLimitSelectNumeric').val();
+	
+	$.ajax({
+		type: 'post',
+		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
+		dataType: 'json',
+		data: {'numeric' : numeric, 'team' : team, 'date' : date},
+		success: function(data) {
+			displayPositionSpider(data);
+		},
+		error: function() {
+			alert('fail');
+		}
+	});
+});
+</script>
