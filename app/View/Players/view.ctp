@@ -655,7 +655,8 @@ $(document).ready(function(){
 		"bInfo": false,
 		"bPaginate": false,
 		"bJQueryUI": true,
-		"bRetrieve": true
+		"bRetrieve": true,
+		"aaSorting": [[1, "desc"]]
 	} );
 	
 	$("#tabs").tabs();

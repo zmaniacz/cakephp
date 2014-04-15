@@ -21,6 +21,7 @@
 			<h1><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></h1>
 			<h1><?php echo $this->Html->link("Nightly Stats", array('controller' => 'scorecards', 'action' => 'nightly')); ?></h1>
 			<h1><?php echo $this->Html->link("Center Stats", array('controller' => 'games', 'action' => 'overall')); ?></h1>
+			<h1><?php echo $this->Html->link("All-Center Teams", array('controller' => 'scorecards', 'action' => 'allcenter')); ?></h1>
 		</div>
 		<div id="content">
 			<?php echo $this->Session->flash(); ?>

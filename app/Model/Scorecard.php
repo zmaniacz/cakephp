@@ -347,4 +347,399 @@ class Scorecard extends AppModel {
 		
 		return $games;
 	}
+	
+	public function getTopTeams() {
+		$matrix = $this->_loadMatrix();
+		
+		$M = $this->_munkres($matrix);
+		$team_a = array();
+		$r = 0;
+		foreach($matrix as $key => $value) {
+			for($c = 0; $c < count($M[$r]); $c++) {
+				if($M[$r][$c] == 1) {
+					switch($c) {
+						case 0;
+							$team_a['Ammo Carrier'] = $key;
+							break;
+						case 1;
+							$team_a['Commander'] = $key;
+							break;
+						case 2;
+							$team_a['Heavy Weapons'] = $key;
+							break;
+						case 3;
+							$team_a['Medic'] = $key;
+							break;
+						case 4;
+							$team_a['Scout'] = $key;
+							break;
+						case 5;
+							$team_a['Scout2'] = $key;
+							break;
+					}
+					break;
+				}
+			}
+			$r++;
+		}
+		
+		foreach($team_a as $player) {
+			unset($matrix[$player]);
+		}
+		
+		$M = $this->_munkres($matrix);
+		$team_b = array();
+		$r = 0;
+		foreach($matrix as $key => $value) {
+			for($c = 0; $c < count($M[$r]); $c++) {
+				if($M[$r][$c] == 1) {
+					switch($c) {
+						case 0;
+							$team_b['Ammo Carrier'] = $key;
+							break;
+						case 1;
+							$team_b['Commander'] = $key;
+							break;
+						case 2;
+							$team_b['Heavy Weapons'] = $key;
+							break;
+						case 3;
+							$team_b['Medic'] = $key;
+							break;
+						case 4;
+							$team_b['Scout'] = $key;
+							break;
+						case 5;
+							$team_b['Scout2'] = $key;
+							break;
+					}
+					break;
+				}
+			}
+			$r++;
+		}
+		
+		$results = array('team_a' => $team_a, 'team_b' => $team_b);
+	
+		return $results;
+	}
+	
+	protected function _loadMatrix() {
+		$results = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'position',
+				'AVG(mvp_points) as avg_mvp'
+			),
+			'group' => 'player_name, position'
+		));
+		
+		$games_played = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'COUNT(game_datetime) as games_played'
+			),
+			'conditions' => array(
+				'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => 120
+			),
+			'group' => 'player_name HAVING games_played >= 10'
+		));
+		
+		$matrix = array();
+		
+		foreach($results as $key => $result) {
+			$valid = false;
+			foreach($games_played as $player) {
+				if($result['Scorecard']['player_name'] === $player['Scorecard']['player_name']) {
+					$valid = true;
+					break;
+				}
+			}
+			if($valid) {
+				$matrix[$result['Scorecard']['player_name']][$result['Scorecard']['position']] = $result[0]['avg_mvp'];
+				if($result['Scorecard']['position'] == 'Scout') {
+					$matrix[$result['Scorecard']['player_name']]['Scout2'] = $result[0]['avg_mvp'];
+				}
+			}
+		}
+		
+		//reverse the matrix to make it a cost matrix
+		$max = 0;
+		foreach($matrix as $row) {
+			foreach($row as $column) {
+				if($column > $max) {
+					$max = $column;
+				}
+			}
+		}
+
+		foreach($matrix as &$row) {
+			foreach($row as &$column) {
+				$column = $max - $column;
+			}
+		}
+
+		return $matrix;
+	}
+	
+	protected function _munkres($matrix) {
+		//Munkres implementation
+		$C = array();
+		$C_orig = array();
+		$M = array();
+		$path = array();
+		$RowCover = array();
+		$colCover = array();
+		$nrow = 0;
+		$ncol = 0;
+		$path_count = 0;
+		$path_row_0 = 0;
+		$path_col_0 = 0;
+		$asgn = 0;
+		$step = 1;
+		
+		foreach($matrix as $row) {
+			$ncol = 0;
+			foreach($row as $column) {
+				$C[$nrow][$ncol] = $column;
+				$ncol++;
+			}
+			$nrow++;
+		}
+		
+		while($ncol < $nrow) {
+			for($r = 0; $r < $nrow; $r++) {
+				$C[$r][$ncol] = 100;
+			}
+			$ncol++;
+		}
+		
+		for($r = 0; $r < $nrow; $r++) {
+			$RowCover[$r] = 0;
+			for($c = 0; $c < $ncol; $c++) {
+				$M[$r][$c] = 0;
+			}
+		}
+		for($c = 0; $c < $ncol; $c++) {
+			$ColCover[$c] = 0;
+		}
+		
+		$ovl_done = false;
+		
+		while(!$ovl_done) {
+			switch($step) {
+				case 1:
+					$min_in_row = 0;
+					
+					for($r = 0; $r < $nrow; $r++) {
+						$min_in_row = $C[$r][0];
+						for($c = 0; $c < $ncol; $c++) {
+							if($C[$r][$c] < $min_in_row) {
+								$min_in_row = $C[$r][$c];
+							}
+						}
+						for($c = 0; $c < $ncol; $c++) {
+							$C[$r][$c] -= $min_in_row;
+						}
+					}
+					$step = 2;
+					break;
+				case 2:
+					for($r = 0; $r < $nrow; $r++) {
+						for($c = 0; $c < $ncol; $c++) {
+							if($C[$r][$c] == 0 && $RowCover[$r] == 0 && $ColCover[$c] == 0) {
+								$M[$r][$c] = 1;
+								$RowCover[$r] = 1;
+								$ColCover[$c] = 1;
+							}
+						}
+					}
+					for($r = 0; $r < $nrow; $r++) {
+						$RowCover[$r] = 0;
+					}
+					for($c = 0; $c < $ncol; $c++) {
+						$ColCover[$c] = 0;
+					}
+					$step = 3;
+					break;
+				case 3:
+					$colcount = 0;
+					for($r = 0; $r < $nrow; $r++) {
+						for($c = 0; $c < $ncol; $c++) {
+							if($M[$r][$c] == 1) {
+								$ColCover[$c] = 1;
+							}
+						}
+					}
+
+					$colcount = 0;
+					for($c = 0; $c < $ncol; $c++) {
+						if($ColCover[$c] == 1) {
+							$colcount += 1;
+						}
+					}
+					if($colcount >= $ncol || $colcount >= $nrow) {
+						$step = 7;
+					} else {
+						$step = 4;
+					}
+					break;
+				case 4:
+					$row = -1;
+					$col = -1;
+					$done = false;
+					
+					while (!$done) {
+						$r = 0;
+						$c = 0;
+						$done2 = false;
+						$row = -1;
+						$col = -1;
+						
+						//find_a_zero
+						while (!$done2) {
+							$c = 0;
+							while (true) {
+								if ($C[$r][$c] == 0 && $RowCover[$r] == 0 && $ColCover[$c] == 0) {
+									$row = $r;
+									$col = $c;
+									$done2 = true;
+								}
+								$c += 1;
+								if ($c >= $ncol || $done2)
+									break;
+							}
+							$r += 1;
+							if ($r >= $nrow)
+								$done2 = true;
+						}
+						
+						if ($row == -1) {
+							$done = true;
+							$step = 6;
+						} else {
+							$M[$row][$col] = 2;
+							
+							//star_in_row
+							$tmp = false;
+							for($tmp_c = 0; $tmp_c < $ncol; $tmp_c++) {
+								if($M[$row][$tmp_c] == 1) {
+									$tmp = true;
+								}
+							}
+							
+							if ($tmp) {
+								//find_star_in_row
+								$col = -1;
+								for($tmp_c = 0; $tmp_c < $ncol; $tmp_c++) {
+									if ($M[$row][$tmp_c] == 1) {
+										$col = $tmp_c;
+									}
+								}
+			
+								$RowCover[$row] = 1;
+								$ColCover[$col] = 0;
+							} else {
+								$done = true;
+								$step = 5;
+								$path_row_0 = $row;
+								$path_col_0 = $col;
+							}
+						}
+					}
+					break;
+				case 5:
+					$done = false;
+					$r = -1;
+					$c = -1;
+
+					$path_count = 1;
+					$path[$path_count - 1][0] = $path_row_0;
+					$path[$path_count - 1][1] = $path_col_0;
+
+					while (!$done) {
+						//find_star_in_col
+						$tmp_c = $path[$path_count - 1][1];
+						$r = -1;
+						for ($i = 0; $i < $nrow; $i++) {
+							if ($M[$i][$tmp_c] == 1) {
+								$r = $i;
+							}
+						}
+						
+						if ($r > -1) {
+							$path_count += 1;
+							$path[$path_count - 1][0] = $r;
+							$path[$path_count - 1][1] = $path[$path_count - 2][1];
+						} else {
+							$done = true;
+						}
+						if (!$done)	{
+							//find_prime_in_row
+							$tmp_r = $path[$path_count - 1][0];
+							 for ($j = 0; $j < $ncol; $j++) {
+								if ($M[$tmp_r][$j] == 2) {
+									$c = $j;
+								}
+							}
+						
+							$path_count += 1;
+							$path[$path_count - 1][0] = $path[$path_count - 2][0];
+							$path[$path_count - 1][1] = $c;
+						}
+					}
+					//augment_path();
+					for ($p = 0; $p < $path_count; $p++)
+						if ($M[$path[$p][0]][$path[$p][1]] == 1)
+							$M[$path[$p][0]][$path[$p][1]] = 0;
+						else
+							$M[$path[$p][0]][$path[$p][1]] = 1;
+					
+					//clear_covers();
+					for ($r = 0; $r < $nrow; $r++)
+						$RowCover[$r] = 0;
+					for ($c = 0; $c < $ncol; $c++)
+						$ColCover[$c] = 0;
+					
+					//erase_primes();
+					for ($r = 0; $r < $nrow; $r++)
+						for ($c = 0; $c < $ncol; $c++)
+							if ($M[$r][$c] == 2)
+								$M[$r][$c] = 0;
+					
+					$step = 3;
+					break;
+				case 6:
+					$minval = 100;
+					
+					for ($r = 0; $r < $nrow; $r++) {
+						for ($c = 0; $c < $ncol; $c++) {
+							if ($RowCover[$r] == 0 && $ColCover[$c] == 0) {
+								if ($minval > $C[$r][$c]) {
+									$minval = $C[$r][$c];
+								}
+							}
+						}
+					}
+
+					for ($r = 0; $r < $nrow; $r++) {
+						for ($c = 0; $c < $ncol; $c++) {
+							if ($RowCover[$r] == 1) {
+								$C[$r][$c] += $minval;
+							}
+							if ($ColCover[$c] == 0) {
+								$C[$r][$c] -= $minval;
+							}
+						}
+					}
+					$step = 4;
+					break;
+				case 7:
+					$ovl_done = true;
+					break;
+			}
+		}
+		
+		return $M;
+	}
 }
