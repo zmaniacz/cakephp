@@ -351,30 +351,49 @@ class Scorecard extends AppModel {
 	public function getTopTeams() {
 		$matrix = $this->_loadMatrix();
 		
+		//reverse the matrix to make it a cost matrix
+		$max = 0;
+		foreach($matrix as $row) {
+			foreach($row as $column) {
+				if($column > $max) {
+					$max = $column;
+				}
+			}
+		}
+
+		foreach($matrix as &$row) {
+			foreach($row as &$column) {
+				$column = $max - $column;
+			}
+		}
+
+		//run the algorithm
 		$M = $this->_munkres($matrix);
+		
+		//build the results
 		$team_a = array();
 		$r = 0;
 		foreach($matrix as $key => $value) {
 			for($c = 0; $c < count($M[$r]); $c++) {
 				if($M[$r][$c] == 1) {
 					switch($c) {
-						case 0;
-							$team_a['Ammo Carrier'] = $key;
+						case 0:
+							$team_a['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
-						case 1;
-							$team_a['Commander'] = $key;
+						case 1:
+							$team_a['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
 							break;
-						case 2;
-							$team_a['Heavy Weapons'] = $key;
+						case 2:
+							$team_a['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
-						case 3;
-							$team_a['Medic'] = $key;
+						case 3:
+							$team_a['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
 							break;
-						case 4;
-							$team_a['Scout'] = $key;
+						case 4:
+							$team_a['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
-						case 5;
-							$team_a['Scout2'] = $key;
+						case 5:
+							$team_a['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -384,7 +403,7 @@ class Scorecard extends AppModel {
 		}
 		
 		foreach($team_a as $player) {
-			unset($matrix[$player]);
+			unset($matrix[$player['player_name']]);
 		}
 		
 		$M = $this->_munkres($matrix);
@@ -394,23 +413,23 @@ class Scorecard extends AppModel {
 			for($c = 0; $c < count($M[$r]); $c++) {
 				if($M[$r][$c] == 1) {
 					switch($c) {
-						case 0;
-							$team_b['Ammo Carrier'] = $key;
+						case 0:
+							$team_b['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
-						case 1;
-							$team_b['Commander'] = $key;
+						case 1:
+							$team_b['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
 							break;
-						case 2;
-							$team_b['Heavy Weapons'] = $key;
+						case 2:
+							$team_b['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
-						case 3;
-							$team_b['Medic'] = $key;
+						case 3:
+							$team_b['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
 							break;
-						case 4;
-							$team_b['Scout'] = $key;
+						case 4:
+							$team_b['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
-						case 5;
-							$team_b['Scout2'] = $key;
+						case 5:
+							$team_b['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -463,21 +482,7 @@ class Scorecard extends AppModel {
 			}
 		}
 		
-		//reverse the matrix to make it a cost matrix
-		$max = 0;
-		foreach($matrix as $row) {
-			foreach($row as $column) {
-				if($column > $max) {
-					$max = $column;
-				}
-			}
-		}
 
-		foreach($matrix as &$row) {
-			foreach($row as &$column) {
-				$column = $max - $column;
-			}
-		}
 
 		return $matrix;
 	}
