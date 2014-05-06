@@ -482,7 +482,26 @@ class Scorecard extends AppModel {
 			}
 		}
 		
-
+		foreach($matrix as &$position) {
+			if(!isset($position['Ammo Carrier'])) {
+				$position['Ammo Carrier'] = 0;
+			}
+			if(!isset($position['Commander'])) {
+				$position['Commander'] = 0;
+			}
+			if(!isset($position['Heavy Weapons'])) {
+				$position['Heavy Weapons'] = 0;
+			}
+			if(!isset($position['Medic'])) {
+				$position['Medic'] = 0;
+			}
+			if(!isset($position['Scout'])) {
+				$position['Scout'] = 0;
+			}
+			if(!isset($position['Scout2'])) {
+				$position['Scout2'] = 0;
+			}
+		}
 
 		return $matrix;
 	}
