@@ -2,7 +2,7 @@
 
 class ScorecardsController extends AppController {
 	public $components = array('RequestHandler');
-	
+
 	public function index() {
 		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
 	}

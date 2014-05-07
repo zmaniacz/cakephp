@@ -33,4 +33,9 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 	public $helpers = array('Html', 'Form', 'Js');
 	public $components = array('RequestHandler','Session');
+	public $uses = array('Center');
+	
+	public function beforeFilter() {
+		$this->center_id = $this->Center->getCenterID($this->request->params['center']);
+	}
 }
