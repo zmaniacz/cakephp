@@ -19,7 +19,12 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-	Router::connect('/', array('controller' => 'scorecards', 'action' => 'nightly'));
+	$options = array(
+		'persist' => array('center')
+	);
+	
+	Router::connect('/:center', array('controller' => 'scorecards', 'action' => 'nightly'), $options);
+	Router::connect('/:center/:controller/:action/*', array(), $options);
 	Router::parseExtensions();
 
 /**

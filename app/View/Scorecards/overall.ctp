@@ -5,7 +5,34 @@
 			"bInfo": false,
 			"bPaginate": false,
 			"bJQueryUI": true,
-			"bRetrieve": true
+			"bRetrieve": true,
+			"aoColumnDefs": [ {
+					"mDataProp": function ( data, type, val ) {
+						if (type === 'set') {
+							data.acc_raw = val;
+							data.acc_display = val==="" ? "" : val+'%';
+							return;
+						} else if (type === 'display') {
+							return data.acc_display;
+						}
+						return data.acc_raw;
+					}, 
+					"aTargets": [ "accuracy" ]
+				},
+				{
+					"mDataProp": function ( data, type, val ) {
+						if (type === 'set') {
+							data.team_elim_raw = val;
+							data.team_elim_display = val==="" ? "" : val+'%';
+							return;
+						} else if (type === 'display') {
+							return data.team_elim_display;
+						}
+						return data.team_elim_raw;
+					}, 
+					"aTargets": [ "team_elim" ]
+				}
+			]
 		} );
 		var table;
 		for (var i=0; i < oTable.length; i++) {
@@ -26,7 +53,7 @@
 					<th>Name</th>
 					<th>Average Score</th>
 					<th>Average MVP Points</th>
-					<th>Average Accuracy</th>
+					<th class="accuracy">Average Accuracy</th>
 					<th>Nuke Success Ratio</th>
 					<th>Hit Differential</th>
 					<th>Average Missiles</th>
@@ -40,7 +67,7 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['avg_score']; ?></td>
 					<td><?php echo round($score[0]['avg_mvp'],2); ?></td>
-					<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['avg_acc']*100,2); ?></td>
 					<td><?php echo $score[0]['nuke_ratio']; ?></td>
 					<td><?php echo $score[0]['hit_diff']; ?></td>
 					<td><?php echo $score[0]['avg_missiles']; ?></td>
@@ -60,7 +87,7 @@
 					<th>Name</th>
 					<th>Average Score</th>
 					<th>Average MVP Points</th>
-					<th>Average Accuracy</th>
+					<th class="accuracy">Average Accuracy</th>
 					<th>Hit Differential</th>
 					<th>Average Missiles</th>
 					<th>Average Medic Hits</th>
@@ -73,7 +100,7 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['avg_score']; ?></td>
 					<td><?php echo round($score[0]['avg_mvp'],2); ?></td>
-					<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['avg_acc']*100,2); ?></td>
 					<td><?php echo $score[0]['hit_diff']; ?></td>
 					<td><?php echo $score[0]['avg_missiles']; ?></td>
 					<td><?php echo $score[0]['avg_medic_hits']; ?></td>
@@ -92,7 +119,7 @@
 					<th>Name</th>
 					<th>Average Score</th>
 					<th>Average MVP Points</th>
-					<th>Average Accuracy</th>
+					<th class="accuracy">Average Accuracy</th>
 					<th>Hit Differential</th>
 					<th>Average 3Hit Hits</th>
 					<th>Average Medic Hits</th>
@@ -105,7 +132,7 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['avg_score']; ?></td>
 					<td><?php echo round($score[0]['avg_mvp'],2); ?></td>
-					<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['avg_acc']*100,2); ?></td>
 					<td><?php echo $score[0]['hit_diff']; ?></td>
 					<td><?php echo $score[0]['avg_3hit']; ?></td>
 					<td><?php echo $score[0]['avg_medic_hits']; ?></td>
@@ -124,7 +151,7 @@
 					<th>Name</th>
 					<th>Average Score</th>
 					<th>Average MVP Points</th>
-					<th>Average Accuracy</th>
+					<th class="accuracy">Average Accuracy</th>
 					<th>Hit Differential</th>
 					<th>Average Boosts</th>
 					<th>Average Resupplies</th>
@@ -137,7 +164,7 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['avg_score']; ?></td>
 					<td><?php echo round($score[0]['avg_mvp'],2); ?></td>
-					<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['avg_acc']*100,2); ?></td>
 					<td><?php echo $score[0]['hit_diff']; ?></td>
 					<td><?php echo $score[0]['avg_ammo_boost']; ?></td>
 					<td><?php echo $score[0]['avg_resup']; ?></td>
@@ -156,12 +183,12 @@
 					<th>Name</th>
 					<th>Average Score</th>
 					<th>Average MVP Points</th>
-					<th>Average Accuracy</th>
+					<th class="accuracy">Average Accuracy</th>
 					<th>Hit Differential</th>
 					<th>Average Boosts</th>
 					<th>Average Resupplies</th>
 					<th>Average Lives Left</th>
-					<th>Team Elimination Rate</th>
+					<th class="team_elim">Team Elimination Rate</th>
 					<th>Games Played</th>
 				</tr>
 			</thead>
@@ -171,12 +198,12 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['avg_score']; ?></td>
 					<td><?php echo round($score[0]['avg_mvp'],2); ?></td>
-					<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['avg_acc']*100,2); ?></td>
 					<td><?php echo $score[0]['hit_diff']; ?></td>
 					<td><?php echo $score[0]['avg_life_boost']; ?></td>
 					<td><?php echo $score[0]['avg_resup']; ?></td>
 					<td><?php echo $score[0]['avg_lives']; ?></td>
-					<td><?php echo round($score[0]['elim_rate']*100,2); ?>%</td>
+					<td><?php echo round($score[0]['elim_rate']*100,2); ?></td>
 					<td><?php echo $score[0]['games_played']; ?></td>
 				</tr>
 				<?php endforeach; ?>
