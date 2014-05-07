@@ -30,6 +30,7 @@ class Game extends AppModel {
 						green_eliminated,
 						game_datetime
 					FROM games
+					ORDER BY game_datetime DESC
 					LIMIT $games_limit
 				) as Game
 				GROUP BY winner,
@@ -50,6 +51,7 @@ class Game extends AppModel {
 						game_datetime
 					FROM games
 					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
+					ORDER BY game_datetime DESC
 				) as Game
 				GROUP BY winner,
 					red_eliminated,
