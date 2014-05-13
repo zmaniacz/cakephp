@@ -348,6 +348,59 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 	
+	public function getAllAvgMVP() {
+		$players = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'position',
+				'AVG(mvp_points) as avg_mvp'
+			),
+			'group' => 'player_name, position'
+		));
+		
+		$results = array();
+		foreach($players as $player) {
+			if(!isset($results[$player['Scorecard']['player_name']])) {
+				$results[$player['Scorecard']['player_name']] = array();
+			}
+			$results[$player['Scorecard']['player_name']][$player['Scorecard']['position']] = $player[0]['avg_mvp'];
+		}
+		
+		foreach($results as &$result) {
+			$total = 0;
+			$positions = 0;
+			if(isset($result['Ammo Carrier'])) {
+				$total += $result['Ammo Carrier'];
+				$positions++;
+			} else
+				$result['Ammo Carrier'] = 0;
+			if(isset($result['Commander'])) {
+				$total += $result['Commander'];
+				$positions++;
+			} else
+				$result['Commander'] = 0;
+			if(isset($result['Heavy Weapons'])) {
+				$total += $result['Heavy Weapons'];
+				$positions++;
+			} else
+				$result['Heavy Weapons'] = 0;
+			if(isset($result['Scout'])) {
+				$total += $result['Scout'];
+				$positions++;
+			} else
+				$result['Scout'] = 0;
+			if(isset($result['Medic'])) {
+				$total += $result['Medic'];
+				$positions++;
+			} else
+				$result['Medic'] = 0;
+			
+			$result['avg_avg'] = $total/$positions;
+		}
+		
+		return $results;
+	}
+	
 	public function getTopTeams() {
 		$matrix = $this->_loadMatrix();
 		
