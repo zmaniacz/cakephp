@@ -14,6 +14,7 @@ class ScorecardsController extends AppController {
 		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',null,3));
 		$this->set('medic', $this->Scorecard->getPositionStats('Medic',null,3));
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStats());
+		$this->set('averages', $this->Scorecard->getAllAvgMVP());
     }
 	
 	public function nightly() {
