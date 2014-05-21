@@ -30,7 +30,7 @@ class PlayersController extends AppController {
 	}
 	
 	public function playerWinLossDetail($id, $filter = null) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 		
 		if($this->request->is('post')) {
 			$filter = $this->request->data;

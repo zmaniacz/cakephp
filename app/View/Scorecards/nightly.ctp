@@ -1,12 +1,11 @@
 <h1>Stats for <?php echo $current_date;?></h1>
 <?php
-	echo $this->Form->create();
-	echo $this->Form->input('date', array('options' => $game_dates));
-	echo $this->Form->submit();
+	echo $this->Form->create('nightly');
+	echo $this->Form->input('selectDate', array('label' => 'Select Date', 'options' => $game_dates));
 	echo $this->Form->end();
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function() {	
 		var oTable = $('.display').dataTable( {
 			"bFilter": false,
 			"bInfo": false,
@@ -20,20 +19,46 @@
 			table.fnSort( [ [2,'desc'] ] );
 		}
 		
-		var gTable = $('.gamelist').dataTable( {
-			"bAutoWidth": false,
-			"bFilter": false,
-			"bInfo": false,
-			"bPaginate": false,
-			"bSort": false,
-			"bJQueryUI": true,
-			"bRetrieve": true
-		} );
+		var gTable = $('#game_list').DataTable( {
+			"autoWidth": false,
+			"searching": false,
+			"info": false,
+			"paging": false,
+			"ordering": false,
+			"jQueryUI": true,
+			"ajax" : {
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGameList', $current_date, 'ext' => 'json')); ?>",
+				"dataSrc" : "games"
+			},
+			"columns" : [
+				{
+					"data" : "Game.game_name",
+					"render" : function(data, type, row, meta) {
+						return '<a href="/<?php echo $this->params->center; ?>/games/view/'+row.Game.id+'">'+data+'</a>';
+					}
+				},
+				{ "data" : "Game.game_datetime" },
+				{ "data" : "Game.red_score" },
+				{ "data" : "Game.green_score" },
+				{
+					"data" : "Game.pdf_id",
+					"render" : function(data, type, row, meta) {
+						return '<a href="/pdf/'+data+'.pdf">PDF</a>';
+					}
+				}
+			],
+			"rowCallback" : function(row, data) {
+				if(data.Game.winner == "Red")
+					$(row).addClass('gameRowRed');
+				else
+					$(row).addClass('gameRowGreen');
+			}
+		});
 	} );
 </script>
 <h3>Games Played</h3>
 <div style="width: 500px;">
-	<table class="gamelist">
+	<table id="game_list">
 		<thead>
 			<th>Game</th>
 			<th>Time</th>
@@ -41,23 +66,6 @@
 			<th>Green Score</th>
 			<th>Scorecard PDF</th>
 		</thead>
-		<tbody>
-			<?php foreach ($games as $game): ?>
-				<?php
-					if($game['Game']['red_score'] > $game['Game']['green_score'])
-						$color = 'gameRowRed';
-					else
-						$color = 'gameRowGreen';
-				?>
-				<tr class="<?php echo $color; ?>">
-					<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-					<td><?php echo $game['Game']['game_datetime']; ?></td>
-					<td><?php echo $game['Game']['red_score']; ?></td>
-					<td><?php echo $game['Game']['green_score']; ?></td>
-					<td><?php echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : ""; ?></td>
-				</tr>
-			<?php endforeach; ?>
-		</tbody>
 	</table>
 </div>
 <div id="accordion">
@@ -263,14 +271,20 @@
 	</div>
 </div>
 <script>
-	$( "#accordion" ).accordion( {
-		collapsible: true,
-		heightStyle: "content",
-		activate: function(event, ui) {
-			var oTable = $('div.dataTables_scrollBody>table.display', ui.panel).dataTable();
-			if(oTable.length > 0) {
-				oTable.fnAdjustColumnSizing();
-			}
+$('#nightlySelectDate').change(function() {
+	var table = $('#game_list').DataTable();
+	var old_url = table.ajax.url();
+	table.ajax.url(old_url.replace(/\d{4}-\d{2}-\d{2}/, $(this).val())).load();
+});
+
+$( "#accordion" ).accordion( {
+	collapsible: true,
+	heightStyle: "content",
+	activate: function(event, ui) {
+		var oTable = $('div.dataTables_scrollBody>table.display', ui.panel).dataTable();
+		if(oTable.length > 0) {
+			oTable.fnAdjustColumnSizing();
 		}
-	} );
+	}
+} );
 </script>

@@ -35,7 +35,7 @@ class ScorecardsController extends AppController {
 			
 		$this->set('current_date', $date);
 		
-		$this->set('games', $this->Scorecard->getGamesByDate($date));
+		//$this->set('games', $this->Scorecard->getGamesByDate($date));
 		
         $this->set('avg_score', $this->Scorecard->getPositionStats(null, $date));
         $this->set('ammo_score', $this->Scorecard->getPositionStats('Ammo Carrier', $date));
@@ -57,6 +57,12 @@ class ScorecardsController extends AppController {
 			'order' => 'medic_hits DESC'
 		);
         $this->set('medic_hits', $this->Scorecard->find('all', $options));
+	}
+	
+	public function nightlyGameList($date) {
+		//$this->request->onlyAllow('ajax');
+		
+		$this->set('games', $this->Scorecard->getGamesByDate($date));
 	}
 	
 	public function upload() {
