@@ -2,9 +2,16 @@
 
 class ScorecardsController extends AppController {
 	public $components = array('RequestHandler');
+	public $helpers = array('FileUpload.UploadForm');
 
 	public function index() {
 		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
+	}
+	
+	public function phpview() {
+	}
+	
+	public function uploadpdf() {
 	}
 	
 	public function overall() {
@@ -118,8 +125,6 @@ class ScorecardsController extends AppController {
 		
 		$this->Session->setFlash("Added $mvps MVP entries, $games game entries, games for $existing players and $new new players");
 		$this->redirect('/scorecards/nightly');
-		
-		
 	}
 	
 	public function allcenter() {

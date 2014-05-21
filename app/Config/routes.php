@@ -23,8 +23,10 @@
 		'persist' => array('center')
 	);
 	
+	Router::connect('/', array('center' => 'ltc', 'controller' => 'scorecards', 'action' => 'nightly'), $options);
 	Router::connect('/:center', array('controller' => 'scorecards', 'action' => 'nightly'), $options);
 	Router::connect('/:center/:controller/:action/*', array(), $options);
+	Router::connect('/:center/:controller', array('action' => 'index'), $options);
 	Router::parseExtensions();
 
 /**
