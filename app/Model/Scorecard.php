@@ -215,9 +215,12 @@ class Scorecard extends AppModel {
 		return $game_dates;
 	}
 	
-	public function getGamesByDate($date) {
+	public function getGamesByDate($date, $center_id) {
 		$games = $this->Game->find('all', array(
-			'conditions' => array("DATE(Game.game_datetime)" => $date),
+			'conditions' => array(
+				"DATE(Game.game_datetime)" => $date,
+				'center_id' => $center_id
+			),
 			'order' => 'Game.game_datetime ASC'
 		));
 		return $games;
@@ -294,6 +297,24 @@ class Scorecard extends AppModel {
 				"NOT" => array("position" => array("Medic", "Ammo Carrier"))
 			),
 			'group' => 'player_name HAVING total_medic_hits > 0',
+			'order' => 'total_medic_hits DESC'
+		));
+		return $scores;
+	}
+	
+	public function getMedicHitStatsByDate($date, $center_id) {
+		$scores = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
+			),
+			'conditions' => array(
+				"DATE(Scorecard.game_datetime)" => $date,
+				'center_id' => $center_id
+			),
+			'group' => 'player_name',
 			'order' => 'total_medic_hits DESC'
 		));
 		return $scores;
@@ -399,6 +420,17 @@ class Scorecard extends AppModel {
 		}
 		
 		return $results;
+	}
+	
+	public function getScorecardsByDate($date, $center_id) {
+		$scorecards = $this->find('all', array(
+			'conditions' => array (
+				'DATE(game_datetime)' => $date,
+				'center_id' => $center_id
+			)
+		));
+		
+		return $scorecards;
 	}
 	
 	public function getTopTeams() {

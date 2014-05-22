@@ -5,21 +5,8 @@
 	echo $this->Form->end();
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {	
-		var oTable = $('.display').dataTable( {
-			"bFilter": false,
-			"bInfo": false,
-			"bPaginate": false,
-			"bJQueryUI": true,
-			"bRetrieve": true
-		} );
-		var table;
-		for (var i=0; i < oTable.length; i++) {
-			table = $(oTable[i]).dataTable();
-			table.fnSort( [ [2,'desc'] ] );
-		}
-		
-		var gTable = $('#game_list').DataTable( {
+	$(document).ready(function() {
+		$('#game_list').DataTable( {
 			"autoWidth": false,
 			"searching": false,
 			"info": false,
@@ -27,7 +14,7 @@
 			"ordering": false,
 			"jQueryUI": true,
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGameList', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
 				"dataSrc" : "games"
 			},
 			"columns" : [
@@ -43,7 +30,10 @@
 				{
 					"data" : "Game.pdf_id",
 					"render" : function(data, type, row, meta) {
-						return '<a href="/pdf/'+data+'.pdf">PDF</a>';
+						if(data == null)
+							return 'N/A';
+						else
+							return '<a href="/pdf/'+data+'.pdf">PDF</a>';
 					}
 				}
 			],
@@ -53,6 +43,49 @@
 				else
 					$(row).addClass('gameRowGreen');
 			}
+		});
+		
+		$('#overall').DataTable( {
+			"jQueryUI": true,
+			"ajax" : {
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
+				"dataSrc" : "scorecards"
+			},
+			"columns" : [
+				{
+					"data" : "Scorecard.player_name",
+					"render" : function(data, type, row, meta) {
+						return '<a href="/<?php echo $this->params->center; ?>/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
+					}
+				},
+				{ "data" : "Scorecard.position" },
+				{ "data" : "Scorecard.score" },
+				{ "data" : "Scorecard.mvp_points" },
+				{ "data" : "Scorecard.accuracy", "render" : function(data, type, row, meta) {return parseFloat(data*100).toFixed(2)+'%';} },
+				{ "data" : "Scorecard.shot_opponent", "render" : function(data, type, row, meta) {var diff = (data/row.Scorecard.times_zapped); return diff.toFixed(2);} },
+				{ "data" : "Scorecard.medic_hits" },
+				{ "data" : "Scorecard.shot_team" },
+			],
+			"order": [[ 2, "desc" ]]
+		});
+		
+		$('#medic_hits').DataTable( {
+			"jQueryUI": true,
+			"ajax" : {
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
+				"dataSrc" : "medic_hits"
+			},
+			"columns" : [
+				{
+					"data" : "Scorecard.player_name",
+					"render" : function(data, type, row, meta) {
+						return '<a href="/<?php echo $this->params->center; ?>/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
+					}
+				},
+				{ "data" : "0.total_medic_hits" },
+				{ "data" : "0.medic_hits_per_game" }
+			],
+			"order": [[ 1, "desc" ]]
 		});
 	} );
 </script>
@@ -75,178 +108,15 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>	
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Hit Diff</th>
+					<th>Medic Hits</th>
+					<th>Shot Team</th>
 				</tr>
 			</thead>
-			<?php foreach ($avg_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
-		</table>
-	</div>
-	<h3>Ammo Carrier</h3>
-	<div>
-		<table class="display" id="ammo">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>
-				</tr>
-			</thead>
-			<?php foreach ($ammo_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
-		</table>
-	</div>
-	<h3>Commander</h3>
-	<div>	
-		<table class="display" id="commander">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>
-				</tr>
-			</thead>
-			<?php foreach ($commander_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
-		</table>
-	</div>
-	<h3>Heavy Weapons</h3>
-	<div>
-		<table class="display" id="heavy">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>
-				</tr>
-			</thead>
-			<?php foreach ($heavy_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
-		</table>
-	</div>
-	<h3>Medic</h3>
-	<div>
-		<table class="display" id="medic">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>
-				</tr>
-			</thead>
-			<?php foreach ($medic_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
-		</table>
-	</div>
-	<h3>Scout</h3>
-	<div>
-		<table class="display" id="scout">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Minimum Score</th>
-					<th>Average Score</th>
-					<th>Max Score</th>
-					<th>Minimum Accuracy</th>
-					<th>Average Accuracy</th>
-					<th>Max Accuracy</th>
-					<th>Games Played</th>
-				</tr>
-			</thead>
-			<?php foreach ($scout_score as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['min_score']; ?></td>
-				<td><?php echo $score[0]['avg_score']; ?></td>
-				<td><?php echo $score[0]['max_score']; ?></td>
-				<td><?php echo round($score[0]['min_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['avg_acc']*100,2); ?>%</td>
-				<td><?php echo round($score[0]['max_acc']*100,2); ?>%</td>
-				<td><?php echo $score[0]['games_played']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
 		</table>
 	</div>
 	<h3>Medic Hits</h3>
@@ -259,22 +129,13 @@
 					<th>Average</th>
 				</tr>
 			</thead>
-			<?php foreach ($medic_hits as $score): ?>
-			<tr>
-				<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-				<td><?php echo $score[0]['medic_hits']; ?></td>
-				<td><?php echo $score[0]['medic_hits_per_game']; ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php unset($score); ?>
 		</table>
 	</div>
 </div>
 <script>
 $('#nightlySelectDate').change(function() {
-	var table = $('#game_list').DataTable();
-	var old_url = table.ajax.url();
-	table.ajax.url(old_url.replace(/\d{4}-\d{2}-\d{2}/, $(this).val())).load();
+	var new_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
+	$('#game_list').DataTable().ajax.url(new_url).load();
 });
 
 $( "#accordion" ).accordion( {

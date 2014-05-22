@@ -34,17 +34,7 @@ class ScorecardsController extends AppController {
 			$date = reset($game_dates);
 			
 		$this->set('current_date', $date);
-		
-		//$this->set('games', $this->Scorecard->getGamesByDate($date));
-		
-        $this->set('avg_score', $this->Scorecard->getPositionStats(null, $date));
-        $this->set('ammo_score', $this->Scorecard->getPositionStats('Ammo Carrier', $date));
-        $this->set('commander_score', $this->Scorecard->getPositionStats('Commander', $date));
-		$this->set('heavy_score', $this->Scorecard->getPositionStats('Heavy Weapons', $date));
-		$this->set('medic_score', $this->Scorecard->getPositionStats('Medic', $date));
-		$this->set('scout_score', $this->Scorecard->getPositionStats('Scout', $date));
-		
-		
+
 		$options = array(
 			'conditions' => array("DATE(Scorecard.game_datetime)" => $date),
 		    'fields' => array(
@@ -56,13 +46,15 @@ class ScorecardsController extends AppController {
 			'group' => 'player_name',
 			'order' => 'medic_hits DESC'
 		);
-        $this->set('medic_hits', $this->Scorecard->find('all', $options));
+        
 	}
 	
-	public function nightlyGameList($date) {
+	public function nightlyStats($date) {
 		//$this->request->onlyAllow('ajax');
 		
-		$this->set('games', $this->Scorecard->getGamesByDate($date));
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
+		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
 	}
 	
 	public function upload() {
