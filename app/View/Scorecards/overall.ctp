@@ -1,44 +1,8 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		var oTable = $('.display').dataTable( {
-			"bFilter": false,
-			"bInfo": false,
-			"bPaginate": false,
-			"bJQueryUI": true,
-			"bRetrieve": true,
-			"aoColumnDefs": [ {
-					"mDataProp": function ( data, type, val ) {
-						if (type === 'set') {
-							data.acc_raw = val;
-							data.acc_display = val==="" ? "" : val+'%';
-							return;
-						} else if (type === 'display') {
-							return data.acc_display;
-						}
-						return data.acc_raw;
-					}, 
-					"aTargets": [ "accuracy" ]
-				},
-				{
-					"mDataProp": function ( data, type, val ) {
-						if (type === 'set') {
-							data.team_elim_raw = val;
-							data.team_elim_display = val==="" ? "" : val+'%';
-							return;
-						} else if (type === 'display') {
-							return data.team_elim_display;
-						}
-						return data.team_elim_raw;
-					}, 
-					"aTargets": [ "team_elim" ]
-				}
-			]
+		var oTable = $('.display').DataTable( {
+			"jQueryUI": true
 		} );
-		var table;
-		for (var i=0; i < oTable.length; i++) {
-			table = $(oTable[i]).dataTable();
-			table.fnSort( [ [2,'desc'] ] );
-		}
 	} );
 </script>
 <div>
