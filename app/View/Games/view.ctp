@@ -1,13 +1,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		var gTable = $('.gamelist').dataTable( {
-			"bAutoWidth": false,
-			"bFilter": false,
-			"bInfo": false,
-			"bPaginate": false,
-			"bSort": false,
-			"bJQueryUI": true,
-			"bRetrieve": true
+		var gTable = $('.gamelist').DataTable( {
+			"autoWidth": false,
+			"searching": false,
+			"info": false,
+			"paging": false,
+			"ordering": false,
+			"scrollX": true,
+			"jQueryUI": true
 		} );
 	} );
 </script>
@@ -53,7 +53,7 @@
 				echo "<td>".$score['shots_left']."</td>";
 				echo "<td>".$score['shot_opponent']."</td>";
 				echo "<td>".$score['times_zapped']."</td>";
-				echo "<td>".$score['missile_hits']."</td>";
+				echo "<td>".$score['missiled_opponent']."</td>";
 				echo "<td>".$score['times_missiled']."</td>";
 				echo "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
 				echo "<td>".$score['shot_team']."</td>";

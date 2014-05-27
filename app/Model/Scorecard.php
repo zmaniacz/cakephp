@@ -37,10 +37,10 @@ class Scorecard extends AppModel {
 			//missile other people instead
 			switch($score['Scorecard']['position']) {
 				case "Commander":
-					$mvp += $score['Scorecard']['missile_hits'];
+					$mvp += $score['Scorecard']['missiled_opponent'];
 					break;
 				case "Heavy Weapons":
-					$mvp += $score['Scorecard']['missile_hits'] * 2;
+					$mvp += $score['Scorecard']['missiled_opponent'] * 2;
 					break;
 			}
 			
