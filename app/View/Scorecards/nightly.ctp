@@ -1,4 +1,3 @@
-<h1>Stats for <?php echo $current_date;?></h1>
 <?php
 	echo $this->Form->create('nightly');
 	echo $this->Form->input('selectDate', array('label' => 'Select Date', 'options' => $game_dates));
