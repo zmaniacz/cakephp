@@ -45,6 +45,7 @@
 		});
 		
 		$('#overall').DataTable( {
+			"scrollX" : true,
 			"jQueryUI": true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
@@ -57,6 +58,7 @@
 						return '<a href="/<?php echo $this->params->center; ?>/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
 					}
 				},
+				{ "data" : "Game.game_name", "render" : function(data, type,row, meta) {return '<a href="/<?php echo $this->params->center; ?>/games/view/'+row.Game.id+'">'+data+'</a>'}},
 				{ "data" : "Scorecard.position" },
 				{ "data" : "Scorecard.score" },
 				{ "data" : "Scorecard.mvp_points" },
@@ -65,7 +67,7 @@
 				{ "data" : "Scorecard.medic_hits" },
 				{ "data" : "Scorecard.shot_team" },
 			],
-			"order": [[ 2, "desc" ]]
+			"order": [[ 3, "desc" ]]
 		});
 		
 		$('#medic_hits').DataTable( {
@@ -90,7 +92,7 @@
 </script>
 <h3>Games Played</h3>
 <div style="width: 500px;">
-	<table id="game_list">
+	<table class="display" id="game_list">
 		<thead>
 			<th>Game</th>
 			<th>Time</th>
@@ -107,6 +109,7 @@
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th>Game</th>
 					<th>Position</th>
 					<th>Score</th>
 					<th>MVP</th>
@@ -135,6 +138,8 @@
 $('#nightlySelectDate').change(function() {
 	var new_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
 	$('#game_list').DataTable().ajax.url(new_url).load();
+	$('#overall').DataTable().ajax.url(new_url).load();
+	$('#medic_hits').DataTable().ajax.url(new_url).load();
 });
 
 $( "#accordion" ).accordion( {

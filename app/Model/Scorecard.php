@@ -425,8 +425,11 @@ class Scorecard extends AppModel {
 	public function getScorecardsByDate($date, $center_id) {
 		$scorecards = $this->find('all', array(
 			'conditions' => array (
-				'DATE(game_datetime)' => $date,
-				'center_id' => $center_id
+				'DATE(Scorecard.game_datetime)' => $date,
+				'Scorecard.center_id' => $center_id
+			),
+			'contain' => array(
+				'Game' => array()
 			)
 		));
 		
