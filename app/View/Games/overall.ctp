@@ -75,19 +75,7 @@ $(document).ready(function(){
 		}
 	});
 });
-
-$(document).ajaxStart( function () {
-	$("#progressbar").progressbar({
-		value: false
-	});
-});
-
-$(document).ajaxComplete( function () {
-	$("#progressbar").progressbar("destroy");
-});
 </script>
-
-<div id="progressbar" style="width:100px;display:block;margin-left:auto;margin-right:auto;"></div>
 
 <?php
 	echo $this->Form->create('gamesLimit');
