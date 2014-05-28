@@ -6,9 +6,27 @@
 		echo $this->Html->script('jquery-2.1.1.min.js');
 		echo $this->Html->script('jquery.dataTables.min.js');
 		echo $this->Html->script('jquery-ui-1.10.3.custom.min.js');
+		echo $this->Html->script('jquery.blockUI.min.js');
 		echo $this->Html->meta('icon');
 		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui-1.10.3.custom.min','jquery.dataTables.css','jquery.dataTables_themeroller.css'));
 	?>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#topmenu").menu();
+		});
+
+		$(document).ajaxStart(function () {
+			$.blockUI({
+				message: '<img src="img/lfstats_loading.gif" />',
+				css: {
+					width:'auto',
+					border:'none',
+					backgroundColor:'none'
+				}
+			}); 
+		});
+		$(document).ajaxStop($.unblockUI);
+	</script>
 	<title>
 		<?php echo $title_for_layout; ?>
 	</title>
@@ -30,11 +48,6 @@
 			<?php echo $this->fetch('content'); ?>
 		</div>
 	</div>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#topmenu").menu()
-		})
-	</script>
 	<?php
 		//echo $this->element('sql_dump');
 		echo $this->Js->writeBuffer();
