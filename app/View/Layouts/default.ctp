@@ -36,7 +36,6 @@
 		<div id="header">
 			<h1>Laserforce - <?php echo strtoupper($this->params->center); ?></h1>
 			<ul id="topmenu">
-				<li><?php echo $this->Html->link("Player List", array('controller' => 'players', 'action' => 'index')); ?></li>
 				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
 				<li><?php echo $this->Html->link("Nightly Stats", array('controller' => 'scorecards', 'action' => 'nightly')); ?></li>
 				<li><?php echo $this->Html->link("Center Stats", array('controller' => 'games', 'action' => 'overall')); ?></li>

@@ -4,7 +4,7 @@ class PlayersController extends AppController {
 	public $components = array('RequestHandler');
 	
 	public function index() {
-		$this->set('players', $this->Player->find('all', array('order' => 'player_name')));
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'overall'));
 	}
 	
 	public function view($id = null) {
