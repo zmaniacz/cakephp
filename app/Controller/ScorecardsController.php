@@ -34,23 +34,10 @@ class ScorecardsController extends AppController {
 			$date = reset($game_dates);
 			
 		$this->set('current_date', $date);
-
-		$options = array(
-			'conditions' => array("DATE(Scorecard.game_datetime)" => $date),
-		    'fields' => array(
-				'player_name',
-				'player_id',
-				'SUM(Scorecard.medic_hits) as medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
-			),
-			'group' => 'player_name',
-			'order' => 'medic_hits DESC'
-		);
-        
 	}
 	
 	public function nightlyStats($date) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 		
 		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
 		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));

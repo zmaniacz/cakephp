@@ -565,7 +565,7 @@ class Scorecard extends AppModel {
 					)
 				)
 			),
-			'group' => 'player_id, player_name HAVING games_played >= 10'
+			'group' => 'player_id, player_name HAVING games_played >= 15'
 		));
 		
 		$matrix = array();
