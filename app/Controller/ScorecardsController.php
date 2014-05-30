@@ -127,6 +127,6 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function allcenter() {
-		$this->set('top', $this->Scorecard->getTopTeams());
+		$this->set('top', $this->Scorecard->getTopTeams($this->center_id));
 	}
 }

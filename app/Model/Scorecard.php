@@ -438,8 +438,8 @@ class Scorecard extends AppModel {
 		return $scorecards;
 	}
 	
-	public function getTopTeams() {
-		$matrix = $this->_loadMatrix();
+	public function getTopTeams($center_id) {
+		$matrix = $this->_loadMatrix($center_id);
 		
 		//reverse the matrix to make it a cost matrix
 		$max = 0;
@@ -533,25 +533,39 @@ class Scorecard extends AppModel {
 		return $results;
 	}
 	
-	protected function _loadMatrix() {
+	protected function _loadMatrix($center_id) {
 		$results = $this->find('all', array(
 			'fields' => array(
 				'player_name',
 				'position',
 				'AVG(mvp_points) as avg_mvp'
 			),
+			'conditions' => array(
+				'center_id <=' => $center_id
+			),
 			'group' => 'player_name, position'
 		));
 		
 		$games_played = $this->find('all', array(
 			'fields' => array(
+				'player_id',
 				'player_name',
 				'COUNT(game_datetime) as games_played'
 			),
 			'conditions' => array(
 				'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => 120
 			),
-			'group' => 'player_name HAVING games_played >= 10'
+			'joins' => array(
+				array(
+					'table' => '(select id from players where center_id = 1)',
+					'alias' => 'pl',
+					'type' => 'INNER',
+					'conditions' => array(
+						'pl.id = Scorecard.player_id'
+					)
+				)
+			),
+			'group' => 'player_id, player_name HAVING games_played >= 10'
 		));
 		
 		$matrix = array();
