@@ -1,12 +1,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var oTable = $('.display').DataTable( {
-			"jQueryUI": true
+			"jQueryUI": true,
+			"order": [[1, "desc"]]
 		} );
 	} );
 </script>
 <div>
-	<p>All stats below require a minimum 3 games at each position.</p>
+	<p>All stats below require a minimum 3 games at each position (Except the average averages lol).</p>
 </div>
 <div id="accordion">
 	<h3>Average Averages</h3>
@@ -15,24 +16,24 @@
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th>Average of Averages</th>
 					<th>Commander</th>
 					<th>Heavy Weapons</th>
 					<th>Scout</th>
 					<th>Ammo Carrier</th>
 					<th>Medic</th>
-					<th>Average of Averages</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach ($averages as $key => $value): ?>
 				<tr>
-					<td><?php echo $key; ?></td>
+					<td><?php echo $this->Html->link($value['player_name'], array('controller' => 'Players', 'action' => 'view', $key)); ?></td>
+					<td><?php echo round($value['avg_avg'],2); ?></td>
 					<td><?php echo round($value['Commander'],2); ?></td>
 					<td><?php echo round($value['Heavy Weapons'],2); ?></td>
 					<td><?php echo round($value['Scout'],2); ?></td>
 					<td><?php echo round($value['Ammo Carrier'],2); ?></td>
 					<td><?php echo round($value['Medic'],2); ?></td>
-					<td><?php echo round($value['avg_avg'],2); ?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>

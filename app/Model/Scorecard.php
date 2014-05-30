@@ -372,6 +372,7 @@ class Scorecard extends AppModel {
 	public function getAllAvgMVP() {
 		$players = $this->find('all', array(
 			'fields' => array(
+				'player_id',
 				'player_name',
 				'position',
 				'AVG(mvp_points) as avg_mvp'
@@ -381,10 +382,11 @@ class Scorecard extends AppModel {
 		
 		$results = array();
 		foreach($players as $player) {
-			if(!isset($results[$player['Scorecard']['player_name']])) {
-				$results[$player['Scorecard']['player_name']] = array();
+			if(!isset($results[$player['Scorecard']['player_id']])) {
+				$results[$player['Scorecard']['player_id']] = array();
+				$results[$player['Scorecard']['player_id']]['player_name'] = $player['Scorecard']['player_name'];
 			}
-			$results[$player['Scorecard']['player_name']][$player['Scorecard']['position']] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']] = $player[0]['avg_mvp'];
 		}
 		
 		foreach($results as &$result) {
