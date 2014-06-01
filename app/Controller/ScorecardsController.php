@@ -1,8 +1,8 @@
 <?php
 
 class ScorecardsController extends AppController {
-	public $components = array('RequestHandler');
-	public $helpers = array('FileUpload.UploadForm');
+	public $components = array('RequestHandler','JqueryFileUpload.Upload');
+	public $helpers = array('JqueryFileUpload.UploadScript', 'JqueryFileUpload.UploadTemplate');
 
 	public function index() {
 		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
@@ -10,7 +10,7 @@ class ScorecardsController extends AppController {
 	
 	public function phpview() {
 	}
-	
+
 	public function uploadpdf() {
 	}
 	

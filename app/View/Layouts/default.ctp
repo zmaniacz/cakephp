@@ -17,7 +17,7 @@
 
 		$(document).ajaxStart(function () {
 			$.blockUI({
-				message: '<img src="img/lfstats_loading.gif" />',
+				message: '<img src="http://lfstats.redial.net/img/lfstats_loading.gif" />',
 				css: {
 					width:'auto',
 					border:'none',
