@@ -1,8 +1,7 @@
 <?php
 
 class ScorecardsController extends AppController {
-	public $components = array('RequestHandler','JqueryFileUpload.Upload');
-	public $helpers = array('JqueryFileUpload.UploadScript', 'JqueryFileUpload.UploadTemplate');
+	public $components = array('RequestHandler');
 
 	public function index() {
 		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
@@ -13,6 +12,37 @@ class ScorecardsController extends AppController {
 
 	public function uploadpdf() {
 	}
+
+	public function upload() {
+        $this->request->onlyAllow('ajax');
+
+        App::import('Vendor','UploadHandler',array('file' => 'UploadHandler/UploadHandler.php'));
+
+        $options = array
+        (
+            'script_url' => FULL_BASE_URL.DS.$this->request->params['center'].DS.'scorecards/upload/',
+            'upload_dir' => APP.WEBROOT_DIR.DS.'incoming'.DS.$this->center_id.DS,
+            'upload_url' => FULL_BASE_URL.'incoming'.DS.$this->center_id.DS
+        );
+
+        $upload_handler = new UploadHandler($options, $initialize = false);
+        switch ($_SERVER['REQUEST_METHOD'])
+        {
+            case 'HEAD':
+            case 'GET':
+                $upload_handler->get();
+                break;
+            case 'POST':
+                $upload_handler->post();
+                break;
+            case 'DELETE':
+                $upload_handler->delete();
+                break;
+            default:
+                header('HTTP/1.0 405 Method Not Allowed');
+        }
+        exit;
+    }
 	
 	public function overall() {
 		$this->set('commander', $this->Scorecard->getPositionStats('Commander',null,3));
@@ -44,7 +74,7 @@ class ScorecardsController extends AppController {
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
 	}
 	
-	public function upload() {
+	public function uploadCSV() {
 		if ($this->request->is('post')) {
 			$row=0;
 			$handle = fopen($this->data['Scorecard']['file']['tmp_name'],"r");
