@@ -127,12 +127,8 @@ class Scorecard extends AppModel {
 				$game_counter = 1;
 				$current_date = $date;
 			}
-			
-			$winner = 'Green';
-			if($score['red']['score'] > $score['green']['score'])
-				$winner = 'Red';
-			
-			
+
+			//calculate elim bonus
 			$red_elim = 0;
 			$green_elim = 0;
 			$red_adj = 0;
@@ -147,6 +143,10 @@ class Scorecard extends AppModel {
 				$green_elim = 1;
 				$red_adj = 10000;
 			}
+			
+			$winner = 'Green';
+			if(($score['red']['score'] + $red_adj) > ($score['green']['score'] + $green_adj))
+				$winner = 'Red';
 
 			$this->Game->create();
 			$this->Game->set(array(

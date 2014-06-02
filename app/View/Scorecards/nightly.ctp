@@ -24,8 +24,8 @@
 					}
 				},
 				{ "data" : "Game.game_datetime" },
-				{ "data" : "Game.red_score" },
-				{ "data" : "Game.green_score" },
+				{ "data" : "Game.red_score", "render" : function(data, type, row, meta) {return data+row.Game.red_adj;} },
+				{ "data" : "Game.green_score", "render" : function(data, type, row, meta) {return data+row.Game.green_adj;} },
 				{
 					"data" : "Game.pdf_id",
 					"render" : function(data, type, row, meta) {
