@@ -931,6 +931,7 @@ $(document).ready(function(){
 				</tbody>
 			</table>
 		</span>
+		<br />
 		<span id="commander_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
 		<span id="commander_score_topgames" style="display: inline-block;width:500px">
 			<table>

@@ -14,7 +14,8 @@
 			"jQueryUI": true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
-				"dataSrc" : "games"
+				"dataSrc" : "games",
+				"cache" : true
 			},
 			"columns" : [
 				{
@@ -49,7 +50,8 @@
 			"jQueryUI": true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyStats', $current_date, 'ext' => 'json')); ?>",
-				"dataSrc" : "scorecards"
+				"dataSrc" : "scorecards",
+				"cache" : true
 			},
 			"columns" : [
 				{

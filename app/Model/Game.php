@@ -10,7 +10,9 @@ class Game extends AppModel {
 					'winner',
 					'red_eliminated',
 					'green_eliminated',
-					'COUNT(game_datetime) as Total'
+					'COUNT(game_datetime) as Total',
+					'AVG(red_score) as red_avg_score',
+					'AVG(green_score) as green_avg_score'
 				),
 				'group' => array(
 					'winner',
@@ -23,12 +25,16 @@ class Game extends AppModel {
 				SELECT winner,
 					red_eliminated,
 					green_eliminated,
-					COUNT(game_datetime) as Total
+					COUNT(game_datetime) as Total,
+					AVG(red_score) as red_avg_score,
+					AVG(green_score) as green_avg_score
 				FROM (
 					SELECT winner,
 						red_eliminated,
 						green_eliminated,
-						game_datetime
+						game_datetime,
+						red_score,
+						green_score
 					FROM games
 					ORDER BY game_datetime DESC
 					LIMIT $games_limit
@@ -43,12 +49,16 @@ class Game extends AppModel {
 				SELECT winner,
 					red_eliminated,
 					green_eliminated,
-					COUNT(game_datetime) as Total
+					COUNT(game_datetime) as Total,
+					AVG(red_score) as red_avg_score,
+					AVG(green_score) as green_avg_score
 				FROM (
 					SELECT winner,
 						red_eliminated,
 						green_eliminated,
-						game_datetime
+						game_datetime,
+						red_Score,
+						green_score
 					FROM games
 					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
 					ORDER BY game_datetime DESC
@@ -59,7 +69,7 @@ class Game extends AppModel {
 				ORDER BY game_datetime DESC
 			");
 		}
-		
+
 		return $overall;
 	}
 }

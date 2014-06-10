@@ -60,6 +60,22 @@ function overallData(data) {
 			}
 		}]
 	});
+
+	$('#avg_scores').DataTable( {
+		"destroy": true,
+		"autoWidth": true,
+		"searching": false,
+		"info": false,
+		"paging": false,
+		"ordering": false,
+		"jQueryUI": true,
+		"data" : data['scoredetail'],
+		"columns" : [
+			{ "data" : "Game"},
+			{ "data" : "green_score" },
+			{ "data" : "red_score"}
+		],
+	});
 }
 
 $(document).ready(function(){	
@@ -105,8 +121,16 @@ $(document).ready(function(){
 ?>
 
 <div id="win_loss_pie" style="height: 500px; width: 800px"></div>
-
-
+<br />
+<br />
+<h2>Average Scores</h2>
+<table id="avg_scores">
+	<thead>
+		<th>Win Type</th>
+		<th>Green Score</th>
+		<th>Red Score</th>
+	<thead>
+</table>
 <script>
 $('#gamesLimitSelectNumeric').change(function() {
 	var selectedValue = $(this).val();

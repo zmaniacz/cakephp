@@ -117,7 +117,8 @@ class ScorecardsController extends AppController {
 					'resupplies' => $csvline[31],
 					'rank' => $csvline[32],
 					'bases_destroyed' => $csvline[33],
-					'pdf_id' => $csvline[34]));
+					'pdf_id' => $csvline[34],
+					'center_id' => 1));
 				$this->Scorecard->save();
 				$row++;
 			}
