@@ -1,8 +1,9 @@
 <?php
     echo $this->Html->css(array('JqueryFileUpload/jquery.fileupload','JqueryFileUpload/jquery.fileupload-ui'));
 ?>
-<!-- blueimp Gallery styles -->
-<link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
+<div>
+    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?php echo $this->Html->link("Process", array('controller' => 'scorecards', 'action' => 'parse')); ?> to start the import.
+</div>
 <!-- The file upload form used as target for the file upload widget -->
 <form id="fileupload" action="scorecards/upload" method="POST" enctype="multipart/form-data">
     <!-- Redirect browsers with JavaScript disabled to the origin page -->
@@ -33,16 +34,6 @@
     <!-- The table listing the files available for upload/download -->
     <table role="presentation"><tbody class="files"></tbody></table>
 </form>
-<!-- The blueimp Gallery widget -->
-<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
-    <div class="slides"></div>
-    <h3 class="title"></h3>
-    <a class="prev">‹</a>
-    <a class="next">›</a>
-    <a class="close">×</a>
-    <a class="play-pause"></a>
-    <ol class="indicator"></ol>
-</div>
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -100,19 +91,10 @@
 </script>
 <!-- The Templates plugin is included to render the upload/download listings -->
 <script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
-<!-- blueimp Gallery script -->
-<script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
 <?php
     echo $this->Html->script('JqueryFileUpload/jquery.iframe-transport.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-process.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-image.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-audio.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-video.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-validate.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-ui.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-jquery-ui.js');

@@ -9,6 +9,8 @@
 /build
 /dist
 /tags
+*.pdf
+*.csv
 
 # OS generated files #
 ######################

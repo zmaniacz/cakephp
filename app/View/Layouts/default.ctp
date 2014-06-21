@@ -34,6 +34,13 @@
 <body>
 	<div id="container">
 		<div id="header">
+			<div style="float:right;">
+				<?php if (AuthComponent::user('id')): ?>
+					Logged in as <?= AuthComponent::user('username') ?> - <button><?php echo $this->Html->link("Logout", array('controller' => 'users', 'action' => 'logout')); ?></button>
+				<?php else: ?>
+					<button><?php echo $this->Html->link("Login", array('controller' => 'users', 'action' => 'login')); ?></button>
+				<?php endif; ?>
+			</div>
 			<h1>Laserforce - <?php echo strtoupper($this->params->center); ?></h1>
 			<ul id="topmenu">
 				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>

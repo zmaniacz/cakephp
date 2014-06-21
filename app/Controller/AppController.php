@@ -32,10 +32,34 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 	public $helpers = array('Html', 'Form', 'Js');
-	public $components = array('RequestHandler','Session');
+	public $components = array(
+		'RequestHandler',
+		'Session',
+		'Auth' => array(
+			'loginRedirect' => array(
+				'controller' => 'scorecards',
+				'action' => 'index'
+			),
+			'logoutRedirect' => array(
+				'controller' => 'scorecards',
+				'action' => 'index',
+				'home'
+        	),
+        	'authorize' => array('Controller')
+    	)
+	);
+
 	public $uses = array('Center');
+
+	public function isAuthorized($user) {
+		if (isset($user['role']) && $user['role'] === 'admin') {
+			return true;
+		}
+		return false;
+	}
 	
 	public function beforeFilter() {
+		$this->Auth->allow();
 		$this->center_id = $this->Center->getCenterID($this->request->params['center']);
 	}
 }

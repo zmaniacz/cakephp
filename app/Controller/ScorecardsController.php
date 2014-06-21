@@ -21,8 +21,8 @@ class ScorecardsController extends AppController {
         $options = array
         (
             'script_url' => FULL_BASE_URL.DS.$this->request->params['center'].DS.'scorecards/upload/',
-            'upload_dir' => APP.WEBROOT_DIR.DS.'incoming'.DS.$this->center_id.DS,
-            'upload_url' => FULL_BASE_URL.'incoming'.DS.$this->center_id.DS
+            'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS,
+            'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS
         );
 
         $upload_handler = new UploadHandler($options, $initialize = false);
@@ -43,6 +43,11 @@ class ScorecardsController extends AppController {
         }
         exit;
     }
+
+    public function parse() {
+		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $this->center_id' > /dev/null 2>&1 & echo $!";
+		$this->set('pid', exec($command,$output));
+	}
 	
 	public function overall() {
 		$this->set('commander', $this->Scorecard->getPositionStats('Commander',null,3));
