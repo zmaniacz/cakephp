@@ -11,7 +11,14 @@
 		} );
 	} );
 </script>
-<h3><?php echo $game['Game']['game_name']." ".$game['Game']['game_datetime']." "; echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : ""; ?></h3>
+<h3><?php 
+		echo $game['Game']['game_name']." ".$game['Game']['game_datetime']." "; 
+		echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : "";
+		if(AuthComponent::user('role') === 'admin') {
+			echo "<button>".$this->Html->link("Edit", array('controller' => 'Games', 'action' => 'edit', $game['Game']['id']))."</button>";
+		}
+	?>
+</h3>
 <div>
 	<h1>Score: <?php echo ($game['Game']['winner'] == 'Green') ? $game['Game']['green_score']+$game['Game']['green_adj'] : $game['Game']['red_score']+$game['Game']['red_adj']; ?></h1>
 	<table class="gamelist">

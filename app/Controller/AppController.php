@@ -36,10 +36,6 @@ class AppController extends Controller {
 		'RequestHandler',
 		'Session',
 		'Auth' => array(
-			'loginRedirect' => array(
-				'controller' => 'scorecards',
-				'action' => 'index'
-			),
 			'logoutRedirect' => array(
 				'controller' => 'scorecards',
 				'action' => 'index',
