@@ -50,13 +50,14 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function overall() {
-		$this->set('commander', $this->Scorecard->getPositionStats('Commander',null,3));
-		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',null,3));
-		$this->set('scout', $this->Scorecard->getPositionStats('Scout',null,3));
-		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',null,3));
-		$this->set('medic', $this->Scorecard->getPositionStats('Medic',null,3));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats());
-		$this->set('averages', $this->Scorecard->getAllAvgMVP());
+		$this->set('commander', $this->Scorecard->getPositionStats('Commander',null,$this->center_id));
+		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',null,$this->center_id));
+		$this->set('scout', $this->Scorecard->getPositionStats('Scout',null,$this->center_id));
+		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',null,$this->center_id));
+		$this->set('medic', $this->Scorecard->getPositionStats('Medic',null,$this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true, $this->center_id));
+		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false, $this->center_id));
+		$this->set('averages', $this->Scorecard->getAllAvgMVP($this->center_id));
     }
 	
 	public function nightly() {

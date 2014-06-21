@@ -226,14 +226,28 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 	
-	public function getPositionStats($role = null, $date = null, $min_games = 0) {
+	public function getPositionStats($role = null, $filter = null, $center_id = null) {
 		$conditions = array();
-		
+		$min_games = null;
+
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
 		if(!is_null($role))
 			$conditions[] = array('position' => $role);
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+
+		if(!is_null($filter)) {
+			if(isset($filter['numeric'])) {
+				if($filter['numeric'] > 0) {
+					$min_games = $filter['numeric'];
+				}
+			}
+			if(isset($filter['date'])) {
+				if($filter['date'] > 0) {
+					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
+				}
+			}
+		}
 		
 		$scores = $this->find('all', array(
 			'fields' => array(
@@ -259,7 +273,7 @@ class Scorecard extends AppModel {
 				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate'
 			),				
 			'conditions' => $conditions,
-			'group' => "player_name HAVING games_played >= $min_games",
+			'group' => "player_name".(($min_games > 0) ? " HAVING games_played >= $min_games" : ""),
 			'order' => 'avg_mvp DESC'
 		));
 		return $scores;
@@ -285,7 +299,13 @@ class Scorecard extends AppModel {
 				'conditions*/
 	}
 	
-	public function getMedicHitStats() {
+	public function getMedicHitStats($resup_only, $center_id = null) {
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
+		if($resup_only)
+			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));
+
 		$scores = $this->find('all', array(
 			'fields' => array(
 				'player_name',
@@ -293,9 +313,7 @@ class Scorecard extends AppModel {
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
 				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
 			),
-			'conditions' => array(
-				"NOT" => array("position" => array("Medic", "Ammo Carrier"))
-			),
+			'conditions' => $conditions,
 			'group' => 'player_name HAVING total_medic_hits > 0',
 			'order' => 'total_medic_hits DESC'
 		));
@@ -369,7 +387,10 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 	
-	public function getAllAvgMVP() {
+	public function getAllAvgMVP($center_id = null) {
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
 		$players = $this->find('all', array(
 			'fields' => array(
 				'player_id',
@@ -377,6 +398,7 @@ class Scorecard extends AppModel {
 				'position',
 				'AVG(mvp_points) as avg_mvp'
 			),
+			'conditions' => $conditions,
 			'group' => 'player_name, position'
 		));
 		
@@ -541,7 +563,7 @@ class Scorecard extends AppModel {
 				'AVG(mvp_points) as avg_mvp'
 			),
 			'conditions' => array(
-				'center_id <=' => $center_id
+				'center_id =' => $center_id
 			),
 			'group' => 'player_name, position'
 		));
@@ -557,7 +579,7 @@ class Scorecard extends AppModel {
 			),
 			'joins' => array(
 				array(
-					'table' => '(select id from players where center_id = 1)',
+					'table' => "(select id from players where center_id = $center_id)",
 					'alias' => 'pl',
 					'type' => 'INNER',
 					'conditions' => array(
