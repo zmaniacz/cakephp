@@ -61,14 +61,17 @@ class ScorecardsController extends AppController {
     }
 	
 	public function nightly() {
-		$game_dates = $this->Scorecard->getGameDates();
+		$game_dates = $this->Scorecard->getGameDates($this->center_id);
 		$this->set('game_dates', $game_dates);
 		
 		if($this->request->isPost())
 			$date = $this->request->data['Scorecard']['date'];
 		else
 			$date = reset($game_dates);
-			
+		
+		if(!$date)
+			$date = 0;
+
 		$this->set('current_date', $date);
 	}
 	
@@ -111,7 +114,8 @@ class ScorecardsController extends AppController {
 					'ammo_boost' => $csvline[19],
 					'lives_left' => $csvline[20],
 					'shots_left' => $csvline[21],
-					'penalties' => $csvline[22],
+					//Skipping penalties, aim is to enter them manually later
+					//'penalties' => $csvline[22],
 					'shot_3hit' => $csvline[23],
 					'elim_other_team' => $csvline[24],
 					'team_elim' => $csvline[25],

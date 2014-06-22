@@ -41,6 +41,7 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>MVP Points</th>
+			<th>Penalties</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -70,6 +71,7 @@
 				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
 				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
+				echo "<td></td>";
 				echo "</tr>";
 			}
 			?>
@@ -100,6 +102,7 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>MVP Points</th>
+			<th>Penalties</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -129,6 +132,7 @@
 				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
 				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
+				echo "<td></td>";
 				echo "</tr>";
 			}
 			?>

@@ -1,9 +1,18 @@
 <?php
 
 class Game extends AppModel {
-	public $hasMany = 'Scorecard';
+	public $hasMany = array(
+		'Scorecard' => array(
+			'className' => 'Scorecard',
+			'foreignkey' => 'game_id'
+		),
+		'Penalty' => array(
+			'className' => 'Penalty',
+			'foreignKey' => 'game_id'
+		)
+	);
 	
-	public function getOverallStats($filter_type, $games_limit = null) {
+	public function getOverallStats($filter_type, $games_limit = null, $center_id = null) {
 		if(is_null($games_limit)) {
 			$overall = $this->find('all', array(
 				'fields' => array(
@@ -14,6 +23,7 @@ class Game extends AppModel {
 					'AVG(red_score) as red_avg_score',
 					'AVG(green_score) as green_avg_score'
 				),
+				'conditions' => array('center_id' => $center_id),
 				'group' => array(
 					'winner',
 					'red_eliminated',
@@ -36,6 +46,7 @@ class Game extends AppModel {
 						red_score,
 						green_score
 					FROM games
+					WHERE center_id = $center_id
 					ORDER BY game_datetime DESC
 					LIMIT $games_limit
 				) as Game
@@ -60,7 +71,7 @@ class Game extends AppModel {
 						red_Score,
 						green_score
 					FROM games
-					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit
+					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit AND center_id = $center_id
 					ORDER BY game_datetime DESC
 				) as Game
 				GROUP BY winner,

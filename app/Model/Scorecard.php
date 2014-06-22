@@ -206,10 +206,14 @@ class Scorecard extends AppModel {
 		return $results;
 	}
 	
-	public function getGameDates() {
+	public function getGameDates($center_id = null) {
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
 		$game_dates = $this->find('all', array(
 			'fields' => array('DISTINCT DATE(Scorecard.game_datetime) as game_date'),
-			'order' => 'Scorecard.game_datetime DESC'
+			'order' => 'Scorecard.game_datetime DESC',
+			'conditions' => $conditions
 		));
 		$game_dates = Set::combine($game_dates, '{n}.0.game_date', '{n}.0.game_date');
 		return $game_dates;
@@ -550,6 +554,32 @@ class Scorecard extends AppModel {
 			$r++;
 		}
 		
+		if(!isset($team_a['Ammo Carrier']))
+			$team_a['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_a['Commander']))
+			$team_a['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_a['Heavy Weapons']))
+			$team_a['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_a['Medic']))
+			$team_a['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_a['Scout']))
+			$team_a['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_a['Scout2']))
+			$team_a['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+
+		if(!isset($team_b['Ammo Carrier']))
+			$team_b['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_b['Commander']))
+			$team_b['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_b['Heavy Weapons']))
+			$team_b['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_b['Medic']))
+			$team_b['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_b['Scout']))
+			$team_b['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_b['Scout2']))
+			$team_b['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+
 		$results = array('team_a' => $team_a, 'team_b' => $team_b);
 	
 		return $results;

@@ -18,6 +18,7 @@ class GamesController extends AppController {
 
 	public function beforeFilter() {
 		$this->Auth->allow('view','overall','overallWinLossDetail');
+		parent::beforeFilter();
 	}
 
 /**
@@ -39,7 +40,7 @@ class GamesController extends AppController {
 		if (!$this->Game->exists($id)) {
 			throw new NotFoundException(__('Invalid game'));
 		}
-		$this->Game->contain('Scorecard');
+		$this->Game->contain('Scorecard','Penalty');
 		$game = $this->Game->findById($id);
 		
 		foreach ($game['Scorecard'] as $key => $row) {
@@ -83,10 +84,12 @@ class GamesController extends AppController {
 	}
 	
 	public function overallWinLossDetail($filter_type, $games_limit = null) {
-		$this->request->onlyAllow('ajax');
+		//$this->request->onlyAllow('ajax');
+		
 		if($games_limit == 0) {
 			$games_limit = null;
 		}
-		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit));
+
+		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit, $this->center_id));
 	}
 }
