@@ -71,7 +71,16 @@
 				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
 				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
-				echo "<td></td>";
+				echo "<td>";
+				if(isset($score['Penalty'])) {
+					foreach ($score['Penalty'] as $penalty) {
+						echo "<p>".$this->Html->link($penalty['type'], array('controller' => 'Penalties', 'action' => 'view', $penalty['id']))."</p>";
+					}
+				}
+				if(AuthComponent::user('role') === 'admin') {
+					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
+				}
+				echo "</td>";
 				echo "</tr>";
 			}
 			?>
@@ -132,7 +141,16 @@
 				echo "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
 				echo "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				echo "<td>".$score['mvp_points']."</td>";
-				echo "<td></td>";
+				echo "<td>";
+				if(isset($score['Penalty'])) {
+					foreach ($score['Penalty'] as $penalty) {
+						echo "<p>".$this->Html->link($penalty['type'], array('controller' => 'Penalties', 'action' => 'view', $penalty['id']))."</p>";
+					}
+				}
+				if(AuthComponent::user('role') === 'admin') {
+					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
+				}
+				echo "</td>";
 				echo "</tr>";
 			}
 			?>

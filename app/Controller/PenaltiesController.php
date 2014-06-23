@@ -38,6 +38,17 @@ class PenaltiesController extends AppController {
 			throw new NotFoundException(__('Invalid penalty'));
 		}
 		$options = array('conditions' => array('Penalty.' . $this->Penalty->primaryKey => $id));
+		$this->Penalty->contain(array(
+			'Scorecard' => array(
+				'fields' => array(),
+				'Game' => array(
+					'fields' => array('id','game_name','game_description','game_datetime')	
+				),
+				'Player' => array(
+					'fields' => array('id','player_name')
+				)
+			)
+		));
 		$this->set('penalty', $this->Penalty->find('first', $options));
 	}
 
@@ -46,7 +57,10 @@ class PenaltiesController extends AppController {
  *
  * @return void
  */
-	public function add() {
+	public function add($scorecard_id) {
+		if (!$this->Penalty->Scorecard->exists($scorecard_id)) {
+			throw new NotFoundException(__('Invalid scorecard'));
+		}
 		if ($this->request->is('post')) {
 			$this->Penalty->create();
 			if ($this->Penalty->save($this->request->data)) {
@@ -56,7 +70,7 @@ class PenaltiesController extends AppController {
 				$this->Session->setFlash(__('The penalty could not be saved. Please, try again.'));
 			}
 		}
-		$scorecards = $this->Penalty->Scorecard->find('list');
+		$scorecards = $this->Penalty->Scorecard->find('list', array('conditions' => array('Scorecard.id' => $scorecard_id)));
 		$this->set(compact('scorecards'));
 	}
 

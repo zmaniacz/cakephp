@@ -40,7 +40,11 @@ class GamesController extends AppController {
 		if (!$this->Game->exists($id)) {
 			throw new NotFoundException(__('Invalid game'));
 		}
-		$this->Game->contain('Scorecard','Penalty');
+		$this->Game->contain(array(
+			'Scorecard' => array(
+				'Penalty'
+			)
+		));
 		$game = $this->Game->findById($id);
 		
 		foreach ($game['Scorecard'] as $key => $row) {
