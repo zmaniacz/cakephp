@@ -11,6 +11,13 @@ class Game extends AppModel {
 			'foreignKey' => 'game_id'
 		)
 	);
+
+	public $belongsTo = array(
+		'Center' => array(
+			'className' => 'Center',
+			'foreignKey' => 'center_id'
+		)
+	);
 	
 	public function getOverallStats($filter_type, $games_limit = null, $center_id = null) {
 		if(is_null($games_limit)) {
