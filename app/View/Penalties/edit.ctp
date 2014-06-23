@@ -7,8 +7,7 @@
 		echo $this->Form->input('type');
 		echo $this->Form->input('description');
 		echo $this->Form->input('value');
-		echo $this->Form->input('player_id');
-		echo $this->Form->input('game_id');
+		echo $this->Form->input('scorecard_id');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>
@@ -19,9 +18,7 @@
 
 		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Penalty.id')), null, __('Are you sure you want to delete # %s?', $this->Form->value('Penalty.id'))); ?></li>
 		<li><?php echo $this->Html->link(__('List Penalties'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Players'), array('controller' => 'players', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Player'), array('controller' => 'players', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Games'), array('controller' => 'games', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Game'), array('controller' => 'games', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Scorecards'), array('controller' => 'scorecards', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Scorecard'), array('controller' => 'scorecards', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

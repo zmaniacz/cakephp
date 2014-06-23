@@ -6,8 +6,7 @@
 			<th><?php echo $this->Paginator->sort('type'); ?></th>
 			<th><?php echo $this->Paginator->sort('description'); ?></th>
 			<th><?php echo $this->Paginator->sort('value'); ?></th>
-			<th><?php echo $this->Paginator->sort('player_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('game_id'); ?></th>
+			<th><?php echo $this->Paginator->sort('scorecard_id'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	<?php foreach ($penalties as $penalty): ?>
@@ -17,10 +16,7 @@
 		<td><?php echo h($penalty['Penalty']['description']); ?>&nbsp;</td>
 		<td><?php echo h($penalty['Penalty']['value']); ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($penalty['Player']['id'], array('controller' => 'players', 'action' => 'view', $penalty['Player']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $this->Html->link($penalty['Game']['id'], array('controller' => 'games', 'action' => 'view', $penalty['Game']['id'])); ?>
+			<?php echo $this->Html->link($penalty['Scorecard']['id'], array('controller' => 'scorecards', 'action' => 'view', $penalty['Scorecard']['id'])); ?>
 		</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id'])); ?>
@@ -48,9 +44,7 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Penalty'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Players'), array('controller' => 'players', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Player'), array('controller' => 'players', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Games'), array('controller' => 'games', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Game'), array('controller' => 'games', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Scorecards'), array('controller' => 'scorecards', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Scorecard'), array('controller' => 'scorecards', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

@@ -56,9 +56,8 @@ class PenaltiesController extends AppController {
 				$this->Session->setFlash(__('The penalty could not be saved. Please, try again.'));
 			}
 		}
-		$players = $this->Penalty->Player->find('list');
-		$games = $this->Penalty->Game->find('list');
-		$this->set(compact('players', 'games'));
+		$scorecards = $this->Penalty->Scorecard->find('list');
+		$this->set(compact('scorecards'));
 	}
 
 /**
@@ -83,9 +82,8 @@ class PenaltiesController extends AppController {
 			$options = array('conditions' => array('Penalty.' . $this->Penalty->primaryKey => $id));
 			$this->request->data = $this->Penalty->find('first', $options);
 		}
-		$players = $this->Penalty->Player->find('list');
-		$games = $this->Penalty->Game->find('list');
-		$this->set(compact('players', 'games'));
+		$scorecards = $this->Penalty->Scorecard->find('list');
+		$this->set(compact('scorecards'));
 	}
 
 /**

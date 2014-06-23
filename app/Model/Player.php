@@ -5,10 +5,6 @@ class Player extends AppModel {
 		'Scorecard' => array(
 			'className' => 'Scorecard',
 			'foreignkey' => 'player_id'
-		),
-		'Penalty' => array(
-			'className' => 'Penalty',
-			'foreignKey' => 'player_id'
 		)
 	);
 

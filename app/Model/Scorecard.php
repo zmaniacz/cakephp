@@ -11,6 +11,13 @@ class Scorecard extends AppModel {
 			'foreignKey' => 'game_id'
 		)
 	);
+
+	public $hasMany = array(
+		'Penalty' => array(
+			'className' => 'Penalty',
+			'foreignkey' => 'scorecard_id'
+		)
+	);
 	
 	public function generateMVP() {
 		$counter = 0;

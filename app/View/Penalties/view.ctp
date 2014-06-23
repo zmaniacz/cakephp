@@ -21,14 +21,9 @@
 			<?php echo h($penalty['Penalty']['value']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Player'); ?></dt>
+		<dt><?php echo __('Scorecard'); ?></dt>
 		<dd>
-			<?php echo $this->Html->link($penalty['Player']['id'], array('controller' => 'players', 'action' => 'view', $penalty['Player']['id'])); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Game'); ?></dt>
-		<dd>
-			<?php echo $this->Html->link($penalty['Game']['id'], array('controller' => 'games', 'action' => 'view', $penalty['Game']['id'])); ?>
+			<?php echo $this->Html->link($penalty['Scorecard']['id'], array('controller' => 'scorecards', 'action' => 'view', $penalty['Scorecard']['id'])); ?>
 			&nbsp;
 		</dd>
 	</dl>
@@ -40,9 +35,7 @@
 		<li><?php echo $this->Form->postLink(__('Delete Penalty'), array('action' => 'delete', $penalty['Penalty']['id']), null, __('Are you sure you want to delete # %s?', $penalty['Penalty']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Penalties'), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Penalty'), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Players'), array('controller' => 'players', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Player'), array('controller' => 'players', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Games'), array('controller' => 'games', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Game'), array('controller' => 'games', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Scorecards'), array('controller' => 'scorecards', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Scorecard'), array('controller' => 'scorecards', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

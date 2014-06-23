@@ -3,8 +3,7 @@ App::uses('AppModel', 'Model');
 /**
  * Penalty Model
  *
- * @property Player $Player
- * @property Game $Game
+ * @property Scorecard $Scorecard
  */
 class Penalty extends AppModel {
 
@@ -24,13 +23,9 @@ class Penalty extends AppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'Player' => array(
-			'className' => 'Player',
-			'foreignKey' => 'player_id'
-		),
-		'Game' => array(
-			'className' => 'Game',
-			'foreignKey' => 'game_id'
+		'Scorecard' => array(
+			'className' => 'Scorecard',
+			'foreignKey' => 'scorecard_id'
 		)
 	);
 }
