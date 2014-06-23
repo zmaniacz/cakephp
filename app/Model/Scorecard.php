@@ -1,7 +1,16 @@
 <?php
 
 class Scorecard extends AppModel {
-	public $belongsTo = array('Game','Player');
+	public $belongsTo = array(
+		'Player' => array(
+			'className' => 'Player',
+			'foreignKey' => 'player_id'
+		),
+		'Game' => array(
+			'className' => 'Game',
+			'foreignKey' => 'game_id'
+		)
+	);
 	
 	public function generateMVP() {
 		$counter = 0;

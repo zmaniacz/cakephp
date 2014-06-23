@@ -1,7 +1,20 @@
 <?php
 
 class Center extends AppModel {
-	public $hasMany = 'Scorecard';
+	public $hasMany = array(
+		'Scorecard' => array(
+			'className' => 'Scorecard',
+			'foreignkey' => 'center_id'
+		),
+		'Player' => array(
+			'className' => 'Player',
+			'foreignKey' => 'center_id'
+		),
+		'Game' => array(
+			'className' => 'Game',
+			'foreignKey' => 'center_id'
+		)
+	);
 	
 	public function getCenterID($short_name) {
 		$results = $this->find('first', array(

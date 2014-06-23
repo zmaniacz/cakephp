@@ -1,7 +1,23 @@
 <?php
 
 class Player extends AppModel {
-	public $hasMany = 'Scorecard';
+	public $hasMany = array(
+		'Scorecard' => array(
+			'className' => 'Scorecard',
+			'foreignkey' => 'player_id'
+		),
+		'Penalty' => array(
+			'className' => 'Penalty',
+			'foreignKey' => 'player_id'
+		)
+	);
+
+	public $belongsTo = array(
+		'Center' => array(
+			'className' => 'Center',
+			'foreignKey' => 'center_id'
+		)
+	);
 	
 	public function getPlayerStats($id, $role = null) {
 		$conditions = array();
