@@ -17,8 +17,8 @@ class PenaltiesController extends AppController {
 	public $components = array('Paginator', 'Session');
 
 	public function beforeFilter() {
-		$this->Auth->deny();
 		$this->Auth->allow('index','view');
+		parent::beforeFilter();
 	}
 
 

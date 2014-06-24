@@ -55,7 +55,6 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$this->Auth->allow();
 		$this->center_id = $this->Center->getCenterID($this->request->params['center']);
 	}
 }

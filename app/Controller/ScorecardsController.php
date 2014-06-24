@@ -3,6 +3,11 @@
 class ScorecardsController extends AppController {
 	public $components = array('RequestHandler');
 
+	public function beforeFilter() {
+		$this->Auth->allow('index','overall','nightly','nightlyStats','allcenter');
+		parent::beforeFilter();
+	}
+
 	public function index() {
 		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
 	}

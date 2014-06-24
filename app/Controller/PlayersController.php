@@ -2,6 +2,11 @@
 
 class PlayersController extends AppController {
 	public $components = array('RequestHandler');
+
+	public function beforeFilter() {
+		$this->Auth->allow();
+		parent::beforeFilter();
+	}
 	
 	public function index() {
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'overall'));
