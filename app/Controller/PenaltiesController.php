@@ -16,13 +16,29 @@ class PenaltiesController extends AppController {
  */
 	public $components = array('Paginator', 'Session');
 
+	public function beforeFilter() {
+		$this->Auth->deny();
+		$this->Auth->allow('index','view');
+	}
+
+
 /**
  * index method
  *
  * @return void
  */
 	public function index() {
-		$this->Penalty->recursive = 0;
+		$this->Penalty->contain(array(
+			'Scorecard' => array(
+				'fields' => array(),
+				'Game' => array(
+					'fields' => array('id','game_name','game_description','game_datetime')	
+				),
+				'Player' => array(
+					'fields' => array('id','player_name')
+				)
+			)
+		));
 		$this->set('penalties', $this->Paginator->paginate());
 	}
 
@@ -65,6 +81,24 @@ class PenaltiesController extends AppController {
 			$this->Penalty->create();
 			if ($this->Penalty->save($this->request->data)) {
 				$this->Session->setFlash(__('The penalty has been saved.'));
+
+				$scorecard = $this->Penalty->Scorecard->findById($this->request->data['Penalty']['scorecard_id']);
+				$game = $this->Penalty->Scorecard->Game->findById($scorecard['Scorecard']['game_id']);
+
+				if($scorecard['Scorecard']['team'] == 'Red') {
+					$game['Game']['red_adj'] += $this->request->data['Penalty']['value'];
+				} else {
+					$game['Game']['green_adj'] += $this->request->data['Penalty']['value'];
+				}
+
+				if(($game['Game']['red_adj'] + $game['Game']['red_score']) > ($game['Game']['green_adj'] + $game['Game']['green_score'])) {
+					$game['Game']['winner'] = 'Red';
+				} else {
+					$game['Game']['winner'] = 'Green';
+				}
+
+				$this->Penalty->Scorecard->Game->save($game);
+
 				return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The penalty could not be saved. Please, try again.'));
@@ -113,6 +147,25 @@ class PenaltiesController extends AppController {
 			throw new NotFoundException(__('Invalid penalty'));
 		}
 		$this->request->onlyAllow('post', 'delete');
+
+		$penalty = $this->Penalty->findById($id);
+		$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);
+		$game = $this->Penalty->Scorecard->Game->findById($scorecard['Scorecard']['game_id']);
+
+		if($scorecard['Scorecard']['team'] == 'Red') {
+			$game['Game']['red_adj'] -= $penalty['Penalty']['value'];
+		} else {
+			$game['Game']['green_adj'] -= $penalty['Penalty']['value'];
+		}
+
+		if(($game['Game']['red_adj'] + $game['Game']['red_score']) > ($game['Game']['green_adj'] + $game['Game']['green_score'])) {
+			$game['Game']['winner'] = 'Red';
+		} else {
+			$game['Game']['winner'] = 'Green';
+		}
+
+		$this->Penalty->Scorecard->Game->save($game);
+
 		if ($this->Penalty->delete()) {
 			$this->Session->setFlash(__('The penalty has been deleted.'));
 		} else {

@@ -114,9 +114,9 @@ class Scorecard extends AppModel {
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
 		
-		$scores = $this->query("SELECT green.game_datetime, green.score, red.score, green.team_elim, red.team_elim
+		$scores = $this->query("SELECT green.game_datetime, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id
 			FROM (
-				SELECT game_datetime, SUM(score) AS score, SUM(team_elim) AS team_elim
+				SELECT game_datetime, pdf_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
 				WHERE team = 'Green' AND game_id IS NULL
 				GROUP BY game_datetime
@@ -175,7 +175,8 @@ class Scorecard extends AppModel {
 				'green_adj' => $green_adj,
 				'red_eliminated' => $red_elim,
 				'green_eliminated' => $green_elim,
-				'winner' => $winner
+				'winner' => $winner,
+				'pdf_id' => $score['green']['pdf_id']
 			));
 			$this->Game->save();
 			

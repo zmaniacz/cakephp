@@ -139,7 +139,7 @@ class ScorecardsController extends AppController {
 			$this->Scorecard->generatePlayers();
 			
 			$this->Session->setFlash("Added $row scorecards");
-			$this->redirect('/scorecards/nightly');
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 		}
 	}
 	
@@ -151,7 +151,7 @@ class ScorecardsController extends AppController {
 		$new = $players['new'];
 		
 		$this->Session->setFlash("Added $mvps MVP entries, $games game entries, games for $existing players and $new new players");
-		$this->redirect('/scorecards/nightly');
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 	}
 	
 	public function allcenter() {
