@@ -18,6 +18,24 @@ class Scorecard extends AppModel {
 			'foreignkey' => 'scorecard_id'
 		)
 	);
+
+	public $validate = array(
+		'player_name' => array(
+			'on' => 'create',
+			'rule' => array('uniqueScorecard'),
+			'message' => "Non-Unique player/game combination"
+		)
+	);
+
+	public function uniqueScorecard ($player_name) {
+		$count = $this->find('count', array(
+			'conditions' => array(
+				'player_name' => $player_name, 
+				'game_datetime' => $this->data[$this->alias]['game_datetime']
+			)
+		));
+		return $count == 0;
+	}
 	
 	public function generateMVP() {
 		$counter = 0;
@@ -103,13 +121,17 @@ class Scorecard extends AppModel {
 			$mvp += $score['Scorecard']['elim_other_team'] * 2;
 			
 			$score['Scorecard']['mvp_points'] = max($mvp,0);
-			$this->save($score);
-			$counter++;
+
+			if($this->save($score)) {
+				$counter++;
+			} else {
+				debug($this->validationErrors); die();
+			}
 		}
 		return $counter;
 	}
 	
-	public function generateGames() {
+	public function generateGames($center_id) {
 	
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
@@ -176,7 +198,8 @@ class Scorecard extends AppModel {
 				'red_eliminated' => $red_elim,
 				'green_eliminated' => $green_elim,
 				'winner' => $winner,
-				'pdf_id' => $score['green']['pdf_id']
+				'pdf_id' => $score['green']['pdf_id'],
+				'center_id' => $center_id
 			));
 			$this->Game->save();
 			
@@ -190,7 +213,7 @@ class Scorecard extends AppModel {
 		return $counter;
 	}
 	
-	public function generatePlayers() {
+	public function generatePlayers($center_id) {
 		$scores = $this->find('all', array('conditions' => array('Scorecard.player_id' => NULL)));
 		$players = $this->Player->find('all');
 		$results = array('new' => 0, 'existing' => 0);
@@ -198,7 +221,7 @@ class Scorecard extends AppModel {
 		foreach($scores as $score) {
 			$found = false;
 			foreach($players as $key => $val) {
-				if(strcmp($score['Scorecard']['player_name'], $val['Player']['player_name']) == 0 ) {
+				if(strcasecmp($score['Scorecard']['player_name'], $val['Player']['player_name']) == 0 ) {
 					$score['Scorecard']['player_id'] = $val['Player']['id'];
 					$this->save($score);
 					$results['existing']++;
@@ -210,7 +233,8 @@ class Scorecard extends AppModel {
 			if(!$found) {
 				$this->Player->Create();
 				$this->Player->set(array(
-					'player_name' => $score['Scorecard']['player_name']
+					'player_name' => $score['Scorecard']['player_name'],
+					'center_id' => $center_id
 				));
 				$this->Player->save();
 				$score['Scorecard']['player_id'] = $this->Player->id;

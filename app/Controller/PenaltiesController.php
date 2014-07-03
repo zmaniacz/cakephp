@@ -120,6 +120,27 @@ class PenaltiesController extends AppController {
 			throw new NotFoundException(__('Invalid penalty'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
+			
+			$penalty = $this->Penalty->findById($id);
+			$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);
+			$game = $this->Penalty->Scorecard->Game->findById($scorecard['Scorecard']['game_id']);
+
+			if($scorecard['Scorecard']['team'] == 'Red') {
+				$game['Game']['red_adj'] -= $penalty['Penalty']['value'];
+				$game['Game']['red_adj'] += $this->request->data['Penalty']['value'];
+			} else {
+				$game['Game']['green_adj'] -= $penalty['Penalty']['value'];
+				$game['Game']['green_adj'] += $this->request->data['Penalty']['value'];
+			}
+
+			if(($game['Game']['red_adj'] + $game['Game']['red_score']) > ($game['Game']['green_adj'] + $game['Game']['green_score'])) {
+				$game['Game']['winner'] = 'Red';
+			} else {
+				$game['Game']['winner'] = 'Green';
+			}
+
+			$this->Penalty->Scorecard->Game->save($game);
+
 			if ($this->Penalty->save($this->request->data)) {
 				$this->Session->setFlash(__('The penalty has been saved.'));
 				return $this->redirect(array('action' => 'index'));

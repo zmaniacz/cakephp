@@ -44,6 +44,11 @@ class PagesController extends AppController {
  */
 	public $uses = array();
 
+	public function beforeFilter() {
+		$this->Auth->allow();
+		parent::beforeFilter();
+	}
+
 /**
  * Displays a view
  *
@@ -70,5 +75,8 @@ class PagesController extends AppController {
 		}
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
+	}
+
+	public function aboutSM5() {
 	}
 }

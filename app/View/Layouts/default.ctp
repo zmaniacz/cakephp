@@ -6,7 +6,6 @@
 		echo $this->Html->script('jquery-2.1.1.min.js');
 		echo $this->Html->script('jquery.dataTables.min.js');
 		echo $this->Html->script('jquery-ui-1.10.3.custom.min.js');
-		echo $this->Html->script('jquery.blockUI.min.js');
 		echo $this->Html->meta('icon');
 		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui-1.10.3.custom.min','jquery.dataTables.css','jquery.dataTables_themeroller.css'));
 	?>
@@ -14,18 +13,6 @@
 		$(document).ready(function() {
 			$("#topmenu").menu();
 		});
-
-		$(document).ajaxStart(function () {
-			$.blockUI({
-				message: '<img src="http://lfstats.redial.net/img/lfstats_loading.gif" />',
-				css: {
-					width:'auto',
-					border:'none',
-					backgroundColor:'none'
-				}
-			}); 
-		});
-		$(document).ajaxStop($.unblockUI);
 	</script>
 	<title>
 		<?php echo $title_for_layout; ?>
@@ -48,6 +35,7 @@
 				<li><?php echo $this->Html->link("Center Stats", array('controller' => 'games', 'action' => 'overall')); ?></li>
 				<li><?php echo $this->Html->link("All-Center Teams", array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
 				<li><?php echo $this->Html->link("Penalties", array('controller' => 'penalties', 'action' => 'index')); ?></li>
+				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
 				<?php
 					if(AuthComponent::user('role') === 'admin')
 					echo "<li>".$this->Html->link("Upload CSV", array('controller' => 'scorecards', 'action' => 'uploadcsv'))."</li>";
