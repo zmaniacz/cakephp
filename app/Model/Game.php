@@ -86,4 +86,14 @@ class Game extends AppModel {
 
 		return $overall;
 	}
+
+	public function getGameList($center_id = null) {
+		$games = $this->find('all', array(
+			'conditions' => array(
+				'center_id' => $center_id
+			),
+			'order' => 'Game.game_datetime ASC'
+		));
+		return $games;
+	}
 }

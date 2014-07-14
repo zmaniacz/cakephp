@@ -63,7 +63,7 @@ function overallData(data) {
 
 	$('#avg_scores').DataTable( {
 		"destroy": true,
-		"autoWidth": true,
+		"autoWidth": false,
 		"searching": false,
 		"info": false,
 		"paging": false,
@@ -92,7 +92,6 @@ $(document).ready(function(){
 	});
 });
 </script>
-
 <?php
 	echo $this->Form->create('gamesLimit');
 	echo $this->Form->input('selectNumeric', array(
@@ -119,7 +118,6 @@ $(document).ready(function(){
 	));
 	echo $this->Form->end();
 ?>
-
 <div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 <br />
 <br />

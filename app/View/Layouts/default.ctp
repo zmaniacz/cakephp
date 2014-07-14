@@ -31,14 +31,17 @@
 			<h1>Laserforce - <?php echo strtoupper($this->params->center); ?></h1>
 			<ul id="topmenu">
 				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
+				<li><?php echo $this->Html->link("Game List", array('controller' => 'games', 'action' => 'index')); ?></li>
 				<li><?php echo $this->Html->link("Nightly Stats", array('controller' => 'scorecards', 'action' => 'nightly')); ?></li>
 				<li><?php echo $this->Html->link("Center Stats", array('controller' => 'games', 'action' => 'overall')); ?></li>
 				<li><?php echo $this->Html->link("All-Center Teams", array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
 				<li><?php echo $this->Html->link("Penalties", array('controller' => 'penalties', 'action' => 'index')); ?></li>
 				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
 				<?php
-					if(AuthComponent::user('role') === 'admin')
-					echo "<li>".$this->Html->link("Upload CSV", array('controller' => 'scorecards', 'action' => 'uploadcsv'))."</li>";
+					if(AuthComponent::user('role') === 'admin') {
+						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'scorecards', 'action' => 'uploadpdf'))."</li>";
+						echo "<li>".$this->Html->link("Upload CSV", array('controller' => 'scorecards', 'action' => 'uploadcsv'))."</li>";
+					}
 				?>
 			</ul>
 		</div>

@@ -6,7 +6,9 @@
 		echo $this->Form->input('id');
 		echo $this->Form->input('game_name');
 		echo $this->Form->input('game_description');
+		echo $this->Form->input('red_team_name');
 		echo $this->Form->input('red_score');
+		echo $this->Form->input('green_team_name');
 		echo $this->Form->input('green_score');
 		echo $this->Form->input('red_adj');
 		echo $this->Form->input('green_adj');
