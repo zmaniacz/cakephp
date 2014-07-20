@@ -58,8 +58,13 @@ class Scorecard extends AppModel {
 					$mvp += max(ceil(($score['Scorecard']['score']-2999)/1000),0);
 					break;
 				case "Scout":
-					$mvp += max(ceil(($score['Scorecard']['score']-7999)/1000),0);
+					$mvp += max(ceil(($score['Scorecard']['score']-6999)/1000),0);
 					break;
+			}
+
+			//medic bonus point
+			if($score['Scorecard']['position'] == 'Medic' && $score['Scorecard']['score'] >= 3000) {
+				$mvp += 1;
 			}
 			
 			//accuracy bonus
@@ -109,7 +114,7 @@ class Scorecard extends AppModel {
 			$mvp += $score['Scorecard']['penalties'] * -5;
 			
 			//raping 3hits.  the math looks weird, but it works and gets the desired result
-			$mvp += floor(($score['Scorecard']['shot_3hit']/8)*100) / 100;
+			$mvp += floor(($score['Scorecard']['shot_3hit']/6)*100) / 100;
 			
 			//No.  Stahp.
 			$mvp += $score['Scorecard']['own_nuke_cancels'] * -3;
@@ -431,6 +436,55 @@ class Scorecard extends AppModel {
 		
 		return $games;
 	}
+
+	public function getOverallAverages($filter_type, $games_limit = null, $center_id = null) {
+		if(is_null($games_limit)) {
+			$overall = $this->find('all', array(
+				'fields' => array(
+					'position',
+					'AVG(score) as avg_score',
+					'AVG(mvp_points) as avg_mvp'
+				),
+				'conditions' => array('center_id' => $center_id),
+				'group' => array(
+					'position'
+				)
+			));
+		} elseif($filter_type == 'numeric') {
+			$overall = $this->query("
+				SELECT position,
+					AVG(score) as avg_score,
+					AVG(mvp_points) as avg_mvp
+				FROM (
+					SELECT position,
+						score,
+						mvp_points
+					FROM scorecards
+					WHERE center_id = $center_id
+					ORDER BY game_datetime DESC
+					LIMIT $games_limit
+				) as Scorecard
+				GROUP BY position
+			");
+		} elseif($filter_type == 'date') {
+			$overall = $this->query("
+				SELECT position,
+					AVG(score) as avg_score,
+					AVG(mvp_points) as avg_mvp
+				FROM (
+					SELECT position,
+						score,
+						mvp_points
+					FROM scorecards
+					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit AND center_id = $center_id
+					ORDER BY game_datetime DESC
+				) as Scorecard
+				GROUP BY position
+			");
+		}
+
+		return $overall;
+	}
 	
 	public function getAllAvgMVP($center_id = null) {
 		if(!is_null($center_id))
@@ -594,7 +648,43 @@ class Scorecard extends AppModel {
 			}
 			$r++;
 		}
+/*
+		foreach($team_b as $player) {
+			unset($matrix[$player['player_name']]);
+		}
 		
+		$M = $this->_munkres($matrix);
+		$team_c = array();
+		$r = 0;
+		foreach($matrix as $key => $value) {
+			for($c = 0; $c < count($M[$r]); $c++) {
+				if($M[$r][$c] == 1) {
+					switch($c) {
+						case 0:
+							$team_c['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
+							break;
+						case 1:
+							$team_c['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
+							break;
+						case 2:
+							$team_c['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
+							break;
+						case 3:
+							$team_c['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
+							break;
+						case 4:
+							$team_c['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							break;
+						case 5:
+							$team_c['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							break;
+					}
+					break;
+				}
+			}
+			$r++;
+		}
+*/		
 		if(!isset($team_a['Ammo Carrier']))
 			$team_a['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Commander']))
@@ -620,8 +710,21 @@ class Scorecard extends AppModel {
 			$team_b['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Scout2']))
 			$team_b['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-
-		$results = array('team_a' => $team_a, 'team_b' => $team_b);
+/*
+		if(!isset($team_c['Ammo Carrier']))
+			$team_c['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_c['Commander']))
+			$team_c['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_c['Heavy Weapons']))
+			$team_c['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_c['Medic']))
+			$team_c['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_c['Scout']))
+			$team_c['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+		if(!isset($team_c['Scout2']))
+			$team_c['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+*/
+		$results = array('team_a' => $team_a, 'team_b' => $team_b/*, 'team_c' => $team_c*/);
 	
 		return $results;
 	}

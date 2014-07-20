@@ -49,6 +49,11 @@
 		array('Game' => 'Green Wins (Non-Elim)', 'green_score' => $green_wins_nonelim_avg_score, 'red_score' => $red_loses_nonelim_avg_score),
 		array('Game' => 'Red Wins (Non-Elim)', 'green_score' => $green_loses_nonelim_avg_score, 'red_score' => $red_wins_nonelim_avg_score),
 	);
+
+	$averages = array();
+	foreach($overall_averages as $line) {
+		$averages[] = array('position' => $line['Scorecard']['position'], 'avg_score' => $line[0]['avg_score'], 'avg_mvp' => $line[0]['avg_mvp']);
+	}
 	
-	echo json_encode(compact('winloss','winlossdetail','scoredetail'));
+	echo json_encode(compact('winloss','winlossdetail','scoredetail','averages'));
 ?>

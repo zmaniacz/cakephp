@@ -61,6 +61,23 @@ function overallData(data) {
 		}]
 	});
 
+	$('#avg_positions').DataTable( {
+		"destroy": true,
+		"autoWidth": false,
+		"searching": false,
+		"info": false,
+		"paging": false,
+		"ordering": false,
+		"jQueryUI": true,
+		"data" : data['averages'],
+		"columns" : [
+			{ "data" : "position"},
+			{ "data" : "avg_score" },
+			{ "data" : "avg_mvp"}
+		],
+	});
+
+
 	$('#avg_scores').DataTable( {
 		"destroy": true,
 		"autoWidth": false,
@@ -121,7 +138,17 @@ $(document).ready(function(){
 <div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 <br />
 <br />
-<h2>Average Scores</h2>
+<h2>Averages By Position</h2>
+<table id="avg_positions">
+	<thead>
+		<th>Position</th>
+		<th>Average Score</th>
+		<th>Average MVP</th>
+	<thead>
+</table>
+<br />
+<br />
+<h2>Average Team Scores</h2>
 <table id="avg_scores">
 	<thead>
 		<th>Win Type</th>

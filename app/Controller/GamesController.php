@@ -96,5 +96,6 @@ class GamesController extends AppController {
 		}
 
 		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit, $this->center_id));
+		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($filter_type, $games_limit, $this->center_id));
 	}
 }
