@@ -85,10 +85,11 @@ class ScorecardsController extends AppController {
 			$game_dates = $this->Scorecard->getGameDates($this->center_id);
 			$this->set('game_dates', $game_dates);
 			
-			if($this->request->isPost())
+			if($this->request->isPost()) {
 				$date = $this->request->data['Scorecard']['date'];
-			else
+			} else {
 				$date = reset($game_dates);
+			}
 			
 			if(!$date)
 				$date = 0;
@@ -98,14 +99,6 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function tournament() {
-	}
-	
-	public function nightlyStats($date = null) {
-		$this->request->onlyAllow('ajax');
-		
-		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
-		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
 	}
 
 	public function nightlyScorecards($date = null) {

@@ -11,11 +11,9 @@
 			"info": false,
 			"paging": false,
 			"ordering": false,
-			"jQueryUI": true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json')); ?>",
-				"dataSrc" : "games",
-				"cache" : true
+				"dataSrc" : "games"
 			},
 			"columns" : [
 				{
@@ -47,11 +45,10 @@
 		
 		$('#overall').DataTable( {
 			"scrollX" : true,
-			"jQueryUI": true,
+			"deferRender" : true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
-				"dataSrc" : "scorecards",
-				"cache" : true
+				"dataSrc" : "scorecards"
 			},
 			"columns" : [
 				{
@@ -73,7 +70,6 @@
 		});
 		
 		$('#medic_hits').DataTable( {
-			"jQueryUI": true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json')); ?>",
 				"dataSrc" : "medic_hits"
@@ -93,7 +89,7 @@
 	} );
 </script>
 <h3>Games Played</h3>
-<div style="width: 500px;">
+<div style="width: 700px;">
 	<table class="display" id="game_list">
 		<thead>
 			<th>Game</th>
