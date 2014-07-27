@@ -4,10 +4,12 @@
 	<?php
 		echo $this->Html->charset();
 		echo $this->Html->script('jquery-2.1.1.min.js');
-		echo $this->Html->script('jquery.dataTables.min.js');
-		echo $this->Html->script('jquery-ui-1.10.3.custom.min.js');
+		echo $this->Html->script('jquery-ui.min.js');
+		echo $this->Html->script('//cdn.datatables.net/1.10.1/js/jquery.dataTables.js');
+		echo $this->Html->script('//cdn.datatables.net/plug-ins/725b2a2115b/integration/jqueryui/dataTables.jqueryui.js');
 		echo $this->Html->meta('icon');
-		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui-1.10.3.custom.min','jquery.dataTables.css','jquery.dataTables_themeroller.css'));
+		echo $this->Html->css(array('laserforce','cake.generic','ui-lightness/jquery-ui.min.css'));
+		echo $this->Html->css('//cdn.datatables.net/plug-ins/725b2a2115b/integration/jqueryui/dataTables.jqueryui.css');
 	?>
 	<script type="text/javascript">
 		$(document).ready(function() {

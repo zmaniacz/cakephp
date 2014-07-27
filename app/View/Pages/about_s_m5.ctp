@@ -55,7 +55,7 @@ $(document).ready(function() {
 			<td>10</td>
 			<td>60</td>
 			<td>15</td>
-			<td>3</td>
+			<td>5</td>
 			<td>30</td>
 			<td>-</td>
 			<td>1</td>

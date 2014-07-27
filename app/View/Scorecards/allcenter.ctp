@@ -10,7 +10,7 @@
 		})
 	});
 </script>
-<h1>Includes players with 15 total games in the last 120 days</h1>
+<h1>MVP points calculated based on games played within the last 365 days.  Player must have at least 15 games at a position over that time period to be eligible.</h1>
 <h2>1st Team</h2>
 <div style="width: 500px;">
 	<table class="allcenter">

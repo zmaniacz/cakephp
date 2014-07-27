@@ -145,13 +145,13 @@ class Scorecard extends AppModel {
 			FROM (
 				SELECT game_datetime, pdf_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
-				WHERE team = 'Green' AND game_id IS NULL
+				WHERE team = 'Green' AND game_id IS NULL AND center_id=$center_id
 				GROUP BY game_datetime
 			) AS green,
 			(
 				SELECT game_datetime, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards
-				WHERE team = 'Red' AND game_id IS NULL
+				WHERE team = 'Red' AND game_id IS NULL AND center_id=$center_id
 				GROUP BY game_datetime
 			) AS red
 			WHERE green.game_datetime = red.game_datetime 
@@ -266,11 +266,15 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getGamesByDate($date, $center_id) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Game.game_datetime)' => $date);
+			
+		$conditions[] = array('Game.center_id' => $center_id);
+	
 		$games = $this->Game->find('all', array(
-			'conditions' => array(
-				"DATE(Game.game_datetime)" => $date,
-				'center_id' => $center_id
-			),
+			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
 		));
 		return $games;
@@ -371,6 +375,14 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getMedicHitStatsByDate($date, $center_id) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+			
+		$conditions[] = array('Scorecard.center_id' => $center_id);
+	
+	
 		$scores = $this->find('all', array(
 			'fields' => array(
 				'player_name',
@@ -378,10 +390,7 @@ class Scorecard extends AppModel {
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
 				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
 			),
-			'conditions' => array(
-				"DATE(Scorecard.game_datetime)" => $date,
-				'center_id' => $center_id
-			),
+			'conditions' => $conditions,
 			'group' => 'player_name',
 			'order' => 'total_medic_hits DESC'
 		));
@@ -495,7 +504,9 @@ class Scorecard extends AppModel {
 				'player_id',
 				'player_name',
 				'position',
-				'AVG(mvp_points) as avg_mvp'
+				'AVG(mvp_points) as avg_mvp',
+				'AVG(accuracy) as avg_acc',
+				'COUNT(game_datetime) as games_played' 
 			),
 			'conditions' => $conditions,
 			'group' => 'player_name, position'
@@ -507,50 +518,91 @@ class Scorecard extends AppModel {
 				$results[$player['Scorecard']['player_id']] = array();
 				$results[$player['Scorecard']['player_id']]['player_name'] = $player['Scorecard']['player_name'];
 			}
-			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
 		}
 		
 		foreach($results as &$result) {
-			$total = 0;
+			$total_mvp = 0;
+			$total_acc = 0;
+			$total_games_played = 0;
 			$positions = 0;
+
 			if(isset($result['Ammo Carrier'])) {
-				$total += $result['Ammo Carrier'];
+				$total_mvp += $result['Ammo Carrier']['avg_mvp'];
+				$total_acc += $result['Ammo Carrier']['avg_acc'];
+				$total_games_played += $result['Ammo Carrier']['games_played'];
 				$positions++;
-			} else
-				$result['Ammo Carrier'] = 0;
+			} else {
+				$result['Ammo Carrier']['avg_mvp'] = 0;
+				$result['Ammo Carrier']['avg_acc'] = 0;
+				$result['Ammo Carrier']['games_played'] = 0;
+			}
+
 			if(isset($result['Commander'])) {
-				$total += $result['Commander'];
+				$total_mvp += $result['Commander']['avg_mvp'];
+				$total_acc += $result['Commander']['avg_acc'];
+				$total_games_played += $result['Commander']['games_played'];
 				$positions++;
-			} else
-				$result['Commander'] = 0;
+			} else {
+				$result['Commander']['avg_mvp'] = 0;
+				$result['Commander']['avg_acc'] = 0;
+				$result['Commander']['games_played'] = 0;
+			}
+
+
 			if(isset($result['Heavy Weapons'])) {
-				$total += $result['Heavy Weapons'];
+				$total_mvp += $result['Heavy Weapons']['avg_mvp'];
+				$total_acc += $result['Heavy Weapons']['avg_acc'];
+				$total_games_played += $result['Heavy Weapons']['games_played'];
 				$positions++;
-			} else
-				$result['Heavy Weapons'] = 0;
+			} else {
+				$result['Heavy Weapons']['avg_mvp'] = 0;
+				$result['Heavy Weapons']['avg_acc'] = 0;
+				$result['Heavy Weapons']['games_played'] = 0;
+			}
+
 			if(isset($result['Scout'])) {
-				$total += $result['Scout'];
+				$total_mvp += $result['Scout']['avg_mvp'];
+				$total_acc += $result['Scout']['avg_acc'];
+				$total_games_played += $result['Scout']['games_played'];
 				$positions++;
-			} else
-				$result['Scout'] = 0;
+			} else {
+				$result['Scout']['avg_mvp'] = 0;
+				$result['Scout']['avg_acc'] = 0;
+				$result['Scout']['games_played'] = 0;
+			}
+
 			if(isset($result['Medic'])) {
-				$total += $result['Medic'];
+				$total_mvp += $result['Medic']['avg_mvp'];
+				$total_acc += $result['Medic']['avg_acc'];
+				$total_games_played += $result['Medic']['games_played'];
 				$positions++;
-			} else
-				$result['Medic'] = 0;
+			} else {
+				$result['Medic']['avg_mvp'] = 0;
+				$result['Medic']['avg_acc'] = 0;
+				$result['Medic']['games_played'] = 0;
+			}
 			
-			$result['avg_avg'] = $total/$positions;
+			$result['avg_avg_mvp'] = $total_mvp/$positions;
+			$result['avg_avg_acc'] = $total_acc/$positions;
+			$result['total_games'] = $total_games_played;
 		}
 		
 		return $results;
 	}
 	
 	public function getScorecardsByDate($date, $center_id) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+			
+		$conditions[] = array('Scorecard.center_id' => $center_id);
+	
 		$scorecards = $this->find('all', array(
-			'conditions' => array (
-				'DATE(Scorecard.game_datetime)' => $date,
-				'Scorecard.center_id' => $center_id
-			),
+			'conditions' => $conditions,
 			'contain' => array(
 				'Game' => array()
 			)
@@ -561,7 +613,7 @@ class Scorecard extends AppModel {
 	
 	public function getTopTeams($center_id) {
 		$matrix = $this->_loadMatrix($center_id);
-		
+
 		//reverse the matrix to make it a cost matrix
 		$max = 0;
 		foreach($matrix as $row) {
@@ -580,7 +632,7 @@ class Scorecard extends AppModel {
 
 		//run the algorithm
 		$M = $this->_munkres($matrix);
-		
+
 		//build the results
 		$team_a = array();
 		$r = 0;
@@ -732,74 +784,34 @@ class Scorecard extends AppModel {
 	protected function _loadMatrix($center_id) {
 		$results = $this->find('all', array(
 			'fields' => array(
-				'player_name',
-				'position',
-				'AVG(mvp_points) as avg_mvp'
-			),
-			'conditions' => array(
-				'center_id =' => $center_id
-			),
-			'group' => 'player_name, position'
-		));
-		
-		$games_played = $this->find('all', array(
-			'fields' => array(
 				'player_id',
 				'player_name',
+				'position',
+				'AVG(mvp_points) as avg_mvp',
 				'COUNT(game_datetime) as games_played'
 			),
 			'conditions' => array(
-				'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => 120
+				'center_id =' => $center_id,
+				'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => 365
 			),
-			'joins' => array(
-				array(
-					'table' => "(select id from players where center_id = $center_id)",
-					'alias' => 'pl',
-					'type' => 'INNER',
-					'conditions' => array(
-						'pl.id = Scorecard.player_id'
-					)
-				)
-			),
-			'group' => 'player_id, player_name HAVING games_played >= 15'
+			'group' => 'player_id, player_name, position HAVING games_played >= 15'
 		));
 		
 		$matrix = array();
-		
+
 		foreach($results as $key => $result) {
-			$valid = false;
-			foreach($games_played as $player) {
-				if($result['Scorecard']['player_name'] === $player['Scorecard']['player_name']) {
-					$valid = true;
-					break;
-				}
-			}
-			if($valid) {
-				$matrix[$result['Scorecard']['player_name']][$result['Scorecard']['position']] = $result[0]['avg_mvp'];
-				if($result['Scorecard']['position'] == 'Scout') {
-					$matrix[$result['Scorecard']['player_name']]['Scout2'] = $result[0]['avg_mvp'];
-				}
-			}
+			$matrix[$result['Scorecard']['player_name']]['Ammo Carrier'] = 0.0;
+			$matrix[$result['Scorecard']['player_name']]['Commander'] = 0.0;
+			$matrix[$result['Scorecard']['player_name']]['Heavy Weapons'] = 0.0;
+			$matrix[$result['Scorecard']['player_name']]['Medic'] = 0.0;
+			$matrix[$result['Scorecard']['player_name']]['Scout'] = 0.0;
+			$matrix[$result['Scorecard']['player_name']]['Scout2'] = 0.0;
 		}
 		
-		foreach($matrix as &$position) {
-			if(!isset($position['Ammo Carrier'])) {
-				$position['Ammo Carrier'] = 0;
-			}
-			if(!isset($position['Commander'])) {
-				$position['Commander'] = 0;
-			}
-			if(!isset($position['Heavy Weapons'])) {
-				$position['Heavy Weapons'] = 0;
-			}
-			if(!isset($position['Medic'])) {
-				$position['Medic'] = 0;
-			}
-			if(!isset($position['Scout'])) {
-				$position['Scout'] = 0;
-			}
-			if(!isset($position['Scout2'])) {
-				$position['Scout2'] = 0;
+		foreach($results as $key => $result) {
+			$matrix[$result['Scorecard']['player_name']][$result['Scorecard']['position']] = (float)$result[0]['avg_mvp'];
+			if($result['Scorecard']['position'] == 'Scout') {
+				$matrix[$result['Scorecard']['player_name']]['Scout2'] = (float)$result[0]['avg_mvp'];
 			}
 		}
 
@@ -821,7 +833,7 @@ class Scorecard extends AppModel {
 		$path_col_0 = 0;
 		$asgn = 0;
 		$step = 1;
-		
+
 		foreach($matrix as $row) {
 			$ncol = 0;
 			foreach($row as $column) {

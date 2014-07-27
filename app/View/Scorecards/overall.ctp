@@ -6,31 +6,63 @@
 		} );
 	} );
 </script>
-<div id="accordion">
+<div class="accordion">
 	<h3>Average Averages</h3>
 	<div>
 		<table class="display" id="averages_table">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Average of Averages</th>
-					<th>Commander</th>
-					<th>Heavy Weapons</th>
-					<th>Scout</th>
-					<th>Ammo Carrier</th>
-					<th>Medic</th>
+					<th rowspan="2">Name</th>
+					<th colspan="3">Overall</th>
+					<th colspan="3">Commander</th>
+					<th colspan="3">Heavy Weapons</th>
+					<th colspan="3">Scout</th>
+					<th colspan="3">Ammo Carrier</th>
+					<th colspan="3">Medic</th>
+				</tr>
+				<tr>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Games Played</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach ($averages as $key => $value): ?>
 				<tr>
 					<td><?php echo $this->Html->link($value['player_name'], array('controller' => 'Players', 'action' => 'view', $key)); ?></td>
-					<td><?php echo round($value['avg_avg'],2); ?></td>
-					<td><?php echo round($value['Commander'],2); ?></td>
-					<td><?php echo round($value['Heavy Weapons'],2); ?></td>
-					<td><?php echo round($value['Scout'],2); ?></td>
-					<td><?php echo round($value['Ammo Carrier'],2); ?></td>
-					<td><?php echo round($value['Medic'],2); ?></td>
+					<td><?php echo round($value['avg_avg_mvp'],2); ?></td>
+					<td><?php echo round($value['avg_avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['total_games'],2); ?></td>
+					<td><?php echo round($value['Commander']['avg_mvp'],2); ?></td>
+					<td><?php echo round($value['Commander']['avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['Commander']['games_played'],2); ?></td>
+					<td><?php echo round($value['Heavy Weapons']['avg_mvp'],2); ?></td>
+					<td><?php echo round($value['Heavy Weapons']['avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['Heavy Weapons']['games_played'],2); ?></td>
+					<td><?php echo round($value['Scout']['avg_mvp'],2); ?></td>
+					<td><?php echo round($value['Scout']['avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['Scout']['games_played'],2); ?></td>
+					<td><?php echo round($value['Ammo Carrier']['avg_mvp'],2); ?></td>
+					<td><?php echo round($value['Ammo Carrier']['avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['Ammo Carrier']['games_played'],2); ?></td>
+					<td><?php echo round($value['Medic']['avg_mvp'],2); ?></td>
+					<td><?php echo round($value['Medic']['avg_acc']*100,2); ?></td>
+					<td><?php echo round($value['Medic']['games_played'],2); ?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -246,7 +278,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$( "#accordion" ).accordion( {
+	$( ".accordion" ).accordion( {
 		collapsible: true,
 		heightStyle: "content",
 		activate: function(event, ui) {

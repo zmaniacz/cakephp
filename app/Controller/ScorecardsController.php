@@ -4,7 +4,7 @@ class ScorecardsController extends AppController {
 	public $components = array('RequestHandler');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','nightlyStats','allcenter');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter');
 		parent::beforeFilter();
 	}
 
@@ -79,25 +79,47 @@ class ScorecardsController extends AppController {
     }
 	
 	public function nightly() {
-		$game_dates = $this->Scorecard->getGameDates($this->center_id);
-		$this->set('game_dates', $game_dates);
-		
-		if($this->request->isPost())
-			$date = $this->request->data['Scorecard']['date'];
-		else
-			$date = reset($game_dates);
-		
-		if(!$date)
-			$date = 0;
+		if($this->center_type == 'tournament') {
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'tournament'));
+		} else {
+			$game_dates = $this->Scorecard->getGameDates($this->center_id);
+			$this->set('game_dates', $game_dates);
+			
+			if($this->request->isPost())
+				$date = $this->request->data['Scorecard']['date'];
+			else
+				$date = reset($game_dates);
+			
+			if(!$date)
+				$date = 0;
 
-		$this->set('current_date', $date);
+			$this->set('current_date', $date);
+		}
 	}
 	
-	public function nightlyStats($date) {
+	public function tournament() {
+	}
+	
+	public function nightlyStats($date = null) {
 		$this->request->onlyAllow('ajax');
 		
 		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
 		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
+	}
+
+	public function nightlyScorecards($date = null) {
+		$this->request->onlyAllow('ajax');
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
+	}
+
+	public function nightlyGames($date = null) {
+		$this->request->onlyAllow('ajax');
+		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));
+	}
+
+	public function nightlyMedicHits($date = null) {
+		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
 	}
 	

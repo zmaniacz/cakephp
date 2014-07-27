@@ -1,19 +1,14 @@
-<?php
-	echo $this->Form->create('nightly');
-	echo $this->Form->input('selectDate', array('label' => 'Select Date', 'options' => $game_dates));
-	echo $this->Form->end();
-?>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
 			"autoWidth": false,
 			"searching": false,
 			"info": false,
-			"paging": false,
+			"paging": true,
 			"ordering": false,
 			"jQueryUI": true,
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGames', 'ext' => 'json')); ?>",
 				"dataSrc" : "games",
 				"cache" : true
 			},
@@ -49,7 +44,7 @@
 			"scrollX" : true,
 			"jQueryUI": true,
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', 'ext' => 'json')); ?>",
 				"dataSrc" : "scorecards",
 				"cache" : true
 			},
@@ -75,7 +70,7 @@
 		$('#medic_hits').DataTable( {
 			"jQueryUI": true,
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', 'ext' => 'json')); ?>",
 				"dataSrc" : "medic_hits"
 			},
 			"columns" : [
@@ -137,15 +132,6 @@
 	</div>
 </div>
 <script>
-$('#nightlySelectDate').change(function() {
-	var new_game_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_overall_url = $('#overall').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_medic_url = $('#medic_hits').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	$('#game_list').DataTable().ajax.url(new_game_url).load();
-	$('#overall').DataTable().ajax.url(new_overall_url).load();
-	$('#medic_hits').DataTable().ajax.url(new_medic_url).load();
-});
-
 $( "#accordion" ).accordion( {
 	collapsible: true,
 	heightStyle: "content",
