@@ -919,7 +919,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_overall as $game): ?>
+					<?php foreach ($games_top5_score_overall as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>
@@ -943,7 +943,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_commander as $game): ?>
+					<?php foreach ($games_top5_score_commander as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>
@@ -967,7 +967,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_heavy as $game): ?>
+					<?php foreach ($games_top5_score_heavy as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>
@@ -991,7 +991,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_scout as $game): ?>
+					<?php foreach ($games_top5_score_scout as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>
@@ -1015,7 +1015,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_ammo as $game): ?>
+					<?php foreach ($games_top5_score_ammo as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>
@@ -1039,7 +1039,7 @@ $(document).ready(function(){
 					<th>MVP Points</th>
 				</thead>
 				<tbody>
-					<?php foreach ($games_top5_medic as $game): ?>
+					<?php foreach ($games_top5_score_medic as $game): ?>
 						<tr>
 							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
 							<td><?php echo $game['Game']['game_datetime']; ?></td>

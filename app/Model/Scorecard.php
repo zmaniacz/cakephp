@@ -428,7 +428,7 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 	
-	public function getPlayerTopGamesScorecardsById($player_id, $position = "") {
+	public function getPlayerTopScorecardsMVPById($player_id, $position = "") {
 		$conditions = array('player_id' => $player_id);
 		if($position != "" ) {
 			$conditions['position'] = $position;
@@ -437,6 +437,24 @@ class Scorecard extends AppModel {
 		$games = $this->find('all', array(
 			'conditions' => $conditions,
 			'order' => 'Scorecard.mvp_points DESC',
+			'limit' => 5,
+			'contain' => array(
+				'Game' => array()
+			)
+		));
+		
+		return $games;
+	}
+
+	public function getPlayerTopScorecardsScoreById($player_id, $position = "") {
+		$conditions = array('player_id' => $player_id);
+		if($position != "" ) {
+			$conditions['position'] = $position;
+		}
+	
+		$games = $this->find('all', array(
+			'conditions' => $conditions,
+			'order' => 'Scorecard.score DESC',
 			'limit' => 5,
 			'contain' => array(
 				'Game' => array()
