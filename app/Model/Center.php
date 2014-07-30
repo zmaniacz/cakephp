@@ -16,22 +16,13 @@ class Center extends AppModel {
 		)
 	);
 	
-	public function getCenterID($short_name) {
+	public function getCenterDetails($short_name) {
 		$results = $this->find('first', array(
-			'fields' => array('id'),
+			'fields' => array('id','type'),
 			'conditions' => array('short_name' => $short_name)
 		));
 		
-		return $results['Center']['id'];
-	}
-	
-	public function getCenterType($short_name) {
-		$results = $this->find('first', array(
-			'fields' => array('type'),
-			'conditions' => array('short_name' => $short_name)
-		));
-		
-		return $results['Center']['type'];
+		return $results;
 	}
 }
 ?>

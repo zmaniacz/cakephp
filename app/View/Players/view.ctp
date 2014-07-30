@@ -2,80 +2,79 @@
 	echo $this->Html->script('highcharts.js');
 	echo $this->Html->script('highcharts-more.js');
 	echo $this->Html->script('regression.js');
+	echo $this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js');
 	
-	$overall_plot = array();
-	foreach($overall[0]['Scorecard'] as $key => $val) {
-		$overall_plot[] = (float)$val['mvp_points'];
-	}
-	$overall_json = json_encode($overall_plot);
-	
-	$commander_plot = array();
-	foreach($commander[0]['Scorecard'] as $key => $val) {
-		$commander_plot[] = (float)$val['mvp_points'];
-	}
-	$commander_json = json_encode($commander_plot);
-	
-	$heavy_plot = array();
-	foreach($heavy[0]['Scorecard'] as $key => $val) {
-		$heavy_plot[] = (float)$val['mvp_points'];
-	}
-	$heavy_json = json_encode($heavy_plot);
-	
-	$scout_plot = array();
-	foreach($scout[0]['Scorecard'] as $key => $val) {
-		$scout_plot[] = (float)$val['mvp_points'];
-	}
-	$scout_json = json_encode($scout_plot);
-	
-	$ammo_plot = array();
-	foreach($ammo[0]['Scorecard'] as $key => $val) {
-		$ammo_plot[] = (float)$val['mvp_points'];
-	}
-	$ammo_json = json_encode($ammo_plot);
-	
-	$medic_plot = array();
-	foreach($medic[0]['Scorecard'] as $key => $val) {
-		$medic_plot[] = (float)$val['mvp_points'];
-	}
-	$medic_json = json_encode($medic_plot);
-	
-	
-	
+	$overall_acc_plot = array();
 	$overall_score_plot = array();
+	$overall_mvp_plot = array();
 	foreach($overall[0]['Scorecard'] as $key => $val) {
+		$overall_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$overall_score_plot[] = (float)$val['score'];
+		$overall_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$overall_acc_json = json_encode($overall_acc_plot);
 	$overall_score_json = json_encode($overall_score_plot);
-	
+	$overall_mvp_json = json_encode($overall_mvp_plot);
+
+	$commander_acc_plot = array();
 	$commander_score_plot = array();
+	$commander_mvp_plot = array();
 	foreach($commander[0]['Scorecard'] as $key => $val) {
+		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$commander_score_plot[] = (float)$val['score'];
+		$commander_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$commander_acc_json = json_encode($commander_acc_plot);
 	$commander_score_json = json_encode($commander_score_plot);
-	
+	$commander_mvp_json = json_encode($commander_mvp_plot);
+
+	$heavy_acc_plot = array();
 	$heavy_score_plot = array();
+	$heavy_mvp_plot = array();
 	foreach($heavy[0]['Scorecard'] as $key => $val) {
+		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$heavy_score_plot[] = (float)$val['score'];
+		$heavy_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$heavy_acc_json = json_encode($heavy_acc_plot);
 	$heavy_score_json = json_encode($heavy_score_plot);
-	
+	$heavy_mvp_json = json_encode($heavy_mvp_plot);
+
+	$scout_acc_plot = array();
 	$scout_score_plot = array();
+	$scout_mvp_plot = array();
 	foreach($scout[0]['Scorecard'] as $key => $val) {
+		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$scout_score_plot[] = (float)$val['score'];
+		$scout_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$scout_acc_json = json_encode($scout_acc_plot);
 	$scout_score_json = json_encode($scout_score_plot);
-	
+	$scout_mvp_json = json_encode($scout_mvp_plot);
+
+	$ammo_acc_plot = array();
 	$ammo_score_plot = array();
+	$ammo_mvp_plot = array();
 	foreach($ammo[0]['Scorecard'] as $key => $val) {
+		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$ammo_score_plot[] = (float)$val['score'];
+		$ammo_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$ammo_acc_json = json_encode($ammo_acc_plot);
 	$ammo_score_json = json_encode($ammo_score_plot);
-	
+	$ammo_mvp_json = json_encode($ammo_mvp_plot);
+
+	$medic_acc_plot = array();
 	$medic_score_plot = array();
+	$medic_mvp_plot = array();
 	foreach($medic[0]['Scorecard'] as $key => $val) {
+		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$medic_score_plot[] = (float)$val['score'];
+		$medic_mvp_plot[] = (float)$val['mvp_points'];
 	}
+	$medic_acc_json = json_encode($medic_acc_plot);
 	$medic_score_json = json_encode($medic_score_plot);
+	$medic_mvp_json = json_encode($medic_mvp_plot);
 ?>
 
 <script class="code" type="text/javascript">
@@ -238,413 +237,584 @@ $(document).ready(function(){
 		}
 	});
 	
-	var line1 = <?php echo $overall_json; ?>;
-	var line2 = <?php echo $commander_json; ?>;
-	var line3 = <?php echo $heavy_json; ?>;
-	var line4 = <?php echo $scout_json; ?>;
-	var line5 = <?php echo $ammo_json; ?>;
-	var line6 = <?php echo $medic_json; ?>;
+	var overall_mvp_data = <?php echo $overall_mvp_json; ?>;
+	var commander_mvp_data = <?php echo $commander_mvp_json; ?>;
+	var heavy_mvp_data = <?php echo $heavy_mvp_json; ?>;
+	var scout_mvp_data = <?php echo $scout_mvp_json; ?>;
+	var ammo_mvp_data = <?php echo $ammo_mvp_json; ?>;
+	var medic_mvp_data = <?php echo $medic_mvp_json; ?>;
 	
-	var line7 = <?php echo $overall_score_json; ?>;
-	var line8 = <?php echo $commander_score_json; ?>;
-	var line9 = <?php echo $heavy_score_json; ?>;
-	var line10 = <?php echo $scout_score_json; ?>;
-	var line11 = <?php echo $ammo_score_json; ?>;
-	var line12 = <?php echo $medic_score_json; ?>;
+	var overall_score_data = <?php echo $overall_score_json; ?>;
+	var commander_score_data = <?php echo $commander_score_json; ?>;
+	var heavy_score_data = <?php echo $heavy_score_json; ?>;
+	var scout_score_data = <?php echo $scout_score_json; ?>;
+	var ammo_score_data = <?php echo $ammo_score_json; ?>;
+	var medic_score_data = <?php echo $medic_score_json; ?>;
+
+	var overall_acc_data = <?php echo $overall_acc_json; ?>;
+	var commander_acc_data = <?php echo $commander_acc_json; ?>;
+	var heavy_acc_data = <?php echo $heavy_acc_json; ?>;
+	var scout_acc_data = <?php echo $scout_acc_json; ?>;
+	var ammo_acc_data = <?php echo $ammo_acc_json; ?>;
+	var medic_acc_data = <?php echo $medic_acc_json; ?>;
 	
-	(line1.length < 1) ? line1 = [null] : "";
-	(line2.length < 1) ? line2 = [null] : "";
-	(line3.length < 1) ? line3 = [null] : "";
-	(line4.length < 1) ? line4 = [null] : "";
-	(line5.length < 1) ? line5 = [null] : "";
-	(line6.length < 1) ? line6 = [null] : "";
-	(line7.length < 1) ? line7 = [null] : "";
-	(line8.length < 1) ? line8 = [null] : "";
-	(line9.length < 1) ? line9 = [null] : "";
-	(line10.length < 1) ? line10 = [null] : "";
-	(line11.length < 1) ? line11 = [null] : "";
-	(line12.length < 1) ? line12 = [null] : "";
+	(overall_mvp_data.length < 1) ? line1 = [null] : "";
+	(commander_mvp_data.length < 1) ? line2 = [null] : "";
+	(heavy_mvp_data.length < 1) ? line3 = [null] : "";
+	(scout_mvp_data.length < 1) ? line4 = [null] : "";
+	(ammo_mvp_data.length < 1) ? line5 = [null] : "";
+	(medic_mvp_data.length < 1) ? line6 = [null] : "";
+	(overall_score_data.length < 1) ? line7 = [null] : "";
+	(commander_score_data.length < 1) ? line8 = [null] : "";
+	(heavy_score_data.length < 1) ? line9 = [null] : "";
+	(scout_score_data.length < 1) ? line10 = [null] : "";
+	(ammo_score_data.length < 1) ? line11 = [null] : "";
+	(medic_score_data.length < 1) ? line12 = [null] : "";
 	
-	$('#overall_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Overall'},
-		legend: {enabled: false},
+	$('#acc_plot').highcharts({
+		chart: {
+			alignTicks: false
+		},
+		title: {text: 'Accuracy'},
+		legend: {
+			enabled: true,
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle',
+			borderWidth: 0
+		},
 		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
+			title: {text: 'Accuracy'},
+			max: 100,
 			tickInterval: 5
 		},
-		xAxis: {
-			title: {text: 'Number of Games'},
+		xAxis: [{
 			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
-			name: 'Overall',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line1
+			minPadding: 0.1,
+			min: 5,
+			max: overall_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line1).data;
-			})()
-		}
-		]
-	});
-	
-	$('#commander_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Commander'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
-			tickInterval: 5
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
 			maxPadding: 0.1,
-			minPadding: 0.1
+			minPadding: 0.1,
+			min: 5,
+			max: commander_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
 		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: heavy_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: scout_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: ammo_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: medic_acc_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		}],
 		series: [{
+			id: 'overall',
+			name: 'All Positions (Scatter)',
 			type: 'scatter',
-			marker: {radius: 2},
+			data: overall_acc_data,
+			visible: false,
+			xAxis: 0
+		},
+		{
+			id: 'commander',
+			name: 'Commander (Scatter)',
+			type: 'scatter',
+			data: commander_acc_data,
+			visible: false,
+			xAxis: 1
+		},
+		{
+			id: 'heavy',
+			name: 'Heavy Weapons (Scatter)',
+			type: 'scatter',
+			data: heavy_acc_data,
+			visible: false,
+			xAxis: 2
+		},
+		{
+			id: 'scout',
+			name: 'Scout (Scatter)',
+			type: 'scatter',
+			data: scout_acc_data,
+			visible: false,
+			xAxis: 3
+		},
+		{
+			id: 'ammo',
+			name: 'Ammo Carrier (Scatter)',
+			type: 'scatter',
+			data: ammo_acc_data,
+			visible: false,
+			xAxis: 4
+		},
+		{
+			id: 'medic',
+			name: 'Medic (Scatter)',
+			type: 'scatter',
+			data: medic_acc_data,
+			visible: false,
+			xAxis: 5
+		},
+		{
+			name: 'All Positions',
+			type: 'trendline',
+			linkedTo: 'overall',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 0
+		},
+		{
 			name: 'Commander',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line2
+			type: 'trendline',
+			linkedTo: 'commander',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 1
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line2).data;
-			})()
-		}
-		]
-	});
-	
-	$('#heavy_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Heavy Weapons'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
-			tickInterval: 5
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Heavy Weapons',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line3
+			type: 'trendline',
+			linkedTo: 'heavy',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 2
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line3).data;
-			})()
-		}
-		]
-	});
-	
-	$('#scout_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Scout'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
-			tickInterval: 5
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Scout',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line4
+			type: 'trendline',
+			linkedTo: 'scout',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 3
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line4).data;
-			})()
-		}
-		]
-	});
-	
-	$('#ammo_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Ammo Carrier'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
-			tickInterval: 5
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Ammo Carrier',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line5
+			type: 'trendline',
+			linkedTo: 'ammo',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 4
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line5).data;
-			})()
-		}
-		]
-	});
-	
-	$('#medic_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Medic'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'MVP Points'},
-			max: 40,
-			tickInterval: 5
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Medic',
-			tooltip: {pointFormat: 'MVP Points: {point.y}'},
-			data: line6
-		},
-		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line6).data;
-			})()
+			type: 'trendline',
+			linkedTo: 'medic',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 5
 		}
 		]
 	});
-	
-	$('#overall_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Overall'},
-		legend: {enabled: false},
+
+
+	$('#mvp_plot').highcharts({
+		chart: {
+			alignTicks: false
+		},
+		title: {text: 'MVP Points'},
+		legend: {
+			enabled: true,
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle',
+			borderWidth: 0
+		},
 		yAxis: {
 			title: {text: 'Score'},
-			max: 15000,
-			tickInterval: 1000
+			max: 25,
+			tickInterval: 1
 		},
-		xAxis: {
-			title: {text: 'Number of Games'},
+		xAxis: [{
 			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
-			name: 'Overall',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line7
+			minPadding: 0.1,
+			min: 5,
+			max: overall_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line7).data;
-			})()
-		}
-		]
-	});
-	
-	$('#commander_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Commander'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'Score'},
-			max: 15000,
-			tickInterval: 1000
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
 			maxPadding: 0.1,
-			minPadding: 0.1
+			minPadding: 0.1,
+			min: 5,
+			max: commander_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
 		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: heavy_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: scout_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: ammo_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: medic_mvp_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		}],
 		series: [{
+			id: 'overall',
+			name: 'All Positions (Scatter)',
 			type: 'scatter',
-			marker: {radius: 2},
+			data: overall_mvp_data,
+			visible: false,
+			xAxis: 0
+		},
+		{
+			id: 'commander',
+			name: 'Commander (Scatter)',
+			type: 'scatter',
+			data: commander_mvp_data,
+			visible: false,
+			xAxis: 1
+		},
+		{
+			id: 'heavy',
+			name: 'Heavy Weapons (Scatter)',
+			type: 'scatter',
+			data: heavy_mvp_data,
+			visible: false,
+			xAxis: 2
+		},
+		{
+			id: 'scout',
+			name: 'Scout (Scatter)',
+			type: 'scatter',
+			data: scout_mvp_data,
+			visible: false,
+			xAxis: 3
+		},
+		{
+			id: 'ammo',
+			name: 'Ammo Carrier (Scatter)',
+			type: 'scatter',
+			data: ammo_mvp_data,
+			visible: false,
+			xAxis: 4
+		},
+		{
+			id: 'medic',
+			name: 'Medic (Scatter)',
+			type: 'scatter',
+			data: medic_mvp_data,
+			visible: false,
+			xAxis: 5
+		},
+		{
+			name: 'All Positions',
+			type: 'trendline',
+			linkedTo: 'overall',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 0
+		},
+		{
 			name: 'Commander',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line8
+			type: 'trendline',
+			linkedTo: 'commander',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 1
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line8).data;
-			})()
-		}
-		]
-	});
-	
-	$('#heavy_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Heavy Weapons'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'Score'},
-			max: 15000,
-			tickInterval: 1000
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Heavy Weapons',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line9
+			type: 'trendline',
+			linkedTo: 'heavy',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 2
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line9).data;
-			})()
-		}
-		]
-	});
-	
-	$('#scout_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Scout'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'Score'},
-			max: 15000,
-			tickInterval: 1000
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Scout',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line10
+			type: 'trendline',
+			linkedTo: 'scout',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 3
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line10).data;
-			})()
-		}
-		]
-	});
-	
-	$('#ammo_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Ammo Carrier'},
-		legend: {enabled: false},
-		yAxis: {
-			title: {text: 'Score'},
-			max: 15000,
-			tickInterval: 1000
-		},
-		xAxis: {
-			title: {text: 'Number of Games'},
-			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
 			name: 'Ammo Carrier',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line11
+			type: 'trendline',
+			linkedTo: 'ammo',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 4
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line11).data;
-			})()
+			name: 'Medic',
+			type: 'trendline',
+			linkedTo: 'medic',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 5
 		}
 		]
 	});
-	
-	$('#medic_score_plot').highcharts({
-		chart: {type: 'scatter'},
-		title: {text: 'Medic'},
-		legend: {enabled: false},
+
+
+	$('#score_plot').highcharts({
+		chart: {
+			alignTicks: false
+		},
+		title: {text: 'Score'},
+		legend: {
+			enabled: true,
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle',
+			borderWidth: 0
+		},
 		yAxis: {
 			title: {text: 'Score'},
 			max: 15000,
 			tickInterval: 1000
 		},
-		xAxis: {
-			title: {text: 'Number of Games'},
+		xAxis: [{
 			maxPadding: 0.1,
-			minPadding: 0.1
-		},
-		series: [{
-			type: 'scatter',
-			marker: {radius: 2},
-			name: 'Medic',
-			tooltip: {pointFormat: 'Score: {point.y}'},
-			data: line12
+			minPadding: 0.1,
+			min: 5,
+			max: overall_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
 		},
 		{
-			type: 'line',
-			marker: {enabled: false},
-			enableMouseTracking: false,
-			data: (function() {
-				return fitData(line12).data;
-			})()
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: commander_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: heavy_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: scout_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: ammo_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: medic_score_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		}],
+		series: [{
+			id: 'overall',
+			name: 'All Positions (Scatter)',
+			type: 'scatter',
+			data: overall_score_data,
+			visible: false,
+			xAxis: 0
+		},
+		{
+			id: 'commander',
+			name: 'Commander (Scatter)',
+			type: 'scatter',
+			data: commander_score_data,
+			visible: false,
+			xAxis: 1
+		},
+		{
+			id: 'heavy',
+			name: 'Heavy Weapons (Scatter)',
+			type: 'scatter',
+			data: heavy_score_data,
+			visible: false,
+			xAxis: 2
+		},
+		{
+			id: 'scout',
+			name: 'Scout (Scatter)',
+			type: 'scatter',
+			data: scout_score_data,
+			visible: false,
+			xAxis: 3
+		},
+		{
+			id: 'ammo',
+			name: 'Ammo Carrier (Scatter)',
+			type: 'scatter',
+			data: ammo_score_data,
+			visible: false,
+			xAxis: 4
+		},
+		{
+			id: 'medic',
+			name: 'Medic (Scatter)',
+			type: 'scatter',
+			data: medic_score_data,
+			visible: false,
+			xAxis: 5
+		},
+		{
+			name: 'All Positions',
+			type: 'trendline',
+			linkedTo: 'overall',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 0
+		},
+		{
+			name: 'Commander',
+			type: 'trendline',
+			linkedTo: 'commander',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 1
+		},
+		{
+			name: 'Heavy Weapons',
+			type: 'trendline',
+			linkedTo: 'heavy',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 2
+		},
+		{
+			name: 'Scout',
+			type: 'trendline',
+			linkedTo: 'scout',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 3
+		},
+		{
+			name: 'Ammo Carrier',
+			type: 'trendline',
+			linkedTo: 'ammo',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 4
+		},
+		{
+			name: 'Medic',
+			type: 'trendline',
+			linkedTo: 'medic',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: 10,
+			xAxis: 5
 		}
 		]
 	});
@@ -667,8 +837,6 @@ $(document).ready(function(){
 	<ul>
 		<li><a href="#overall_tab">Overall</a></li>
 		<li><a href="#teammates_tab">Teammates</a></li>
-		<li><a href="#stat_plots_tab">Stat Plots MVP</a></li>
-		<li><a href="#stat_plots_score_tab">Stat Plots Score</a></li>
 		<li><a href="#game_list_tab">Game List</a></li>
 	</ul>
 	<div id="overall_tab">
@@ -709,6 +877,18 @@ $(document).ready(function(){
 		?>
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		<div id="position_spider" style="height: 500px; width: 800px"></div>
+		<br />
+		<br />
+		<br />
+		<p>The following graphs represent an exponentially weighted rolling 10-game average for accuracy, score and MVP points both overall and by position.<br />
+		Individual lines can be turned on and off by clicking on the title in the legend.<br />
+		Clicking the legend items marked scatter will show all the points on the graph for the data set, if you like that sort of thing.<br />
+		These graphs are not affected by the filters above.</p>
+		<div id="acc_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
 	</div>
 	<div id="teammates_tab">
 		<?php
@@ -761,296 +941,6 @@ $(document).ready(function(){
 				</table>
 			</span>
 		</div>
-	</div>
-	<div id="stat_plots_tab">
-		<span id="overall_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="overall_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_overall as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="commander_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="commander_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_commander as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="heavy_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="heavy_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_heavy as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="scout_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="scout_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_scout as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="ammo_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="ammo_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_ammo as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="medic_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="medic_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_medic as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-	</div>
-	<div id="stat_plots_score_tab">
-		<span id="overall_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="overall_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_overall as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="commander_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="commander_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_commander as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="heavy_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="heavy_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_heavy as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="scout_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="scout_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_scout as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="ammo_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="ammo_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_ammo as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
-		<br />
-		<span id="medic_score_plot" style="display: inline-block;height:250px;width:500px; "></span>
-		<span id="medic_score_topgames" style="display: inline-block;width:500px">
-			<table>
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP Points</th>
-				</thead>
-				<tbody>
-					<?php foreach ($games_top5_score_medic as $game): ?>
-						<tr>
-							<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
-							<td><?php echo $game['Game']['game_datetime']; ?></td>
-							<td><?php echo $game['Scorecard']['position']; ?></td>
-							<td><?php echo $game['Scorecard']['score']; ?></td>
-							<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</span>
 	</div>
 	<div id="game_list_tab">
 		<table class="gamelist">

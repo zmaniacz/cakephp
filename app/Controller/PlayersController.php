@@ -24,18 +24,6 @@ class PlayersController extends AppController {
 			$this->set('ammo', $this->Player->getPlayerStats($id, 'Ammo Carrier'));
 			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic'));
 			$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id));
-			$this->set('games_top5_overall', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id));
-			$this->set('games_top5_commander', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id,'Commander'));
-			$this->set('games_top5_heavy', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id,'Heavy Weapons'));
-			$this->set('games_top5_scout', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id,'Scout'));
-			$this->set('games_top5_ammo', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id,'Ammo Carrier'));
-			$this->set('games_top5_medic', $this->Player->Scorecard->getPlayerTopScorecardsMVPById($id,'Medic'));
-			$this->set('games_top5_score_overall', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id));
-			$this->set('games_top5_score_commander', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id,'Commander'));
-			$this->set('games_top5_score_heavy', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id,'Heavy Weapons'));
-			$this->set('games_top5_score_scout', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id,'Scout'));
-			$this->set('games_top5_score_ammo', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id,'Ammo Carrier'));
-			$this->set('games_top5_score_medic', $this->Player->Scorecard->getPlayerTopScorecardsScoreById($id,'Medic'));
 			$this->set('teammates',$this->Player->getMyTeammates($id));
 		}
 	}
