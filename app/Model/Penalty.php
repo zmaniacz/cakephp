@@ -14,13 +14,6 @@ class Penalty extends AppModel {
  */
 	public $displayField = 'type';
 
-	/*public $validate = array(
-		'type' => array(
-			'rule' => array('inList', array('Illegal Language','Leaving Starting Area'))
-		)
-	);*/
-
-
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**

@@ -128,7 +128,7 @@ class ScorecardsController extends AppController {
 					'game_datetime' => date("Y-m-d H-i-s",strtotime($csvline[1])), 
 					'team' => $csvline[2], 
 					'position' => $csvline[3], 
-					'score' => $csvline[4],
+					'score' => ($csvline[4]+(1000*$csvline[22])),
 					'game_type' => $csvline[5],
 					'shots_hit' => $csvline[6],
 					'shots_fired' => $csvline[7],
@@ -147,8 +147,7 @@ class ScorecardsController extends AppController {
 					'ammo_boost' => $csvline[19],
 					'lives_left' => $csvline[20],
 					'shots_left' => $csvline[21],
-					//Skipping penalties, aim is to enter them manually later
-					//'penalties' => $csvline[22],
+					'penalties' => $csvline[22],
 					'shot_3hit' => $csvline[23],
 					'elim_other_team' => $csvline[24],
 					'team_elim' => $csvline[25],
@@ -164,6 +163,16 @@ class ScorecardsController extends AppController {
 					'center_id' => $this->center_id));
 				$this->Scorecard->save();
 				$row++;
+
+				for($i=1; $i<=$csvline[22]; $i++) {
+					$this->Scorecard->Penalty->create();
+					$this->Scorecard->Penalty->set(array(
+						'type' => 'Unknown',
+						'value' => -1000,
+						'scorecard_id' => $this->Scorecard->getLastInsertId()
+					));
+					$this->Scorecard->Penalty->save();
+				}
 			}
 			fclose($handle);
 			
@@ -202,7 +211,7 @@ class ScorecardsController extends AppController {
 				'game_datetime' => date("Y-m-d H-i-s",strtotime($csvline[1])), 
 				'team' => $csvline[2], 
 				'position' => $csvline[3], 
-				'score' => $csvline[4],
+				'score' => ($csvline[4]+(1000*$csvline[22])),
 				'game_type' => $csvline[5],
 				'shots_hit' => $csvline[6],
 				'shots_fired' => $csvline[7],
@@ -221,8 +230,7 @@ class ScorecardsController extends AppController {
 				'ammo_boost' => $csvline[19],
 				'lives_left' => $csvline[20],
 				'shots_left' => $csvline[21],
-				//Skipping penalties, aim is to enter them manually later
-				//'penalties' => $csvline[22],
+				'penalties' => $csvline[22],
 				'shot_3hit' => $csvline[23],
 				'elim_other_team' => $csvline[24],
 				'team_elim' => $csvline[25],
@@ -238,6 +246,16 @@ class ScorecardsController extends AppController {
 				'center_id' => $this->center_id));
 			$this->Scorecard->save();
 			$row++;
+
+			for($i=1; $i<=$csvline[22]; $i++) {
+				$this->Scorecard->Penalty->create();
+				$this->Scorecard->Penalty->set(array(
+					'type' => 'Unknown',
+					'value' => -1000,
+					'scorecard_id' => $this->Scorecard->getLastInsertId()
+				));
+				$this->Scorecard->Penalty->save();
+			}
 		}
 		fclose($handle);
 		

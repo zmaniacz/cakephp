@@ -72,8 +72,8 @@ function overallData(data) {
 		"data" : data['averages'],
 		"columns" : [
 			{ "data" : "position"},
-			{ "data" : "avg_score" },
-			{ "data" : "avg_mvp"}
+			{ "data" : "avg_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}},
+			{ "data" : "avg_mvp", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
 		],
 	});
 
@@ -89,8 +89,8 @@ function overallData(data) {
 		"data" : data['scoredetail'],
 		"columns" : [
 			{ "data" : "Game"},
-			{ "data" : "green_score" },
-			{ "data" : "red_score"}
+			{ "data" : "green_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);} },
+			{ "data" : "red_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
 		],
 	});
 }

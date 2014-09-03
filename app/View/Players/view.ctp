@@ -1,7 +1,6 @@
 <?php
 	echo $this->Html->script('highcharts.js');
 	echo $this->Html->script('highcharts-more.js');
-	echo $this->Html->script('regression.js');
 	echo $this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js');
 	
 	$overall_acc_plot = array();
@@ -273,7 +272,8 @@ $(document).ready(function(){
 	
 	$('#acc_plot').highcharts({
 		chart: {
-			alignTicks: false
+			alignTicks: false,
+
 		},
 		title: {text: 'Accuracy'},
 		legend: {
