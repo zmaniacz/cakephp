@@ -11,6 +11,12 @@
 /tags
 *.pdf
 *.csv
+*.mo
+
+# IDE and editor specific files #
+#################################
+/nbproject
+.idea
 
 # OS generated files #
 ######################

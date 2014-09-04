@@ -107,8 +107,10 @@ p {
 #footer {
 	clear: both;
 	padding: 6px 10px;
-	text-align: right;
 }
+}
+#cake-powered {
+	float: right;
 
 /** containers **/
 div.form,
