@@ -1,7 +1,6 @@
 <?php
 
 class ScorecardsController extends AppController {
-	public $components = array('RequestHandler');
 
 	public function beforeFilter() {
 		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter');
@@ -19,44 +18,44 @@ class ScorecardsController extends AppController {
 	}
 
 	public function upload() {
-        $this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 
-        App::import('Vendor','UploadHandler',array('file' => 'UploadHandler/UploadHandler.php'));
+		App::import('Vendor','UploadHandler',array('file' => 'UploadHandler/UploadHandler.php'));
 
-        $options = array
-        (
-            'script_url' => FULL_BASE_URL.DS.$this->request->params['center'].DS.'scorecards/upload/',
-            'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS,
-            'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS,
-            'image_versions' => array()
-        );
+		$options = array
+		(
+			'script_url' => FULL_BASE_URL.DS.$this->request->params['center'].DS.'scorecards/upload/',
+			'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS,
+			'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->center_id.DS,
+			'image_versions' => array()
+			);
 
-        $upload_handler = new UploadHandler($options, $initialize = false);
-        switch ($_SERVER['REQUEST_METHOD'])
-        {
-            case 'HEAD':
-            case 'GET':
-                $upload_handler->get();
-                break;
-            case 'POST':
-                $upload_handler->post();
-                break;
-            case 'DELETE':
-                $upload_handler->delete();
-                break;
-            default:
-                header('HTTP/1.0 405 Method Not Allowed');
-        }
-        exit;
-    }
+		$upload_handler = new UploadHandler($options, $initialize = false);
+		switch ($_SERVER['REQUEST_METHOD'])
+		{
+			case 'HEAD':
+			case 'GET':
+			$upload_handler->get();
+			break;
+			case 'POST':
+			$upload_handler->post();
+			break;
+			case 'DELETE':
+			$upload_handler->delete();
+			break;
+			default:
+			header('HTTP/1.0 405 Method Not Allowed');
+		}
+		exit;
+	}
 
-    public function parse() {
+	public function parse() {
 		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $this->center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
 
 	public function checkPid($pid) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 
 		$cmd = "ps $pid";
 		exec($cmd, $output, $result);

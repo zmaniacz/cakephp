@@ -57,6 +57,7 @@ class AppController extends Controller {
 	public function beforeFilter() {
 		$center = $this->Center->getCenterDetails($this->request->params['center']);
 		$this->center_id = $center['Center']['id'];
+		//$this->params->center_id = $center['Center']['id'];
 		$this->center_type = $center['Center']['type'];
 	}
 }

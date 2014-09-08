@@ -53,12 +53,12 @@ h1 {
 h2 {
 	background:#fff;
 	color: #e32;
-	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
+	font-family: 'lucida grande', helvetica, arial, sans-serif;
 	font-size: 190%;
 }
 h3 {
 	color: #2c6877;
-	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
+	font-family: 'lucida grande', helvetica, arial, sans-serif;
 	font-size: 165%;
 }
 h4 {
@@ -82,7 +82,7 @@ p {
 }
 #header h1 {
 	line-height:20px;
-	background: #003d4c url('../img/LF-logo1-shadow-small.png') no-repeat left;
+	background: #003d4c url('../img/cake.icon.png') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
 }
@@ -108,9 +108,12 @@ p {
 	clear: both;
 	padding: 6px 10px;
 }
+#header a, #footer a {
+	color: #333;
 }
 #cake-powered {
 	float: right;
+}
 
 /** containers **/
 div.form,

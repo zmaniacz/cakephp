@@ -2,11 +2,12 @@
     echo $this->Html->css(array('JqueryFileUpload/jquery.fileupload','JqueryFileUpload/jquery.fileupload-ui'));
 ?>
 <div>
-    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?php echo $this->Html->link("Process", array('controller' => 'uploads', 'action' => 'parse', 'league_id' => $this->request->named['league_id'], 'center_id' => $this->request->named['center_id'])); ?> to start the import.
+    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?php echo $this->Html->link("Process", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'parse')); ?> to start the import.
 </div>
 <!-- The file upload form used as target for the file upload widget -->
-<!--<form id="fileupload" action="uploads/upload" method="POST" enctype="multipart/form-data">-->
-    <?php echo $this->Form->create('fileupload', array('type' => 'file', 'id' => 'fileupload')); ?>
+<form id="fileupload" action="scorecards/upload" method="POST" enctype="multipart/form-data">
+    <!-- Redirect browsers with JavaScript disabled to the origin page -->
+    <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="fileupload-buttonbar">
         <div class="fileupload-buttons">

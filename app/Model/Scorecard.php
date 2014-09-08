@@ -396,6 +396,26 @@ class Scorecard extends AppModel {
 		));
 		return $scores;
 	}
+
+	public function getMedicHitStatsByRound($round, $league_id) {
+		//need to do round shit here
+		$conditions = array();
+			
+		$conditions[] = array('Scorecard.league_id' => $league_id);
+	
+		$scores = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
+			),
+			'conditions' => $conditions,
+			'group' => 'player_name',
+			'order' => 'total_medic_hits DESC'
+		));
+		return $scores;
+	}
 	
 	public function getPlayerGamesScorecardsById($player_id, $filter = null) {
 		$conditions = array();
@@ -618,6 +638,22 @@ class Scorecard extends AppModel {
 			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
 			
 		$conditions[] = array('Scorecard.center_id' => $center_id);
+	
+		$scorecards = $this->find('all', array(
+			'conditions' => $conditions,
+			'contain' => array(
+				'Game' => array()
+			)
+		));
+		
+		return $scorecards;
+	}
+
+	public function getLeagueScorecardsByRound($round, $league_id) {
+		//doesnt do shit with rounds yet, just pulls everything
+		$conditions = array();
+			
+		$conditions[] = array('Scorecard.league_id' => $league_id);
 	
 		$scorecards = $this->find('all', array(
 			'conditions' => $conditions,
