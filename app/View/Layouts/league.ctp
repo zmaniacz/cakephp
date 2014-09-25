@@ -53,7 +53,7 @@
 			<ul id="topmenu">
 				<li><?php echo $this->Html->link("Team Standings", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'standings')); ?></li>
 				<li><?php echo $this->Html->link("Player Standings", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'players')); ?></li>
-				<li><?php echo $this->Html->link("Game List", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'gamelist')); ?></li>
+				<li><?php echo $this->Html->link("Game List", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'gameList')); ?></li>
 				<li><?php echo $this->Html->link("Penalties", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'penalties')); ?></li>
 				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
 				<?php

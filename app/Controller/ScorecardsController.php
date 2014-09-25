@@ -72,9 +72,9 @@ class ScorecardsController extends AppController {
 		$this->set('scout', $this->Scorecard->getPositionStats('Scout',null,$this->center_id));
 		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',null,$this->center_id));
 		$this->set('medic', $this->Scorecard->getPositionStats('Medic',null,$this->center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true, $this->center_id));
-		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false, $this->center_id));
-		$this->set('averages', $this->Scorecard->getAllAvgMVP($this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,null,$this->center_id));
+		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,null,$this->center_id));
+		$this->set('averages', $this->Scorecard->getAllAvgMVP(null,$this->center_id));
     }
 	
 	public function nightly() {

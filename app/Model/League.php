@@ -78,4 +78,15 @@ class League extends AppModel {
 
 		return $teams;
 	}
+
+	public function getTeams($league_id) {
+		$teams = $this->Team->find('list', array(
+			'conditions' => array(
+				'league_id' => $league_id
+			),
+			'order' => 'name ASC'
+		));
+
+		return $teams;
+	}
 }

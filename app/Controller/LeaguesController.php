@@ -6,7 +6,7 @@ App::uses('AppController', 'Controller');
  * @property League $League
  */
 class LeaguesController extends AppController {
-	public $uses = array('League','Scorecard');
+	public $uses = array('League','Scorecard','Game');
 /**
  * Components
  *
@@ -16,7 +16,7 @@ class LeaguesController extends AppController {
 
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getteams','ajax_getScorecards','ajax_getMedicHits');
+		$this->Auth->allow('index','standings','ajax_getteams','ajax_getScorecards','ajax_getMedicHits','players','gameList');
 		$this->layout = 'league';
 		if(isset($this->request->params['league_id'])) {
 			$this->set('league', $this->League->findById($this->request->params['league_id']));
@@ -50,6 +50,30 @@ class LeaguesController extends AppController {
 	public function ajax_getMedicHits($round = null) {
 		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByRound($round, $this->request->params['league_id']));
+	}
+
+/**
+* player standings methods
+*/
+	public function players() {
+		$filter = array();
+		$filter['league'] = $this->request->params['league_id'];
+
+		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$filter,$this->center_id));
+		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$filter,$this->center_id));
+		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$filter,$this->center_id));
+		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$this->center_id));
+		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,$filter,$this->center_id));
+		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$this->center_id));
+		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$this->center_id));
+	}
+
+/**
+* Game list methods
+*/
+	public function gameList() {
+		$this->set('games', $this->Game->getLeagueGameList($this->request->params['league_id']));
 	}
 
 /**
@@ -103,6 +127,24 @@ class LeaguesController extends AppController {
 		}
 		$centers = $this->League->Center->find('list');
 		$this->set(compact('centers'));
+	}
+
+	public function editGame($game_id = null) {
+		if (!$this->Game->exists($game_id)) {
+			throw new NotFoundException(__('Invalid game'));
+		}
+		if ($this->request->is(array('post', 'put'))) {
+			if ($this->Game->save($this->request->data)) {
+				$this->Session->setFlash(__('The game has been saved.'));
+				return $this->redirect(array('controller' => 'leagues/'.$this->request->params['league_id'], 'action' => 'gameList'));
+			} else {
+				$this->Session->setFlash(__('The game could not be saved. Please, try again.'));
+			}
+		} else {
+			$options = array('conditions' => array('Game.' . $this->Game->primaryKey => $game_id));
+			$this->request->data = $this->Game->find('first', $options);
+			$this->set('teams', $this->League->getTeams($this->request->params['league_id']));
+		}
 	}
 
 /**

@@ -27,7 +27,7 @@ class GamesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->set('games', $this->Game->getGameList($this->center_id));
+		$this->set('games', $this->Game->getGameList(null,$this->center_id));
 	}
 
 /**

@@ -136,14 +136,14 @@ class Scorecard extends AppModel {
 		return $counter;
 	}
 	
-	public function generateGames($center_id) {
+	public function generateGames($center_id, $green_pens = null, $red_pens = null) {
 	
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
 		
 		$scores = $this->query("SELECT green.game_datetime, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id
 			FROM (
-				SELECT game_datetime, pdf_id, SUM(score) AS score, SUM(team_elim) AS team_elim
+				SELECT game_datetime, pdf_id, league_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
 				WHERE team = 'Green' AND game_id IS NULL AND center_id=$center_id
 				GROUP BY game_datetime
@@ -184,9 +184,17 @@ class Scorecard extends AppModel {
 	
 			if($score['green']['team_elim'] > 0) {
 				$green_elim = 1;
-				$red_adj = 10000;
+				$red_adj += 10000;
+			}
+
+			if(!is_null($green_pens)) {
+				$green_adj += $green_pens;
 			}
 			
+			if(!is_null($red_pens)) {
+				$red_adj += $red_pens;
+			}
+
 			$winner = 'Green';
 			if(($score['red']['score'] + $red_adj) > ($score['green']['score'] + $green_adj))
 				$winner = 'Red';
@@ -204,6 +212,7 @@ class Scorecard extends AppModel {
 				'green_eliminated' => $green_elim,
 				'winner' => $winner,
 				'pdf_id' => $score['green']['pdf_id'],
+				'league_id' => $score['green']['league_id'],
 				'center_id' => $center_id
 			));
 			$this->Game->save();
@@ -212,6 +221,8 @@ class Scorecard extends AppModel {
 				array('Scorecard.game_id' =>  '"' . $this->Game->id . '"'),
 				array('Scorecard.game_datetime' => $score['green']['game_datetime'])
 			);
+
+			$penalties = $this->
 			
 			$counter++;
 		}
@@ -301,6 +312,11 @@ class Scorecard extends AppModel {
 					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
 				}
 			}
+			if(isset($filter['league'])) {
+				if($filter['league'] > 0) {
+					$conditions[] = array('league_id' => $filter['league']);
+				}
+			}
 		}
 		
 		$scores = $this->find('all', array(
@@ -353,12 +369,20 @@ class Scorecard extends AppModel {
 				'conditions*/
 	}
 	
-	public function getMedicHitStats($resup_only, $center_id = null) {
+	public function getMedicHitStats($resup_only, $filter = null, $center_id = null) {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
 
 		if($resup_only)
 			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));
+
+		if(!is_null($filter)) {
+			if(isset($filter['league'])) {
+				if($filter['league'] > 0) {
+					$conditions[] = array('league_id' => $filter['league']);
+				}
+			}
+		}
 
 		$scores = $this->find('all', array(
 			'fields' => array(
@@ -533,9 +557,17 @@ class Scorecard extends AppModel {
 		return $overall;
 	}
 	
-	public function getAllAvgMVP($center_id = null) {
+	public function getAllAvgMVP($filter = null, $center_id = null) {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
+
+		if(!is_null($filter)) {
+			if(isset($filter['league'])) {
+				if($filter['league'] > 0) {
+					$conditions[] = array('league_id' => $filter['league']);
+				}
+			}
+		}
 
 		$players = $this->find('all', array(
 			'fields' => array(

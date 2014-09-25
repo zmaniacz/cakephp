@@ -12,7 +12,15 @@ class Game extends AppModel {
 		'Center' => array(
 			'className' => 'Center',
 			'foreignKey' => 'center_id'
-		)
+		),
+		'Red_Team' => array(
+			'className' => 'Team',
+			'foreignKey' => 'red_team_id'
+		),
+		'Green_Team' => array(
+			'className' => 'Team',
+			'foreignKey' => 'green_team_id'
+		),
 	);
 	
 	public function getOverallStats($filter_type, $games_limit = null, $center_id = null) {
@@ -87,12 +95,34 @@ class Game extends AppModel {
 		return $overall;
 	}
 
-	public function getGameList($center_id = null) {
+	public function getGameList($league_id = null, $center_id = null) {
+		$conditions = array();
+
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
+		if(!is_null($league_id))
+			$conditions[] = array('league_id' => $league_id);
+
+
 		$games = $this->find('all', array(
-			'conditions' => array(
-				'center_id' => $center_id
-			),
+			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
+		));
+		return $games;
+	}
+
+	public function getLeagueGameList($league_id) {
+		$conditions = array();
+
+		if(!is_null($league_id))
+			$conditions[] = array('Game.league_id' => $league_id);
+
+
+		$games = $this->find('all', array(
+			'contain' => array('Red_Team', 'Green_Team'),
+			'conditions' => $conditions,
+			'order' => 'Game.game_name ASC'
 		));
 		return $games;
 	}

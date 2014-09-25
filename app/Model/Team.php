@@ -36,6 +36,17 @@ class Team extends AppModel {
 			'foreignKey' => 'captain_id'
 		)
 	);
+	
+	public $hasMany = array(
+		'Red_Game' => array(
+			'className' => 'Game',
+			'foreignkey' => 'red_team_id'
+		),
+		'Green_Game' => array(
+			'className' => 'Game',
+			'foreignkey' => 'green_team_id'
+		)
+	);
 
 /**
  * hasAndBelongsToMany associations

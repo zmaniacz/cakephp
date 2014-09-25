@@ -112,6 +112,9 @@ class UploadsController extends AppController {
 
 		$league_id = (isset($this->request->named['league_id'])) ? $this->request->named['league_id'] : null;
 
+		$red_pens = 0;
+		$green_pens = 0;
+
 		while (($csvline = fgetcsv($handle)) !== FALSE) {
 			$this->Scorecard->create();
 			$this->Scorecard->set(array(
@@ -165,12 +168,17 @@ class UploadsController extends AppController {
 					'scorecard_id' => $this->Scorecard->getLastInsertId()
 				));
 				$this->Scorecard->Penalty->save();
+				if($csvline[2] == 'Green') {
+					$green_pens += -1000;
+				} else {
+					$red_pens += -1000;
+				}
 			}
 		}
 		fclose($handle);
 		
 		$this->Scorecard->generateMVP();
-		$this->Scorecard->generateGames($this->request->named['center_id']);
+		$this->Scorecard->generateGames($this->request->named['center_id'],$green_pens,$red_pens);
 		$this->Scorecard->generatePlayers($this->request->named['center_id']);
 		
 		$this->Session->setFlash("Added $row scorecards");
