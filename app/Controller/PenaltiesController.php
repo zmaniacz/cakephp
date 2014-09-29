@@ -85,12 +85,14 @@ class PenaltiesController extends AppController {
 				$scorecard = $this->Penalty->Scorecard->findById($this->request->data['Penalty']['scorecard_id']);
 				$game = $this->Penalty->Scorecard->Game->findById($scorecard['Scorecard']['game_id']);
 
+				//deduct points form the overall team score
 				if($scorecard['Scorecard']['team'] == 'Red') {
 					$game['Game']['red_adj'] += $this->request->data['Penalty']['value'];
 				} else {
 					$game['Game']['green_adj'] += $this->request->data['Penalty']['value'];
 				}
 
+				//check if penalty chagned win conditions
 				if(($game['Game']['red_adj'] + $game['Game']['red_score']) > ($game['Game']['green_adj'] + $game['Game']['green_score'])) {
 					$game['Game']['winner'] = 'Red';
 				} else {
@@ -98,6 +100,13 @@ class PenaltiesController extends AppController {
 				}
 
 				$this->Penalty->Scorecard->Game->save($game);
+
+				//add a penalty to the socrecard record and recalc MVP
+				$scorecard['Scorecard']['penalties'] += 1;
+				$scorecard['Scorecard']['mvp_points'] = null;
+				$this->Penalty->Scorecard->save($scorecard);
+				$this->Penalty->Scorecard->generateMVP();
+
 
 				return $this->redirect(array('action' => 'index'));
 			} else {
@@ -186,6 +195,15 @@ class PenaltiesController extends AppController {
 		}
 
 		$this->Penalty->Scorecard->Game->save($game);
+
+		//remove a penalty to the socrecard record and recalc MVP
+		$scorecard['Scorecard']['penalties'] -= 1;
+		if($scorecard['Scorecard']['penalties'] < 0){
+			$scorecard['Scorecard']['penalties'] = 0;
+		}
+		$scorecard['Scorecard']['mvp_points'] = null;
+		$this->Penalty->Scorecard->save($scorecard);
+		$this->Penalty->Scorecard->generateMVP();
 
 		if ($this->Penalty->delete()) {
 			$this->Session->setFlash(__('The penalty has been deleted.'));
