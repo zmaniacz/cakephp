@@ -59,7 +59,7 @@
 				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
 				<?php
 					if(AuthComponent::user('role') === 'admin') {
-						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'scorecards', 'action' => 'uploadpdf'))."</li>";
+						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads'))."</li>";
 						echo "<li>".$this->Html->link("Upload CSV", array('controller' => 'scorecards', 'action' => 'uploadcsv'))."</li>";
 					}
 				?>

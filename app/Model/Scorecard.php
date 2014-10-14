@@ -136,12 +136,12 @@ class Scorecard extends AppModel {
 		return $counter;
 	}
 	
-	public function generateGames($center_id, $green_pens = null, $red_pens = null) {
+	public function generateGames($center_id) {
 	
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
 		
-		$scores = $this->query("SELECT green.game_datetime, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id
+		$scores = $this->query("SELECT green.game_datetime, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id, green.league_id
 			FROM (
 				SELECT game_datetime, pdf_id, league_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
@@ -187,14 +187,6 @@ class Scorecard extends AppModel {
 				$red_adj += 10000;
 			}
 
-			if(!is_null($green_pens)) {
-				$green_adj += $green_pens;
-			}
-			
-			if(!is_null($red_pens)) {
-				$red_adj += $red_pens;
-			}
-
 			$winner = 'Green';
 			if(($score['red']['score'] + $red_adj) > ($score['green']['score'] + $green_adj))
 				$winner = 'Red';
@@ -212,7 +204,7 @@ class Scorecard extends AppModel {
 				'green_eliminated' => $green_elim,
 				'winner' => $winner,
 				'pdf_id' => $score['green']['pdf_id'],
-				'league_id' => $score['green']['league_id'],
+				'league_id' => (is_null($score['green']['league_id']) ? null : $score['green']['league_id']),
 				'center_id' => $center_id
 			));
 			$this->Game->save();
@@ -222,7 +214,34 @@ class Scorecard extends AppModel {
 				array('Scorecard.game_datetime' => $score['green']['game_datetime'])
 			);
 
-			$penalties = $this->
+			$conditions[] = array('game_id' => $this->Game->id);
+			$scorecards = $this->find('all', array(
+				'fields' => array('id', 'team'),
+				'conditions' => $conditions,
+				'contain' => array(
+					'Penalty' => array()
+				)
+			));
+
+			foreach($scorecards as $score) {
+				if(!empty($score['Penalty'])) {
+					$value = 0;
+					foreach($score['Penalty'] as $penalty) {
+						$value += $penalty['value'];
+					}
+
+					if($score['Scorecard']['team'] == 'Red') {
+						$this->Game->set(array(
+							'red_adj' => $this->Game->red_adj + $value
+						));
+					} else {
+						$this->Game->set(array(
+							'green_adj' => $this->Game->green_adj + $value
+						));
+					}
+					$this->Game->save();
+				}
+			}
 			
 			$counter++;
 		}

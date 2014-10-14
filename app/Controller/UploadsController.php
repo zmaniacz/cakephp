@@ -11,8 +11,8 @@ class UploadsController extends AppController {
 			$options = array
 			(
 				'script_url' => FULL_BASE_URL.DS.$this->request->center.DS.'uploads/index/',
-				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->request->named['center_id'].DS,
-				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->request->named['center_id'].DS,
+				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center_id').DS,
+				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center_id').DS,
 				'image_versions' => array()
 			);
 
@@ -34,7 +34,7 @@ class UploadsController extends AppController {
 			}
 			exit;
 		}
-		if (!isset($this->request->named['center_id'])) {
+		if (!$this->Session->check('center_id') && !isset($this->center_id)) {
 			throw new NotFoundException(__('No center defined'));
 		}
 	}
@@ -72,7 +72,7 @@ class UploadsController extends AppController {
 	}*/
 
 	public function parse() {
-		$center_id = $this->request->named['center_id'];
+		$center_id = $this->Session->read('center_id');
 		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
@@ -168,17 +168,12 @@ class UploadsController extends AppController {
 					'scorecard_id' => $this->Scorecard->getLastInsertId()
 				));
 				$this->Scorecard->Penalty->save();
-				if($csvline[2] == 'Green') {
-					$green_pens += -1000;
-				} else {
-					$red_pens += -1000;
-				}
 			}
 		}
 		fclose($handle);
 		
 		$this->Scorecard->generateMVP();
-		$this->Scorecard->generateGames($this->request->named['center_id'],$green_pens,$red_pens);
+		$this->Scorecard->generateGames($this->request->named['center_id']);
 		$this->Scorecard->generatePlayers($this->request->named['center_id']);
 		
 		$this->Session->setFlash("Added $row scorecards");

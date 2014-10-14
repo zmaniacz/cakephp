@@ -267,9 +267,9 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function rebuild() {
-		$mvps = $this->Scorecard->generateMVP();
-		$games = $this->Scorecard->generateGames(3);
-		$players = $this->Scorecard->generatePlayers(3);
+		//$mvps = $this->Scorecard->generateMVP();
+		$games = $this->Scorecard->generateGames(1);
+		//$players = $this->Scorecard->generatePlayers(3);
 		$existing = $players['existing'];
 		$new = $players['new'];
 		

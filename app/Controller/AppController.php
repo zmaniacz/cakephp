@@ -57,7 +57,11 @@ class AppController extends Controller {
 	public function beforeFilter() {
 		$center = $this->Center->getCenterDetails($this->request->params['center']);
 		$this->center_id = $center['Center']['id'];
+		$this->Session->write('center_id',$center['Center']['id']);
 		//$this->params->center_id = $center['Center']['id'];
 		$this->center_type = $center['Center']['type'];
+		if(isset($this->request->named['league_id'])) {
+			$this->Session->write('league_id',$this->request->named['league_id']);
+		}
 	}
 }

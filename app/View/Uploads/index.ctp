@@ -2,7 +2,13 @@
     echo $this->Html->css(array('JqueryFileUpload/jquery.fileupload','JqueryFileUpload/jquery.fileupload-ui'));
 ?>
 <div>
-    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?php echo $this->Html->link("Process", array('controller' => 'uploads', 'action' => 'parse', 'league_id' => $this->request->named['league_id'], 'center_id' => $this->request->named['center_id'])); ?> to start the import.
+    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?php 
+        if(isset($this->request->named['league_id'])) {
+            echo $this->Html->link("Process", array('controller' => 'uploads', 'action' => 'parse', 'league_id' => $this->request->named['league_id'], 'center_id' => $this->request->named['center_id']));
+        } else {
+            echo $this->Html->link("Process", array('controller' => 'uploads', 'action' => 'parse', 'center_id' => $this->Session->read('center_id')));
+        }
+    ?> to start the import.
 </div>
 <!-- The file upload form used as target for the file upload widget -->
 <!--<form id="fileupload" action="uploads/upload" method="POST" enctype="multipart/form-data">-->
