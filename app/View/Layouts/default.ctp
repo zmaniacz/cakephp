@@ -48,7 +48,12 @@
 					<button><?php echo $this->Html->link("Login", array('controller' => 'users', 'action' => 'login')); ?></button>
 				<?php endif; ?>
 			</div>
-			<h1>Laserforce - <?php echo strtoupper($this->params->center); ?></h1>
+			<h1>Laserforce - <?php echo strtoupper($this->Session->read('center.Center.short_name')); ?></h1>
+			<h1>Viewing <?php
+				echo $this->Form->create('game_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;'));
+				echo $this->Form->input('selectFilter', array('options' => array('all' => 'All','social' => 'Social','league' => 'League','tournament' => 'Tournament'), 'selected' => $this->Session->read('filter.type'), 'style' => 'display: inline;'));
+				echo $this->Form->end();
+			?> games</h1>
 			<ul id="topmenu">
 				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
 				<li><?php echo $this->Html->link("Game List", array('controller' => 'games', 'action' => 'index')); ?></li>
@@ -74,6 +79,11 @@
 		<div id="footer">
 		</div>
 	</div>
+	<script>
+	$('#game_filterSelectFilter').change(function() {
+		 $('#game_filterNightlyForm').submit();
+	});
+	</script>
 	<?php
 		//echo $this->element('sql_dump');
 		echo $this->Js->writeBuffer();

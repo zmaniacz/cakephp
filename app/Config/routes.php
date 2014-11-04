@@ -19,17 +19,8 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-	$options = array(
-		'persist' => array('center')
-	);
 	
-	Router::connect('/', array('center' => 'ltc', 'controller' => 'scorecards', 'action' => 'nightly'), $options);
-	Router::connect('/:center/leagues', array('controller' => 'leagues', 'action' => 'index'), $options);
-	Router::connect('/:center/leagues/:league_id', array('controller' => 'leagues', 'action' => 'standings'), array('league_id' => '[0-9]+'));
-	Router::connect('/:center/leagues/:league_id/:action/*', array('controller' => 'leagues'), array('league_id' => '[0-9]+'));
-	Router::connect('/:center', array('controller' => 'scorecards', 'action' => 'nightly'), $options);
-	Router::connect('/:center/:controller/:action/*', array(), $options);
-	Router::connect('/:center/:controller', array('action' => 'index'), $options);
+	Router::connect('/', array('controller' => 'scorecards', 'action' => 'nightly'));
 	Router::parseExtensions();
 
 /**

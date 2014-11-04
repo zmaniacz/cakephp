@@ -282,9 +282,12 @@ class Scorecard extends AppModel {
 		return $results;
 	}
 	
-	public function getGameDates($center_id = null) {
+	public function getGameDates($center_id, $filter) {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
+			
+		if($filter['type'] != 'all')
+			$conditions[] = array('type' => $filter['type']);
 
 		$game_dates = $this->find('all', array(
 			'fields' => array('DISTINCT DATE(Scorecard.game_datetime) as game_date'),

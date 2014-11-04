@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter');
 		parent::beforeFilter();
 	}
 
@@ -78,41 +78,34 @@ class ScorecardsController extends AppController {
     }
 	
 	public function nightly() {
-		if($this->center_type == 'tournament') {
-			$this->redirect(array('controller' => 'scorecards', 'action' => 'tournament'));
+		$game_dates = $this->Scorecard->getGameDates($this->Session->read('center.Center.id'), $this->Session->read('filter'));
+		$this->set('game_dates', $game_dates);
+		
+		if($this->request->isPost()) {
+			$date = $this->request->data['Scorecard']['date'];
 		} else {
-			$game_dates = $this->Scorecard->getGameDates($this->center_id);
-			$this->set('game_dates', $game_dates);
-			
-			if($this->request->isPost()) {
-				$date = $this->request->data['Scorecard']['date'];
-			} else {
-				$date = reset($game_dates);
-			}
-			
-			if(!$date)
-				$date = 0;
-
-			$this->set('current_date', $date);
+			$date = reset($game_dates);
 		}
+		
+		if(!$date)
+			$date = 0;
+
+		$this->set('current_date', $date);
 	}
 	
-	public function tournament() {
-	}
-
 	public function nightlyScorecards($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->center_id));
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('center.Center.id')));
 	}
 
 	public function nightlyGames($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->center_id));
+		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->Session->read('center.Center.id')));
 	}
 
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id')));
 	}
 	
 	public function uploadCSV() {
@@ -279,5 +272,12 @@ class ScorecardsController extends AppController {
 	
 	public function allcenter() {
 		$this->set('top', $this->Scorecard->getTopTeams($this->center_id));
+	}
+	
+	public function setFilter () {
+		if($this->request->is('post')) {
+			$this->Session->write('filter',array('type' => $this->request->data['game_filter']['selectFilter'], 'value' => 1));
+		}
+		$this->redirect($this->referer());
 	}
 }

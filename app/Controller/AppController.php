@@ -31,7 +31,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $helpers = array('Html', 'Form', 'Js');
+	public $helpers = array('Html', 'Form', 'Js', 'Session');
 	public $components = array(
 		'RequestHandler',
 		'Session',
@@ -55,13 +55,17 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$center = $this->Center->getCenterDetails($this->request->params['center']);
-		$this->center_id = $center['Center']['id'];
-		$this->Session->write('center_id',$center['Center']['id']);
-		//$this->params->center_id = $center['Center']['id'];
-		$this->center_type = $center['Center']['type'];
-		if(isset($this->request->named['league_id'])) {
-			$this->Session->write('league_id',$this->request->named['league_id']);
+		$this->Session->delete('center');
+	
+		if(!$this->Session->check('center')) {
+			//default to LTC
+			$center = $this->Center->findById(1);
+			$this->Session->write('center',$center);
+		}
+		
+		if(!$this->Session->check('filter')) {
+			//default to showing all games
+			$this->Session->write('filter',array('type' => 'all', 'value' => 0));
 		}
 	}
 }
