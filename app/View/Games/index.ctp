@@ -22,15 +22,23 @@
 	<tbody>
 		<?php foreach ($games as $game): ?>
 		<?php
-			$red_team = ($game['Game']['red_team_name'] == null) ? 'Red Team' : $game['Game']['red_team_name'];
-			$green_team = ($game['Game']['green_team_name'] == null) ? 'Green Team' : $game['Game']['green_team_name'];
+			$red_team = ($game['Game']['red_team_id'] == null) ? 'Red Team' : $game['Red_Team']['name'];
+			$green_team = ($game['Game']['green_team_id'] == null) ? 'Green Team' : $game['Green_Team']['name'];
 		?>
 		<?php if($game['Game']['winner'] == 'Red'): ?>
 			<tr class="gameRowRed">
 		<?php else: ?>
 			<tr class="gameRowGreen">
 		<?php endif; ?>
-			<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+			<td>
+			<?php
+				if($game['Game']['type'] == 'league') {
+					echo $this->Html->link('R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); 
+				} else {
+					echo $this->Html->link($game['Game']['game_name'], array('action' => 'view', $game['Game']['id']));
+				}					
+			?>
+			</td>
 			<td><?php echo $game['Game']['game_datetime']; ?></td>
 			<td><?php echo (($game['Game']['winner'] == 'Red') ? $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj']) : $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj'])); ?></td>
 			<td><?php echo (($game['Game']['winner'] == 'Red') ? $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj']) : $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj'])); ?></td>

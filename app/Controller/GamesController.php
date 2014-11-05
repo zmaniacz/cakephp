@@ -27,7 +27,7 @@ class GamesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->set('games', $this->Game->getGameList(null,$this->center_id));
+		$this->set('games', $this->Game->getGameList($this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 
 /**
@@ -80,8 +80,13 @@ class GamesController extends AppController {
 				$this->Session->setFlash(__('The game could not be saved. Please, try again.'));
 			}
 		} else {
+			$this->loadModel('League');
+			
 			$options = array('conditions' => array('Game.' . $this->Game->primaryKey => $id));
 			$this->request->data = $this->Game->find('first', $options);
+			if($this->request->data['Game']['type'] == 'league') {
+				$this->set('teams', $this->League->getTeams($this->request->data['Game']['league_id']));
+			}
 		}
 	}
 
@@ -94,8 +99,10 @@ class GamesController extends AppController {
 		if($games_limit == 0) {
 			$games_limit = null;
 		}
+		
+		$filter = $this->Session->read('filter');
 
-		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit, $this->center_id));
-		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($filter_type, $games_limit, $this->center_id));
+		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit, $this->Session->read('center.Center.id'), $filter));
+		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($filter_type, $games_limit, $this->Session->read('center.Center.id'), $filter));
 	}
 }

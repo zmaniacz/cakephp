@@ -16,7 +16,7 @@ class LeaguesController extends AppController {
 
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getteams','ajax_getScorecards','ajax_getMedicHits','players','gameList');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getScorecards','ajax_getMedicHits','players','gameList');
 		$this->layout = 'league';
 		if(isset($this->request->params['league_id'])) {
 			$this->set('league', $this->League->findById($this->request->params['league_id']));
@@ -35,6 +35,11 @@ class LeaguesController extends AppController {
 
 	public function standings() {
 
+	}
+
+	public function ajax_getLeagues() {
+		//$this->request->onlyAllow('ajax');
+		$this->set('leagues', $this->League->getLeagues($this->Session->read('center.Center.id')));
 	}
 
 	public function ajax_getTeams() {

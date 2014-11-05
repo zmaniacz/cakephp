@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter');
 		parent::beforeFilter();
 	}
 
@@ -67,14 +67,17 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function overall() {
-		$this->set('commander', $this->Scorecard->getPositionStats('Commander',null,$this->center_id));
-		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',null,$this->center_id));
-		$this->set('scout', $this->Scorecard->getPositionStats('Scout',null,$this->center_id));
-		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',null,$this->center_id));
-		$this->set('medic', $this->Scorecard->getPositionStats('Medic',null,$this->center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,null,$this->center_id));
-		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,null,$this->center_id));
-		$this->set('averages', $this->Scorecard->getAllAvgMVP(null,$this->center_id));
+		$center_id = $this->Session->read('center.Center.id');
+		$filter = $this->Session->read('filter');
+		
+		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$filter,$center_id));
+		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$filter,$center_id));
+		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$filter,$center_id));
+		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$center_id));
+		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,$filter,$center_id));
+		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$center_id));
+		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$center_id));
     }
 	
 	public function nightly() {
@@ -276,8 +279,13 @@ class ScorecardsController extends AppController {
 	
 	public function setFilter () {
 		if($this->request->is('post')) {
-			$this->Session->write('filter',array('type' => $this->request->data['game_filter']['selectFilter'], 'value' => 1));
+			$this->Session->write('filter',array('type' => $this->request->data['game_filter']['selectFilter'], 'value' => $this->request->data['game_filter']['select_detailsFilter']));
 		}
 		$this->redirect($this->referer());
+	}
+
+	public function ajax_getFilter() {
+		$this->request->onlyAllow('ajax');
+		$this->set('filter', $this->Session->read('filter'));
 	}
 }

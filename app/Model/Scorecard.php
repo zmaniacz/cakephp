@@ -334,10 +334,8 @@ class Scorecard extends AppModel {
 					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
 				}
 			}
-			if(isset($filter['league'])) {
-				if($filter['league'] > 0) {
-					$conditions[] = array('league_id' => $filter['league']);
-				}
+			if($filter['type'] != 'all') {
+				$conditions[] = array('type' => $filter['type']);
 			}
 		}
 		
@@ -403,6 +401,10 @@ class Scorecard extends AppModel {
 				if($filter['league'] > 0) {
 					$conditions[] = array('league_id' => $filter['league']);
 				}
+			}
+			
+			if($filter['type'] != 'all') {
+				$conditions[] = array('type' => $filter['type']);
 			}
 		}
 
@@ -530,7 +532,18 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 
-	public function getOverallAverages($filter_type, $games_limit = null, $center_id = null) {
+	public function getOverallAverages($filter_type = null, $games_limit = null, $center_id = null, $filter = null) {
+		$conditions = array();
+		
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
+		if(!is_null($filter)) {
+			if($filter['type'] != 'all') {
+				$conditions[] = array('type' => $filter['type']);
+			}
+		}
+		
 		if(is_null($games_limit)) {
 			$overall = $this->find('all', array(
 				'fields' => array(
@@ -538,7 +551,7 @@ class Scorecard extends AppModel {
 					'AVG(score) as avg_score',
 					'AVG(mvp_points) as avg_mvp'
 				),
-				'conditions' => array('center_id' => $center_id),
+				'conditions' => $conditions,
 				'group' => array(
 					'position'
 				)
@@ -588,6 +601,10 @@ class Scorecard extends AppModel {
 				if($filter['league'] > 0) {
 					$conditions[] = array('league_id' => $filter['league']);
 				}
+			}
+			
+			if($filter['type'] != 'all') {
+				$conditions[] = array('type' => $filter['type']);
 			}
 		}
 

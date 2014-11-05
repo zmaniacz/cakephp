@@ -15,6 +15,7 @@
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+debug($this->Session->read());
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,6 +33,17 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#topmenu").menu();
+
+			if($('#game_filterSelectFilter').val() == 'league') {
+				populateLeagues();
+				$.getJSON("/scorecards/ajax_getFilter.json", function (data) {
+					$("#game_filter_detailsSelect").val(data.filter.value);
+				});
+			}
+
+			if($('#game_filterSelectFilter').val() == 'tournament') {
+
+			}
 		});
 	</script>
 	<title>
@@ -49,11 +61,14 @@
 				<?php endif; ?>
 			</div>
 			<h1>Laserforce - <?php echo strtoupper($this->Session->read('center.Center.short_name')); ?></h1>
-			<h1>Viewing <?php
-				echo $this->Form->create('game_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;'));
+			<h1>Viewing: 
+			<?php
+				echo $this->Form->create('game_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;', 'id' => 'game_filterForm'));
 				echo $this->Form->input('selectFilter', array('options' => array('all' => 'All','social' => 'Social','league' => 'League','tournament' => 'Tournament'), 'selected' => $this->Session->read('filter.type'), 'style' => 'display: inline;'));
+				echo $this->Form->input('select_detailsFilter', array('options' => array(0 => '-- --'), 'style' => 'display: none;', 'id' => 'game_filter_detailsSelect'));
 				echo $this->Form->end();
-			?> games</h1>
+			?>
+			</h1>
 			<ul id="topmenu">
 				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
 				<li><?php echo $this->Html->link("Game List", array('controller' => 'games', 'action' => 'index')); ?></li>
@@ -81,8 +96,29 @@
 	</div>
 	<script>
 	$('#game_filterSelectFilter').change(function() {
-		 $('#game_filterNightlyForm').submit();
+		if($('#game_filterSelectFilter').val() == 'social' || $('#game_filterSelectFilter').val() == 'all') {
+			$('#game_filter_detailsSelect').hide();
+			$('#game_filterForm').submit();
+		} else {
+			populateLeagues();
+		}
 	});
+
+	$('#game_filter_detailsSelect').change(function(){
+		if($('#game_filter_detailsSelect').val() != 0) {
+			$('#game_filterForm').submit();
+		}
+	});
+
+	function populateLeagues() {
+		$('#game_filter_detailsSelect').find('option').remove().end().append('<option value="0">-- Choose League --</option>').val(0);
+		$.getJSON("/leagues/ajax_getLeagues.json", function( data ) {
+			$.each(data['leagues'], function() {
+				$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
+			})
+			$('#game_filter_detailsSelect').show();
+		});
+	}
 	</script>
 	<?php
 		//echo $this->element('sql_dump');

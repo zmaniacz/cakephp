@@ -19,7 +19,7 @@
 				{
 					"data" : "Game.game_name",
 					"render" : function(data, type, row, meta) {
-						return '<a href="/<?php echo $this->params->center; ?>/games/view/'+row.Game.id+'">'+data+'</a>';
+						return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>';
 					}
 				},
 				{ "data" : "Game.game_datetime" },
@@ -54,10 +54,10 @@
 				{
 					"data" : "Scorecard.player_name",
 					"render" : function(data, type, row, meta) {
-						return '<a href="/<?php echo $this->params->center; ?>/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
+						return '<a href="/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
 					}
 				},
-				{ "data" : "Game.game_name", "render" : function(data, type,row, meta) {return '<a href="/<?php echo $this->params->center; ?>/games/view/'+row.Game.id+'">'+data+'</a>'}},
+				{ "data" : "Game.game_name", "render" : function(data, type,row, meta) {return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>'}},
 				{ "data" : "Scorecard.position" },
 				{ "data" : "Scorecard.score" },
 				{ "data" : "Scorecard.mvp_points" },
@@ -78,7 +78,7 @@
 				{
 					"data" : "Scorecard.player_name",
 					"render" : function(data, type, row, meta) {
-						return '<a href="/<?php echo $this->params->center; ?>/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
+						return '<a href="/players/view/'+row.Scorecard.player_id+'">'+data+'</a>';
 					}
 				},
 				{ "data" : "0.total_medic_hits" },
