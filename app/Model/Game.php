@@ -110,12 +110,14 @@ class Game extends AppModel {
 		$conditions = array();
 
 		if(!is_null($center_id))
-			$conditions[] = array('center_id' => $center_id);
+			$conditions[] = array('Game.center_id' => $center_id);
 
 		if(!is_null($filter)) {
-			if($filter['type'] != 'all') {
-				$conditions[] = array('type' => $filter['type']);
-			}
+			if($filter['type'] != 'all')
+				$conditions[] = array('Game.type' => $filter['type']);
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Game.league_id' => $filter['value']);
 		}
 
 		$games = $this->find('all', array(
