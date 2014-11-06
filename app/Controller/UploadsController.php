@@ -10,9 +10,9 @@ class UploadsController extends AppController {
 
 			$options = array
 			(
-				'script_url' => FULL_BASE_URL.DS.$this->request->center.DS.'uploads/index/',
-				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center_id').DS,
-				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center_id').DS,
+				'script_url' => FULL_BASE_URL.DS.'uploads/index/',
+				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center.Center.id').DS,
+				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center.Center.id').DS,
 				'image_versions' => array()
 			);
 
@@ -34,7 +34,7 @@ class UploadsController extends AppController {
 			}
 			exit;
 		}
-		if (!$this->Session->check('center_id') && !isset($this->center_id)) {
+		if (!$this->Session->check('center.Center.id')) {
 			throw new NotFoundException(__('No center defined'));
 		}
 	}
@@ -72,7 +72,7 @@ class UploadsController extends AppController {
 	}*/
 
 	public function parse() {
-		$center_id = $this->Session->read('center_id');
+		$center_id = $this->Session->read('center.Center.id');
 		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
@@ -91,7 +91,10 @@ class UploadsController extends AppController {
 
 	public function parseCSV() {
 		//We're only going to process the most recent file
-		$center_id = $this->request->named['center_id'];
+		$center_id = $this->Session->read('center.Center.id');
+		$type = $this->Session->read('filter.type');
+		$league_id = ($type == 'league') ? $this->Session->read('filter.value') : null;
+
 		$path = "parser/pending/$center_id";
 
 		$latest_ctime = 0;
@@ -109,8 +112,6 @@ class UploadsController extends AppController {
 		$row=0;
 		$handle = fopen($path.DS.$latest_filename,"r");
 		fgetcsv($handle);
-
-		$league_id = (isset($this->request->named['league_id'])) ? $this->request->named['league_id'] : null;
 
 		$red_pens = 0;
 		$green_pens = 0;
@@ -154,7 +155,8 @@ class UploadsController extends AppController {
 				'rank' => $csvline[32],
 				'bases_destroyed' => $csvline[33],
 				'pdf_id' => (isset($csvline[34]) ? $csvline[34] : null),
-				'center_id' => $this->request->named['center_id'],
+				'center_id' => $center_id,
+				'type' => $type,
 				'league_id' => $league_id
 			));
 			$this->Scorecard->save();
