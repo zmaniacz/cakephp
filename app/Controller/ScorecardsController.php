@@ -98,17 +98,17 @@ class ScorecardsController extends AppController {
 	
 	public function nightlyScorecards($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('center.Center.id')));
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 
 	public function nightlyGames($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->Session->read('center.Center.id')));
+		$this->set('games', $this->Scorecard->getGamesByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id')));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 	
 	public function uploadCSV() {
@@ -279,7 +279,10 @@ class ScorecardsController extends AppController {
 	
 	public function setFilter () {
 		if($this->request->is('post')) {
-			$this->Session->write('filter',array('type' => $this->request->data['game_filter']['selectFilter'], 'value' => $this->request->data['game_filter']['select_detailsFilter']));
+			$type = $this->request->data['game_filter']['selectFilter'];
+			$value = $this->request->data['game_filter']['select_detailsFilter'];
+
+			$this->Session->write('filter',array('type' => $type, 'value' => $value));
 		}
 		$this->redirect($this->referer());
 	}

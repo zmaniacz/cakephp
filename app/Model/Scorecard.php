@@ -289,6 +289,9 @@ class Scorecard extends AppModel {
 		if($filter['type'] != 'all')
 			$conditions[] = array('type' => $filter['type']);
 
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('league_id' => $filter['value']);
+
 		$game_dates = $this->find('all', array(
 			'fields' => array('DISTINCT DATE(Scorecard.game_datetime) as game_date'),
 			'order' => 'Scorecard.game_datetime DESC',
@@ -298,11 +301,17 @@ class Scorecard extends AppModel {
 		return $game_dates;
 	}
 	
-	public function getGamesByDate($date, $center_id) {
+	public function getGamesByDate($date, $center_id, $filter) {
 		$conditions = array();
 		
 		if(!is_null($date))
 			$conditions[] = array('DATE(Game.game_datetime)' => $date);
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('league_id' => $filter['value']);
 			
 		$conditions[] = array('Game.center_id' => $center_id);
 	
@@ -311,6 +320,58 @@ class Scorecard extends AppModel {
 			'order' => 'Game.game_datetime ASC'
 		));
 		return $games;
+	}
+
+	public function getScorecardsByDate($date, $center_id, $filter) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('Scorecard.type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $filter['value']);
+			
+		$conditions[] = array('Scorecard.center_id' => $center_id);
+	
+		$scorecards = $this->find('all', array(
+			'conditions' => $conditions,
+			'contain' => array(
+				'Game' => array()
+			)
+		));
+		
+		return $scorecards;
+	}
+
+	public function getMedicHitStatsByDate($date, $center_id, $filter) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('Scorecard.type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $filter['value']);
+			
+		$conditions[] = array('Scorecard.center_id' => $center_id);
+	
+		$scores = $this->find('all', array(
+			'fields' => array(
+				'player_name',
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
+			),
+			'conditions' => $conditions,
+			'group' => 'player_name',
+			'order' => 'total_medic_hits DESC'
+		));
+		return $scores;
 	}
 	
 	public function getPositionStats($role = null, $filter = null, $center_id = null) {
@@ -324,19 +385,19 @@ class Scorecard extends AppModel {
 			$conditions[] = array('position' => $role);
 
 		if(!is_null($filter)) {
-			if(isset($filter['numeric'])) {
-				if($filter['numeric'] > 0) {
+			if(isset($filter['numeric']))
+				if($filter['numeric'] > 0)
 					$min_games = $filter['numeric'];
-				}
-			}
-			if(isset($filter['date'])) {
-				if($filter['date'] > 0) {
+			
+			if(isset($filter['date']))
+				if($filter['date'] > 0)
 					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
-				}
-			}
-			if($filter['type'] != 'all') {
+
+			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
-			}
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 		
 		$scores = $this->find('all', array(
@@ -397,15 +458,11 @@ class Scorecard extends AppModel {
 			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));
 
 		if(!is_null($filter)) {
-			if(isset($filter['league'])) {
-				if($filter['league'] > 0) {
-					$conditions[] = array('league_id' => $filter['league']);
-				}
-			}
-			
-			if($filter['type'] != 'all') {
+			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
-			}
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 
 		$scores = $this->find('all', array(
@@ -417,29 +474,6 @@ class Scorecard extends AppModel {
 			),
 			'conditions' => $conditions,
 			'group' => 'player_name HAVING total_medic_hits > 0',
-			'order' => 'total_medic_hits DESC'
-		));
-		return $scores;
-	}
-	
-	public function getMedicHitStatsByDate($date, $center_id) {
-		$conditions = array();
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
-			
-		$conditions[] = array('Scorecard.center_id' => $center_id);
-	
-	
-		$scores = $this->find('all', array(
-			'fields' => array(
-				'player_name',
-				'player_id',
-				'SUM(Scorecard.medic_hits) as total_medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
-			),
-			'conditions' => $conditions,
-			'group' => 'player_name',
 			'order' => 'total_medic_hits DESC'
 		));
 		return $scores;
@@ -596,16 +630,12 @@ class Scorecard extends AppModel {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
 
-		if(!is_null($filter)) {
-			if(isset($filter['league'])) {
-				if($filter['league'] > 0) {
-					$conditions[] = array('league_id' => $filter['league']);
-				}
-			}
-			
-			if($filter['type'] != 'all') {
+		if(!is_null($filter)) {		
+			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
-			}
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('league_id' => $filter['value']);
 		}
 
 		$players = $this->find('all', array(
@@ -700,24 +730,6 @@ class Scorecard extends AppModel {
 		}
 		
 		return $results;
-	}
-	
-	public function getScorecardsByDate($date, $center_id) {
-		$conditions = array();
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
-			
-		$conditions[] = array('Scorecard.center_id' => $center_id);
-	
-		$scorecards = $this->find('all', array(
-			'conditions' => $conditions,
-			'contain' => array(
-				'Game' => array()
-			)
-		));
-		
-		return $scorecards;
 	}
 
 	public function getLeagueScorecardsByRound($round, $league_id) {

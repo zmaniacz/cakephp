@@ -15,7 +15,7 @@
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-debug($this->Session->read());
+//debug($this->Session->read());
 ?>
 <!DOCTYPE html>
 <html>
@@ -105,19 +105,22 @@ debug($this->Session->read());
 	});
 
 	$('#game_filter_detailsSelect').change(function(){
-		if($('#game_filter_detailsSelect').val() != 0) {
+		if($('#game_filter_detailsSelect').val() >= 0) {
 			$('#game_filterForm').submit();
 		}
 	});
 
 	function populateLeagues() {
-		$('#game_filter_detailsSelect').find('option').remove().end().append('<option value="0">-- Choose League --</option>').val(0);
+		$('#game_filter_detailsSelect').find('option').remove().end();
+		$('#game_filter_detailsSelect').append('<option value="-1">-- Choose League --</option>').val(-1);
+		$('#game_filter_detailsSelect').append('<option value="0">All</option>').val(0);
 		$.getJSON("/leagues/ajax_getLeagues.json", function( data ) {
 			$.each(data['leagues'], function() {
 				$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
 			})
 			$('#game_filter_detailsSelect').show();
 		});
+		$('#game_filter_detailsSelect').val(-1);
 	}
 	</script>
 	<?php
