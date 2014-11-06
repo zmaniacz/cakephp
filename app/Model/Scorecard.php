@@ -506,16 +506,19 @@ class Scorecard extends AppModel {
 		$conditions['player_id'] = $player_id;
 		
 		if(!is_null($filter)) {
-			if(isset($filter['numeric'])) {
-				if($filter['numeric'] > 0) {
+			if(isset($filter['numeric']))
+				if($filter['numeric'] > 0)
 					$limit = $filter['numeric'];
-				}
-			}
-			if(isset($filter['date'])) {
-				if($filter['date'] > 0) {
+
+			if(isset($filter['date']))
+				if($filter['date'] > 0)
 					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
-				}
-			}
+
+			if($filter['type'] != 'all')
+				$conditions[] = array('Scorecard.type' => $filter['type']);
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 
 		$games = $this->find('all', array(
@@ -748,8 +751,8 @@ class Scorecard extends AppModel {
 		return $scorecards;
 	}
 	
-	public function getTopTeams($center_id) {
-		$matrix = $this->_loadMatrix($center_id);
+	public function getTopTeams($center_id, $filter = null) {
+		$matrix = $this->_loadMatrix($center_id, $filter);
 
 		//reverse the matrix to make it a cost matrix
 		$max = 0;
@@ -918,7 +921,18 @@ class Scorecard extends AppModel {
 		return $results;
 	}
 	
-	protected function _loadMatrix($center_id) {
+	protected function _loadMatrix($center_id, $filter = null) {
+		$conditions = array();
+
+		$conditions[] = array('center_id' => $center_id);
+		$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = 365;
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('league_id' => $filter['value']);
+
 		$results = $this->find('all', array(
 			'fields' => array(
 				'player_id',
@@ -927,11 +941,8 @@ class Scorecard extends AppModel {
 				'AVG(mvp_points) as avg_mvp',
 				'COUNT(game_datetime) as games_played'
 			),
-			'conditions' => array(
-				'center_id =' => $center_id,
-				'DATEDIFF(DATE(NOW()),DATE(game_datetime)) <=' => 365
-			),
-			'group' => 'player_id, player_name, position HAVING games_played >= 15'
+			'conditions' => $conditions,
+			'group' => 'player_id, player_name, position HAVING games_played >= 3'
 		));
 		
 		$matrix = array();

@@ -66,11 +66,19 @@ class Player extends AppModel {
 		)
 	);
 
-	public function getPlayerStats($id, $role = null) {
+	public function getPlayerStats($id, $role = null, $filter = null) {
 		$conditions = array();
 		if(!is_null($role))
 			$conditions[] = array('position' => $role);
 		
+		if(!is_null($filter)) {
+			if($filter['type'] != 'all')
+				$conditions[] = array('Scorecard.type' => $filter['type']);
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
+		}
+
 		return $this->find('all', array(
 			'conditions' => array('id' => $id),
 			'contain' => array(
@@ -169,6 +177,12 @@ class Player extends AppModel {
 					$conditions['team'] = $filter['team'];
 				}
 			}
+
+			if($filter['type'] != 'all')
+				$conditions[] = array('Scorecard.type' => $filter['type']);
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 
 		$scores = $this->Scorecard->find('all', array(
@@ -251,6 +265,12 @@ class Player extends AppModel {
 					$conditions['team'] = $filter['team'];
 				}
 			}
+			
+			if($filter['type'] != 'all')
+				$conditions[] = array('Scorecard.type' => $filter['type']);
+
+			if($filter['type'] == 'league' && $filter['value'] > 0)
+				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 		
 		$scores = $this->Scorecard->find('all', array(

@@ -274,7 +274,7 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function allcenter() {
-		$this->set('top', $this->Scorecard->getTopTeams($this->center_id));
+		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 	
 	public function setFilter () {
