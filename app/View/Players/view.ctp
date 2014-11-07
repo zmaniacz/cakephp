@@ -833,6 +833,18 @@ $(document).ready(function(){
 });
 </script>
 <h2><?php echo $overall[0]['Player']['player_name']; ?></h2>
+<?php if(sizeof($aliases) > 1): ?>
+<p>
+	Aliases:
+	<ul>
+		<?php foreach($aliases as $alias): ?>
+		<?php if($alias['PlayersName']['player_name'] != $overall[0]['Player']['player_name']): ?>
+		<li><?php echo $alias['PlayersName']['player_name']; ?></li>
+		<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+</p>
+<?php endif; ?>
 <div>
 	<?php if (AuthComponent::user('id')): ?>
 		<button><?php echo $this->Html->link("Link", array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?></button>

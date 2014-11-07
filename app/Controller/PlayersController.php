@@ -17,6 +17,7 @@ class PlayersController extends AppController {
 			$this->redirect(array('controller' => 'Players', 'action' => 'index'));
 		} else {
 			$this->set('id', $id);
+			$this->set('aliases', $this->Player->PlayersName->findAllByPlayerId($id));
 			$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('filter')));
 			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander', $this->Session->read('filter')));
 			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons', $this->Session->read('filter')));
