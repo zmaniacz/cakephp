@@ -21,6 +21,10 @@ class Game extends AppModel {
 			'className' => 'Team',
 			'foreignKey' => 'green_team_id'
 		),
+		'League' => array(
+			'className' => 'League',
+			'foreignKey' => 'league_id'
+		)
 	);
 	
 	public function getOverallStats($filter_type = null, $games_limit = null, $center_id = null, $filter = null) {
@@ -121,7 +125,7 @@ class Game extends AppModel {
 		}
 
 		$games = $this->find('all', array(
-			'contain' => array('Red_Team', 'Green_Team'),
+			'contain' => array('Red_Team', 'Green_Team', 'League'),
 			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
 		));
