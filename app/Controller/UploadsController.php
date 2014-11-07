@@ -39,38 +39,6 @@ class UploadsController extends AppController {
 		}
 	}
 
-	/*public function upload() {
-		$this->request->onlyAllow('ajax');
-
-		App::import('Vendor','UploadHandler',array('file' => 'UploadHandler/UploadHandler.php'));
-
-		$options = array
-		(
-			'script_url' => FULL_BASE_URL.DS.$this->request->center.DS.'uploads/upload/',
-			'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->request->center_id.DS,
-			'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->request->center_id.DS,
-			'image_versions' => array()
-		);
-
-		$upload_handler = new UploadHandler($options, $initialize = false);
-		switch ($_SERVER['REQUEST_METHOD'])
-		{
-			case 'HEAD':
-			case 'GET':
-			$upload_handler->get();
-			break;
-			case 'POST':
-			$upload_handler->post();
-			break;
-			case 'DELETE':
-			$upload_handler->delete();
-			break;
-			default:
-			header('HTTP/1.0 405 Method Not Allowed');
-		}
-		exit;
-	}*/
-
 	public function parse() {
 		$center_id = $this->Session->read('center.Center.id');
 		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
@@ -124,7 +92,6 @@ class UploadsController extends AppController {
 				'team' => $csvline[2], 
 				'position' => $csvline[3], 
 				'score' => ($csvline[4]+(1000*$csvline[22])),
-				'game_type' => $csvline[5],
 				'shots_hit' => $csvline[6],
 				'shots_fired' => $csvline[7],
 				'accuracy' => (($csvline[7] > 0) ? ($csvline[6]/$csvline[7]) : 0),
@@ -175,14 +142,10 @@ class UploadsController extends AppController {
 		fclose($handle);
 		
 		$this->Scorecard->generateMVP();
-		$this->Scorecard->generateGames($this->request->named['center_id']);
-		$this->Scorecard->generatePlayers($this->request->named['center_id']);
+		$this->Scorecard->generateGames($this->Session->read('center.Center.id'), $this->Session->read('filter'));
+		$this->Scorecard->generatePlayers($this->Session->read('center.Center.id'), $this->Session->read('filter'));
 		
 		$this->Session->setFlash("Added $row scorecards");
-		if(isset($this->request->named['league_id'])) {
-			$this->redirect(array('controller' => 'leagues/'.$this->request->named['league_id']));
-		} else {
-			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
-		}
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 	}
 }

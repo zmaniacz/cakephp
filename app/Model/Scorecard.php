@@ -136,7 +136,7 @@ class Scorecard extends AppModel {
 		return $counter;
 	}
 	
-	public function generateGames($center_id) {
+	public function generateGames($center_id, $filter) {
 	
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
@@ -203,8 +203,9 @@ class Scorecard extends AppModel {
 				'red_eliminated' => $red_elim,
 				'green_eliminated' => $green_elim,
 				'winner' => $winner,
+				'type' => $filter['type'],
 				'pdf_id' => $score['green']['pdf_id'],
-				'league_id' => (is_null($score['green']['league_id']) ? null : $score['green']['league_id']),
+				'league_id' => ( ($filter['type'] == 'league') ? $filter['type'] : null),
 				'center_id' => $center_id
 			));
 			$this->Game->save();
@@ -248,16 +249,16 @@ class Scorecard extends AppModel {
 		return $counter;
 	}
 	
-	public function generatePlayers($center_id) {
+	public function generatePlayers($center_id, $filter) {
 		$scores = $this->find('all', array('conditions' => array('Scorecard.player_id' => NULL)));
-		$players = $this->Player->find('all');
+		$players = $this->Player->PlayersName->find('all');
 		$results = array('new' => 0, 'existing' => 0);
-		
+
 		foreach($scores as $score) {
 			$found = false;
 			foreach($players as $key => $val) {
-				if(strcasecmp($score['Scorecard']['player_name'], $val['Player']['player_name']) == 0 ) {
-					$score['Scorecard']['player_id'] = $val['Player']['id'];
+				if(strcasecmp($score['Scorecard']['player_name'], $val['PlayersName']['player_name']) == 0 ) {
+					$score['Scorecard']['player_id'] = $val['PlayersName']['player_id'];
 					$this->save($score);
 					$results['existing']++;
 					$found = true;
@@ -272,10 +273,20 @@ class Scorecard extends AppModel {
 					'center_id' => $center_id
 				));
 				$this->Player->save();
+				
 				$score['Scorecard']['player_id'] = $this->Player->id;
 				$this->save($score);
+				
+				$this->Player->PlayersName->Create();
+				$this->Player->PlayersName->set(array(
+					'player_id' => $this->Player->id,
+					'player_name' => $score['Scorecard']['player_name']
+				));
+				$this->Player->PlayersName->save();
+
 				$results['new']++;
-				$players = $this->Player->find('all');
+				
+				$players = $this->Player->PlayersName->find('all');
 			}
 		}
 		
@@ -792,22 +803,22 @@ class Scorecard extends AppModel {
 				if($M[$r][$c] == 1) {
 					switch($c) {
 						case 0:
-							$team_a['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
+							$team_a['Ammo Carrier'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
 						case 1:
-							$team_a['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
+							$team_a['Commander'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Commander']));
 							break;
 						case 2:
-							$team_a['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
+							$team_a['Heavy Weapons'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
 						case 3:
-							$team_a['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
+							$team_a['Medic'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Medic']));
 							break;
 						case 4:
-							$team_a['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_a['Scout'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 						case 5:
-							$team_a['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_a['Scout2'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -817,7 +828,7 @@ class Scorecard extends AppModel {
 		}
 		
 		foreach($team_a as $player) {
-			unset($matrix[$player['player_name']]);
+			unset($matrix[$player['player_id']]);
 		}
 		
 		$M = $this->_munkres($matrix);
@@ -828,22 +839,22 @@ class Scorecard extends AppModel {
 				if($M[$r][$c] == 1) {
 					switch($c) {
 						case 0:
-							$team_b['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
+							$team_b['Ammo Carrier'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
 						case 1:
-							$team_b['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
+							$team_b['Commander'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Commander']));
 							break;
 						case 2:
-							$team_b['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
+							$team_b['Heavy Weapons'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
 						case 3:
-							$team_b['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
+							$team_b['Medic'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Medic']));
 							break;
 						case 4:
-							$team_b['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_b['Scout'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 						case 5:
-							$team_b['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_b['Scout2'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -851,83 +862,34 @@ class Scorecard extends AppModel {
 			}
 			$r++;
 		}
-/*
-		foreach($team_b as $player) {
-			unset($matrix[$player['player_name']]);
-		}
-		
-		$M = $this->_munkres($matrix);
-		$team_c = array();
-		$r = 0;
-		foreach($matrix as $key => $value) {
-			for($c = 0; $c < count($M[$r]); $c++) {
-				if($M[$r][$c] == 1) {
-					switch($c) {
-						case 0:
-							$team_c['Ammo Carrier'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
-							break;
-						case 1:
-							$team_c['Commander'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Commander']));
-							break;
-						case 2:
-							$team_c['Heavy Weapons'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
-							break;
-						case 3:
-							$team_c['Medic'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Medic']));
-							break;
-						case 4:
-							$team_c['Scout'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
-							break;
-						case 5:
-							$team_c['Scout2'] = array('player_name' => $key, 'avg_mvp' => ($max - $value['Scout']));
-							break;
-					}
-					break;
-				}
-			}
-			$r++;
-		}
-*/		
+	
 		if(!isset($team_a['Ammo Carrier']))
-			$team_a['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Ammo Carrier'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Commander']))
-			$team_a['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Commander'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Heavy Weapons']))
-			$team_a['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Heavy Weapons'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Medic']))
-			$team_a['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Medic'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Scout']))
-			$team_a['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Scout'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Scout2']))
-			$team_a['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Scout2'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 
 		if(!isset($team_b['Ammo Carrier']))
-			$team_b['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Ammo Carrier'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Commander']))
-			$team_b['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Commander'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Heavy Weapons']))
-			$team_b['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Heavy Weapons'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Medic']))
-			$team_b['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Medic'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Scout']))
-			$team_b['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Scout'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Scout2']))
-			$team_b['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-/*
-		if(!isset($team_c['Ammo Carrier']))
-			$team_c['Ammo Carrier'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-		if(!isset($team_c['Commander']))
-			$team_c['Commander'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-		if(!isset($team_c['Heavy Weapons']))
-			$team_c['Heavy Weapons'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-		if(!isset($team_c['Medic']))
-			$team_c['Medic'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-		if(!isset($team_c['Scout']))
-			$team_c['Scout'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-		if(!isset($team_c['Scout2']))
-			$team_c['Scout2'] = array('player_name' => 'N/A', 'avg_mvp' => 0);
-*/
-		$results = array('team_a' => $team_a, 'team_b' => $team_b/*, 'team_c' => $team_c*/);
+			$team_b['Scout2'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+
+		$results = array('team_a' => $team_a, 'team_b' => $team_b);
 	
 		return $results;
 	}
@@ -947,30 +909,29 @@ class Scorecard extends AppModel {
 		$results = $this->find('all', array(
 			'fields' => array(
 				'player_id',
-				'player_name',
 				'position',
 				'AVG(mvp_points) as avg_mvp',
 				'COUNT(game_datetime) as games_played'
 			),
 			'conditions' => $conditions,
-			'group' => 'player_id, player_name, position HAVING games_played >= 3'
+			'group' => 'player_id, position HAVING games_played >= 3'
 		));
 		
 		$matrix = array();
 
 		foreach($results as $key => $result) {
-			$matrix[$result['Scorecard']['player_name']]['Ammo Carrier'] = 0.0;
-			$matrix[$result['Scorecard']['player_name']]['Commander'] = 0.0;
-			$matrix[$result['Scorecard']['player_name']]['Heavy Weapons'] = 0.0;
-			$matrix[$result['Scorecard']['player_name']]['Medic'] = 0.0;
-			$matrix[$result['Scorecard']['player_name']]['Scout'] = 0.0;
-			$matrix[$result['Scorecard']['player_name']]['Scout2'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Ammo Carrier'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Commander'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Heavy Weapons'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Medic'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Scout'] = 0.0;
+			$matrix[$result['Scorecard']['player_id']]['Scout2'] = 0.0;
 		}
 		
 		foreach($results as $key => $result) {
-			$matrix[$result['Scorecard']['player_name']][$result['Scorecard']['position']] = (float)$result[0]['avg_mvp'];
+			$matrix[$result['Scorecard']['player_id']][$result['Scorecard']['position']] = (float)$result[0]['avg_mvp'];
 			if($result['Scorecard']['position'] == 'Scout') {
-				$matrix[$result['Scorecard']['player_name']]['Scout2'] = (float)$result[0]['avg_mvp'];
+				$matrix[$result['Scorecard']['player_id']]['Scout2'] = (float)$result[0]['avg_mvp'];
 			}
 		}
 
