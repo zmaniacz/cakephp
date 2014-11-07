@@ -803,22 +803,22 @@ class Scorecard extends AppModel {
 				if($M[$r][$c] == 1) {
 					switch($c) {
 						case 0:
-							$team_a['Ammo Carrier'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
+							$team_a['Ammo Carrier'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
 						case 1:
-							$team_a['Commander'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Commander']));
+							$team_a['Commander'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Commander']));
 							break;
 						case 2:
-							$team_a['Heavy Weapons'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
+							$team_a['Heavy Weapons'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
 						case 3:
-							$team_a['Medic'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Medic']));
+							$team_a['Medic'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Medic']));
 							break;
 						case 4:
-							$team_a['Scout'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_a['Scout'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Scout']));
 							break;
 						case 5:
-							$team_a['Scout2'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_a['Scout2'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -839,22 +839,22 @@ class Scorecard extends AppModel {
 				if($M[$r][$c] == 1) {
 					switch($c) {
 						case 0:
-							$team_b['Ammo Carrier'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Ammo Carrier']));
+							$team_b['Ammo Carrier'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Ammo Carrier']));
 							break;
 						case 1:
-							$team_b['Commander'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Commander']));
+							$team_b['Commander'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Commander']));
 							break;
 						case 2:
-							$team_b['Heavy Weapons'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Heavy Weapons']));
+							$team_b['Heavy Weapons'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Heavy Weapons']));
 							break;
 						case 3:
-							$team_b['Medic'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Medic']));
+							$team_b['Medic'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Medic']));
 							break;
 						case 4:
-							$team_b['Scout'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_b['Scout'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Scout']));
 							break;
 						case 5:
-							$team_b['Scout2'] = array('player_id' => $key, 'avg_mvp' => ($max - $value['Scout']));
+							$team_b['Scout2'] = array('player_id' => $key, 'player_name' => $this->Player->findById($key, array('player_name'))['Player']['player_name'], 'avg_mvp' => ($max - $value['Scout']));
 							break;
 					}
 					break;
@@ -896,15 +896,23 @@ class Scorecard extends AppModel {
 	
 	protected function _loadMatrix($center_id, $filter = null) {
 		$conditions = array();
+		$min_games = 15;
 
 		$conditions[] = array('center_id' => $center_id);
-		$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = 365;
+
+		if($filter['type'] == 'all' || $filter['type'] == 'social') {
+			$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = 365;
+		}
 
 		if($filter['type'] != 'all')
 			$conditions[] = array('type' => $filter['type']);
 
-		if($filter['type'] == 'league' && $filter['value'] > 0)
-			$conditions[] = array('league_id' => $filter['value']);
+		if($filter['type'] == 'league') {
+			$min_games = 3;
+			if($filter['value'] > 0) {
+				$conditions[] = array('league_id' => $filter['value']);
+			}
+		}
 
 		$results = $this->find('all', array(
 			'fields' => array(
@@ -914,7 +922,7 @@ class Scorecard extends AppModel {
 				'COUNT(game_datetime) as games_played'
 			),
 			'conditions' => $conditions,
-			'group' => 'player_id, position HAVING games_played >= 3'
+			'group' => "player_id, position HAVING games_played >= $min_games"
 		));
 		
 		$matrix = array();
