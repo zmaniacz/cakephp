@@ -27,6 +27,21 @@ class PlayersController extends AppController {
 			$this->set('teammates',$this->Player->getMyTeammates($id));
 		}
 	}
+
+	public function link($id) {
+		if($this->request->is('Post')) {
+			$target_player = $this->Player->findById($id);
+			$master_player = $this->Player->findById($this->request->data['Player']['linked_id']);
+
+			$this->Player->linkPlayers($this->request->data['Player']['linked_id'], $id);
+
+			$this->Session->setFlash(__($target_player['Player']['player_name']." has been set as an alias of ".$master_player['Player']['player_name']));
+			return $this->redirect(array('action' => 'view', $this->request->data['Player']['linked_id']));
+		} else {
+			$this->set('players', $this->Player->find('list'));
+			$this->set('target_player', $this->Player->findById($id));
+		}
+	}
 	
 	public function playerWinLossDetail($id) {
 		$this->request->onlyAllow('ajax');

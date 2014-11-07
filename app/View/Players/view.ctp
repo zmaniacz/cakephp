@@ -833,6 +833,11 @@ $(document).ready(function(){
 });
 </script>
 <h2><?php echo $overall[0]['Player']['player_name']; ?></h2>
+<div>
+	<?php if (AuthComponent::user('id')): ?>
+		<button><?php echo $this->Html->link("Link", array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?></button>
+	<?php endif; ?>
+</div>
 <div id="tabs">
 	<ul>
 		<li><a href="#overall_tab">Overall</a></li>

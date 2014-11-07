@@ -41,6 +41,11 @@ class Player extends AppModel {
 			'className' => 'Scorecard',
 			'foreignKey' => 'player_id',
 			'dependent' => false
+		),
+		'PlayersName' => array(
+			'className' => 'PlayersName',
+			'foreignKey' => 'player_id',
+			'dependent' => false
 		)
 	);
 
@@ -362,6 +367,21 @@ class Player extends AppModel {
 		}
 		
 		return $teammates;
+	}
+
+	public function linkPlayers($master_id, $target_id) {
+		//update the player_names table
+		$this->PlayersName->updateAll(
+			array('PlayersName.player_id' => $master_id),
+			array('PlayersName.player_id' => $target_id)
+		);
+		//update all scorecards with the new id
+		$this->Scorecard->updateAll(
+			array('Scorecard.player_id' => $master_id),
+			array('Scorecard.player_id' => $target_id)
+		);
+		//delete the old player record
+		$this->delete($target_id);
 	}
 
 }

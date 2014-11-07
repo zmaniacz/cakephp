@@ -402,7 +402,6 @@ class Scorecard extends AppModel {
 		
 		$scores = $this->find('all', array(
 			'fields' => array(
-				'player_name',
 				'player_id',
 				'MIN(Scorecard.score) as min_score',
 				'ROUND(AVG(Scorecard.score)) as avg_score',
@@ -424,9 +423,16 @@ class Scorecard extends AppModel {
 				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate'
 			),				
 			'conditions' => $conditions,
-			'group' => "player_name".(($min_games > 0) ? " HAVING games_played >= $min_games" : ""),
+			'group' => "player_id".(($min_games > 0) ? " HAVING games_played >= $min_games" : ""),
 			'order' => 'avg_mvp DESC'
 		));
+
+		//add in the player_name to the results
+		foreach($scores as &$score) {
+			$player = $this->Player->findById($score['Scorecard']['player_id']);
+			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
+		}
+
 		return $scores;
 	}
 	
@@ -467,15 +473,21 @@ class Scorecard extends AppModel {
 
 		$scores = $this->find('all', array(
 			'fields' => array(
-				'player_name',
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
 				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
 			),
 			'conditions' => $conditions,
-			'group' => 'player_name HAVING total_medic_hits > 0',
+			'group' => 'player_id HAVING total_medic_hits > 0',
 			'order' => 'total_medic_hits DESC'
 		));
+
+		//add in the player_name to the results
+		foreach($scores as &$score) {
+			$player = $this->Player->findById($score['Scorecard']['player_id']);
+			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
+		}
+
 		return $scores;
 	}
 
@@ -644,21 +656,21 @@ class Scorecard extends AppModel {
 		$players = $this->find('all', array(
 			'fields' => array(
 				'player_id',
-				'player_name',
 				'position',
 				'AVG(mvp_points) as avg_mvp',
 				'AVG(accuracy) as avg_acc',
 				'COUNT(game_datetime) as games_played' 
 			),
 			'conditions' => $conditions,
-			'group' => 'player_name, position'
+			'group' => 'player_id, position'
 		));
 		
 		$results = array();
 		foreach($players as $player) {
 			if(!isset($results[$player['Scorecard']['player_id']])) {
 				$results[$player['Scorecard']['player_id']] = array();
-				$results[$player['Scorecard']['player_id']]['player_name'] = $player['Scorecard']['player_name'];
+				$tmp_player = $this->Player->findById($player['Scorecard']['player_id']);
+				$results[$player['Scorecard']['player_id']]['player_name'] = $tmp_player['Player']['player_name'];
 			}
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
@@ -731,7 +743,6 @@ class Scorecard extends AppModel {
 			$result['avg_avg_acc'] = $total_acc/$positions;
 			$result['total_games'] = $total_games_played;
 		}
-		
 		return $results;
 	}
 

@@ -80,7 +80,6 @@
 				<?php
 					if(AuthComponent::user('role') === 'admin') {
 						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads'))."</li>";
-						echo "<li>".$this->Html->link("Upload CSV", array('controller' => 'scorecards', 'action' => 'uploadcsv'))."</li>";
 					}
 				?>
 			</ul>
