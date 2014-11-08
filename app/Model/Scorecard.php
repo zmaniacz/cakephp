@@ -311,27 +311,6 @@ class Scorecard extends AppModel {
 		$game_dates = Set::combine($game_dates, '{n}.0.game_date', '{n}.0.game_date');
 		return $game_dates;
 	}
-	
-	public function getGamesByDate($date, $center_id, $filter) {
-		$conditions = array();
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Game.game_datetime)' => $date);
-
-		if($filter['type'] != 'all')
-			$conditions[] = array('type' => $filter['type']);
-
-		if($filter['type'] == 'league' && $filter['value'] > 0)
-			$conditions[] = array('league_id' => $filter['value']);
-			
-		$conditions[] = array('Game.center_id' => $center_id);
-	
-		$games = $this->Game->find('all', array(
-			'conditions' => $conditions,
-			'order' => 'Game.game_datetime ASC'
-		));
-		return $games;
-	}
 
 	public function getScorecardsByDate($date, $center_id, $filter) {
 		$conditions = array();

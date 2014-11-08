@@ -131,4 +131,26 @@ class Game extends AppModel {
 		));
 		return $games;
 	}
+
+	public function getGamesByDate($date, $center_id, $filter) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Game.game_datetime)' => $date);
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('league_id' => $filter['value']);
+			
+		$conditions[] = array('Game.center_id' => $center_id);
+	
+		$games = $this->find('all', array(
+			'contain' => array('Red_Team', 'Green_Team', 'League'),
+			'conditions' => $conditions,
+			'order' => 'Game.game_datetime ASC'
+		));
+		return $games;
+	}
 }

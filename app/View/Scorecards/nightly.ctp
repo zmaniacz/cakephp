@@ -19,12 +19,34 @@
 				{
 					"data" : "Game.game_name",
 					"render" : function(data, type, row, meta) {
-						return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>';
+						if(row.Game.type == 'league') {
+							return '<a href="/games/view/'+row.Game.id+'">'+row.League.name+' - R'+row.Game.league_round+' M'+row.Game.league_match+' G'+row.Game.league_game+'</a>';
+						} else {
+							return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>';
+						}
 					}
 				},
 				{ "data" : "Game.game_datetime" },
-				{ "data" : "Game.red_score", "render" : function(data, type, row, meta) {return data+row.Game.red_adj;} },
-				{ "data" : "Game.green_score", "render" : function(data, type, row, meta) {return data+row.Game.green_adj;} },
+				{ 
+					"data" : "Game", 
+					"render" : function(data, type, row, meta) {
+						if(row.Game.winner == 'Red') {
+							return (row.Game.red_team_id == null ? 'Red Team' : row.Red_Team.name)+': '+(row.Game.red_score+row.Game.red_adj);
+						} else {
+							return (row.Game.green_team_id == null ? 'Green Team' : row.Green_Team.name)+': '+(row.Game.green_score+row.Game.green_adj);
+						}
+					}
+				},
+				{ 
+					"data" : "Game", 
+					"render" : function(data, type, row, meta) {
+						if(row.Game.winner == 'Red') {
+							return (row.Game.green_team_id == null ? 'Green Team' : row.Green_Team.name)+': '+(row.Game.green_score+row.Game.green_adj);
+						} else {
+							return (row.Game.red_team_id == null ? 'Red Team' : row.Red_Team.name)+': '+(row.Game.red_score+row.Game.red_adj);
+						}
+					}
+				},
 				{
 					"data" : "Game.pdf_id",
 					"render" : function(data, type, row, meta) {
@@ -89,13 +111,13 @@
 	} );
 </script>
 <h3>Games Played</h3>
-<div style="width: 700px;">
+<div style="width: 1000px;">
 	<table class="display" id="game_list">
 		<thead>
 			<th>Game</th>
 			<th>Time</th>
-			<th>Red Score</th>
-			<th>Green Score</th>
+			<th>Winner Score</th>
+			<th>Loser Score</th>
 			<th>Scorecard PDF</th>
 		</thead>
 	</table>
