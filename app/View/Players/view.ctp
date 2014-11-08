@@ -964,8 +964,8 @@ $(document).ready(function(){
 			<thead>
 				<th>Game</th>
 				<th>Time</th>
-				<th>Red Score</th>
-				<th>Green Score</th>
+				<th>Winner Score</th>
+				<th>Loser Score</th>
 				<th>Team</th>
 				<th>Position</th>
 				<th>Score</th>
@@ -975,21 +975,32 @@ $(document).ready(function(){
 			<tbody>
 				<?php foreach ($games as $game): ?>
 					<?php
+						$red_team = ($game['Game']['red_team_id'] == null) ? 'Red Team' : $game['Game']['Red_Team']['name'];
+						$green_team = ($game['Game']['green_team_id'] == null) ? 'Green Team' : $game['Game']['Green_Team']['name'];
+
 						if($game['Game']['red_score'] > $game['Game']['green_score'])
 							$color = 'gameRowRed';
 						else
 							$color = 'gameRowGreen';
 					?>
 					<tr class="<?php echo $color; ?>">
-						<td><?php echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); ?></td>
+						<td>
+							<?php
+								if($game['Game']['type'] == 'league') {
+									echo $this->Html->link($game['Game']['League']['name'].' - R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); 
+								} else {
+									echo $this->Html->link($game['Game']['game_name'], array('action' => 'view', $game['Game']['id']));
+								}					
+							?>
+						</td>
 						<td><?php echo $game['Game']['game_datetime']; ?></td>
-						<td><?php echo $game['Game']['red_score']; ?></td>
-						<td><?php echo $game['Game']['green_score']; ?></td>
-						<td><?php echo $game['Scorecard']['team']; ?></td>
+						<td><?php echo (($game['Game']['winner'] == 'Red') ? $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj']) : $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj'])); ?></td>
+						<td><?php echo (($game['Game']['winner'] == 'Red') ? $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj']) : $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj'])); ?></td>
+						<td><?php echo ($game['Scorecard']['team'] == 'Red') ? $red_team : $green_team; ?></td>
 						<td><?php echo $game['Scorecard']['position']; ?></td>
 						<td><?php echo $game['Scorecard']['score']; ?></td>
 						<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						<td><?php echo (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) ? $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf") : ""; ?></td>
+						<td><a href="/pdf/<?php echo $game['Game']['pdf_id']; ?>.pdf">PDF</a></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>

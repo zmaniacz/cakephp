@@ -527,9 +527,7 @@ class Scorecard extends AppModel {
 			'conditions' => $conditions,
 			'order' => 'Scorecard.game_datetime DESC',
 			'limit' => $limit,
-			'contain' => array(
-				'Game' => array()
-			)
+			'contain' => array('Game' => array('Red_Team', 'Green_Team', 'League'))
 		));
 		
 		return $games;
