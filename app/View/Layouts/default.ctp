@@ -99,7 +99,9 @@
 			$('#game_filter_detailsSelect').hide();
 			$('#game_filterForm').submit();
 		} else {
-			populateLeagues();
+			if($('#game_filterSelectFilter').val() == 'league') {
+				populateLeagues();
+			}
 		}
 	});
 

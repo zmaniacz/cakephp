@@ -989,7 +989,7 @@ $(document).ready(function(){
 								if($game['Game']['type'] == 'league') {
 									echo $this->Html->link($game['Game']['League']['name'].' - R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); 
 								} else {
-									echo $this->Html->link($game['Game']['game_name'], array('action' => 'view', $game['Game']['id']));
+									echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id']));
 								}					
 							?>
 						</td>

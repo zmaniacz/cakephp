@@ -139,10 +139,10 @@ class Game extends AppModel {
 			$conditions[] = array('DATE(Game.game_datetime)' => $date);
 
 		if($filter['type'] != 'all')
-			$conditions[] = array('type' => $filter['type']);
+			$conditions[] = array('Game.type' => $filter['type']);
 
 		if($filter['type'] == 'league' && $filter['value'] > 0)
-			$conditions[] = array('league_id' => $filter['value']);
+			$conditions[] = array('Game.league_id' => $filter['value']);
 			
 		$conditions[] = array('Game.center_id' => $center_id);
 	
