@@ -55,7 +55,9 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$this->Session->delete('center');
+		$centers[0] = 'All';
+		$centers = $centers + $this->Center->find('list');
+		$this->set('centers', $centers);
 	
 		if(!$this->Session->check('center')) {
 			//default to LTC

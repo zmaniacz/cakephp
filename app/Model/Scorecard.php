@@ -161,6 +161,10 @@ class Scorecard extends AppModel {
 		$current_date = 0;
 		$date = 0;
 		$game_counter = 0;
+
+		$league_id = null;
+		if($filter['type'] == 'league' || $filter['value'] == 'tournament')
+			$league_id = $filter['value'];
 		
 		foreach($scores as $score) {
 			$date = date("Y-m-d", strtotime($score['green']['game_datetime']));
@@ -205,7 +209,7 @@ class Scorecard extends AppModel {
 				'winner' => $winner,
 				'type' => $filter['type'],
 				'pdf_id' => $score['green']['pdf_id'],
-				'league_id' => ( ($filter['type'] == 'league') ? $filter['type'] : null),
+				'league_id' => ( ($filter['type'] == 'league') ? $filter['value'] : null),
 				'center_id' => $center_id
 			));
 			$this->Game->save();
@@ -269,8 +273,7 @@ class Scorecard extends AppModel {
 			if(!$found) {
 				$this->Player->Create();
 				$this->Player->set(array(
-					'player_name' => $score['Scorecard']['player_name'],
-					'center_id' => $center_id
+					'player_name' => $score['Scorecard']['player_name']
 				));
 				$this->Player->save();
 				
@@ -355,7 +358,8 @@ class Scorecard extends AppModel {
 				'player_name',
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'COUNT(Scorecard.game_datetime) as games_played'
 			),
 			'conditions' => $conditions,
 			'group' => 'player_name',
@@ -450,8 +454,8 @@ class Scorecard extends AppModel {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
 
-		if($resup_only)
-			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));
+		/*if($resup_only)
+			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));*/
 
 		if(!is_null($filter)) {
 			if($filter['type'] != 'all')
@@ -462,10 +466,23 @@ class Scorecard extends AppModel {
 		}
 
 		$scores = $this->find('all', array(
+			'joins' => array(
+				array(
+					'alias' => 'ScorecardNoResup',
+					'table' => "(SELECT player_id, SUM(medic_hits) as total_medic_hits, (SUM(medic_hits)/COUNT(game_datetime)) as medic_hits_per_game, COUNT(game_datetime) as games_played FROM scorecards WHERE position NOT IN ('Medic', 'Ammo Carier') AND center_id = $center_id GROUP BY player_id)",
+					'conditions' =>array(
+						'Scorecard.player_id = ScorecardNoResup.player_id'
+					)
+				)
+			),
 			'fields' => array(
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game'
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'ScorecardNoResup.total_medic_hits',
+				'ScorecardNoResup.medic_hits_per_game',
+				'ScorecardNoResup.games_played',
 			),
 			'conditions' => $conditions,
 			'group' => 'player_id HAVING total_medic_hits > 0',

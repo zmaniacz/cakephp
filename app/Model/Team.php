@@ -68,5 +68,16 @@ class Team extends AppModel {
 			'finderQuery' => '',
 		)
 	);
+	
+	public function getTeamStandings($league_id) {
+		$red_teams = $this->find('all', array(
+			'contain' => array('Red_Game', 'Green_Game'),
+			'conditions' => array(
+				'Team.league_id' => $league_id
+			)
+		));
+		var_dump($red_teams);
+		return $red_teams;
+	}
 
 }

@@ -234,14 +234,18 @@
 			</tbody>
 		</table>
 	</div>
-	<h3>Medic Hits (Non-Resupply Positions)</h3>
+	<h3>Medic Hits</h3>
 	<div>
 		<table class="display">
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Total Medic Hits</th>
-					<th>Average Medic Hits</th>
+					<th>Total Medic Hits (All)</th>
+					<th>Average Medic Hits (All)</th>
+					<th>Games Played (All)</th>
+					<th>Total Medic Hits (Non-Resupply)</th>
+					<th>Average Medic Hits (Non-Resupply)</th>
+					<th>Games Played (Non-Resupply)</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -250,27 +254,10 @@
 					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
 					<td><?php echo $score[0]['total_medic_hits']; ?></td>
 					<td><?php echo round($score[0]['medic_hits_per_game'],2); ?></td>
-				<?php endforeach; ?>
-				<?php unset($score); ?>
-			</tbody>
-		</table>
-	</div>
-	<h3>Medic Hits (All Positions)</h3>
-	<div>
-		<table class="display">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Total Medic Hits</th>
-					<th>Average Medic Hits</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($medic_hits_all as $score): ?>
-				<tr>
-					<td><?php echo $this->Html->link($score['Scorecard']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Scorecard']['player_id'])); ?></td>
-					<td><?php echo $score[0]['total_medic_hits']; ?></td>
-					<td><?php echo round($score[0]['medic_hits_per_game'],2); ?></td>
+					<td><?php echo round($score[0]['games_played'],2); ?></td>
+					<td><?php echo $score['ScorecardNoResup']['total_medic_hits']; ?></td>
+					<td><?php echo round($score['ScorecardNoResup']['medic_hits_per_game'],2); ?></td>
+					<td><?php echo round($score['ScorecardNoResup']['games_played'],2); ?></td>
 				<?php endforeach; ?>
 				<?php unset($score); ?>
 			</tbody>

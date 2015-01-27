@@ -17,10 +17,6 @@ class LeaguesController extends AppController {
 
 	public function beforeFilter() {
 		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getScorecards','ajax_getMedicHits','players','gameList');
-		$this->layout = 'league';
-		if(isset($this->request->params['league_id'])) {
-			$this->set('league', $this->League->findById($this->request->params['league_id']));
-		}
 		parent::beforeFilter();
 	}
 
@@ -34,51 +30,17 @@ class LeaguesController extends AppController {
 	}
 
 	public function standings() {
-
+		$this->set('teams', $this->League->getTeamStandings($this->Session->read('filter.value')));
 	}
 
-	public function ajax_getLeagues() {
-		//$this->request->onlyAllow('ajax');
-		$this->set('leagues', $this->League->getLeagues($this->Session->read('center.Center.id')));
+	public function ajax_getLeagues($type) {
+		$this->request->onlyAllow('ajax');
+		$this->set('leagues', $this->League->getLeagues($this->Session->read('center.Center.id'), $type));
 	}
 
 	public function ajax_getTeams() {
 		$this->request->onlyAllow('ajax');
 		$this->set('teams', $this->League->getTeamStandings($this->request->params['league_id']));
-	}
-
-	public function ajax_getScorecards($round = null) {
-		$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getLeagueScorecardsByRound($round, $this->request->params['league_id']));
-	}
-
-	public function ajax_getMedicHits($round = null) {
-		$this->request->onlyAllow('ajax');
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByRound($round, $this->request->params['league_id']));
-	}
-
-/**
-* player standings methods
-*/
-	public function players() {
-		$filter = array();
-		$filter['league'] = $this->request->params['league_id'];
-
-		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$filter,$this->center_id));
-		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$filter,$this->center_id));
-		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$filter,$this->center_id));
-		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$this->center_id));
-		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$this->center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,$filter,$this->center_id));
-		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$this->center_id));
-		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$this->center_id));
-	}
-
-/**
-* Game list methods
-*/
-	public function gameList() {
-		$this->set('games', $this->Game->getLeagueGameList($this->request->params['league_id']));
 	}
 
 /**
@@ -101,11 +63,11 @@ class LeaguesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->League->Team->create();
 			if ($this->League->Team->save($this->request->data)) {
-				return $this->flash(__('The team has been saved.'), array('controller' => 'leagues/'.$this->request->params['league_id'], 'action' => 'standings'));
+				return $this->flash(__('The team has been saved.'), array('controller' => 'leagues', 'action' => 'standings'));
 			}
 		}
 
-		$leagues = $this->League->find('list', array('conditions' => array('id' => $this->request->params['league_id'])));
+		$leagues = $this->League->find('list', array('conditions' => array('id' => $this->Session->read('filter.value'))));
 		$this->set(compact('leagues'));
 		$captains = $this->League->Team->Player->find('list');
 		$this->set(compact('captains'));
@@ -132,24 +94,6 @@ class LeaguesController extends AppController {
 		}
 		$centers = $this->League->Center->find('list');
 		$this->set(compact('centers'));
-	}
-
-	public function editGame($game_id = null) {
-		if (!$this->Game->exists($game_id)) {
-			throw new NotFoundException(__('Invalid game'));
-		}
-		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Game->save($this->request->data)) {
-				$this->Session->setFlash(__('The game has been saved.'));
-				return $this->redirect(array('controller' => 'leagues/'.$this->request->params['league_id'], 'action' => 'gameList'));
-			} else {
-				$this->Session->setFlash(__('The game could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Game.' . $this->Game->primaryKey => $game_id));
-			$this->request->data = $this->Game->find('first', $options);
-			$this->set('teams', $this->League->getTeams($this->request->params['league_id']));
-		}
 	}
 
 /**

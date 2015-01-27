@@ -24,7 +24,7 @@ class ScorecardsController extends AppController {
 		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$center_id));
 		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$center_id));
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,$filter,$center_id));
-		$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$center_id));
+		//$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$center_id));
 		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$center_id));
     }
 	
@@ -50,7 +50,7 @@ class ScorecardsController extends AppController {
 	}
 
 	public function nightlyGames($date = null) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 		$this->set('games', $this->Scorecard->Game->getGamesByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 
@@ -76,10 +76,19 @@ class ScorecardsController extends AppController {
 	
 	public function setFilter () {
 		if($this->request->is('post')) {
-			$type = $this->request->data['game_filter']['selectFilter'];
-			$value = $this->request->data['game_filter']['select_detailsFilter'];
+			if(isset($this->request->data['game_filter'])) {
+				$type = $this->request->data['game_filter']['selectFilter'];
+				
+				$value = -1;
+				if(isset($this->request->data['game_filter']['select_detailsFilter']))
+					$value = $this->request->data['game_filter']['select_detailsFilter'];
 
-			$this->Session->write('filter',array('type' => $type, 'value' => $value));
+				$this->Session->write('filter',array('type' => $type, 'value' => $value));
+
+			} elseif(isset($this->request->data['center_filter'])) {
+				$center = $this->Center->findById($this->request->data['center_filter']['selectFilter']);
+				$this->Session->write('center',$center);
+			}
 		}
 		$this->redirect($this->referer());
 	}

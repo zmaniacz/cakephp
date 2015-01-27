@@ -104,7 +104,8 @@
 					}
 				},
 				{ "data" : "0.total_medic_hits" },
-				{ "data" : "0.medic_hits_per_game" }
+				{ "data" : "0.medic_hits_per_game" },
+				{ "data" : "0.games_played" }
 			],
 			"order": [[ 1, "desc" ]]
 		});
@@ -149,6 +150,7 @@
 					<th>Name</th>
 					<th>Total</th>
 					<th>Average</th>
+					<th>Games Played</th>
 				</tr>
 			</thead>
 		</table>

@@ -61,7 +61,10 @@ class UploadsController extends AppController {
 		//We're only going to process the most recent file
 		$center_id = $this->Session->read('center.Center.id');
 		$type = $this->Session->read('filter.type');
-		$league_id = ($type == 'league') ? $this->Session->read('filter.value') : null;
+
+		$league_id = null;
+		if($type == 'league' || $type == 'tournament')
+			$league_id = $this->Session->read('filter.value');
 
 		$path = "parser/pending/$center_id";
 

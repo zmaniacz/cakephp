@@ -34,15 +34,11 @@
 		$(document).ready(function() {
 			$("#topmenu").menu();
 
-			if($('#game_filterSelectFilter').val() == 'league') {
-				populateLeagues();
+			if($('#game_filterSelectFilter').val() == 'league' || $('#game_filterSelectFilter').val() == 'tournament') {
+				populateLeagues($('#game_filterSelectFilter').val());
 				$.getJSON("/scorecards/ajax_getFilter.json", function (data) {
 					$("#game_filter_detailsSelect").val(data.filter.value);
 				});
-			}
-
-			if($('#game_filterSelectFilter').val() == 'tournament') {
-
 			}
 		});
 	</script>
@@ -60,7 +56,13 @@
 					<button><?php echo $this->Html->link("Login", array('controller' => 'users', 'action' => 'login')); ?></button>
 				<?php endif; ?>
 			</div>
-			<h1>Laserforce - <?php echo strtoupper($this->Session->read('center.Center.short_name')); ?></h1>
+			<h1>Laserforce - 
+			<?php
+				echo $this->Form->create('center_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;', 'id' => 'center_filterForm'));
+				echo $this->Form->input('selectFilter', array('options' => $centers, 'selected' => $this->Session->read('center.Center.id'), 'style' => 'display: inline;'));
+				echo $this->Form->end();
+			?>
+			</h1>
 			<h1>Viewing: 
 			<?php
 				echo $this->Form->create('game_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;', 'id' => 'game_filterForm'));
@@ -99,10 +101,12 @@
 			$('#game_filter_detailsSelect').hide();
 			$('#game_filterForm').submit();
 		} else {
-			if($('#game_filterSelectFilter').val() == 'league') {
-				populateLeagues();
-			}
+			populateLeagues($('#game_filterSelectFilter').val());
 		}
+	});
+
+	$('#center_filterSelectFilter').change(function() {
+		$('#center_filterForm').submit();
 	});
 
 	$('#game_filter_detailsSelect').change(function(){
@@ -111,11 +115,11 @@
 		}
 	});
 
-	function populateLeagues() {
+	function populateLeagues(type) {
 		$('#game_filter_detailsSelect').find('option').remove().end();
-		$('#game_filter_detailsSelect').append('<option value="-1">-- Choose League --</option>').val(-1);
+		$('#game_filter_detailsSelect').append('<option value="-1">-- Choose '+type+' --</option>').val(-1);
 		$('#game_filter_detailsSelect').append('<option value="0">All</option>').val(0);
-		$.getJSON("/leagues/ajax_getLeagues.json", function( data ) {
+		$.getJSON("/leagues/ajax_getLeagues/"+type+".json", function( data ) {
 			$.each(data['leagues'], function() {
 				$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
 			})
