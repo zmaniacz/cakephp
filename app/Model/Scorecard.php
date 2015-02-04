@@ -338,35 +338,6 @@ class Scorecard extends AppModel {
 		
 		return $scorecards;
 	}
-
-	public function getMedicHitStatsByDate($date, $center_id, $filter) {
-		$conditions = array();
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
-
-		if($filter['type'] != 'all')
-			$conditions[] = array('Scorecard.type' => $filter['type']);
-
-		if($filter['type'] == 'league' && $filter['value'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $filter['value']);
-			
-		$conditions[] = array('Scorecard.center_id' => $center_id);
-	
-		$scores = $this->find('all', array(
-			'fields' => array(
-				'player_name',
-				'player_id',
-				'SUM(Scorecard.medic_hits) as total_medic_hits',
-				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
-				'COUNT(Scorecard.game_datetime) as games_played'
-			),
-			'conditions' => $conditions,
-			'group' => 'player_name',
-			'order' => 'total_medic_hits DESC'
-		));
-		return $scores;
-	}
 	
 	public function getPositionStats($role = null, $filter = null, $center_id = null) {
 		$conditions = array();
@@ -450,12 +421,9 @@ class Scorecard extends AppModel {
 				'conditions*/
 	}
 	
-	public function getMedicHitStats($resup_only, $filter = null, $center_id = null) {
+	public function getMedicHitStats($filter = null, $center_id = null) {
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
-
-		/*if($resup_only)
-			$conditions[] = array("NOT" => array("position" => array("Medic", "Ammo Carrier")));*/
 
 		if(!is_null($filter)) {
 			if($filter['type'] != 'all')
@@ -465,11 +433,34 @@ class Scorecard extends AppModel {
 				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 
+		$subQueryConditions = $conditions;
+
+		$subQueryConditions[] = array('position NOT IN ("Medic", "Ammo Carrier")');
+
+		$db = $this->getDataSource();
+		$subQuery = $db->buildStatement(
+			array(
+				'fields' => array(
+					'ScorecardNoResup.player_id',
+					'SUM(ScorecardNoResup.medic_hits) as total_medic_hits',
+					'(SUM(ScorecardNoResup.medic_hits)/COUNT(ScorecardNoResup.game_datetime)) as medic_hits_per_game',
+					'COUNT(ScorecardNoResup.game_datetime) as games_played'
+				),
+				'table' => $db->fullTableName($this),
+				'alias' => 'ScorecardNoResup',
+				'conditions' => $subQueryConditions,
+				'group' => 'player_id',
+			),
+			$this
+		);
+
+		$subQuery = '('.$subQuery.')';
+
 		$scores = $this->find('all', array(
 			'joins' => array(
 				array(
 					'alias' => 'ScorecardNoResup',
-					'table' => "(SELECT player_id, SUM(medic_hits) as total_medic_hits, (SUM(medic_hits)/COUNT(game_datetime)) as medic_hits_per_game, COUNT(game_datetime) as games_played FROM scorecards WHERE position NOT IN ('Medic', 'Ammo Carier') AND center_id = $center_id GROUP BY player_id)",
+					'table' => $subQuery,
 					'conditions' =>array(
 						'Scorecard.player_id = ScorecardNoResup.player_id'
 					)
@@ -495,6 +486,70 @@ class Scorecard extends AppModel {
 			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
 		}
 
+		return $scores;
+	}
+
+	public function getMedicHitStatsByDate($date, $center_id, $filter) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(game_datetime)' => $date);
+
+		if($filter['type'] != 'all')
+			$conditions[] = array('type' => $filter['type']);
+
+		if($filter['type'] == 'league' && $filter['value'] > 0)
+			$conditions[] = array('league_id' => $filter['value']);
+			
+		$conditions[] = array('center_id' => $center_id);
+
+		$subQueryConditions = $conditions;
+
+		$subQueryConditions[] = array('position NOT IN ("Medic", "Ammo Carrier")');
+
+		$db = $this->getDataSource();
+		$subQuery = $db->buildStatement(
+			array(
+				'fields' => array(
+					'ScorecardNoResup.player_id',
+					'SUM(ScorecardNoResup.medic_hits) as total_medic_hits',
+					'(SUM(ScorecardNoResup.medic_hits)/COUNT(ScorecardNoResup.game_datetime)) as medic_hits_per_game',
+					'COUNT(ScorecardNoResup.game_datetime) as games_played'
+				),
+				'table' => $db->fullTableName($this),
+				'alias' => 'ScorecardNoResup',
+				'conditions' => $subQueryConditions,
+				'group' => 'player_id',
+			),
+			$this
+		);
+
+		$subQuery = '('.$subQuery.')';
+	
+		$scores = $this->find('all', array(
+			'joins' => array(
+				array(
+					'alias' => 'ScorecardNoResup',
+					'table' => $subQuery,
+					'conditions' =>array(
+						'Scorecard.player_id = ScorecardNoResup.player_id'
+					)
+				)
+			),
+			'fields' => array(
+				'player_name',
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'ScorecardNoResup.total_medic_hits',
+				'ScorecardNoResup.medic_hits_per_game',
+				'ScorecardNoResup.games_played',
+			),
+			'conditions' => $conditions,
+			'group' => 'player_name',
+			'order' => 'total_medic_hits DESC'
+		));
 		return $scores;
 	}
 

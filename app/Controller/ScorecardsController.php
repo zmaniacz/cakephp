@@ -23,8 +23,7 @@ class ScorecardsController extends AppController {
 		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$filter,$center_id));
 		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$center_id));
 		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats(true,$filter,$center_id));
-		//$this->set('medic_hits_all', $this->Scorecard->getMedicHitStats(false,$filter,$center_id));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats($filter,$center_id));
 		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$center_id));
     }
 	
@@ -55,7 +54,7 @@ class ScorecardsController extends AppController {
 	}
 
 	public function nightlyMedicHits($date = null) {
-		$this->request->onlyAllow('ajax');
+		//$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 	

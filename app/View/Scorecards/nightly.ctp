@@ -105,7 +105,10 @@
 				},
 				{ "data" : "0.total_medic_hits" },
 				{ "data" : "0.medic_hits_per_game" },
-				{ "data" : "0.games_played" }
+				{ "data" : "0.games_played" },
+				{ "data" : "ScorecardNoResup.total_medic_hits" },
+				{ "data" : "ScorecardNoResup.medic_hits_per_game" },
+				{ "data" : "ScorecardNoResup.games_played" }
 			],
 			"order": [[ 1, "desc" ]]
 		});
@@ -148,9 +151,12 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Total</th>
-					<th>Average</th>
-					<th>Games Played</th>
+					<th>Total Medic Hits (All)</th>
+					<th>Average Medic Hits (All)</th>
+					<th>Games Played (All)</th>
+					<th>Total Medic Hits (Non-Resupply)</th>
+					<th>Average Medic Hits (Non-Resupply)</th>
+					<th>Games Played (Non-Resupply)</th>
 				</tr>
 			</thead>
 		</table>
