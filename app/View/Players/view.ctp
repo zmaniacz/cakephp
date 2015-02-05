@@ -818,16 +818,12 @@ $(document).ready(function(){
 		}
 		]
 	});
-	
-	var gTable = $('.gamelist').dataTable( {
-		"bAutoWidth": false,
-		"bFilter": true,
-		"bInfo": false,
-		"bPaginate": false,
-		"bJQueryUI": true,
-		"bRetrieve": true,
-		"aaSorting": [[1, "desc"]]
-	} );
+
+	$('#game_list').DataTable( {
+		"jQueryUI": true,
+		"pageLength": 25,
+		"order": [2,'desc']
+	});
 	
 	$("#tabs").tabs();
 });
@@ -852,10 +848,22 @@ $(document).ready(function(){
 </div>
 <div id="tabs">
 	<ul>
+		<li><a href="#recent_tab">Recent Games</a></li>
 		<li><a href="#overall_tab">Overall</a></li>
 		<li><a href="#teammates_tab">Teammates</a></li>
 		<li><a href="#game_list_tab">Game List</a></li>
 	</ul>
+	<div id="recent_tab">
+		<h2>Commander</h2>
+		<table>
+			<thead>
+				<th>Game</th>
+				<th>Score</th>
+				<th>MVP</th>
+				<th>Scorecard</th>
+			</thead>
+		</table>
+	</div>
 	<div id="overall_tab">
 		<?php
 			echo $this->Form->create('gamesLimit');
@@ -897,7 +905,7 @@ $(document).ready(function(){
 		<br />
 		<br />
 		<br />
-		<p>The following graphs represent an exponentially weighted rolling 10-game average for accuracy, score and MVP points both overall and by position.<br />
+		<p>The following graphs represent a simple rolling average for accuracy, score and MVP points both overall and by position.<br />
 		Individual lines can be turned on and off by clicking on the title in the legend.<br />
 		Clicking the legend items marked scatter will show all the points on the graph for the data set, if you like that sort of thing.<br />
 		These graphs are not affected by the filters above.</p>
@@ -960,7 +968,7 @@ $(document).ready(function(){
 		</div>
 	</div>
 	<div id="game_list_tab">
-		<table class="gamelist">
+		<table id="game_list">
 			<thead>
 				<th>Game</th>
 				<th>Time</th>

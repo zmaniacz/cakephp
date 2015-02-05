@@ -54,7 +54,7 @@ class ScorecardsController extends AppController {
 	}
 
 	public function nightlyMedicHits($date = null) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 	
