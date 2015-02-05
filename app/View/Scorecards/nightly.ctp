@@ -64,10 +64,23 @@
 					$(row).addClass('gameRowGreen');
 			}
 		});
+
+		$('#overall thead tr#overallFilterRow th').each( function () {
+			var title = $('#overall thead th').eq( $(this).index() ).text();
+			$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+		});
 		
-		$('#overall').DataTable( {
+		$("#overall thead input").on( 'keyup change', function () {
+			overall
+				.column( $(this).parent().index()+':visible' )
+				.search( this.value )
+				.draw();
+		});
+
+		var overall = $('#overall').DataTable( {
 			"scrollX" : true,
 			"deferRender" : true,
+			"orderCellsTop" : true,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
 				"dataSrc" : "scorecards"
@@ -132,6 +145,17 @@
 		<table class="display" id="overall">
 			<thead>
 				<tr>
+					<th>Name</th>
+					<th>Game</th>
+					<th>Position</th>
+					<th>Score</th>
+					<th>MVP</th>
+					<th>Accuracy</th>
+					<th>Hit Diff</th>
+					<th>Medic Hits</th>
+					<th>Shot Team</th>
+				</tr>
+				<tr id="overallFilterRow">
 					<th>Name</th>
 					<th>Game</th>
 					<th>Position</th>
