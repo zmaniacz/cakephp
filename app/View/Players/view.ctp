@@ -400,54 +400,54 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(overall_acc_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(commander_acc_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(heavy_acc_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(scout_acc_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(medic_acc_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(overall_acc_data.length/10),10),
 			xAxis: 5
 		}
 		]
@@ -583,54 +583,54 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(overall_mvp_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(commander_mvp_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(heavy_mvp_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(scout_mvp_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(ammo_mvp_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(medic_mvp_data.length/10),10),
 			xAxis: 5
 		}
 		]
@@ -768,7 +768,7 @@ $(document).ready(function(){
 			linkedTo: 'overall',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(overall_score_data.length/10),10),
 			xAxis: 0
 		},
 		{
@@ -777,7 +777,7 @@ $(document).ready(function(){
 			linkedTo: 'commander',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(commander_score_data.length/10),10),
 			xAxis: 1
 		},
 		{
@@ -786,7 +786,7 @@ $(document).ready(function(){
 			linkedTo: 'heavy',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(heavy_score_data.length/10),10),
 			xAxis: 2
 		},
 		{
@@ -795,7 +795,7 @@ $(document).ready(function(){
 			linkedTo: 'scout',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(scout_score_data.length/10),10),
 			xAxis: 3
 		},
 		{
@@ -804,7 +804,7 @@ $(document).ready(function(){
 			linkedTo: 'ammo',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(ammo_score_data.length/10),10),
 			xAxis: 4
 		},
 		{
@@ -813,7 +813,7 @@ $(document).ready(function(){
 			linkedTo: 'medic',
 			algorithm: 'EMA',
 			showInLegend: true,
-			periods: 10,
+			periods: Math.max(Math.round(medic_score_data.length/10),10),
 			xAxis: 5
 		}
 		]
