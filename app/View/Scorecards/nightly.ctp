@@ -65,12 +65,12 @@
 			}
 		});
 
-		$('#overall thead tr#overallFilterRow th').each( function () {
+		$('#overall thead tr th.searchable').each( function () {
 			var title = $('#overall thead th').eq( $(this).index() ).text();
 			$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 		});
-		
-		$("#overall thead input").on( 'keyup change', function () {
+
+		$("#overall thead tr th input").on( 'keyup change', function () {
 			overall
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )
@@ -81,6 +81,8 @@
 			"scrollX" : true,
 			"deferRender" : true,
 			"orderCellsTop" : true,
+			"jQueryUI" : true,
+			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
 				"dataSrc" : "scorecards"
@@ -101,10 +103,26 @@
 				{ "data" : "Scorecard.medic_hits" },
 				{ "data" : "Scorecard.shot_team" },
 			],
-			"order": [[ 3, "desc" ]]
+			"order": [[ 4, "desc" ]]
 		});
-		
-		$('#medic_hits').DataTable( {
+
+		$('#medic_hits thead tr th.searchable').each( function () {
+			var title = $('#medic_hits thead th').eq( $(this).index() ).text();
+			$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+		});
+
+		$("#medic_hits thead tr th input").on( 'keyup change', function () {
+			medicHitsTable
+				.column( $(this).parent().index()+':visible' )
+				.search( this.value )
+				.draw();
+		});
+
+		var medicHitsTable = $('#medic_hits').DataTable( {
+			"deferRender" : true,
+			"orderCellsTop" : true,
+			"jQueryUI" : true,
+			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json')); ?>",
 				"dataSrc" : "medic_hits"
@@ -148,23 +166,17 @@
 					<th>Name</th>
 					<th>Game</th>
 					<th>Position</th>
-					<th>Score</th>
-					<th>MVP</th>
-					<th>Accuracy</th>
-					<th>Hit Diff</th>
-					<th>Medic Hits</th>
-					<th>Shot Team</th>
+					<th rowspan="2">Score</th>
+					<th rowspan="2">MVP</th>
+					<th rowspan="2">Accuracy</th>
+					<th rowspan="2">Hit Diff</th>
+					<th rowspan="2">Medic Hits</th>
+					<th rowspan="2">Shot Team</th>
 				</tr>
-				<tr id="overallFilterRow">
-					<th>Name</th>
-					<th>Game</th>
-					<th>Position</th>
-					<th>Score</th>
-					<th>MVP</th>
-					<th>Accuracy</th>
-					<th>Hit Diff</th>
-					<th>Medic Hits</th>
-					<th>Shot Team</th>
+				<tr>
+					<th class="searchable">Name</th>
+					<th class="searchable">Game</th>
+					<th class="searchable">Position</th>
 				</tr>
 			</thead>
 		</table>
@@ -175,12 +187,15 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Total Medic Hits (All)</th>
-					<th>Average Medic Hits (All)</th>
-					<th>Games Played (All)</th>
-					<th>Total Medic Hits (Non-Resupply)</th>
-					<th>Average Medic Hits (Non-Resupply)</th>
-					<th>Games Played (Non-Resupply)</th>
+					<th rowspan="2">Total Medic Hits (All)</th>
+					<th rowspan="2">Average Medic Hits (All)</th>
+					<th rowspan="2">Games Played (All)</th>
+					<th rowspan="2">Total Medic Hits (Non-Resupply)</th>
+					<th rowspan="2">Average Medic Hits (Non-Resupply)</th>
+					<th rowspan="2">Games Played (Non-Resupply)</th>
+				</tr>
+				<tr>
+					<th class="searchable">Name</th>
 				</tr>
 			</thead>
 		</table>
