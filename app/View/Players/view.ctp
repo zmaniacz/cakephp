@@ -819,10 +819,60 @@ $(document).ready(function(){
 		]
 	});
 
-	$('#game_list').DataTable( {
-		"jQueryUI": true,
-		"pageLength": 25,
-		"order": [2,'desc']
+	$('#game_list thead tr th.searchable').each( function () {
+		var title = $('#game_list thead th').eq( $(this).index() ).text();
+		$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+	});
+
+	$("#game_list thead tr th input").on( 'keyup change', function () {
+		gameListTable
+			.column( $(this).parent().index()+':visible' )
+			.search( this.value )
+			.draw();
+	});
+
+	var gameListTable = $('#game_list').DataTable( {
+		"scrollX" : true,
+		"deferRender" : true,
+		"orderCellsTop" : true,
+		"jQueryUI" : true,
+		"dom": '<"H"lr>t<"F"ip>',
+		"ajax" : {
+			"url" : "<?php echo $this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json')); ?>",
+			"dataSrc" : "scorecards"
+		},
+		"columns" : [
+			{ "data" : "Game.game_name", "render" : function(data, type,row, meta) {return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>'}},
+			{ "data" : "Game.game_datetime"},
+			{"data" : "W", "render" : function(data, typw, row, meta) {if(row.Scorecard.team == row.Game.winner) {return "W";} else {return "L";}} },
+			{ "data" : "Scorecard.team"},
+			{ "data" : "Scorecard.position" },
+			{ "data" : "Scorecard.score" },
+			{ "data" : "Scorecard.accuracy", "render" : function(data, type, row, meta) {return parseFloat(data*100).toFixed(2)+'%';} },
+			{ "data" : "Scorecard.mvp_points" },
+			{ "data" : "Scorecard.lives_left" },
+			{ "data" : "Scorecard.shots_left" },
+			{ "data" : "Scorecard.shot_opponent" },
+			{ "data" : "Scorecard.times_zapped" },
+			{ "data" : "Scorecard.shot_opponent", "render" : function(data, type, row, meta) {var diff = (data/row.Scorecard.times_zapped); return diff.toFixed(2);} },
+			{ "data" : "Scorecard.missile_hits", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander" || row.Scorecard.position == "Heavy Weapons") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.times_missiled" },
+			{ "data" : "Scorecard.medic_hits" },
+			{ "data" : "Scorecard.medic_nukes", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.shot_3hit", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Scout") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.shot_team" },
+			{ "data" : "Scorecard.missiled_team", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander" || row.Scorecard.position == "Heavy Weapons") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.own_medic_hits" },
+			{ "data" : "Scorecard.nukes_activated", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.nukes_detonated", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.nukes_canceled" },
+			{ "data" : "Scorecard.own_nuke_cancels" },
+			{ "data" : "Scorecard.scout_rapid", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Scout") {return data;} else {return "-";}} },
+			{ "data" : "Scorecard.ammo_boost", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Ammo Carrier") {return data;} else if(row.Scorecard.position == "Medic") {return row.Scorecard.life_boost;} else {return "-";}} },
+			{ "data" : "Scorecard.resupplies", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Ammo Carrier" || row.Scorecard.position == "Medic") {return data;} else {return "-";}} },
+			{ "data" : "Game.pdf_id", "render" : function(data, type, row, meta) { if(data == null)	return 'N/A'; else return '<a href="/pdf/'+data+'.pdf">PDF</a>'; } }
+		],
+		"order": [[ 1, "desc" ]]
 	});
 	
 	$("#tabs").tabs();
@@ -848,19 +898,51 @@ $(document).ready(function(){
 </div>
 <div id="tabs">
 	<ul>
-		<li><a href="#recent_tab">Recent Games</a></li>
+		<li><a href="#game_list_tab">Game List</a></li>
 		<li><a href="#overall_tab">Overall</a></li>
 		<li><a href="#teammates_tab">Teammates</a></li>
-		<li><a href="#game_list_tab">Game List</a></li>
 	</ul>
-	<div id="recent_tab">
-		<h2>Commander</h2>
-		<table>
+	<div id="game_list_tab">
+		<table id="game_list">
 			<thead>
-				<th>Game</th>
-				<th>Score</th>
-				<th>MVP</th>
-				<th>Scorecard</th>
+				<tr>
+					<th>Game</th>
+					<th>Time</th>
+					<th>W/L</th>
+					<th>Team</th>
+					<th>Position</th>
+					<th rowspan="2">Score</th>
+					<th rowspan="2">Accuracy</th>
+					<th rowspan="2">MVP Points</th>
+					<th rowspan="2">Lives Left</th>
+					<th rowspan="2">Shots Left</th>
+					<th rowspan="2">Shot Opponent</th>
+					<th rowspan="2">Got Shot</th>
+					<th rowspan="2">Hit Diff</th>
+					<th rowspan="2">Missiled</th>
+					<th rowspan="2">Got Missiled</th>
+					<th rowspan="2">Medic Hits</th>
+					<th rowspan="2">Medic Nukes</th>
+					<th rowspan="2">Shot 3-Hits</th>
+					<th rowspan="2">Shot Team</th>
+					<th rowspan="2">Missiled Team</th>
+					<th rowspan="2">Shot Own Medic</th>
+					<th rowspan="2">Nukes Activated</th>
+					<th rowspan="2">Nukes Detonated</th>
+					<th rowspan="2">Nuke Cancels</th>
+					<th rowspan="2">Own Nuke Cancels</th>
+					<th rowspan="2">Rapid Fires</th>
+					<th rowspan="2">Boosts</th>
+					<th rowspan="2">Resupplies</th>
+					<th rowspan="2">PDF</th>
+				</tr>
+				<tr>
+					<th class="searchable">Game</th>
+					<th class="searchable">Time</th>
+					<th class="searchable">W/L</th>
+					<th class="searchable">Team</th>
+					<th class="searchable">Position</th>
+				</tr>
 			</thead>
 		</table>
 	</div>
@@ -966,53 +1048,6 @@ $(document).ready(function(){
 				</table>
 			</span>
 		</div>
-	</div>
-	<div id="game_list_tab">
-		<table id="game_list">
-			<thead>
-				<th>Game</th>
-				<th>Time</th>
-				<th>Winner Score</th>
-				<th>Loser Score</th>
-				<th>Team</th>
-				<th>Position</th>
-				<th>Score</th>
-				<th>MVP</th>
-				<th>Scorecard PDF</th>
-			</thead>
-			<tbody>
-				<?php foreach ($games as $game): ?>
-					<?php
-						$red_team = ($game['Game']['red_team_id'] == null) ? 'Red Team' : $game['Game']['Red_Team']['name'];
-						$green_team = ($game['Game']['green_team_id'] == null) ? 'Green Team' : $game['Game']['Green_Team']['name'];
-
-						if($game['Game']['red_score'] > $game['Game']['green_score'])
-							$color = 'gameRowRed';
-						else
-							$color = 'gameRowGreen';
-					?>
-					<tr class="<?php echo $color; ?>">
-						<td>
-							<?php
-								if($game['Game']['type'] == 'league') {
-									echo $this->Html->link($game['Game']['League']['name'].' - R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); 
-								} else {
-									echo $this->Html->link($game['Game']['game_name'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id']));
-								}					
-							?>
-						</td>
-						<td><?php echo $game['Game']['game_datetime']; ?></td>
-						<td><?php echo (($game['Game']['winner'] == 'Red') ? $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj']) : $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj'])); ?></td>
-						<td><?php echo (($game['Game']['winner'] == 'Red') ? $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj']) : $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj'])); ?></td>
-						<td><?php echo ($game['Scorecard']['team'] == 'Red') ? $red_team : $green_team; ?></td>
-						<td><?php echo $game['Scorecard']['position']; ?></td>
-						<td><?php echo $game['Scorecard']['score']; ?></td>
-						<td><?php echo $game['Scorecard']['mvp_points']; ?></td>
-						<td><a href="/pdf/<?php echo $game['Game']['pdf_id']; ?>.pdf">PDF</a></td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
 	</div>
 </div>
 

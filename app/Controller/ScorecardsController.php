@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards');
 		parent::beforeFilter();
 	}
 
@@ -56,6 +56,11 @@ class ScorecardsController extends AppController {
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
+	}
+
+	public function playerScorecards($id) {
+		//$this->request->onlyAllow('ajax');
+		$this->set('scorecards', $this->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('filter')));
 	}
 	
 	public function rebuild() {
