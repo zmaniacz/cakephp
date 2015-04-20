@@ -6,7 +6,7 @@
 		echo $this->Form->input('id');
 		echo $this->Form->input('game_name');
 		
-		if($this->request->data['Game']['type'] == 'league') {
+		if($this->request->data['Game']['type'] == 'league' || $this->request->data['Game']['type'] == 'tournament') {
 			echo $this->Form->input('league_round');
 			echo $this->Form->input('league_match');
 			echo $this->Form->input('league_game');

@@ -22,7 +22,8 @@
 				'Illegal Targeting' => 'Illegal Targeting',
 				'Chasing' => 'Chasing',
 				'Shoulder Tilting' => 'Shoulder Tilting',
-				'Unsportsmanlike Conduct' => 'Unsportsmanlike Conduct'
+				'Unsportsmanlike Conduct' => 'Unsportsmanlike Conduct',
+				'Penalty Removed' => 'Penalty Removed'
 			)
 		));
 		echo $this->Form->input('description');

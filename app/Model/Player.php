@@ -109,6 +109,10 @@ class Player extends AppModel {
 		
 		return $games;
 	}
+
+	public function getPlayerWinsLosses($id) {
+		
+	}
 	
 	public function getAverageScoreByPosition($id = null) {
 		$conditions = array();

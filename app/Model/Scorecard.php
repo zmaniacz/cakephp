@@ -39,7 +39,7 @@ class Scorecard extends AppModel {
 	
 	public function generateMVP() {
 		$counter = 0;
-		$scores = $this->find('all', array('conditions' => array('Scorecard.mvp_points' => NULL)));
+		$scores = $this->find('all', array('conditions' => array('Scorecard.mvp_points' => NULL), 'limit' => 1000));
 		foreach ($scores as $score) {
 			$mvp = 0;
 
@@ -68,7 +68,7 @@ class Scorecard extends AppModel {
 			}
 			
 			//accuracy bonus
-			$mvp += round($score['Scorecard']['accuracy'] * 10,0);
+			$mvp += round($score['Scorecard']['accuracy'] * 10,1);
 			
 			//don't get missiled dummy
 			$mvp += $score['Scorecard']['times_missiled'] * -1;
@@ -163,7 +163,7 @@ class Scorecard extends AppModel {
 		$game_counter = 0;
 
 		$league_id = null;
-		if($filter['type'] == 'league' || $filter['value'] == 'tournament')
+		if($filter['type'] == 'league' || $filter['type'] == 'tournament')
 			$league_id = $filter['value'];
 		
 		foreach($scores as $score) {
@@ -209,7 +209,7 @@ class Scorecard extends AppModel {
 				'winner' => $winner,
 				'type' => $filter['type'],
 				'pdf_id' => $score['green']['pdf_id'],
-				'league_id' => ( ($filter['type'] == 'league') ? $filter['value'] : null),
+				'league_id' => $league_id,
 				'center_id' => $center_id
 			));
 			$this->Game->save();
@@ -229,8 +229,8 @@ class Scorecard extends AppModel {
 			));
 
 			foreach($scorecards as $score) {
+				$value = 0;
 				if(!empty($score['Penalty'])) {
-					$value = 0;
 					foreach($score['Penalty'] as $penalty) {
 						$value += $penalty['value'];
 					}
@@ -297,13 +297,15 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getGameDates($center_id, $filter) {
+		$conditions[] = array();
+
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
 			
 		if($filter['type'] != 'all')
 			$conditions[] = array('type' => $filter['type']);
 
-		if($filter['type'] == 'league' && $filter['value'] > 0)
+		if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 			$conditions[] = array('league_id' => $filter['value']);
 
 		$game_dates = $this->find('all', array(
@@ -324,7 +326,7 @@ class Scorecard extends AppModel {
 		if($filter['type'] != 'all')
 			$conditions[] = array('Scorecard.type' => $filter['type']);
 
-		if($filter['type'] == 'league' && $filter['value'] > 0)
+		if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 			$conditions[] = array('Scorecard.league_id' => $filter['value']);
 			
 		$conditions[] = array('Scorecard.center_id' => $center_id);
@@ -361,7 +363,7 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 		
@@ -429,8 +431,8 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
-				$conditions[] = array('Scorecard.league_id' => $filter['value']);
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
+				$conditions[] = array('league_id' => $filter['value']);
 		}
 
 		$subQueryConditions = $conditions;
@@ -498,7 +500,7 @@ class Scorecard extends AppModel {
 		if($filter['type'] != 'all')
 			$conditions[] = array('type' => $filter['type']);
 
-		if($filter['type'] == 'league' && $filter['value'] > 0)
+		if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 			$conditions[] = array('league_id' => $filter['value']);
 			
 		$conditions[] = array('center_id' => $center_id);
@@ -591,7 +593,7 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('Scorecard.type' => $filter['type']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 				$conditions[] = array('Scorecard.league_id' => $filter['value']);
 		}
 
@@ -700,6 +702,50 @@ class Scorecard extends AppModel {
 
 		return $overall;
 	}
+
+	public function getLeaderboards($center_id = null, $filter = null) {
+		if(!is_null($center_id))
+			$conditions[] = array('center_id' => $center_id);
+
+		if(!is_null($filter)) {		
+			if($filter['type'] != 'all')
+				$conditions[] = array('type' => $filter['type']);
+
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
+				$conditions[] = array('league_id' => $filter['value']);
+		}
+
+		$leaderboards = $this->find('all', array(
+			'contain' => array(
+				'Player' => array(
+					'fields' => array(
+						'player_name'
+					)
+				)
+			),
+			'fields' => array(
+				'player_id',
+				'COUNT(game_datetime) as games_played',
+				'SUM(times_missiled) as times_missiled_total',
+				'SUM(nukes_detonated) as nukes_detonated_total',
+				'SUM(nukes_canceled) as nukes_canceled_total',
+				'SUM(medic_hits) as medic_hits_total',
+				'SUM(own_medic_hits) as own_medic_hits_total',
+				'SUM(score) as score_total',
+				'SUM(elim_other_team) as elim_other_team_total',
+				'SUM(team_elim) as team_elim_total',
+				'SUM(own_nuke_cancels) as own_nuke_cancels_total',
+				'SUM(missiled_opponent) as missiled_opponent_total',
+				'SUM(missiled_team) as missiled_team_total',
+				'SUM(shots_fired) as shots_fired_total'
+			),
+			'conditions' => $conditions,
+			'group' => 'player_id'
+
+		));
+
+		return $leaderboards;
+	}
 	
 	public function getAllAvgMVP($filter = null, $center_id = null) {
 		if(!is_null($center_id))
@@ -709,7 +755,7 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
 				$conditions[] = array('league_id' => $filter['value']);
 		}
 
@@ -724,6 +770,10 @@ class Scorecard extends AppModel {
 			'conditions' => $conditions,
 			'group' => 'player_id, position'
 		));
+
+		/*$wins = $this->find('all', array(
+			'fields' => array(
+				'player_id')*/
 		
 		$results = array();
 		foreach($players as $player) {

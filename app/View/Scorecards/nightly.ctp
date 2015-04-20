@@ -19,7 +19,7 @@
 				{
 					"data" : "Game.game_name",
 					"render" : function(data, type, row, meta) {
-						if(row.Game.type == 'league') {
+						if(row.Game.type == 'league' || row.Game.type == 'tournament') {
 							return '<a href="/games/view/'+row.Game.id+'">'+row.League.name+' - R'+row.Game.league_round+' M'+row.Game.league_match+' G'+row.Game.league_game+'</a>';
 						} else {
 							return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>';

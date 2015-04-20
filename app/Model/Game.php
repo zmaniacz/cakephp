@@ -34,9 +34,11 @@ class Game extends AppModel {
 			$conditions[] = array('center_id' => $center_id);
 
 		if(!is_null($filter)) {
-			if($filter['type'] != 'all') {
-				$conditions[] = array('type' => $filter['type']);
-			}
+			if($filter['type'] != 'all')
+				$conditions[] = array('Game.type' => $filter['type']);
+
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
+				$conditions[] = array('Game.league_id' => $filter['value']);
 		}
 	
 		if(is_null($games_limit)) {
@@ -120,7 +122,7 @@ class Game extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('Game.type' => $filter['type']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
+			if(($filter['type'] == 'league' || $filter['type'] == 'tournament') && $filter['value'] > 0)
 				$conditions[] = array('Game.league_id' => $filter['value']);
 		}
 

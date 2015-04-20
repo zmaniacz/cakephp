@@ -32,7 +32,7 @@
 		<?php endif; ?>
 			<td>
 			<?php
-				if($game['Game']['type'] == 'league') {
+				if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 					echo $this->Html->link($game['League']['name'].' - R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game'], array('controller' => 'Games', 'action' => 'view', $game['Game']['id'])); 
 				} else {
 					echo $this->Html->link($game['Game']['game_name'], array('action' => 'view', $game['Game']['id']));

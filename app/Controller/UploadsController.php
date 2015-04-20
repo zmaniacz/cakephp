@@ -66,6 +66,10 @@ class UploadsController extends AppController {
 		if($type == 'league' || $type == 'tournament')
 			$league_id = $this->Session->read('filter.value');
 
+		//make sure we default to social
+		if($type == 'all')
+			$type = 'social';
+
 		$path = "parser/pending/$center_id";
 
 		$latest_ctime = 0;
@@ -124,6 +128,8 @@ class UploadsController extends AppController {
 				'resupplies' => $csvline[31],
 				'rank' => $csvline[32],
 				'bases_destroyed' => $csvline[33],
+				'sp_earned' => ($csvline[27] + ($csvline[29]*2) + ($csvline[33]*5)),
+				'sp_spent' => (($csvline[12]*20) + ($csvline[18]*10) + ($csvline[19]*15)),
 				'pdf_id' => (isset($csvline[34]) ? $csvline[34] : null),
 				'center_id' => $center_id,
 				'type' => $type,

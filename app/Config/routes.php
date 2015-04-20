@@ -21,6 +21,8 @@
  */
 	
 	Router::connect('/', array('controller' => 'scorecards', 'action' => 'nightly'));
+	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'nightly', 7, 'tournament', 6));
+	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'nightly', 8));
 	Router::parseExtensions();
 
 /**

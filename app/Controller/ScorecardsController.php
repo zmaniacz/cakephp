@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards');
 		parent::beforeFilter();
 	}
 
@@ -27,7 +27,18 @@ class ScorecardsController extends AppController {
 		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$center_id));
     }
 	
-	public function nightly() {
+	public function nightly($center_id = null, $league_type = null, $league_id = null) {
+		if($center_id != null) { 
+			$this->loadModel('Center');
+			$center = $this->Center->findById($center_id);
+			$this->Session->write('center',$center);
+		}
+		
+		if($league_type != null && $league_id != null) {
+			$this->Session->write('filter',array('type' => $league_type, 'value' => $league_id));
+		}
+
+
 		$game_dates = $this->Scorecard->getGameDates($this->Session->read('center.Center.id'), $this->Session->read('filter'));
 		$this->set('game_dates', $game_dates);
 		
@@ -64,18 +75,22 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function rebuild() {
-		//$mvps = $this->Scorecard->generateMVP();
+		$mvps = $this->Scorecard->generateMVP();
 		//$games = $this->Scorecard->generateGames(1);
-		$players = $this->Scorecard->generatePlayers($this->Session->read('center.Center.id'), $this->Session->read('filter'));
-		$existing = $players['existing'];
-		$new = $players['new'];
+		//$players = $this->Scorecard->generatePlayers($this->Session->read('center.Center.id'), $this->Session->read('filter'));
+		//$existing = $players['existing'];
+		//$new = $players['new'];
 		
-		$this->Session->setFlash("Added $mvps MVP entries, $games game entries, games for $existing players and $new new players");
+		$this->Session->setFlash("Added $mvps MVP entries"); //, $games game entries, games for $existing players and $new new players");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 	}
 	
 	public function allcenter() {
 		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('center.Center.id'), $this->Session->read('filter')));
+	}
+
+	public function leaderboards() {
+		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('center.Center.id'), $this->Session->read('filter')));
 	}
 	
 	public function setFilter () {
