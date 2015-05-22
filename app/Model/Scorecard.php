@@ -704,6 +704,8 @@ class Scorecard extends AppModel {
 	}
 
 	public function getLeaderboards($center_id = null, $filter = null) {
+		$conditions = array();
+
 		if(!is_null($center_id))
 			$conditions[] = array('center_id' => $center_id);
 
@@ -745,6 +747,118 @@ class Scorecard extends AppModel {
 		));
 
 		return $leaderboards;
+	}
+
+	public function getWinStreaks($center_id = null, $filter = null) {
+		$where = "1";
+
+		if(!is_null($center_id))
+			$where .= " AND center_id = $center_id";
+
+		if(!is_null($filter)) {		
+			if($filter['type'] != 'all') {
+				$type = $filter['type'];
+				$where .= " AND type = '$type'";
+			}
+
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
+				$value = $filter['value'];
+				$where .= " AND league_id = $value";
+			}
+				
+		}
+
+
+		
+		$streaks = $this->query("SELECT 
+    								streakset.player_id,
+    								players.player_name,
+    								streakset.gameresult,
+    								MAX(streakset.winlossstreak) AS maxstreak
+								FROM
+    								(SELECT 
+        								gr.game_datetime,
+            							gr.player_id,
+            							gr.result,
+            							@curstatus:=gr.result AS gameresult,
+            							@curplayer:=gr.player_id AS curplayer,
+            							@winlossseq:=IF(@curplayer = @lastplayer, IF(@curstatus = @laststatus, @winlossseq + 1, 1), 1) AS winlossstreak,
+            							@laststatus:=@curstatus AS carryOverForNextRecord,
+           								@lastplayer:=@curplayer AS moreCarryOver
+    								FROM
+        								(SELECT 
+        									*
+    									FROM
+        									game_results
+        								WHERE $where
+   										ORDER BY player_id , game_datetime) AS gr, (SELECT 
+        																				@CurStatus:='',
+																			            @curplayer:=0,
+																			            @LastStatus:='',
+																			            @lastplayer:=0,
+																			            @WinLossSeq:=0
+    									) sqlvars) streakset LEFT JOIN players ON (streakset.player_id = players.id)
+								WHERE streakset.gameresult = 'W'
+								GROUP BY streakset.player_id , streakset.gameresult
+								ORDER BY maxstreak DESC
+							");
+
+		return $streaks;
+	}
+
+	public function getLossStreaks($center_id = null, $filter = null) {
+		$where = "1";
+
+		if(!is_null($center_id))
+			$where .= " AND center_id = $center_id";
+
+		if(!is_null($filter)) {		
+			if($filter['type'] != 'all') {
+				$type = $filter['type'];
+				$where .= " AND type = '$type'";
+			}
+
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
+				$where .= " AND league_id = $value";
+			}
+				
+		}
+
+		
+		$streaks = $this->query("SELECT 
+    								streakset.player_id,
+    								players.player_name,
+    								streakset.gameresult,
+    								MAX(streakset.winlossstreak) AS maxstreak
+								FROM
+    								(SELECT 
+        								gr.game_datetime,
+            							gr.player_id,
+            							gr.result,
+            							@curstatus:=gr.result AS gameresult,
+            							@curplayer:=gr.player_id AS curplayer,
+            							@winlossseq:=IF(@curplayer = @lastplayer, IF(@curstatus = @laststatus, @winlossseq + 1, 1), 1) AS winlossstreak,
+            							@laststatus:=@curstatus AS carryOverForNextRecord,
+           								@lastplayer:=@curplayer AS moreCarryOver
+    								FROM
+        								(SELECT 
+        									*
+    									FROM
+        									game_results
+        								WHERE $where
+   										ORDER BY player_id , game_datetime) AS gr, (SELECT 
+        																				@CurStatus:='',
+																			            @curplayer:=0,
+																			            @LastStatus:='',
+																			            @lastplayer:=0,
+																			            @WinLossSeq:=0
+    									) sqlvars) streakset LEFT JOIN players ON (streakset.player_id = players.id)
+								WHERE streakset.gameresult = 'L'
+								GROUP BY streakset.player_id , streakset.gameresult
+								ORDER BY maxstreak DESC
+							");
+
+		return $streaks;
 	}
 	
 	public function getAllAvgMVP($filter = null, $center_id = null) {

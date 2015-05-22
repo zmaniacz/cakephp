@@ -271,6 +271,47 @@
 <br />
 <br />
 <div>
+	<h3>Streaky</h3>
+	<div style="width: 30%; float: left; margin-left: 15%;">
+		<table class="display" id="elim_other_team_total_table">
+			<thead>
+				<th>Name</th>
+				<th>Longest Win Streak</th>
+			</thead>
+			<tbody>
+				<?php foreach ($winstreaks as $row): ?>
+				<tr>
+					<td><?php echo $this->Html->link($row['players']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['streakset']['player_id'])); ?></td>
+					<td><?php echo $row[0]['maxstreak']; ?></td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+	<div style="width: 30%; float: left; margin-left: 15%;">
+		<table class="display" id="elim_other_team_total_table">
+			<thead>
+				<th>Name</th>
+				<th>Longest Losing Streak</th>
+			</thead>
+			<tbody>
+				<?php foreach ($lossstreaks as $row): ?>
+				<tr>
+					<td><?php echo $this->Html->link($row['players']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['streakset']['player_id'])); ?></td>
+					<td><?php echo $row[0]['maxstreak']; ?></td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<div>
 	<h3>Miscellaneous Mischief</h3>
 	<div style="width: 30%; float: left; margin-left: 15%;">
 		<table class="display" id="elim_other_team_total_table">
