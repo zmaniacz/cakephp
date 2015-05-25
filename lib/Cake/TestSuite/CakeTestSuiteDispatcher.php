@@ -37,7 +37,7 @@ class CakeTestSuiteDispatcher {
 		'codeCoverage' => false,
 		'case' => null,
 		'core' => false,
-		'app' => true,
+		'app' => false,
 		'plugin' => null,
 		'output' => 'html',
 		'show' => 'groups',
@@ -151,6 +151,12 @@ class CakeTestSuiteDispatcher {
 			} elseif (is_dir($vendor . DS . 'PHPUnit')) {
 				ini_set('include_path', $vendor . PATH_SEPARATOR . ini_get('include_path'));
 				break;
+			} elseif (is_file($vendor . DS . 'phpunit.phar')) {
+				$backup = $GLOBALS['_SERVER']['SCRIPT_NAME'];
+				$GLOBALS['_SERVER']['SCRIPT_NAME'] = '-';
+				$included = include_once $vendor . DS . 'phpunit.phar';
+				$GLOBALS['_SERVER']['SCRIPT_NAME'] = $backup;
+				return $included;
 			}
 		}
 		include 'PHPUnit' . DS . 'Autoload.php';
