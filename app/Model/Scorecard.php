@@ -110,8 +110,9 @@ class Scorecard extends AppModel {
 			if($score['Scorecard']['lives_left'] <= 0 && $score['Scorecard']['position'] != "Medic")
 				$mvp += -1;
 			
-			//lose 5 points for every penalty
-			$mvp += $score['Scorecard']['penalties'] * -5;
+			//lose 5 points for every penalty in competitive games only
+			if($score['Scorecard']['type'] == 'league' || $score['Scorecard']['type'] == 'tournament')
+				$mvp += $score['Scorecard']['penalties'] * -5;
 			
 			//raping 3hits.  the math looks weird, but it works and gets the desired result
 			$mvp += floor(($score['Scorecard']['shot_3hit']/6)*100) / 100;
