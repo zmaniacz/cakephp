@@ -108,7 +108,7 @@ class PenaltiesController extends AppController {
 				$this->Penalty->Scorecard->generateMVP();
 
 
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $game['Game']['id']));
 			} else {
 				$this->Session->setFlash(__('The penalty could not be saved. Please, try again.'));
 			}
@@ -152,7 +152,7 @@ class PenaltiesController extends AppController {
 
 			if ($this->Penalty->save($this->request->data)) {
 				$this->Session->setFlash(__('The penalty has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $game['Game']['id']));
 			} else {
 				$this->Session->setFlash(__('The penalty could not be saved. Please, try again.'));
 			}
@@ -210,5 +210,5 @@ class PenaltiesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The penalty could not be deleted. Please, try again.'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $game['Game']['id']));
 	}}
