@@ -41,7 +41,8 @@ class UploadsController extends AppController {
 
 	public function parse() {
 		$center_id = $this->Session->read('center.Center.id');
-		$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
+		//$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
+		$command = "nohup sh -c $'".APP.WEBROOT_DIR.DS."parser/pdfparse.sh $center_id' > output 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
 

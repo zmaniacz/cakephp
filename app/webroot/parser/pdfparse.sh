@@ -1,13 +1,15 @@
+#!/bin/bash
+
 if [ $# = 1 ]; then
-	cd /home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser
-	echo "InputDirectory=/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/incoming/$1/
-OutputDirectory=/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/output/$1/" >LFScoreParser.properties
-	mkdir -p /home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/output/$1/
-	mkdir -p /home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pending/$1/
-	java -Xmx100M -jar LFScoreParser.jar
-	mv output/$1/*.pdf ../pdf/
-	mv output/$1/*.csv pending/$1/
-	rm output/$1/*
+	DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+	echo "InputDirectory=$DIR/incoming/$1/
+OutputDirectory=$DIR/output/$1/" > $DIR/LFScoreParser.properties
+	mkdir -p $DIR/output/$1/
+	mkdir -p $DIR/pending/$1/
+	java -Xmx100M -jar $DIR/LFScoreParser.jar
+	mv $DIR/output/$1/*.pdf $DIR/../pdf/
+	mv $DIR/output/$1/*.csv $DIR/pending/$1/
+	rm $DIR/output/$1/*
 	exit 0
 else
 	exit 1
