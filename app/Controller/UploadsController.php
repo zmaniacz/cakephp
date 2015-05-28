@@ -41,8 +41,7 @@ class UploadsController extends AppController {
 
 	public function parse() {
 		$center_id = $this->Session->read('center.Center.id');
-		//$command = "nohup sh -c $'/home/laserforce/lfstats.redial.net/lfstats/app/webroot/parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
-		$command = "nohup sh -c $'".APP.WEBROOT_DIR.DS."parser/pdfparse.sh $center_id' > output 2>&1 & echo $!";
+		$command = "nohup sh -c '".APP.WEBROOT_DIR.DS."parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
 
@@ -136,17 +135,20 @@ class UploadsController extends AppController {
 				'type' => $type,
 				'league_id' => $league_id
 			));
-			$this->Scorecard->save();
-			$row++;
 
-			for($i=1; $i<=$csvline[22]; $i++) {
-				$this->Scorecard->Penalty->create();
-				$this->Scorecard->Penalty->set(array(
-					'type' => 'Unknown',
-					'value' => -1000,
-					'scorecard_id' => $this->Scorecard->getLastInsertId()
-				));
-				$this->Scorecard->Penalty->save();
+
+			if($this->Scorecard->save()) {
+				$row++;
+
+				for($i=1; $i<=$csvline[22]; $i++) {
+					$this->Scorecard->Penalty->create();
+					$this->Scorecard->Penalty->set(array(
+						'type' => 'Unknown',
+						'value' => -1000,
+						'scorecard_id' => $this->Scorecard->getLastInsertId()
+					));
+					$this->Scorecard->Penalty->save();
+				}
 			}
 		}
 		fclose($handle);
