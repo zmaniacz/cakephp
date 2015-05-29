@@ -12,9 +12,48 @@
 	} );
 </script>
 <p>Numbers in parentheses are score adjustments due to penalties and elimination bonuses</p>
-<h3><?php 
-		echo $game['Game']['game_name']." ".$game['Game']['game_datetime']." "; 				
-		
+<?php
+	if(AuthComponent::user('role') === 'admin') {
+		echo $this->Form->create('Game', array(
+			'inputDefaults' => array(
+				'div' => array(
+					'style' => 'display: inline; float: left;'
+				)
+			)
+		));
+		echo $this->Form->input('id');
+		echo $this->Form->input('league_round');
+		echo $this->Form->input('league_match');
+		echo $this->Form->input('league_game');
+	} else {
+		echo '<h3>R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game']."</h3>";
+	}
+?>
+<div style="clear: both;"></div>
+<h3>
+	<?php
+		if($game['Game']['red_team_id'] != null)
+			if(AuthComponent::user('role') === 'admin')
+				echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams));
+			else
+				echo $teams[$game['Game']['red_team_id']];
+		else
+			echo "Red Team";
+
+		echo " vs ";
+
+		if($game['Game']['green_team_id'] != null)
+			if(AuthComponent::user('role') === 'admin')
+				echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams));
+			else
+				echo $teams[$game['Game']['green_team_id']];
+		else
+			echo "Green Team";
+	?>
+</h3>
+<div style="clear: both;"></div>
+<h3>
+	<?php
 		if (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) {
 			echo $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf");
 		} elseif (file_exists(WWW_ROOT."/pdf/".$game['Game']['pdf_id'].".pdf")) {
@@ -22,18 +61,26 @@
 		}
 		if(AuthComponent::user('role') === 'admin') {
 			echo "<button>".$this->Html->link("Edit", array('controller' => 'Games', 'action' => 'edit', $game['Game']['id']))."</button>";
+			echo "<button>".$this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), null, __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']))."</button>";
 		}
 	?>
 </h3>
-<div>
-	<h1>Score:
+<br />
+<hr />
+<br />
+
+	<h1>
 		<?php 
 		if($game['Game']['winner'] == 'Green') {
-			echo $game['Game']['green_score']+$game['Game']['green_adj'];
+			echo (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+			echo "<br />";
+			echo "Score: ".($game['Game']['green_score']+$game['Game']['green_adj']);
 			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['green_adj'].")";
 		} else {
-			echo $game['Game']['red_score']+$game['Game']['red_adj'];
+			echo (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+			echo "<br />";
+			echo "Score: ".($game['Game']['red_score']+$game['Game']['red_adj']);
 			if($game['Game']['red_adj'] != 0)
 				echo " (".$game['Game']['red_adj'].")"; 
 		}
@@ -113,18 +160,21 @@
 			?>
 		</tbody>
 	</table>
-</div>
 <br />
 <br />
 <div>
-	<h1>Score: 
+	<h1>
 		<?php 
 		if($game['Game']['winner'] == 'Green') {
-			echo $game['Game']['red_score']+$game['Game']['red_adj'];
-			if($game['Game']['red_adj'] != 0)
+			echo (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+			echo "<br />";
+			echo "Score: ".($game['Game']['red_score']+$game['Game']['red_adj']);
+			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['red_adj'].")";
 		} else {
-			echo $game['Game']['green_score']+$game['Game']['green_adj'];
+			echo (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+			echo "<br />";
+			echo "Score: ".($game['Game']['green_score']+$game['Game']['green_adj']);
 			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['green_adj'].")"; 
 		}
@@ -205,3 +255,8 @@
 		</tbody>
 	</table>
 </div>
+<?php
+	if(AuthComponent::user('role') === 'admin') {
+		echo $this->Form->end(__('Submit'));
+	}
+?>

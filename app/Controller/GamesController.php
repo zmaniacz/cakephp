@@ -71,7 +71,6 @@ class GamesController extends AppController {
 				array_multisort($team, SORT_ASC, $rank, SORT_ASC, $game['Scorecard']);
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
-				$this->view = 'league_view';
 				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
 			}
 			
@@ -106,6 +105,27 @@ class GamesController extends AppController {
 				$this->set('teams', $this->League->getTeams($this->request->data['Game']['league_id']));
 			}
 		}
+	}
+	
+/**
+ * delete method
+ *
+ * @throws NotFoundException
+ * @param string $id
+ * @return void
+ */
+	public function delete($id = null) {
+		$this->Game->id = $id;
+		if (!$this->Game->exists()) {
+			throw new NotFoundException(__('Invalid game'));
+		}
+
+		if ($this->Game->delete()) {
+			$this->Session->setFlash(__('The game has been deleted.'));
+		} else {
+			$this->Session->setFlash(__('The game could not be deleted. Please, try again.'));
+		}
+		return $this->redirect(array('controller' => 'Games', 'action' => 'index'));
 	}
 
 	public function overall() {
