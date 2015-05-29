@@ -109,6 +109,7 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>Penalties</th>
+			<th>Merc</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -155,6 +156,7 @@
 					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
 				}
 				echo "</td>";
+				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
 				echo "</tr>";
 			}
 			?>
@@ -203,6 +205,7 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>Penalties</th>
+			<th>Merc</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -249,6 +252,7 @@
 					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
 				}
 				echo "</td>";
+				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
 				echo "</tr>";
 			}
 			?>
@@ -260,3 +264,15 @@
 		echo $this->Form->end(__('Submit'));
 	}
 ?>
+
+<script>
+$('.switch_sub_cbox').change(function() {
+	$(this).closest('tr').toggleClass("sub", this.checked);
+}).change();
+
+$('.switch_sub_cbox').change(function() {
+	$.ajax({
+		url: "/Scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
+	});
+});
+</script>

@@ -27,8 +27,7 @@
 		echo $this->Html->script('//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js');
 		echo $this->Html->script('//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.js');
 		echo $this->Html->meta('icon');
-		echo $this->Html->css(array('laserforce','cake.generic','//code.jquery.com/ui/1.11.2/themes/ui-lightness/jquery-ui.css'));
-		echo $this->Html->css('//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.css');
+		echo $this->Html->css(array('cake.generic','//code.jquery.com/ui/1.11.2/themes/ui-lightness/jquery-ui.css','//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.css','laserforce'));
 	?>
 	<script type="text/javascript">
 		$(document).ready(function() {

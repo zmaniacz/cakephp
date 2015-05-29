@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards','ajax_switchSub');
 		parent::beforeFilter();
 	}
 
@@ -117,5 +117,14 @@ class ScorecardsController extends AppController {
 	public function ajax_getFilter() {
 		$this->request->onlyAllow('ajax');
 		$this->set('filter', $this->Session->read('filter'));
+	}
+	
+	public function ajax_switchSub($id) {
+		$this->request->onlyAllow('ajax');
+		$this->render(false);
+		
+		$scorecard = $this->Scorecard->read(null, $id);
+		$this->Scorecard->set('is_sub', (($scorecard['Scorecard']['is_sub']) ? 0 : 1) );
+		$this->Scorecard->save();
 	}
 }

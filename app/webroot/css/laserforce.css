@@ -19,6 +19,10 @@ tr.gameRowDead {
 	text-shadow: 0 0 1px #666666; 
 }
 
+tr.sub {
+    background-color: lightgrey !important; 
+}
+
 div.input.select {
 	display: inline-block;
 }
