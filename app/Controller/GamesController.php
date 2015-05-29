@@ -17,7 +17,7 @@ class GamesController extends AppController {
 	public $components = array('Paginator', 'Session');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','view','overall','overallWinLossDetail', 'test');
+		$this->Auth->allow('index','view','overall','overallWinLossDetail');
 		parent::beforeFilter();
 	}
 
@@ -28,15 +28,6 @@ class GamesController extends AppController {
  */
 	public function index() {
 		$this->set('games', $this->Game->getGameList($this->Session->read('center.Center.id'), $this->Session->read('filter')));
-	}
-	
-/**
- * test method
- *
- * @return void
- */
-	public function test() {
-		$this->Game->updateGameWinner(1307);
 	}
 
 /**
