@@ -36,7 +36,7 @@ class GamesController extends AppController {
  * @return void
  */
 	public function test() {
-		$this->Game->updateGameWinner(1329);
+		$this->Game->updateGameWinner(1307);
 	}
 
 /**

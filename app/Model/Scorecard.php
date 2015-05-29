@@ -176,38 +176,11 @@ class Scorecard extends AppModel {
 				$current_date = $date;
 			}
 
-			//calculate elim bonus
-			$red_elim = 0;
-			$green_elim = 0;
-			$red_adj = 0;
-			$green_adj = 0;
-			
-			if($score['red']['team_elim'] > 0) {
-				$red_elim = 1;
-				$green_adj += 10000;
-			}
-	
-			if($score['green']['team_elim'] > 0) {
-				$green_elim = 1;
-				$red_adj += 10000;
-			}
-
-			$winner = 'Green';
-			if(($score['red']['score'] + $red_adj) > ($score['green']['score'] + $green_adj))
-				$winner = 'Red';
-
 			$this->Game->create();
 			$this->Game->set(array(
 				'game_name' => "G{$game_counter}",
 				'game_description' => "",
 				'game_datetime' => $score['green']['game_datetime'],
-				'green_score' => $score['green']['score'],
-				'red_score' => $score['red']['score'],
-				'red_adj' => $red_adj,
-				'green_adj' => $green_adj,
-				'red_eliminated' => $red_elim,
-				'green_eliminated' => $green_elim,
-				'winner' => $winner,
 				'type' => $filter['type'],
 				'pdf_id' => $score['green']['pdf_id'],
 				'league_id' => $league_id,
@@ -220,34 +193,7 @@ class Scorecard extends AppModel {
 				array('Scorecard.game_datetime' => $score['green']['game_datetime'])
 			);
 
-			$conditions[] = array('game_id' => $this->Game->id);
-			$scorecards = $this->find('all', array(
-				'fields' => array('id', 'team'),
-				'conditions' => $conditions,
-				'contain' => array(
-					'Penalty' => array()
-				)
-			));
-
-			foreach($scorecards as $score) {
-				$value = 0;
-				if(!empty($score['Penalty'])) {
-					foreach($score['Penalty'] as $penalty) {
-						$value += $penalty['value'];
-					}
-
-					if($score['Scorecard']['team'] == 'Red') {
-						$this->Game->set(array(
-							'red_adj' => $this->Game->red_adj + $value
-						));
-					} else {
-						$this->Game->set(array(
-							'green_adj' => $this->Game->green_adj + $value
-						));
-					}
-					$this->Game->save();
-				}
-			}
+			$this->Game->updateGameWinner($this->Game->id);
 			
 			$counter++;
 		}

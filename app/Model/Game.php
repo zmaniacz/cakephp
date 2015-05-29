@@ -226,10 +226,12 @@ class Game extends AppModel {
 		
 		foreach($penalties['Scorecard'] as $penalty) {
 			if(!empty($penalty['Penalty'])) {
-				if($penalty['team'] == 'red') {
-					$red_pens += $penalty['Penalty'][0]['value'];
-				} else {
-					$green_pens += $penalty['Penalty'][0]['value'];
+				foreach($penalty['Penalty'] as $single_penalty) {
+					if($penalty['team'] == 'Red') {
+						$red_pens += $single_penalty['value'];
+					} else {
+						$green_pens += $single_penalty['value'];
+					}
 				}
 			}
 		}
