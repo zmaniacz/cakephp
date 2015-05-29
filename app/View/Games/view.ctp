@@ -88,6 +88,7 @@
 	</h1>
 	<table class="gamelist">
 		<thead>
+			<th>Merc</th>
 			<th>Rank</th>
 			<th>Name</th>
 			<th>Position</th>
@@ -109,7 +110,6 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>Penalties</th>
-			<th>Merc</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -131,6 +131,7 @@
 				else
 					echo "<tr class='gameRow".$score['team']."'>";
 					
+				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")." ".((!(AuthComponent::user('role') === 'admin')) ? "disabled" : "")."></form></td>";
 				echo "<td>".$score['rank']."</td>";
 				echo "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']))."</td>";
 				echo "<td>".$score['position']."</td>";
@@ -156,7 +157,6 @@
 					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
 				}
 				echo "</td>";
-				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
 				echo "</tr>";
 			}
 			?>
@@ -184,6 +184,7 @@
 	</h1>
 	<table class="gamelist">
 		<thead>
+			<th>Merc</th>
 			<th>Rank</th>
 			<th>Name</th>
 			<th>Position</th>
@@ -205,7 +206,6 @@
 			<th>Boosts</th>
 			<th>Resupplies</th>
 			<th>Penalties</th>
-			<th>Merc</th>
 		</thead>
 		<tbody>
 			<?php foreach ($game['Scorecard'] as $score) {
@@ -227,6 +227,7 @@
 				else
 					echo "<tr class='gameRow".$score['team']."'>";
 
+				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")." ".((!(AuthComponent::user('role') === 'admin')) ? "disabled" : "")."></form></td>";
 				echo "<td>".$score['rank']."</td>";
 				echo "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']))."</td>";
 				echo "<td>".$score['position']."</td>";
@@ -252,7 +253,6 @@
 					echo "<button>".$this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']))."</button>";
 				}
 				echo "</td>";
-				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
 				echo "</tr>";
 			}
 			?>

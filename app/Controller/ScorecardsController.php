@@ -3,7 +3,7 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards','ajax_switchSub');
+		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards');
 		parent::beforeFilter();
 	}
 
