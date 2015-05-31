@@ -310,8 +310,11 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
 
-			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
+			//Only pull scorecards from the specific comp and make sure no sub games get pulled
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
 				$conditions[] = array('Scorecard.league_id' => $filter['value']);
+				$conditions[] = array('Scorecard.is_sub' => 0);
+			}
 		}
 		
 		$scores = $this->find('all', array(
@@ -816,8 +819,10 @@ class Scorecard extends AppModel {
 			if($filter['type'] != 'all')
 				$conditions[] = array('type' => $filter['type']);
 
-			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
+			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
+				$conditions[] = array('Scorecard.is_sub' => 0);
 				$conditions[] = array('league_id' => $filter['value']);
+			}
 		}
 
 		$players = $this->find('all', array(
