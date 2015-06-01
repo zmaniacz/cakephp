@@ -1,8 +1,17 @@
-<?php
-	echo $this->Form->create('nightly');
-	echo $this->Form->input('selectDate', array('label' => 'Select Date', 'options' => $game_dates));
-	echo $this->Form->end();
-?>
+<form class="form-inline" action="/scorecards/nightly" id="nightlyNightlyForm" method="post" accept-charset="utf-8">
+	<div style="display:none;">
+		<input type="hidden" name="_method" value="POST"/>
+	</div>
+	<div class="form-group">
+		<label for="nightlySelectDate">Select Date</label>
+		<select class="form-control" name="data[nightly][selectDate]" id="nightlySelectDate">
+			<?php foreach($game_dates as $game_date): ?>
+				<option value="<?= $game_date ?>"><?= $game_date ?></option>
+			<?php endforeach; ?>
+		</select>
+	</div>
+</form>
+</br>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
@@ -59,9 +68,9 @@
 			],
 			"rowCallback" : function(row, data) {
 				if(data.Game.winner == "Red")
-					$(row).addClass('gameRowRed');
+					$(row).addClass('danger');
 				else
-					$(row).addClass('gameRowGreen');
+					$(row).addClass('success');
 			}
 		});
 
@@ -145,60 +154,84 @@
 		});
 	} );
 </script>
-<h3>Games Played</h3>
-<div style="width: 1000px;">
-	<table class="display" id="game_list">
-		<thead>
-			<th>Game</th>
-			<th>Time</th>
-			<th>Winner Score</th>
-			<th>Loser Score</th>
-			<th>Scorecard PDF</th>
-		</thead>
-	</table>
-</div>
-<div id="accordion">
-	<h3>Overall</h3>
-	<div>
-		<table class="display" id="overall">
+<div class="panel panel-info">
+	<div class="panel-heading" role="tab" id="overall_heading">
+		<h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse_overall">
+				Games Played
+			</a>
+		</h4>
+	</div>
+	<div class="panel-body">
+		<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
 			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Game</th>
-					<th>Position</th>
-					<th rowspan="2">Score</th>
-					<th rowspan="2">MVP</th>
-					<th rowspan="2">Accuracy</th>
-					<th rowspan="2">Hit Diff</th>
-					<th rowspan="2">Medic Hits</th>
-					<th rowspan="2">Shot Team</th>
-				</tr>
-				<tr>
-					<th class="searchable">Name</th>
-					<th class="searchable">Game</th>
-					<th class="searchable">Position</th>
-				</tr>
+				<th>Game</th>
+				<th>Time</th>
+				<th>Winner Score</th>
+				<th>Loser Score</th>
+				<th>Scorecard PDF</th>
 			</thead>
 		</table>
 	</div>
-	<h3>Medic Hits</h3>
-	<div>
-		<table class="display" id="medic_hits">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th rowspan="2">Total Medic Hits (All)</th>
-					<th rowspan="2">Average Medic Hits (All)</th>
-					<th rowspan="2">Games Played (All)</th>
-					<th rowspan="2">Total Medic Hits (Non-Resupply)</th>
-					<th rowspan="2">Average Medic Hits (Non-Resupply)</th>
-					<th rowspan="2">Games Played (Non-Resupply)</th>
-				</tr>
-				<tr>
-					<th class="searchable">Name</th>
-				</tr>
-			</thead>
-		</table>
+</div>
+<div class="panel-group" id="accordion" role="tablist">
+	<div class="panel panel-info">
+		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_overall" role="tab" id="overall_heading">
+			<h4 class="panel-title">
+				Overall
+			</h4>
+		</div>
+		<div id="collapse_overall" class="panel-collapse collapse in" role="tabpanel">
+			<div class="panel-body">
+				<table class="table table-striped table-bordered table-hover" id="overall">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Game</th>
+							<th>Position</th>
+							<th rowspan="2">Score</th>
+							<th rowspan="2">MVP</th>
+							<th rowspan="2">Accuracy</th>
+							<th rowspan="2">Hit Diff</th>
+							<th rowspan="2">Medic Hits</th>
+							<th rowspan="2">Shot Team</th>
+						</tr>
+						<tr>
+							<th class="searchable">Name</th>
+							<th class="searchable">Game</th>
+							<th class="searchable">Position</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_medic_hits" role="tab" id="#medic_hits_heading">
+			<h4 class="panel-title">
+				Medic Hits
+			</h4>
+		</div>
+		<div id="collapse_medic_hits" class="panel-collapse collapse" role="tabpanel">
+			<div class="panel-body">
+				<table class="table table-striped table-bordered table-hover" id="medic_hits">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th rowspan="2">Total Medic Hits (All)</th>
+							<th rowspan="2">Average Medic Hits (All)</th>
+							<th rowspan="2">Games Played (All)</th>
+							<th rowspan="2">Total Medic Hits (Non-Resupply)</th>
+							<th rowspan="2">Average Medic Hits (Non-Resupply)</th>
+							<th rowspan="2">Games Played (Non-Resupply)</th>
+						</tr>
+						<tr>
+							<th class="searchable">Name</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 <script>
@@ -210,15 +243,4 @@ $('#nightlySelectDate').change(function() {
 	$('#overall').DataTable().ajax.url(new_overall_url).load();
 	$('#medic_hits').DataTable().ajax.url(new_medic_url).load();
 });
-
-$( "#accordion" ).accordion( {
-	collapsible: true,
-	heightStyle: "content",
-	activate: function(event, ui) {
-		var oTable = $('div.dataTables_scrollBody>table.display', ui.panel).dataTable();
-		if(oTable.length > 0) {
-			oTable.fnAdjustColumnSizing();
-		}
-	}
-} );
 </script>

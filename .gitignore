@@ -18,6 +18,7 @@
 #################################
 /nbproject
 .idea
+.settings
 
 # OS generated files #
 ######################

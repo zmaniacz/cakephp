@@ -18,119 +18,134 @@
 //debug($this->Session->read());
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<?php
 		echo $this->Html->charset();
-		echo $this->Html->script('//code.jquery.com/jquery-2.1.3.min.js');
-		echo $this->Html->script('//code.jquery.com/ui/1.11.2/jquery-ui.min.js');
-		echo $this->Html->script('//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js');
-		echo $this->Html->script('//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.js');
-		echo $this->Html->meta('icon');
-		echo $this->Html->css(array('cake.generic','//code.jquery.com/ui/1.11.2/themes/ui-lightness/jquery-ui.css','//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.css','laserforce'));
+		echo $this->Html->script('//code.jquery.com/jquery-2.1.4.min.js');
+		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js');
+		echo $this->Html->script('//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js');
+		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js');
+		//echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css');
+		//echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css');
+		echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/slate/bootstrap.min.css');
+		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
+		echo $this->Html->css('laserforce');
 	?>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#topmenu").menu();
-
-			if($('#game_filterSelectFilter').val() == 'league' || $('#game_filterSelectFilter').val() == 'tournament') {
-				populateLeagues($('#game_filterSelectFilter').val());
-				$.getJSON("/scorecards/ajax_getFilter.json", function (data) {
-					$("#game_filter_detailsSelect").val(data.filter.value);
-				});
-			}
-		});
-	</script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
 		<?php echo $title_for_layout; ?>
 	</title>
 </head>
 <body>
-	<div id="container">
-		<div id="header">
-			<div style="float:right;">
-				<?php if (AuthComponent::user('id')): ?>
-					Logged in as <?= AuthComponent::user('username') ?> - <button><?php echo $this->Html->link("Logout", array('controller' => 'users', 'action' => 'logout')); ?></button>
-				<?php else: ?>
-					<button><?php echo $this->Html->link("Login", array('controller' => 'users', 'action' => 'login')); ?></button>
-				<?php endif; ?>
+	<div class="container">
+		<div id="container">
+			<div id="header">
+				<nav class="navbar navbar-default navbar-fixed-top">
+					<div class="container-fluid">
+						<div class="navbar-header">
+      						<a class="navbar-brand" href="#"><img src="/img/LF-logo1-shadow-small.png"></a>
+    					</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li><a href="/scorecards/overall">Top Players</a></li>
+								<li><a href="/games/index">Game List</a></li>
+								<li><a href="/scorecards/nightly">Nightly Stats</a></li>
+								<li><a href="/scorecards/leaderboards">Leader(Loser)boards</a></li>
+								<li><a href="/games/overall">Center Stats</a></li>
+								<li><a href="/scorecards/allcenter">All-Center Teams</a></li>
+								<li><a href="/penalties/index">Penalties</a></li>
+								<li><a href="/pages/aboutSM5">About SM5</a></li>
+								<?php if(AuthComponent::user('role') === 'admin'): ?>
+									<li><a href="/uploads">Upload PDFs</li>
+								<?php endif; ?>
+							</ul>
+							<ul class="nav navbar-nav navbar-right">
+								<?php if (AuthComponent::user('id')): ?>
+									<p class="navbar-text"><?= AuthComponent::user('username') ?></p><a class="btn btn-info navbar-btn" href="/users/logout" role="button">Logout</a>
+								<?php else: ?>
+									<a class="btn btn-info navbar-btn" href="/users/login" role="button">Login</a>
+								<?php endif; ?>
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<form class="form-inline" action="/scorecards/setFilter" id="center_filterForm" method="post" accept-charset="utf-8">
+					<div style="display:none;">
+						<input type="hidden" name="_method" value="POST"/>
+					</div>
+					<div class="form-group">
+						<label for="center_filterSelectFilter">Center</label>
+						<select class="form-control" name="data[center_filter][selectFilter]" id="center_filterSelectFilter">
+							<?php foreach($centers as $center): ?>
+								<option value="<?= $center['Center']['id'] ?>"<?= ($center['Center']['id'] == $this->Session->read('center.Center.id')) ? " selected" : ""; ?>><?= $center['Center']['name'] ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</form>
+				<form class="form-inline" action="/scorecards/setFilter" id="game_filterForm" method="post" accept-charset="utf-8">
+					<div style="display:none;">
+						<input type="hidden" name="_method" value="POST"/>
+					</div>
+					<label for="game_filterSelectFilter">Viewing</label>
+					<select class="form-control" name="data[game_filter][selectFilter]" id="game_filterSelectFilter">
+						<option value="all"<?= ('all' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>All</option>
+						<option value="social"<?= ('social' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>Social</option>
+						<option value="league"<?= ('league' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>League</option>
+						<option value="tournament"<?= ('tournament' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>Tournament</option>
+					</select>
+					<select class="form-control" name="data[game_filter][select_detailsFilter]" id="game_filter_detailsSelect" style="display:none;">
+						<option value="0">-- --</option>
+					</select>
+				</form>
 			</div>
-			<h1>Laserforce - 
-			<?php
-				echo $this->Form->create('center_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;', 'id' => 'center_filterForm'));
-				echo $this->Form->input('selectFilter', array('options' => $centers, 'selected' => $this->Session->read('center.Center.id'), 'style' => 'display: inline;'));
-				echo $this->Form->end();
-			?>
-			</h1>
-			<h1>Viewing: 
-			<?php
-				echo $this->Form->create('game_filter', array('model' => false, 'url' => array('controller' => 'scorecards', 'action' => 'setFilter'), 'inputDefaults' => array('div' => false, 'label' => false), 'style' => 'display: inline;', 'id' => 'game_filterForm'));
-				echo $this->Form->input('selectFilter', array('options' => array('all' => 'All','social' => 'Social','league' => 'League','tournament' => 'Tournament'), 'selected' => $this->Session->read('filter.type'), 'style' => 'display: inline;'));
-				echo $this->Form->input('select_detailsFilter', array('options' => array(0 => '-- --'), 'style' => 'display: none;', 'id' => 'game_filter_detailsSelect'));
-				echo $this->Form->end();
-			?>
-			</h1>
-			<ul id="topmenu">
-				<li><?php echo $this->Html->link("Top Players", array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
-				<li><?php echo $this->Html->link("Game List", array('controller' => 'games', 'action' => 'index')); ?></li>
-				<li><?php echo $this->Html->link("Nightly Stats", array('controller' => 'scorecards', 'action' => 'nightly')); ?></li>
-				<li><?php echo $this->Html->link("Leader(Loser)boards", array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
-				<li><?php echo $this->Html->link("Center Stats", array('controller' => 'games', 'action' => 'overall')); ?></li>
-				<li><?php echo $this->Html->link("All-Center Teams", array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
-				<li><?php echo $this->Html->link("Penalties", array('controller' => 'penalties', 'action' => 'index')); ?></li>
-				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
-				<?php
-					if(AuthComponent::user('role') === 'admin') {
-						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads'))."</li>";
-					}
-				?>
-			</ul>
+			<hr>
+			<div id="content">
+				<?php //print_r($this->Session->read()); ?>
+				<?php echo $this->Session->flash(); ?>
+	
+				<?php echo $this->fetch('content'); ?>
+			</div>
+			<div id="footer">
+			</div>
 		</div>
-		<div id="content">
-			<?php //print_r($this->Session->read()); ?>
-			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-		</div>
-	</div>
-	<script>
-	$('#game_filterSelectFilter').change(function() {
-		if($('#game_filterSelectFilter').val() == 'social' || $('#game_filterSelectFilter').val() == 'all') {
-			$('#game_filter_detailsSelect').hide();
-			$('#game_filterForm').submit();
-		} else {
-			populateLeagues($('#game_filterSelectFilter').val());
-		}
-	});
-
-	$('#center_filterSelectFilter').change(function() {
-		$('#center_filterForm').submit();
-	});
-
-	$('#game_filter_detailsSelect').change(function(){
-		if($('#game_filter_detailsSelect').val() >= 0) {
-			$('#game_filterForm').submit();
-		}
-	});
-
-	function populateLeagues(type) {
-		$('#game_filter_detailsSelect').find('option').remove().end();
-		$('#game_filter_detailsSelect').append('<option value="-1">-- Choose '+type+' --</option>').val(-1);
-		$('#game_filter_detailsSelect').append('<option value="0">All</option>').val(0);
-		$.getJSON("/leagues/ajax_getLeagues/"+type+".json", function( data ) {
-			$.each(data['leagues'], function() {
-				$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
-			})
-			$('#game_filter_detailsSelect').show();
+		<script>
+		$('#game_filterSelectFilter').change(function() {
+			if($('#game_filterSelectFilter').val() == 'social' || $('#game_filterSelectFilter').val() == 'all') {
+				$('#game_filter_detailsSelect').hide();
+				$('#game_filterForm').submit();
+			} else {
+				populateLeagues($('#game_filterSelectFilter').val());
+			}
 		});
-		$('#game_filter_detailsSelect').val(-1);
-	}
-	</script>
-	<?php
-		//echo $this->element('sql_dump');
-		echo $this->Js->writeBuffer();
-	?>
+	
+		$('#center_filterSelectFilter').change(function() {
+			$('#center_filterForm').submit();
+		});
+	
+		$('#game_filter_detailsSelect').change(function(){
+			if($('#game_filter_detailsSelect').val() >= 0) {
+				$('#game_filterForm').submit();
+			}
+		});
+	
+		function populateLeagues(type) {
+			$('#game_filter_detailsSelect').find('option').remove().end();
+			$('#game_filter_detailsSelect').append('<option value="-1">-- Choose '+type+' --</option>').val(-1);
+			$('#game_filter_detailsSelect').append('<option value="0">All</option>').val(0);
+			$.getJSON("/leagues/ajax_getLeagues/"+type+".json", function( data ) {
+				$.each(data['leagues'], function() {
+					$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
+				})
+				$('#game_filter_detailsSelect').show();
+			});
+			$('#game_filter_detailsSelect').val(-1);
+		}
+		</script>
+		<?php
+			//echo $this->element('sql_dump');
+			echo $this->Js->writeBuffer();
+		?>
+	</div>
 </body>
 </html>

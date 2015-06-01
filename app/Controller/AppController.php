@@ -55,8 +55,7 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$centers[0] = 'All';
-		$centers = $centers + $this->Center->find('list');
+		$centers = $this->Center->find('all');
 		$this->set('centers', $centers);
 	
 		if(!$this->Session->check('center')) {
