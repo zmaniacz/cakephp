@@ -1,14 +1,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
-			"jQueryUI": true,
 			"pageLength": 25,
 			"order": [1,'desc']
 		});
 	});
 </script>
 <h2><?php echo __('Game List'); ?></h2>
-<table id="game_list">
+<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
 	<thead>
 		<th>Game</th>
 		<th>Time</th>
@@ -26,9 +25,9 @@
 			$green_team = ($game['Game']['green_team_id'] == null) ? 'Green Team' : $game['Green_Team']['name'];
 		?>
 		<?php if($game['Game']['winner'] == 'Red'): ?>
-			<tr class="gameRowRed">
+			<tr class="danger">
 		<?php else: ?>
-			<tr class="gameRowGreen">
+			<tr class="success">
 		<?php endif; ?>
 			<td>
 			<?php

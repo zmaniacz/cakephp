@@ -72,21 +72,23 @@
 	<h1>
 		<?php 
 		if($game['Game']['winner'] == 'Green') {
+			echo "<p class=\"text-success\">";
 			echo (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
-			echo "<br />";
+			echo "</p>";
 			echo "Score: ".($game['Game']['green_score']+$game['Game']['green_adj']);
 			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['green_adj'].")";
 		} else {
+			echo "<p class=\"text-danger\">";
 			echo (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
-			echo "<br />";
+			echo "</p>";
 			echo "Score: ".($game['Game']['red_score']+$game['Game']['red_adj']);
 			if($game['Game']['red_adj'] != 0)
 				echo " (".$game['Game']['red_adj'].")"; 
 		}
 		?>
 	</h1>
-	<table class="gamelist">
+	<table class="gamelist table table-striped table-bordered table-hover table-condensed">
 		<thead>
 			<th>Merc</th>
 			<th>Rank</th>
@@ -126,10 +128,12 @@
 					}
 				}
 				
-				if($score['lives_left'] == 0)
-					echo "<tr class='gameRowDead'>";
-				else
-					echo "<tr class='gameRow".$score['team']."'>";
+				if($score['lives_left'] > 0) {
+					if($score['team'] == 'Red')
+						echo "<tr class='danger'>";
+					else
+						echo "<tr class='success'>";
+				}
 					
 				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")." ".((!(AuthComponent::user('role') === 'admin')) ? "disabled" : "")."></form></td>";
 				echo "<td>".$score['rank']."</td>";
@@ -168,21 +172,23 @@
 	<h1>
 		<?php 
 		if($game['Game']['winner'] == 'Green') {
+			echo "<p class=\"text-danger\">";
 			echo (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
-			echo "<br />";
+			echo "</p>";
 			echo "Score: ".($game['Game']['red_score']+$game['Game']['red_adj']);
 			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['red_adj'].")";
 		} else {
+			echo "<p class=\"text-success\">";
 			echo (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
-			echo "<br />";
+			echo "</p>";
 			echo "Score: ".($game['Game']['green_score']+$game['Game']['green_adj']);
 			if($game['Game']['green_adj'] != 0)
 				echo " (".$game['Game']['green_adj'].")"; 
 		}
 		?>
 	</h1>
-	<table class="gamelist">
+	<table class="gamelist table table-striped table-bordered table-hover table-condensed">
 		<thead>
 			<th>Merc</th>
 			<th>Rank</th>
@@ -222,10 +228,12 @@
 					}
 				}
 					
-				if($score['lives_left'] == 0)
-					echo "<tr class='gameRowDead'>";
-				else
-					echo "<tr class='gameRow".$score['team']."'>";
+				if($score['lives_left'] > 0) {
+					if($score['team'] == 'Red')
+						echo "<tr class='danger'>";
+					else
+						echo "<tr class='success'>";
+				}
 
 				echo "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")." ".((!(AuthComponent::user('role') === 'admin')) ? "disabled" : "")."></form></td>";
 				echo "<td>".$score['rank']."</td>";

@@ -15,7 +15,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
-			"autoWidth": false,
+			"scrollX" : true,
 			"searching": false,
 			"info": false,
 			"paging": false,
@@ -154,24 +154,24 @@
 		});
 	} );
 </script>
-<div class="panel panel-info">
-	<div class="panel-heading" role="tab" id="overall_heading">
+<div id="top_accordion" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#top_accordion" data-target="#collapse_game_list" role="tab" id="game_list_heading">
 		<h4 class="panel-title">
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapse_overall">
-				Games Played
-			</a>
+			Games Played
 		</h4>
 	</div>
-	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
-			<thead>
-				<th>Game</th>
-				<th>Time</th>
-				<th>Winner Score</th>
-				<th>Loser Score</th>
-				<th>Scorecard PDF</th>
-			</thead>
-		</table>
+	<div id="collapse_game_list" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
+				<thead>
+					<th>Game</th>
+					<th>Time</th>
+					<th>Winner Score</th>
+					<th>Loser Score</th>
+					<th>Scorecard PDF</th>
+				</thead>
+			</table>
+		</div>
 	</div>
 </div>
 <div class="panel-group" id="accordion" role="tablist">
