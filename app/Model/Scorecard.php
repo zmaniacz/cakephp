@@ -836,10 +836,6 @@ class Scorecard extends AppModel {
 			'conditions' => $conditions,
 			'group' => 'player_id, position'
 		));
-
-		/*$wins = $this->find('all', array(
-			'fields' => array(
-				'player_id')*/
 		
 		$results = array();
 		foreach($players as $player) {
