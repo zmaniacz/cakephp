@@ -39,7 +39,7 @@ class PenaltiesController extends AppController {
 				)
 			)
 		));
-		$this->set('penalties', $this->Paginator->paginate());
+		$this->set('penalties', $this->Penalty->find('all'));
 	}
 
 /**
