@@ -1,9 +1,12 @@
-<div class="penalties form">
-<?php echo $this->Form->create('Penalty'); ?>
-	<fieldset>
-		<legend><?php echo __('Add Penalty'); ?></legend>
-	<?php
-		echo $this->Form->input('type', array(
+<div id="penalty_add" class="panel panel-info">
+	<div class="panel-heading" role="tab" id="penalty_add_heading">
+		<h4 class="panel-title">
+			Add Penalty
+		</h4>
+	</div>
+	<div class="panel-body">
+		<?= $this->Form->create('Penalty'); ?>
+		<?= $this->Form->input('type', array(
 			'options' => array(
 				'Illegal Language' => 'Illegal Language',
 				'Leaving Starting Area' => 'Leaving Starting Area',
@@ -23,18 +26,13 @@
 				'Shoulder Tilting' => 'Shoulder Tilting',
 				'Unsportsmanlike Conduct' => 'Unsportsmanlike Conduct',
 				'Penalty Removed' => 'Penalty Removed'
-			)
-		));
-		echo $this->Form->input('description');
-		echo $this->Form->input('value');
-		echo $this->Form->input('scorecard_id');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Penalties'), array('action' => 'index')); ?></li>
-	</ul>
+			),
+			'class' => 'form-control',
+			'div' => array('class' => 'form-group')
+		)); ?>
+		<?= $this->Form->input('description', array('class' => 'form-control','div' => array('class' => 'form-group'))); ?>
+		<?= $this->Form->input('value', array('default' => '-1000', 'class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
+		<?= $this->Form->input('scorecard_id', array('class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
+		<?= $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-success')); ?>
+	</div>
 </div>

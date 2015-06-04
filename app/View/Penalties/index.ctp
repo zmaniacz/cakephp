@@ -31,11 +31,11 @@
 						<td><?php echo h($penalty['Penalty']['type']); ?>&nbsp;</td>
 						<td><?php echo h($penalty['Penalty']['value']); ?>&nbsp;</td>
 						<td class="actions">
-							<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id'])); ?>
+							<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id']), array('class' => 'btn btn-info')); ?>
 							<?php 
 								if(AuthComponent::user('role') === 'admin') {
-									echo $this->Html->link(__('Edit'), array('action' => 'edit', $penalty['Penalty']['id']));
-									echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $penalty['Penalty']['id']), null, __('Are you sure you want to delete # %s?', $penalty['Penalty']['id']));
+									echo $this->Html->link(__('Edit'), array('action' => 'edit', $penalty['Penalty']['id']), array('class' => 'btn btn-warning'));
+									echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $penalty['Penalty']['id']), array('class' => 'btn btn-danger'), __('Are you sure you want to delete # %s?', $penalty['Penalty']['id']));
 								}
 							?>
 						</td>
