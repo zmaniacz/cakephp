@@ -20,7 +20,7 @@ function overallData(data) {
 			type: 'pie'
 		},
 		title: {
-			text: 'Wins & Losses'
+			text: ''
 		},
 		yAxis: {
 			title: {
@@ -109,53 +109,78 @@ $(document).ready(function(){
 	});
 });
 </script>
-<?php
-	echo $this->Form->create('gamesLimit');
-	echo $this->Form->input('selectNumeric', array(
-		'label' => 'Select # of games',
-		'options' => array(
-			0 => 'All Games',
-			10 => 'Last 10',
-			25 => 'Last 25',
-			50 => 'Last 50',
-			100 => 'Last 100'
-		),
-		'selected' => 0
-	));
-	echo $this->Form->input('selectDate', array(
-		'label' => 'Select # of days',
-		'options' => array(
-			0 => 'All Dates',
-			30 => 'Last 30',
-			60 => 'Last 60',
-			90 => 'Last 90',
-			120 => 'Last 120'
-		),
-		'selected' => 0
-	));
-	echo $this->Form->end();
-?>
-<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
-<br />
-<br />
-<h2>Averages By Position</h2>
-<table id="avg_positions">
-	<thead>
-		<th>Position</th>
-		<th>Average Score</th>
-		<th>Average MVP</th>
-	<thead>
-</table>
-<br />
-<br />
-<h2>Average Team Scores</h2>
-<table id="avg_scores">
-	<thead>
-		<th>Win Type</th>
-		<th>Green Score</th>
-		<th>Red Score</th>
-	<thead>
-</table>
+<div id="winloss_panel" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#winloss_panel" data-target="#collapse_winloss" role="tab" id="winloss_heading">
+		<h4 class="panel-title">
+			Wins & Losses
+		</h4>
+	</div>
+	<div id="collapse_winloss" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<form class="form-inline" action="/games/overall" id="gamesLimitOverallForm" method="post" accept-charset="utf-8">
+				<div style="display:none;">
+					<input type="hidden" name="_method" value="POST"/>
+				</div>
+				<div class="form-group">
+					<label for="gamesLimitSelectNumeric">Select # of games</label>
+					<select class="form-control" name="data[gamesLimit][selectNumeric]" id="gamesLimitSelectNumeric">
+						<option value="0">All Games</option>
+						<option value="10">Last 10</option>
+						<option value="25">Last 25</option>
+						<option value="50">Last 50</option>
+						<option value="100">Last 100</option>
+					</select>
+					<label for="gamesLimitSelectDate">Select # of days</label>
+					<select class="form-control" name="data[gamesLimit][selectDate]" id="gamesLimitSelectDate">
+						<option value="0" selected>All Dates</option>
+						<option value="30">Last 30</option>
+						<option value="60">Last 60</option>
+						<option value="90">Last 90</option>
+						<option value="120">Last 120</option>
+					</select>
+				</div>
+			</form>
+			<br />
+			<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
+		</div>
+	</div>
+</div>
+<div id="avg_pos_panel" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_pos_panel" data-target="#collapse_avg_pos" role="tab" id="avg_pos_heading">
+		<h4 class="panel-title">
+			Averages By Position
+		</h4>
+	</div>
+	<div id="collapse_avg_pos" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<table class="table table-striped table-bordered table-hover" id="avg_positions">
+				<thead>
+					<th>Position</th>
+					<th>Average Score</th>
+					<th>Average MVP</th>
+				<thead>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="avg_score_panel" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_score_panel" data-target="#collapse_avg_score" role="tab" id="avg_score_heading">
+		<h4 class="panel-title">
+			Average Team Scores
+		</h4>
+	</div>
+	<div id="collapse_avg_score" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<table class="table table-striped table-bordered table-hover" id="avg_scores">
+				<thead>
+					<th>Win Type</th>
+					<th>Green Score</th>
+					<th>Red Score</th>
+				<thead>
+			</table>
+		</div>
+	</div>
+</div>
 <script>
 $('#gamesLimitSelectNumeric').change(function() {
 	var selectedValue = $(this).val();
