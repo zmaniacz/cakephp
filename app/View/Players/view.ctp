@@ -835,7 +835,6 @@ $(document).ready(function(){
 		"scrollX" : true,
 		"deferRender" : true,
 		"orderCellsTop" : true,
-		"jQueryUI" : true,
 		"dom": '<"H"lr>t<"F"ip>',
 		"ajax" : {
 			"url" : "<?php echo $this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json')); ?>",
@@ -874,11 +873,9 @@ $(document).ready(function(){
 		],
 		"order": [[ 1, "desc" ]]
 	});
-	
-	$("#tabs").tabs();
 });
 </script>
-<h2><?php echo $overall[0]['Player']['player_name']; ?></h2>
+<h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
 <?php if(sizeof($aliases) > 1): ?>
 <p>
 	Aliases:
@@ -893,17 +890,17 @@ $(document).ready(function(){
 <?php endif; ?>
 <div>
 	<?php if (AuthComponent::user('id')): ?>
-		<button><?php echo $this->Html->link("Link", array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?></button>
+		<a href=<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?> class="btn btn-success" role="button">Link</a>
 	<?php endif; ?>
 </div>
-<div id="tabs">
-	<ul>
-		<li><a href="#game_list_tab">Game List</a></li>
-		<li><a href="#overall_tab">Overall</a></li>
-		<li><a href="#teammates_tab">Teammates</a></li>
-	</ul>
-	<div id="game_list_tab">
-		<table id="game_list">
+<ul class="nav nav-tabs" role="tablist" id="myTab">
+	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
+	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
+	<li role="presentation"><a href="#teammates_tab" role="tab" data-toggle="tab">Teammates</a></li>
+</ul>
+<div class="tab-content" id="tabs">
+	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
+		<table id="game_list" class="table table-striped table-hover table-border">
 			<thead>
 				<tr>
 					<th>Game</th>
@@ -946,9 +943,9 @@ $(document).ready(function(){
 			</thead>
 		</table>
 	</div>
-	<div id="overall_tab">
+	<div role="tabpanel" class="tab-pane" id="overall_tab">
 		<?php
-			echo $this->Form->create('gamesLimit');
+			echo $this->Form->create('gamesLimit', array('class' => 'form-inline'));
 			echo $this->Form->input('selectNumeric', array(
 				'label' => 'Select # of games',
 				'options' => array(
@@ -958,7 +955,9 @@ $(document).ready(function(){
 					50 => 'Last 50',
 					100 => 'Last 100'
 				),
-				'selected' => 0
+				'selected' => 0,
+				'class' => 'form-control',
+				'div' => array('class' => 'form-group')
 			));
 			echo $this->Form->input('selectDate', array(
 				'label' => 'Select # of days',
@@ -969,7 +968,9 @@ $(document).ready(function(){
 					90 => 'Last 90',
 					120 => 'Last 120'
 				),
-				'selected' => 0
+				'selected' => 0,
+				'class' => 'form-control',
+				'div' => array('class' => 'form-group')
 			));
 			echo $this->Form->input('selectTeam', array(
 				'label' => 'Select team',
@@ -978,10 +979,13 @@ $(document).ready(function(){
 					'red' => 'Red',
 					'green' => 'Green'
 				),
-				'selected' => 0
+				'selected' => 0,
+				'class' => 'form-control',
+				'div' => array('class' => 'form-group')
 			));
 			echo $this->Form->end();
 		?>
+		<br />
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		<div id="position_spider" style="height: 500px; width: 800px"></div>
 		<br />
@@ -997,16 +1001,16 @@ $(document).ready(function(){
 		<br />
 		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
 	</div>
-	<div id="teammates_tab">
+	<div role="tabpanel" class="tab-pane" id="teammates_tab">
 		<?php
 			foreach($teammates as $key => $row) {
 				$same_team[$key] = $row['same_team_percent'];
 			}
 			array_multisort($same_team, SORT_DESC, $teammates);
 		?>
-		<div>
-			<span id="teammates" style="display: inline-block;width:500px">
-				<table>
+		<div class="row">
+			<div class="col-sm-6">
+				<table class="table table-striped table-border table-hover">
 					<thead>
 						<th>Player</th>
 						<th>Teammate %</th>
@@ -1022,15 +1026,15 @@ $(document).ready(function(){
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-			</span>
+			</div>
 			<?php
 				foreach($teammates as $key => $row) {
 					$same_team[$key] = 1 - $row['same_team_percent'];
 				}
 				array_multisort($same_team, SORT_DESC, $teammates);
 			?>
-			<span id="teammates" style="display: inline-block;width:500px">
-				<table>
+			<div class="col-sm-6">
+				<table class="table table-striped table-border table-hover">
 					<thead>
 						<th>Player</th>
 						<th>Opponent %</th>
@@ -1046,7 +1050,7 @@ $(document).ready(function(){
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-			</span>
+			</div>
 		</div>
 	</div>
 </div>
