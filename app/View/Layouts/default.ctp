@@ -36,7 +36,7 @@
 	</title>
 </head>
 <body>
-	<div class="container">
+	<div class="container-fluid">
 		<div id="container">
 			<div id="header">
 				<nav class="navbar navbar-default navbar-fixed-top">

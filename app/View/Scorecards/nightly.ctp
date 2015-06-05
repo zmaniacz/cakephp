@@ -90,7 +90,6 @@
 			"scrollX" : true,
 			"deferRender" : true,
 			"orderCellsTop" : true,
-			"jQueryUI" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
@@ -130,7 +129,6 @@
 		var medicHitsTable = $('#medic_hits').DataTable( {
 			"deferRender" : true,
 			"orderCellsTop" : true,
-			"jQueryUI" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json')); ?>",

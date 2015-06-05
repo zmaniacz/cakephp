@@ -2,6 +2,7 @@
 	$(document).ready(function() {
 		var oTable = $('.display').DataTable( {
 			"scrollX": true,
+			"deferRender" : true,
 			"order": [[1, "desc"]]
 		} );
 	} );
