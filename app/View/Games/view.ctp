@@ -15,9 +15,11 @@
 	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->create('Game');
 		echo $this->Form->input('id');
-		echo $this->Form->input('league_round', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
-		echo $this->Form->input('league_match', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
-		echo $this->Form->input('league_game', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+		if(isset($game['Game']['league_id'])) {
+			echo $this->Form->input('league_round', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+			echo $this->Form->input('league_match', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+			echo $this->Form->input('league_game', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+		}
 	} else {
 		if(isset($game['Game']['league_id']))
 			echo '<h3>R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game']."</h3>";
@@ -83,7 +85,7 @@ if($game['Game']['winner'] == 'Green') {
 	<div class="panel-heading" data-toggle="collapse" data-parent="#winner_panel" data-target="#collapse_winner_panel" role="tab" id="winner_panel_heading">
 		<h4 class="panel-title">
 			<?php
-				if(AuthComponent::user('role') === 'admin') {
+				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {
 					if($game['Game']['winner'] == 'Green')
 						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 					else
@@ -180,7 +182,7 @@ if($game['Game']['winner'] == 'Green') {
 	<div class="panel-heading" data-toggle="collapse" data-parent="#loser_panel" data-target="#collapse_loser_panel" role="tab" id="loser_panel_heading">
 		<h4 class="panel-title">
 			<?php
-				if(AuthComponent::user('role') === 'admin') {
+				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {
 					if($game['Game']['winner'] == 'Green')
 						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 					else
