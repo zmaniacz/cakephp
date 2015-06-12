@@ -43,8 +43,7 @@
 			echo $this->Html->link("PDF", "/pdf/".$game['Game']['pdf_id'].".pdf");
 		}
 		if(AuthComponent::user('role') === 'admin') {
-			echo $this->Html->link("Edit", array('controller' => 'Games', 'action' => 'edit', $game['Game']['id']), array('class' => 'btn btn-warning'));
-			echo $this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
+			
 			
 		}
 	?>
@@ -277,6 +276,7 @@ if($game['Game']['winner'] == 'Green') {
 <?php
 	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
+		echo $this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
 	}
 ?>
 
