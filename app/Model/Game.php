@@ -31,6 +31,10 @@ class Game extends AppModel {
 			'className' => 'Team',
 			'foreignKey' => 'green_team_id'
 		),
+		'Match' => array(
+			'className' => 'Match',
+			'foreignKey' => 'match_id'
+		),
 		'League' => array(
 			'className' => 'League',
 			'foreignKey' => 'league_id'
