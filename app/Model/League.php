@@ -65,6 +65,10 @@ class League extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
+		),
+		'Round' => array(
+			'className' => 'Round',
+			'foreignkey' => 'league_id'
 		)
 	);
 
@@ -100,5 +104,81 @@ class League extends AppModel {
 		));
 
 		return $teams;
+	}
+	
+	public function updateGames($game) {
+		//this is all shit
+		//why am i doing all this validation on other models in the league model?
+		//stupid
+		//break it out, dispatch it out
+		//use the existing model chain
+		//you fucking dummy
+		//also...stop setting league round match what the fuck ever form the gme page
+		//set it form the competition page
+		//dropdowns like a motherfucker
+		$this->unbindModel(array(
+			'hasMany' => array('Round')
+		));
+		
+		$this->bindModel(array(
+			'hasOne' => array(
+				'Round' => array(
+					'className' => 'Round',
+					'foreignkey' => 'league_id'
+				)
+			)
+		));
+		
+		$this->Round->unbindModel(array(
+			'hasMany' => array('Match')
+		));
+		
+		$this->Round->bindModel(array(
+			'hasOne' => array(
+				'Match' => array(
+					'className' => 'Match',
+					'foreignkey' => 'round_id'
+				)
+			)
+		));
+		
+		$league = $this->find('first', array(
+			'contain' => array(
+				'Round' => array(
+					'Match' => array(
+						'conditions' => array(
+							'Match.match' => $game['league_match']
+						)
+					),
+					'conditions' => array(
+						'Round.round' => $game['league_round']
+					)
+				)
+			),
+			'conditions' => array(
+				'League.id' => $game['league_id']
+			)
+		));
+		
+		if(empty($league['Round'])) {
+			$league['Round']['league_id'] = $game['league_id'];
+			$league['Round']['round'] = $game['league_round'];
+			$this->Round->save($league);
+			$round_id = $this->Round->id;
+		} else {
+			$round_id = $league['Round']['id'];
+		}
+		
+		if(empty($league['Match'])) {
+			$league['Match']['match'] = $game['league_match'];
+			$league['Match']['round_id'] = $round_id;
+			$this->Round->Match->save($league);
+			//create the match
+			//use the round id
+			//set the teams
+			//set the game id
+		} else {
+			//verify the teams are correct
+		}
 	}
 }

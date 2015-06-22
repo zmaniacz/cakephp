@@ -1,5 +1,5 @@
 <?php
-
+//we define team 1 to be the team that plays red in game 1 of the match
 class Match extends AppModel {
 	public $hasMany = array(
 		'Game' => array(

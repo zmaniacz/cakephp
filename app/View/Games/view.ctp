@@ -15,7 +15,17 @@
 	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->create('Game');
 		echo $this->Form->input('id');
+		echo $this->Form->input('type', array('type' => 'select', 
+			'options' => array(
+				'social' => 'Social',
+				'league' => 'League',
+				'tournament' => 'Tournament'
+			), 
+			'class' => 'form-control', 
+			'div' => array('class' => 'form-group'
+		)));
 		if(isset($game['Game']['league_id'])) {
+			echo $this->Form->input('league_id', array('type' => 'hidden'));
 			echo $this->Form->input('league_round', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
 			echo $this->Form->input('league_match', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
 			echo $this->Form->input('league_game', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
