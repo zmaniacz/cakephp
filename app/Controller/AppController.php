@@ -55,18 +55,10 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$centers = $this->Center->find('all');
-		$this->set('centers', $centers);
-	
-		if(!$this->Session->check('center')) {
-			//default to LTC
-			$center = $this->Center->findById(1);
-			$this->Session->write('center',$center);
-		}
-		
-		if(!$this->Session->check('filter')) {
-			//default to showing all games
-			$this->Session->write('filter',array('type' => 'all', 'value' => 0));
+		if($this->Session->check('state.gametype') && ($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->check('state.centerID')) {
+			if($this->Session->read('state.centerID') > 0) {
+				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+			}
 		}
 		
 		if($this->Session->check('state.gametype') && $this->Session->read('state.gametype') == 'league' && $this->Session->check('state.leagueID')) {

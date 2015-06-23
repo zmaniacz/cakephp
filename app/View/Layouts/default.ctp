@@ -78,10 +78,15 @@
 					<li><?= $this->Html->link('Home', array('controller' => 'scorecards', 'action' => 'index')); ?></li>
 					<?php
 						if($this->Session->check('state.gametype')) {
-							if($this->Session->read('state.gametype') == 'all') {
-								echo "<li>".$this->Html->link('All', array('controller' => 'scorecards', 'action' => 'index'))."</li>";
-							} elseif($this->Session->read('state.gametype') == 'social') {
-								echo "<li>".$this->Html->link('Social', array('controller' => 'scorecards', 'action' => 'index'))."</li>";
+							if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
+								echo "<li>".$this->Html->link((($this->Session->read('state.gametype') == 'all') ? 'All Games' : 'Social Games'), array('controller' => 'scorecards', 'action' => 'index'))."</li>";
+								if($this->Session->check('state.centerID')) {
+									if($this->Session->read('state.centerID') > 0){
+										echo "<li>".$this->Html->link($selected_center['Center']['name'], array('controller' => 'scorecards', 'action' => 'pickCenter'))."</li>";
+									} else {
+										echo "<li>".$this->Html->link('All Centers', array('controller' => 'scorecards', 'action' => 'pickCenter'))."</li>";
+									}
+								}
 							} elseif($this->Session->read('state.gametype') == 'league') {
 								if($this->Session->check('state.leagueID'))
 									echo "<li>".$this->Html->link($selected_league['Center']['name']." - ".$selected_league['League']['name'], array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";

@@ -85,7 +85,8 @@ class League extends AppModel {
 		$teams = $this->Team->find('all', array(
 			'conditions' => array(
 				'Team.league_id' => $league_id
-			)
+			),
+			'order' => 'points DESC'
 		));
 		return $teams;
 	}

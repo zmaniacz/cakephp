@@ -3,9 +3,9 @@
 		What kind of stats do you want to see?
 	</p>
 	<ul>
-		<li><?= $this->Html->link('All', array('controller' => 'scorecards', 'action' => 'pickCenter', 'all')); ?></li>
-		<li><?= $this->Html->link('Social', array('controller' => 'scorecards', 'action' => 'pickCenter', 'social')); ?></li>
-		<li><?= $this->Html->link('Competitions', array('controller' => 'scorecards', 'action' => 'pickLeague')); ?></li>
+		<li><?= $this->Form->postLink('All', array('controller' => 'scorecards', 'action' => 'index'), array('data' => array('gametype' => 'all'))); ?></li>
+		<li><?= $this->Form->postLink('Social', array('controller' => 'scorecards', 'action' => 'index'), array('data' => array('gametype' => 'social'))); ?></li>
+		<li><?= $this->Form->postLink('Competitions', array('controller' => 'scorecards', 'action' => 'index'), array('data' => array('gametype' => 'league'))); ?></li>
 	</ul>
 </div>
 	

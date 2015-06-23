@@ -5,6 +5,7 @@ class ScorecardsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(
 			'index',
+			'pickCenter',
 			'pickLeague',
 			'overall',
 			'nightly',
@@ -23,8 +24,30 @@ class ScorecardsController extends AppController {
 	}
 
 	public function index() {
-		//Hitting the index will alwaya clear existing state and start you over from the beginning
-		$this->Session->delete('state');
+		if($this->request->is('post')) {
+			$this->Session->write('state.gametype', $this->request->data['gametype']);
+			if($this->request->data['gametype'] == 'all' || $this->request->data['gametype'] == 'social') {
+				$this->redirect(array('controller' => 'scorecards', 'action' => 'pickCenter'));
+			} elseif ($this->request->data['gametype'] == 'league') {
+				$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
+			} else {
+				$this->redirect(array('controller' => 'scorecards', 'action' => 'index'));
+			}
+		} else {
+			//Hitting the index will always clear existing state and start you over from the beginning
+			$this->Session->delete('state');
+		}
+	}
+	
+	public function pickCenter() {
+		if($this->request->is('post')) {
+			$this->Session->write('state.centerID', $this->request->data['center_id']);
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
+		} else {
+			$this->Session->delete('state.centerID');
+			$this->loadModel('Center');
+			$this->set('centers', $this->Center->find('all'));
+		}
 	}
 	
 	public function pickLeague() {
@@ -32,7 +55,6 @@ class ScorecardsController extends AppController {
 			$this->Session->write('state.leagueID', $this->request->data['league_id']);
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $this->request->data['league_id']));
 		} else {
-			$this->Session->write('state.gametype', 'league');
 			$this->Session->delete('state.leagueID');
 			$this->loadModel('League');
 			$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));

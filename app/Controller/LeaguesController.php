@@ -25,11 +25,9 @@ class LeaguesController extends AppController {
 	public function standings($league_id = null) {
 		if(is_null($league_id))
 			$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
-		
-		$this->set('teams', $this->League->getTeamStandings($this->Session->read('state')));
 	}
 
-	public function ajax_getLeagues($type) {
+	public function ajax_getLeagues() {
 		$this->request->onlyAllow('ajax');
 		$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));
 	}
