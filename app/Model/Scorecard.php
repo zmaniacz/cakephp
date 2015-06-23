@@ -288,33 +288,25 @@ class Scorecard extends AppModel {
 		return $scorecards;
 	}
 	
-	public function getPositionStats($role = null, $filter = null, $center_id = null) {
+	public function getPositionStats($role = null, $state = null) {
 		$conditions = array();
 		$min_games = null;
 
-		if(!is_null($center_id))
-			$conditions[] = array('center_id' => $center_id);
+		if(isset($state['centerID']))
+			$conditions[] = array('center_id' => $state['centerID']);
 
 		if(!is_null($role))
 			$conditions[] = array('position' => $role);
-
-		if(!is_null($filter)) {
-			if(isset($filter['numeric']))
-				if($filter['numeric'] > 0)
-					$min_games = $filter['numeric'];
-			
-			if(isset($filter['date']))
-				if($filter['date'] > 0)
-					$conditions['DATEDIFF(DATE(NOW()),DATE(Scorecard.game_datetime)) <='] = $filter['date'];
-
-			if($filter['type'] != 'all')
-				$conditions[] = array('type' => $filter['type']);
-
-			//Only pull scorecards from the specific comp and make sure no sub games get pulled
-			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
-				$conditions[] = array('Scorecard.league_id' => $filter['value']);
-				$conditions[] = array('Scorecard.is_sub' => 0);
+		
+		if(isset($state['gametype'])) {
+			if($state['gametype'] != 'all') {
+				$conditions[] = array('type' => $state['gametype']);
 			}
+		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.is_sub' => 0);
 		}
 		
 		$scores = $this->find('all', array(
@@ -353,36 +345,127 @@ class Scorecard extends AppModel {
 		return $scores;
 	}
 	
-	public function getMedicExtraStats($min_games = 0) {
+	public function getAllAvgMVP($state = null) {
+		if(isset($state['centerID']))
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype'])) {
+			if($state['gametype'] != 'all') {
+				$conditions[] = array('type' => $state['gametype']);
+			}
+		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.is_sub' => 0);
+		}
+
 		$players = $this->find('all', array(
 			'fields' => array(
-				'player_name',
 				'player_id',
-				'COUNT(game_datetime) as games_played'
+				'position',
+				'AVG(mvp_points) as avg_mvp',
+				'AVG(accuracy) as avg_acc',
+				'COUNT(game_datetime) as games_played' 
 			),
-			'conditions' => array('position' => 'Medic'),
-			'group' => "player_id HAVING games_played >= $min_games"
+			'conditions' => $conditions,
+			'group' => 'player_id, position'
 		));
 		
-		/*foreach($player as $players) {
-			$options = array();
-			$options['joins'] = array(
-				array(
-					'table' => Games
-			$games = $this->Game->find('all', array(
-				'conditions*/
+		$results = array();
+		foreach($players as $player) {
+			if(!isset($results[$player['Scorecard']['player_id']])) {
+				$results[$player['Scorecard']['player_id']] = array();
+				$tmp_player = $this->Player->findById($player['Scorecard']['player_id']);
+				$results[$player['Scorecard']['player_id']]['player_name'] = $tmp_player['Player']['player_name'];
+			}
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
+		}
+		
+		foreach($results as &$result) {
+			$total_mvp = 0;
+			$total_acc = 0;
+			$total_games_played = 0;
+			$positions = 0;
+
+			if(isset($result['Ammo Carrier'])) {
+				$total_mvp += $result['Ammo Carrier']['avg_mvp'];
+				$total_acc += $result['Ammo Carrier']['avg_acc'];
+				$total_games_played += $result['Ammo Carrier']['games_played'];
+				$positions++;
+			} else {
+				$result['Ammo Carrier']['avg_mvp'] = 0;
+				$result['Ammo Carrier']['avg_acc'] = 0;
+				$result['Ammo Carrier']['games_played'] = 0;
+			}
+
+			if(isset($result['Commander'])) {
+				$total_mvp += $result['Commander']['avg_mvp'];
+				$total_acc += $result['Commander']['avg_acc'];
+				$total_games_played += $result['Commander']['games_played'];
+				$positions++;
+			} else {
+				$result['Commander']['avg_mvp'] = 0;
+				$result['Commander']['avg_acc'] = 0;
+				$result['Commander']['games_played'] = 0;
+			}
+
+
+			if(isset($result['Heavy Weapons'])) {
+				$total_mvp += $result['Heavy Weapons']['avg_mvp'];
+				$total_acc += $result['Heavy Weapons']['avg_acc'];
+				$total_games_played += $result['Heavy Weapons']['games_played'];
+				$positions++;
+			} else {
+				$result['Heavy Weapons']['avg_mvp'] = 0;
+				$result['Heavy Weapons']['avg_acc'] = 0;
+				$result['Heavy Weapons']['games_played'] = 0;
+			}
+
+			if(isset($result['Scout'])) {
+				$total_mvp += $result['Scout']['avg_mvp'];
+				$total_acc += $result['Scout']['avg_acc'];
+				$total_games_played += $result['Scout']['games_played'];
+				$positions++;
+			} else {
+				$result['Scout']['avg_mvp'] = 0;
+				$result['Scout']['avg_acc'] = 0;
+				$result['Scout']['games_played'] = 0;
+			}
+
+			if(isset($result['Medic'])) {
+				$total_mvp += $result['Medic']['avg_mvp'];
+				$total_acc += $result['Medic']['avg_acc'];
+				$total_games_played += $result['Medic']['games_played'];
+				$positions++;
+			} else {
+				$result['Medic']['avg_mvp'] = 0;
+				$result['Medic']['avg_acc'] = 0;
+				$result['Medic']['games_played'] = 0;
+			}
+			
+			$result['avg_avg_mvp'] = $total_mvp/$positions;
+			$result['avg_avg_acc'] = $total_acc/$positions;
+			$result['total_games'] = $total_games_played;
+		}
+		return $results;
 	}
 	
-	public function getMedicHitStats($filter = null, $center_id = null) {
-		if(!is_null($center_id))
-			$conditions[] = array('center_id' => $center_id);
-
-		if(!is_null($filter)) {
-			if($filter['type'] != 'all')
-				$conditions[] = array('type' => $filter['type']);
-
-			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0)
-				$conditions[] = array('league_id' => $filter['value']);
+	public function getMedicHitStats($state = null) {
+		if(isset($state['centerID']))
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype'])) {
+			if($state['gametype'] != 'all') {
+				$conditions[] = array('type' => $state['gametype']);
+			}
+		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
+			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('is_sub' => 0);
 		}
 
 		$subQueryConditions = $conditions;
@@ -809,113 +892,6 @@ class Scorecard extends AppModel {
 							");
 
 		return $streaks;
-	}
-	
-	public function getAllAvgMVP($filter = null, $center_id = null) {
-		if(!is_null($center_id))
-			$conditions[] = array('center_id' => $center_id);
-
-		if(!is_null($filter)) {		
-			if($filter['type'] != 'all')
-				$conditions[] = array('type' => $filter['type']);
-
-			if(($filter['type'] == 'league' ||  $filter['type'] == 'tournament') && $filter['value'] > 0) {
-				$conditions[] = array('Scorecard.is_sub' => 0);
-				$conditions[] = array('league_id' => $filter['value']);
-			}
-		}
-
-		$players = $this->find('all', array(
-			'fields' => array(
-				'player_id',
-				'position',
-				'AVG(mvp_points) as avg_mvp',
-				'AVG(accuracy) as avg_acc',
-				'COUNT(game_datetime) as games_played' 
-			),
-			'conditions' => $conditions,
-			'group' => 'player_id, position'
-		));
-		
-		$results = array();
-		foreach($players as $player) {
-			if(!isset($results[$player['Scorecard']['player_id']])) {
-				$results[$player['Scorecard']['player_id']] = array();
-				$tmp_player = $this->Player->findById($player['Scorecard']['player_id']);
-				$results[$player['Scorecard']['player_id']]['player_name'] = $tmp_player['Player']['player_name'];
-			}
-			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
-			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
-			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
-		}
-		
-		foreach($results as &$result) {
-			$total_mvp = 0;
-			$total_acc = 0;
-			$total_games_played = 0;
-			$positions = 0;
-
-			if(isset($result['Ammo Carrier'])) {
-				$total_mvp += $result['Ammo Carrier']['avg_mvp'];
-				$total_acc += $result['Ammo Carrier']['avg_acc'];
-				$total_games_played += $result['Ammo Carrier']['games_played'];
-				$positions++;
-			} else {
-				$result['Ammo Carrier']['avg_mvp'] = 0;
-				$result['Ammo Carrier']['avg_acc'] = 0;
-				$result['Ammo Carrier']['games_played'] = 0;
-			}
-
-			if(isset($result['Commander'])) {
-				$total_mvp += $result['Commander']['avg_mvp'];
-				$total_acc += $result['Commander']['avg_acc'];
-				$total_games_played += $result['Commander']['games_played'];
-				$positions++;
-			} else {
-				$result['Commander']['avg_mvp'] = 0;
-				$result['Commander']['avg_acc'] = 0;
-				$result['Commander']['games_played'] = 0;
-			}
-
-
-			if(isset($result['Heavy Weapons'])) {
-				$total_mvp += $result['Heavy Weapons']['avg_mvp'];
-				$total_acc += $result['Heavy Weapons']['avg_acc'];
-				$total_games_played += $result['Heavy Weapons']['games_played'];
-				$positions++;
-			} else {
-				$result['Heavy Weapons']['avg_mvp'] = 0;
-				$result['Heavy Weapons']['avg_acc'] = 0;
-				$result['Heavy Weapons']['games_played'] = 0;
-			}
-
-			if(isset($result['Scout'])) {
-				$total_mvp += $result['Scout']['avg_mvp'];
-				$total_acc += $result['Scout']['avg_acc'];
-				$total_games_played += $result['Scout']['games_played'];
-				$positions++;
-			} else {
-				$result['Scout']['avg_mvp'] = 0;
-				$result['Scout']['avg_acc'] = 0;
-				$result['Scout']['games_played'] = 0;
-			}
-
-			if(isset($result['Medic'])) {
-				$total_mvp += $result['Medic']['avg_mvp'];
-				$total_acc += $result['Medic']['avg_acc'];
-				$total_games_played += $result['Medic']['games_played'];
-				$positions++;
-			} else {
-				$result['Medic']['avg_mvp'] = 0;
-				$result['Medic']['avg_acc'] = 0;
-				$result['Medic']['games_played'] = 0;
-			}
-			
-			$result['avg_avg_mvp'] = $total_mvp/$positions;
-			$result['avg_avg_acc'] = $total_acc/$positions;
-			$result['total_games'] = $total_games_played;
-		}
-		return $results;
 	}
 
 	public function getLeagueScorecardsByRound($round, $league_id) {

@@ -64,17 +64,14 @@ class ScorecardsController extends AppController {
 	public function phpview() {
 	}
 	
-	public function overall() {
-		$center_id = $this->Session->read('center.Center.id');
-		$filter = $this->Session->read('filter');
-		
-		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$filter,$center_id));
-		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$filter,$center_id));
-		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$filter,$center_id));
-		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$filter,$center_id));
-		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$filter,$center_id));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats($filter,$center_id));
-		$this->set('averages', $this->Scorecard->getAllAvgMVP($filter,$center_id));
+	public function overall() {	
+		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$this->Session->read('state')));
+		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$this->Session->read('state')));
+		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$this->Session->read('state')));
+		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$this->Session->read('state')));
+		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$this->Session->read('state')));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
+		$this->set('averages', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
     }
 	
 	public function nightly($center_id = null, $league_type = null, $league_id = null) {
