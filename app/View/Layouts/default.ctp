@@ -74,79 +74,35 @@
 						</div>
 					</div>
 				</nav>
-				<form class="form-inline" action="/scorecards/setFilter" id="center_filterForm" method="post" accept-charset="utf-8">
-					<div style="display:none;">
-						<input type="hidden" name="_method" value="POST"/>
-					</div>
-					<div class="form-group">
-						<label for="center_filterSelectFilter">Center</label>
-						<select class="form-control" name="data[center_filter][selectFilter]" id="center_filterSelectFilter">
-							<?php foreach($centers as $center): ?>
-								<option value="<?= $center['Center']['id'] ?>"<?= ($center['Center']['id'] == $this->Session->read('center.Center.id')) ? " selected" : ""; ?>><?= $center['Center']['name'] ?></option>
-							<?php endforeach; ?>
-						</select>
-					</div>
-				</form>
-				<form class="form-inline" action="/scorecards/setFilter" id="game_filterForm" method="post" accept-charset="utf-8">
-					<div style="display:none;">
-						<input type="hidden" name="_method" value="POST"/>
-					</div>
-					<label for="game_filterSelectFilter">Viewing</label>
-					<select class="form-control" name="data[game_filter][selectFilter]" id="game_filterSelectFilter">
-						<option value="all"<?= ('all' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>All</option>
-						<option value="social"<?= ('social' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>Social</option>
-						<option value="league"<?= ('league' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>League</option>
-						<option value="tournament"<?= ('tournament' == $this->Session->read('filter.type')) ? " selected" : ""; ?>>Tournament</option>
-					</select>
-					<select class="form-control" name="data[game_filter][select_detailsFilter]" id="game_filter_detailsSelect" style="display:none;">
-						<option value="0">-- --</option>
-					</select>
-				</form>
+				<ol class="breadcrumb">
+					<li><?= $this->Html->link('Home', array('controller' => 'scorecards', 'action' => 'index')); ?></li>
+					<?php
+						if($this->Session->check('state.gametype')) {
+							if($this->Session->read('state.gametype') == 'all') {
+								echo "<li>".$this->Html->link('All', array('controller' => 'scorecards', 'action' => 'index'))."</li>";
+							} elseif($this->Session->read('state.gametype') == 'social') {
+								echo "<li>".$this->Html->link('Social', array('controller' => 'scorecards', 'action' => 'index'))."</li>";
+							} elseif($this->Session->read('state.gametype') == 'league') {
+								if($this->Session->check('state.leagueID'))
+									echo "<li>".$this->Html->link($selected_league['Center']['name']." - ".$selected_league['League']['name'], array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";
+								else
+									echo "<li>".$this->Html->link('League', array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";
+							}
+								
+						}
+					?>
+				</ol>
 			</div>
 			<hr>
 			<div id="content">
-				<?php //print_r($this->Session->read()); ?>
 				<?php echo $this->Session->flash(); ?>
-	
 				<?php echo $this->fetch('content'); ?>
 			</div>
 			<div id="footer">
 			</div>
 		</div>
-		<script>
-		$('#game_filterSelectFilter').change(function() {
-			if($('#game_filterSelectFilter').val() == 'social' || $('#game_filterSelectFilter').val() == 'all') {
-				$('#game_filter_detailsSelect').hide();
-				$('#game_filterForm').submit();
-			} else {
-				populateLeagues($('#game_filterSelectFilter').val());
-			}
-		});
-	
-		$('#center_filterSelectFilter').change(function() {
-			$('#center_filterForm').submit();
-		});
-	
-		$('#game_filter_detailsSelect').change(function(){
-			if($('#game_filter_detailsSelect').val() >= 0) {
-				$('#game_filterForm').submit();
-			}
-		});
-	
-		function populateLeagues(type) {
-			$('#game_filter_detailsSelect').find('option').remove().end();
-			$('#game_filter_detailsSelect').append('<option value="-1">-- Choose '+type+' --</option>').val(-1);
-			$('#game_filter_detailsSelect').append('<option value="0">All</option>').val(0);
-			$.getJSON("/leagues/ajax_getLeagues/"+type+".json", function( data ) {
-				$.each(data['leagues'], function() {
-					$("#game_filter_detailsSelect").append($("<option />").val(this.League.id).text(this.League.name));
-				})
-				$('#game_filter_detailsSelect').show();
-			});
-			$('#game_filter_detailsSelect').val(-1);
-		}
-		</script>
 		<?php
+			debug($this->Session->read('state'));
 			//echo $this->element('sql_dump');
 			echo $this->Js->writeBuffer();
 		?>

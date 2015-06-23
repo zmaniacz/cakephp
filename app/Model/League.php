@@ -68,27 +68,26 @@ class League extends AppModel {
 		)
 	);
 
-	public function getLeagues($center_id, $type) {
+	public function getLeagues($state) {
 		$leagues = $this->find('all', array(
-			'conditions' => array(
-				'center_id' => $center_id,
-				'type' => $type
+			'contain' => array(
+				'Center'
 			),
-			'order' => 'id ASC'
+			'order' => 'League.name ASC'
 		));
 
 		return $leagues;
 	}
 
-	public function getTeamStandings($league_id) {
-		$red_teams = $this->Team->find('all', array(
-			'contain' => array('Green_Game'),
+	public function getTeamStandings($state) {
+		$league_id = $state['leagueID'];
+		
+		$teams = $this->Team->find('all', array(
 			'conditions' => array(
 				'Team.league_id' => $league_id
 			)
 		));
-		var_dump($red_teams);
-		return $red_teams;
+		return $teams;
 	}
 
 	public function getTeams($league_id) {

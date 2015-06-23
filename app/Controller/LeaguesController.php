@@ -7,16 +7,9 @@ App::uses('AppController', 'Controller');
  */
 class LeaguesController extends AppController {
 	public $uses = array('League','Scorecard','Game');
-/**
- * Components
- *
- * @var array
- */
-	public $components = array('Paginator');
-
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getScorecards','ajax_getMedicHits','players','gameList');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams');
 		parent::beforeFilter();
 	}
 
@@ -26,21 +19,24 @@ class LeaguesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->set('leagues', $this->Paginator->paginate());
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
 	}
 
-	public function standings() {
-		$this->set('teams', $this->League->getTeamStandings($this->Session->read('filter.value')));
+	public function standings($league_id = null) {
+		if(is_null($league_id))
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
+		
+		$this->set('teams', $this->League->getTeamStandings($this->Session->read('state')));
 	}
 
 	public function ajax_getLeagues($type) {
 		$this->request->onlyAllow('ajax');
-		$this->set('leagues', $this->League->getLeagues($this->Session->read('center.Center.id'), $type));
+		$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));
 	}
 
 	public function ajax_getTeams() {
 		$this->request->onlyAllow('ajax');
-		$this->set('teams', $this->League->getTeamStandings($this->request->params['league_id']));
+		$this->set('teams', $this->League->getTeamStandings($this->Session->read('state')));
 	}
 
 /**

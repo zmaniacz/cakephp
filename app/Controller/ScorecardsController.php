@@ -3,12 +3,40 @@
 class ScorecardsController extends AppController {
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','overall','nightly','tournament','nightlyStats','nightlyScorecards','nightlyGames','nightlyMedicHits','allcenter','setFilter','ajax_getFilter','playerScorecards','leaderboards');
+		$this->Auth->allow(
+			'index',
+			'pickLeague',
+			'overall',
+			'nightly',
+			'tournament',
+			'nightlyStats',
+			'nightlyScorecards',
+			'nightlyGames',
+			'nightlyMedicHits',
+			'allcenter',
+			'setFilter',
+			'ajax_getFilter',
+			'playerScorecards',
+			'leaderboards'
+		);
 		parent::beforeFilter();
 	}
 
 	public function index() {
-		$this->redirect(array('controller' => 'Scorecards', 'action' => 'nightly'));
+		//Hitting the index will alwaya clear existing state and start you over from the beginning
+		$this->Session->delete('state');
+	}
+	
+	public function pickLeague() {
+		if($this->request->is('post')) {
+			$this->Session->write('state.leagueID', $this->request->data['league_id']);
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $this->request->data['league_id']));
+		} else {
+			$this->Session->write('state.gametype', 'league');
+			$this->Session->delete('state.leagueID');
+			$this->loadModel('League');
+			$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));
+		}
 	}
 	
 	public function phpview() {

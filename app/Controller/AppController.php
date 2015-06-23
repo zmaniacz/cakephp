@@ -45,7 +45,7 @@ class AppController extends Controller {
     	)
 	);
 
-	public $uses = array('Center');
+	public $uses = array('Center', 'League');
 
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
@@ -67,6 +67,19 @@ class AppController extends Controller {
 		if(!$this->Session->check('filter')) {
 			//default to showing all games
 			$this->Session->write('filter',array('type' => 'all', 'value' => 0));
+		}
+		
+		if($this->Session->check('state.gametype') && $this->Session->read('state.gametype') == 'league' && $this->Session->check('state.leagueID')) {
+			$league = $this->League->find('first', array(
+				'contain' => array(
+					'Center'
+				),
+				'conditions' => array(
+					'League.id' => $this->Session->read('state.leagueID')
+				)
+			));
+			
+			$this->set('selected_league', $league);
 		}
 	}
 }
