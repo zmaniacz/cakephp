@@ -340,6 +340,8 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getAllAvgMVP($state = null) {
+		$conditions = array();
+		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
 			$conditions[] = array('center_id' => $state['centerID']);
 		
@@ -445,6 +447,8 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getMedicHitStats($state = null) {
+		$conditions = array();
+		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
 			$conditions[] = array('center_id' => $state['centerID']);
 		
