@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<?php
-			debug($this->Session->read('state'));
+			//debug($this->Session->read('state'));
 			//echo $this->element('sql_dump');
 			echo $this->Js->writeBuffer();
 		?>
