@@ -27,7 +27,7 @@ class GamesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->set('games', $this->Game->getGameList($this->Session->read('center.Center.id'), $this->Session->read('filter')));
+		$this->set('games', $this->Game->getGameList($this->Session->read('state')));
 	}
 
 /**
@@ -131,16 +131,9 @@ class GamesController extends AppController {
 	public function overall() {
 	}
 	
-	public function overallWinLossDetail($filter_type, $games_limit = null) {
-		//$this->request->onlyAllow('ajax');
-		
-		if($games_limit == 0) {
-			$games_limit = null;
-		}
-		
-		$filter = $this->Session->read('filter');
-
-		$this->set('overall', $this->Game->getOverallStats($filter_type, $games_limit, $this->Session->read('center.Center.id'), $filter));
-		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($filter_type, $games_limit, $this->Session->read('center.Center.id'), $filter));
+	public function overallWinLossDetail() {
+		$this->request->onlyAllow('ajax');
+		$this->set('overall', $this->Game->getOverallStats($this->Session->read('state')));
+		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($this->Session->read('state')));
 	}
 }

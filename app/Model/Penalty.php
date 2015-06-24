@@ -27,4 +27,34 @@ class Penalty extends AppModel {
 			'foreignKey' => 'scorecard_id'
 		)
 	);
+	
+	public function getPenalties($state) {
+		$conditions = array();
+		
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+	
+		$penalties = $this->find('all', array(
+			'contain' => array(
+				'Scorecard' => array(
+					'fields' => array('type','center_id','league_id'),
+					'Game' => array(
+						'fields' => array('id','game_name','game_description','game_datetime'),
+					),
+					'Player' => array(
+						'fields' => array('id','player_name')
+					),
+				)
+			),
+			'conditions' => $conditions			
+		));
+		
+		return $penalties;
+	}
 }

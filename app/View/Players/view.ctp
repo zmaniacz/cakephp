@@ -220,7 +220,7 @@ $(document).ready(function(){
 			displayWinLossPie(data);
 		},
 		error: function() {
-			alert('fail');
+			alert('winlossfail');
 		}
 	});
 	
@@ -232,7 +232,7 @@ $(document).ready(function(){
 			displayPositionSpider(data);
 		},
 		error: function() {
-			alert('fail');
+			alert('spiderfail');
 		}
 	});
 	
@@ -841,9 +841,9 @@ $(document).ready(function(){
 			"dataSrc" : "scorecards"
 		},
 		"columns" : [
-			{ "data" : "Game.game_name", "render" : function(data, type,row, meta) {return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>'}},
+			{ "data" : "Game.game_name", "render" : function(data, type, row, meta) {return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>'}},
 			{ "data" : "Game.game_datetime"},
-			{"data" : "W", "render" : function(data, typw, row, meta) {if(row.Scorecard.team == row.Game.winner) {return "W";} else {return "L";}} },
+			{ "data" : "W", "render" : function(data, typw, row, meta) {if(row.Scorecard.team == row.Game.winner) {return "W";} else {return "L";}} },
 			{ "data" : "Scorecard.team"},
 			{ "data" : "Scorecard.position" },
 			{ "data" : "Scorecard.score" },
@@ -896,7 +896,6 @@ $(document).ready(function(){
 <ul class="nav nav-tabs" role="tablist" id="myTab">
 	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
 	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
-	<li role="presentation"><a href="#teammates_tab" role="tab" data-toggle="tab">Teammates</a></li>
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
@@ -944,48 +943,6 @@ $(document).ready(function(){
 		</table>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="overall_tab">
-		<?php
-			echo $this->Form->create('gamesLimit', array('class' => 'form-inline'));
-			echo $this->Form->input('selectNumeric', array(
-				'label' => 'Select # of games',
-				'options' => array(
-					0 => 'All Games',
-					10 => 'Last 10',
-					25 => 'Last 25',
-					50 => 'Last 50',
-					100 => 'Last 100'
-				),
-				'selected' => 0,
-				'class' => 'form-control',
-				'div' => array('class' => 'form-group')
-			));
-			echo $this->Form->input('selectDate', array(
-				'label' => 'Select # of days',
-				'options' => array(
-					0 => 'All Dates',
-					30 => 'Last 30',
-					60 => 'Last 60',
-					90 => 'Last 90',
-					120 => 'Last 120'
-				),
-				'selected' => 0,
-				'class' => 'form-control',
-				'div' => array('class' => 'form-group')
-			));
-			echo $this->Form->input('selectTeam', array(
-				'label' => 'Select team',
-				'options' => array(
-					0 => 'All Teams',
-					'red' => 'Red',
-					'green' => 'Green'
-				),
-				'selected' => 0,
-				'class' => 'form-control',
-				'div' => array('class' => 'form-group')
-			));
-			echo $this->Form->end();
-		?>
-		<br />
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		<div id="position_spider" style="height: 500px; width: 800px"></div>
 		<br />
@@ -1001,141 +958,4 @@ $(document).ready(function(){
 		<br />
 		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
 	</div>
-	<div role="tabpanel" class="tab-pane" id="teammates_tab">
-		<?php
-			foreach($teammates as $key => $row) {
-				$same_team[$key] = $row['same_team_percent'];
-			}
-			array_multisort($same_team, SORT_DESC, $teammates);
-		?>
-		<div class="row">
-			<div class="col-sm-6">
-				<table class="table table-striped table-border table-hover">
-					<thead>
-						<th>Player</th>
-						<th>Teammate %</th>
-						<th>Teammate Games (Total Games)</th>
-					</thead>
-					<tbody>
-						<?php foreach (array_slice($teammates,0,10) as $tm): ?>
-						<tr>
-							<td><?php echo $tm['player_name']; ?></td>
-							<td><?php echo round($tm['same_team_percent'] * 100,2); ?>%</td>
-							<td><?php echo $tm['same_team_count']." (".($tm['same_team_count'] + $tm['other_team_count']).")"; ?></td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-			<?php
-				foreach($teammates as $key => $row) {
-					$same_team[$key] = 1 - $row['same_team_percent'];
-				}
-				array_multisort($same_team, SORT_DESC, $teammates);
-			?>
-			<div class="col-sm-6">
-				<table class="table table-striped table-border table-hover">
-					<thead>
-						<th>Player</th>
-						<th>Opponent %</th>
-						<th>Opponent Games (Total Games)</th>
-					</thead>
-					<tbody>
-						<?php foreach (array_slice($teammates,0,10) as $tm): ?>
-						<tr>
-							<td><?php echo $tm['player_name']; ?></td>
-							<td><?php echo round((1-$tm['same_team_percent']) * 100,2); ?>%</td>
-							<td><?php echo $tm['other_team_count']." (".($tm['same_team_count'] + $tm['other_team_count']).")"; ?></td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
 </div>
-
-<script>
-$('#gamesLimitSelectNumeric').change(function() {
-	var numeric = $(this).val();
-	$('#gamesLimitSelectDate').val(0);
-	var team = $('#gamesLimitSelectTeam').val();
-	
-	$.ajax({
-		type: 'post',
-		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
-		dataType: 'json',
-		data: {'numeric' : numeric, 'date' : 0},
-		success: function(data) {
-			displayWinLossPie(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-	
-	$.ajax({
-		type: 'post',
-		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
-		dataType: 'json',
-		data: {'numeric' : numeric, 'team' : team, 'date' : 0},
-		success: function(data) {
-			displayPositionSpider(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-});
-
-$('#gamesLimitSelectDate').change(function() {
-	var date = $(this).val();
-	$('#gamesLimitSelectNumeric').val(0);
-	var team = $('#gamesLimitSelectTeam').val();
-	
-	$.ajax({
-		type: 'post',
-		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
-		dataType: 'json',
-		data: {'numeric' : 0, 'date' : date},
-		success: function(data) {
-			displayWinLossPie(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-	
-	$.ajax({
-		type: 'post',
-		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
-		dataType: 'json',
-		data: {'numeric' : 0, 'team' : team, 'date' : date},
-		success: function(data) {
-			displayPositionSpider(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-});
-
-$('#gamesLimitSelectTeam').change(function() {
-	var team = $(this).val();
-	var date = $('#gamesLimitSelectDate').val();
-	var numeric = $('#gamesLimitSelectNumeric').val();
-	
-	$.ajax({
-		type: 'post',
-		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
-		dataType: 'json',
-		data: {'numeric' : numeric, 'team' : team, 'date' : date},
-		success: function(data) {
-			displayPositionSpider(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-});
-</script>

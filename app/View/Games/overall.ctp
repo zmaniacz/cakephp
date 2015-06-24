@@ -68,7 +68,6 @@ function overallData(data) {
 		"info": false,
 		"paging": false,
 		"ordering": false,
-		"jQueryUI": true,
 		"data" : data['averages'],
 		"columns" : [
 			{ "data" : "position"},
@@ -85,7 +84,6 @@ function overallData(data) {
 		"info": false,
 		"paging": false,
 		"ordering": false,
-		"jQueryUI": true,
 		"data" : data['scoredetail'],
 		"columns" : [
 			{ "data" : "Game"},
@@ -98,7 +96,7 @@ function overallData(data) {
 $(document).ready(function(){	
 	$.ajax({
 		type: 'get',
-		url: '<?php echo $this->Html->url(array('action' => 'overallWinLossDetail', 'numeric', 'ext' => 'json')); ?>',
+		url: '<?php echo $this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json')); ?>',
 		dataType: 'json',
 		success: function(data) {
 			overallData(data);
@@ -117,30 +115,6 @@ $(document).ready(function(){
 	</div>
 	<div id="collapse_winloss" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
-			<form class="form-inline" action="/games/overall" id="gamesLimitOverallForm" method="post" accept-charset="utf-8">
-				<div style="display:none;">
-					<input type="hidden" name="_method" value="POST"/>
-				</div>
-				<div class="form-group">
-					<label for="gamesLimitSelectNumeric">Select # of games</label>
-					<select class="form-control" name="data[gamesLimit][selectNumeric]" id="gamesLimitSelectNumeric">
-						<option value="0">All Games</option>
-						<option value="10">Last 10</option>
-						<option value="25">Last 25</option>
-						<option value="50">Last 50</option>
-						<option value="100">Last 100</option>
-					</select>
-					<label for="gamesLimitSelectDate">Select # of days</label>
-					<select class="form-control" name="data[gamesLimit][selectDate]" id="gamesLimitSelectDate">
-						<option value="0" selected>All Dates</option>
-						<option value="30">Last 30</option>
-						<option value="60">Last 60</option>
-						<option value="90">Last 90</option>
-						<option value="120">Last 120</option>
-					</select>
-				</div>
-			</form>
-			<br />
 			<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		</div>
 	</div>
@@ -181,40 +155,3 @@ $(document).ready(function(){
 		</div>
 	</div>
 </div>
-<script>
-$('#gamesLimitSelectNumeric').change(function() {
-	var selectedValue = $(this).val();
-	
-	$('#gamesLimitSelectDate').val(0);
-
-	$.ajax({
-		type: 'get',
-		url: 'overallWinLossDetail/numeric/' + selectedValue + '.json',
-		dataType: 'json',
-		success: function(data) {
-			overallData(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-});
-
-$('#gamesLimitSelectDate').change(function() {
-	var selectedValue = $(this).val();
-	
-	$('#gamesLimitSelectNumeric').val(0);
-
-	$.ajax({
-		type: 'get',
-		url: 'overallWinLossDetail/date/' + selectedValue + '.json',
-		dataType: 'json',
-		success: function(data) {
-			overallData(data);
-		},
-		error: function() {
-			alert('fail');
-		}
-	});
-});
-</script>

@@ -11,8 +11,8 @@ class UploadsController extends AppController {
 			$options = array
 			(
 				'script_url' => FULL_BASE_URL.DS.'uploads/index/',
-				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center.Center.id').DS,
-				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('center.Center.id').DS,
+				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
+				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
 				'image_versions' => array()
 			);
 
@@ -34,13 +34,13 @@ class UploadsController extends AppController {
 			}
 			exit;
 		}
-		if (!$this->Session->check('center.Center.id')) {
+		if (!$this->Session->check('state.centerID')) {
 			throw new NotFoundException(__('No center defined'));
 		}
 	}
 
 	public function parse() {
-		$center_id = $this->Session->read('center.Center.id');
+		$center_id = $this->Session->read('state.centerID');
 		$command = "nohup sh -c '".APP.WEBROOT_DIR.DS."parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
 	}
@@ -59,12 +59,12 @@ class UploadsController extends AppController {
 
 	public function parseCSV() {
 		//We're only going to process the most recent file
-		$center_id = $this->Session->read('center.Center.id');
-		$type = $this->Session->read('filter.type');
+		$center_id = $this->Session->read('state.centerID');
+		$type = $this->Session->read('state.gametype');
 
 		$league_id = null;
 		if($type == 'league' || $type == 'tournament')
-			$league_id = $this->Session->read('filter.value');
+			$league_id = $this->Session->read('state.leagueID');
 
 		//make sure we default to social
 		if($type == 'all')
@@ -154,8 +154,8 @@ class UploadsController extends AppController {
 		fclose($handle);
 		
 		$this->Scorecard->generateMVP();
-		$this->Scorecard->generateGames($this->Session->read('center.Center.id'), $this->Session->read('filter'));
-		$this->Scorecard->generatePlayers($this->Session->read('center.Center.id'), $this->Session->read('filter'));
+		$this->Scorecard->generateGames();
+		$this->Scorecard->generatePlayers();
 		
 		$this->Session->setFlash("Added $row scorecards");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));

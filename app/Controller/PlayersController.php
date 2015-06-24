@@ -18,14 +18,14 @@ class PlayersController extends AppController {
 		} else {
 			$this->set('id', $id);
 			$this->set('aliases', $this->Player->PlayersName->findAllByPlayerId($id));
-			$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('filter')));
-			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander', $this->Session->read('filter')));
-			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons', $this->Session->read('filter')));
-			$this->set('scout', $this->Player->getPlayerStats($id, 'Scout', $this->Session->read('filter')));
-			$this->set('ammo', $this->Player->getPlayerStats($id, 'Ammo Carrier', $this->Session->read('filter')));
-			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic', $this->Session->read('filter')));
-			$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('filter')));
-			$this->set('teammates',$this->Player->getMyTeammates($id));
+			$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('state')));
+			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander', $this->Session->read('state')));
+			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons', $this->Session->read('state')));
+			$this->set('scout', $this->Player->getPlayerStats($id, 'Scout', $this->Session->read('state')));
+			$this->set('ammo', $this->Player->getPlayerStats($id, 'Ammo Carrier', $this->Session->read('state')));
+			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic', $this->Session->read('state')));
+			//$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
+			//$this->set('teammates',$this->Player->getMyTeammates($id, $this->Session->read('state')));
 		}
 	}
 
@@ -46,28 +46,14 @@ class PlayersController extends AppController {
 	
 	public function playerWinLossDetail($id) {
 		$this->request->onlyAllow('ajax');
-		
-		$filter = $this->Session->read('filter');
-
-		if($this->request->is('post')) {
-			$filter = array_merge($filter, $this->request->data);
-		}
-
-		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $filter));
+		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
 	}
 	
 	public function playerPositionSpider($id) {
 		$this->request->onlyAllow('ajax');
-		
-		$filter = $this->Session->read('filter');
-
-		if($this->request->is('post')) {
-			$filter = array_merge($filter, $this->request->data);
-		}
-
-		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $filter));
-		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $filter));
-		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $filter));
-		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition(null, $filter));
+		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $this->Session->read('state')));
+		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $this->Session->read('state')));
+		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $this->Session->read('state')));
+		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition(null, $this->Session->read('state')));
 	}
 }

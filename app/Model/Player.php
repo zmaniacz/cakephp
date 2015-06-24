@@ -71,18 +71,19 @@ class Player extends AppModel {
 		)
 	);
 
-	public function getPlayerStats($id, $role = null, $filter = null) {
+	public function getPlayerStats($id, $role = null, $state = null) {
 		$conditions = array();
 		if(!is_null($role))
 			$conditions[] = array('position' => $role);
 		
-		if(!is_null($filter)) {
-			if($filter['type'] != 'all')
-				$conditions[] = array('Scorecard.type' => $filter['type']);
-
-			if($filter['type'] == 'league' && $filter['value'] > 0)
-				$conditions[] = array('Scorecard.league_id' => $filter['value']);
-		}
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
 
 		return $this->find('all', array(
 			'conditions' => array('id' => $id),
@@ -114,10 +115,20 @@ class Player extends AppModel {
 		
 	}
 	
-	public function getAverageScoreByPosition($id = null) {
+	public function getAverageScoreByPosition($id = null, $state = null) {
 		$conditions = array();
+		
 		if(!is_null($id))
 			$conditions[] = array('player_id' => $id);
+			
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
 		
 		$raw = $this->Scorecard->find('all', array(
 			'fields' => array(
@@ -137,10 +148,20 @@ class Player extends AppModel {
 		return $averages;
 	}
 	
-	public function getAverageMVPByPosition($id = null) {
+	public function getAverageMVPByPosition($id = null, $state = null) {
 		$conditions = array();
+		
 		if(!is_null($id))
 			$conditions[] = array('player_id' => $id);
+			
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
 		
 		$raw = $this->Scorecard->find('all', array(
 			'fields' => array(
@@ -160,39 +181,24 @@ class Player extends AppModel {
 		return $averages;
 	}
 	
-	public function getMedianScoreByPosition($id = null, $filter = null) {
+	public function getMedianScoreByPosition($id = null, $state = null) {
 		$fields = array('position','score');
 		$conditions = array();
 		$limit = null;
 		
 		if(!is_null($id)) {
 			$fields[] = 'player_id';
-			$conditions['player_id'] = $id;
+			$conditions[] = array('Scorecard.player_id' => $id);
 		}
 		
-		if(!is_null($filter)) {
-			if(isset($filter['numeric'])) {
-				if($filter['numeric'] > 0) {
-					$limit = $filter['numeric'];
-				}
-			}
-			if(isset($filter['date'])) {
-				if($filter['date'] > 0) {
-					$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = $filter['date'];
-				}
-			}
-			if(isset($filter['team'])) {
-				if($filter['team'] != 0) {
-					$conditions['team'] = $filter['team'];
-				}
-			}
-
-			if($filter['type'] != 'all')
-				$conditions[] = array('Scorecard.type' => $filter['type']);
-
-			if($filter['type'] == 'league' && $filter['value'] > 0)
-				$conditions[] = array('Scorecard.league_id' => $filter['value']);
-		}
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
@@ -209,7 +215,6 @@ class Player extends AppModel {
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
 				case 'Commander':
-					//echo count($commander);
 					if( (is_null($limit)) || (!is_null($limit) && count($commander) <= $limit)) {
 						$commander[] = $score['Scorecard']['score'];
 					}
@@ -255,32 +260,18 @@ class Player extends AppModel {
 		
 		if(!is_null($id)) {
 			$fields[] = 'player_id';
-			$conditions['player_id'] = $id;
+			$conditions[] = array('Scorecard.player_id' => $id);
 		}
 		
-		if(!is_null($filter)) {
-			if(isset($filter['numeric'])) {
-				if($filter['numeric'] > 0) {
-					$limit = $filter['numeric'];
-				}
-			}
-			if(isset($filter['date'])) {
-				if($filter['date'] > 0) {
-					$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = $filter['date'];
-				}
-			}
-			if(isset($filter['team'])) {
-				if($filter['team'] != 0) {
-					$conditions['team'] = $filter['team'];
-				}
-			}
-			
-			if($filter['type'] != 'all')
-				$conditions[] = array('Scorecard.type' => $filter['type']);
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
-			if($filter['type'] == 'league' && $filter['value'] > 0)
-				$conditions[] = array('Scorecard.league_id' => $filter['value']);
-		}
 		
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
@@ -335,7 +326,7 @@ class Player extends AppModel {
 		return $results;
 	}
 	
-	public function getMyTeammates($id) {
+	public function getMyTeammates($id, $state = null) {
 		$results = $this->Scorecard->query("
 			select player_name,
 			(select count(myTeammates.game_datetime)

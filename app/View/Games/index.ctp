@@ -6,7 +6,7 @@
 		});
 	});
 </script>
-<div id="game_list" class="panel panel-info">
+<div id="game_list_panel" class="panel panel-info">
 	<div class="panel-heading" role="tab" id="game_list_heading">
 		<h4 class="panel-title">
 			Game List

@@ -28,18 +28,7 @@ class PenaltiesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Penalty->contain(array(
-			'Scorecard' => array(
-				'fields' => array(),
-				'Game' => array(
-					'fields' => array('id','game_name','game_description','game_datetime')	
-				),
-				'Player' => array(
-					'fields' => array('id','player_name')
-				)
-			)
-		));
-		$this->set('penalties', $this->Penalty->find('all'));
+		$this->set('penalties', $this->Penalty->getPenalties($this->Session->read('state')));
 	}
 
 /**

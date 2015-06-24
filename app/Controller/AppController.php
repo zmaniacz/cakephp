@@ -55,6 +55,11 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
+		if(!$this->Session->check('state')) {
+			$this->Session->write('state', '');
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'index'));
+		}
+		
 		if($this->Session->check('state.gametype') && ($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->check('state.centerID')) {
 			if($this->Session->read('state.centerID') > 0) {
 				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
@@ -70,7 +75,6 @@ class AppController extends Controller {
 					'League.id' => $this->Session->read('state.leagueID')
 				)
 			));
-			
 			$this->set('selected_league', $league);
 		}
 	}

@@ -15,8 +15,6 @@ class ScorecardsController extends AppController {
 			'nightlyGames',
 			'nightlyMedicHits',
 			'allcenter',
-			'setFilter',
-			'ajax_getFilter',
 			'playerScorecards',
 			'leaderboards'
 		);
@@ -35,7 +33,7 @@ class ScorecardsController extends AppController {
 			}
 		} else {
 			//Hitting the index will always clear existing state and start you over from the beginning
-			$this->Session->delete('state');
+			$this->Session->write('state', '');
 		}
 	}
 	
@@ -53,6 +51,9 @@ class ScorecardsController extends AppController {
 	public function pickLeague() {
 		if($this->request->is('post')) {
 			$this->Session->write('state.leagueID', $this->request->data['league_id']);
+			$this->loadModel('League');
+			$league = $this->League->findById($this->request->data['league_id']);
+			$this->Session->write('state.centerID', $league['League']['center_id']);
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $this->request->data['league_id']));
 		} else {
 			$this->Session->delete('state.leagueID');
@@ -74,19 +75,9 @@ class ScorecardsController extends AppController {
 		$this->set('averages', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
     }
 	
-	public function nightly($center_id = null, $league_type = null, $league_id = null) {
-		if($center_id != null) { 
-			$this->loadModel('Center');
-			$center = $this->Center->findById($center_id);
-			$this->Session->write('center',$center);
-		}
-		
-		if($league_type != null && $league_id != null) {
-			$this->Session->write('filter',array('type' => $league_type, 'value' => $league_id));
-		}
+	public function nightly() {
 
-
-		$game_dates = $this->Scorecard->getGameDates($this->Session->read('center.Center.id'), $this->Session->read('filter'));
+		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
 		$this->set('game_dates', $game_dates);
 		
 		if($this->request->isPost()) {
@@ -103,22 +94,22 @@ class ScorecardsController extends AppController {
 	
 	public function nightlyScorecards($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
 	}
 
 	public function nightlyGames($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Scorecard->Game->getGamesByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
+		$this->set('games', $this->Scorecard->Game->getGamesByDate($date, $this->Session->read('state')));
 	}
 
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('center.Center.id'), $this->Session->read('filter')));
+		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
 	}
 
 	public function playerScorecards($id) {
-		//$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('filter')));
+		$this->request->onlyAllow('ajax');
+		$this->set('scorecards', $this->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
 	}
 	
 	public function rebuild() {
@@ -133,37 +124,13 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function allcenter() {
-		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('center.Center.id'), $this->Session->read('filter')));
+		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('state')));
 	}
 
 	public function leaderboards() {
-		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('center.Center.id'), $this->Session->read('filter')));
-		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('center.Center.id'), $this->Session->read('filter')));
-		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('center.Center.id'), $this->Session->read('filter')));
-	}
-	
-	public function setFilter () {
-		if($this->request->is('post')) {
-			if(isset($this->request->data['game_filter'])) {
-				$type = $this->request->data['game_filter']['selectFilter'];
-				
-				$value = -1;
-				if(isset($this->request->data['game_filter']['select_detailsFilter']))
-					$value = $this->request->data['game_filter']['select_detailsFilter'];
-
-				$this->Session->write('filter',array('type' => $type, 'value' => $value));
-
-			} elseif(isset($this->request->data['center_filter'])) {
-				$center = $this->Center->findById($this->request->data['center_filter']['selectFilter']);
-				$this->Session->write('center',$center);
-			}
-		}
-		$this->redirect($this->referer());
-	}
-
-	public function ajax_getFilter() {
-		$this->request->onlyAllow('ajax');
-		$this->set('filter', $this->Session->read('filter'));
+		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('state')));
+		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('state')));
+		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('state')));
 	}
 	
 	public function ajax_switchSub($id) {
