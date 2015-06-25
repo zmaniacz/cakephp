@@ -5,6 +5,7 @@ class ScorecardsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(
 			'index',
+			'setState',
 			'pickCenter',
 			'pickLeague',
 			'overall',
