@@ -37,6 +37,24 @@ class ScorecardsController extends AppController {
 		}
 	}
 	
+	public function setState($gametype, $league_id, $center_id) {
+		$this->Session->write('state', '');
+		
+		$this->Session->write('state.gametype', $gametype);
+		
+		if(!is_null($league_id))
+			$this->Session->write('state.leagueID', $league_id);
+			
+		if(!is_null($center_id))
+			$this->Session->write('state.centerID', $center_id);
+		
+		if($gametype == 'all' || $gametype == 'social')
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
+			
+		if($gametype == 'league')
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $league_id));
+	}
+	
 	public function pickCenter() {
 		if($this->request->is('post')) {
 			$this->Session->write('state.centerID', $this->request->data['center_id']);

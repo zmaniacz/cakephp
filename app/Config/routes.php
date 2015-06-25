@@ -20,9 +20,12 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 	
-	Router::connect('/', array('controller' => 'scorecards', 'action' => 'nightly'));
-	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'nightly', 7, 'tournament', 6));
-	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'nightly', 8));
+	Router::connect('/', array('controller' => 'scorecards', 'action' => 'setState', 'all', null, null));
+	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'league', 6, 7));
+	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 8));
+	Router::connect('/ltc', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 1));
+	Router::connect('/geddon2014', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 3));
+	Router::connect('/geddon2015', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 9));
 	Router::parseExtensions();
 
 /**
