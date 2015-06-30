@@ -106,79 +106,86 @@ class League extends AppModel {
 		return $teams;
 	}
 	
-	public function updateGames($game) {
-		//this is all shit
-		//why am i doing all this validation on other models in the league model?
-		//stupid
-		//break it out, dispatch it out
-		//use the existing model chain
-		//you fucking dummy
-		//also...stop setting league round match what the fuck ever form the gme page
-		//set it form the competition page
-		//dropdowns like a motherfucker
-		$this->unbindModel(array(
-			'hasMany' => array('Round')
-		));
+	public function getLeagueDetails($state) {
+		$league_id = $state['leagueID'];
 		
-		$this->bindModel(array(
-			'hasOne' => array(
-				'Round' => array(
-					'className' => 'Round',
-					'foreignkey' => 'league_id'
-				)
-			)
-		));
-		
-		$this->Round->unbindModel(array(
-			'hasMany' => array('Match')
-		));
-		
-		$this->Round->bindModel(array(
-			'hasOne' => array(
-				'Match' => array(
-					'className' => 'Match',
-					'foreignkey' => 'round_id'
-				)
-			)
-		));
-		
-		$league = $this->find('first', array(
+		$rounds = $this->find('first',array(
 			'contain' => array(
 				'Round' => array(
-					'Match' => array(
-						'conditions' => array(
-							'Match.match' => $game['league_match']
-						)
-					),
-					'conditions' => array(
-						'Round.round' => $game['league_round']
+					'Match' =>array(
+						'Game_1',
+						'Game_2'
 					)
 				)
 			),
 			'conditions' => array(
-				'League.id' => $game['league_id']
+				'League.id' => $league_id
 			)
 		));
 		
-		if(empty($league['Round'])) {
-			$league['Round']['league_id'] = $game['league_id'];
-			$league['Round']['round'] = $game['league_round'];
-			$this->Round->save($league);
-			$round_id = $this->Round->id;
-		} else {
-			$round_id = $league['Round']['id'];
+		return $rounds;
+	}
+
+	//this sauce is bad
+	public function getAvailableMatches($game = null) {
+		$conditions = array();
+		$match_list = array();
+		
+		if(!is_null($game)) {
+			if(!is_null($game['Game']['red_team_id'])) {
+				$conditions[] = array('OR' => array(
+					array(
+						'Game_1.id' => null,
+						'Match.team_1_id' => $game['Game']['red_team_id']
+					),
+					array(
+						'Game_2.id' => null,
+						'Match.team_2_id' => $game['Game']['red_team_id']
+					)
+				));
+			} else {
+				$conditions = array(
+					'OR' => array(
+						'Game_1.id' => null,
+						'Game_2.id' => null
+					),
+					'AND' => array(
+						'Match.team_1_id NOT' => null,
+						'Match.team_2_id NOT' => null,
+					)
+				);
+			}
 		}
 		
-		if(empty($league['Match'])) {
-			$league['Match']['match'] = $game['league_match'];
-			$league['Match']['round_id'] = $round_id;
-			$this->Round->Match->save($league);
-			//create the match
-			//use the round id
-			//set the teams
-			//set the game id
-		} else {
-			//verify the teams are correct
+		$matches = $this->Round->Match->find('all', array(
+			'contain' => array(
+				'Game_1' => array('fields' => array('id')),
+				'Game_2' => array('fields' => array('id')),
+				'Round',
+				'Team_1' => array('fields' => array('id', 'name')),
+				'Team_2' => array('fields' => array('id', 'name'))
+			),
+			'conditions' => $conditions
+		));
+
+		foreach($matches as $match) {
+			$match_list[$match['Match']['id']] = "R".$match['Round']['round']." M".$match['Match']['match']." - ".$match['Team_1']['name']." v ".$match['Team_2']['name'];
 		}
+		
+		if(!empty($game['Game']['match_id'])) {
+			$match = $this->Round->Match->find('first', array(
+				'contain' => array(
+					'Round',
+					'Team_1' => array('fields' => array('id', 'name')),
+					'Team_2' => array('fields' => array('id', 'name'))
+				),
+				'conditions' => array(
+					'Match.id' => $game['Game']['match_id']
+				)
+			));
+			$match_list[$match['Match']['id']] = "R".$match['Round']['round']." M".$match['Match']['match']." - ".$match['Team_1']['name']." v ".$match['Team_2']['name'];
+		}
+		
+		return $match_list;
 	}
 }

@@ -90,7 +90,7 @@
 							} elseif($this->Session->read('state.gametype') == 'league') {
 								echo "<li>".$this->Html->link('League', array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";
 								if($this->Session->check('state.leagueID'))
-									echo "<li>".$this->Html->link($selected_league['Center']['name']." - ".$selected_league['League']['name'], array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";	
+									echo "<li>".$this->Html->link($selected_league['Center']['name']." - ".$selected_league['League']['name'], array('controller' => 'leagues', 'action' => 'standings'))."</li>";	
 							}
 								
 						}
@@ -107,7 +107,7 @@
 		</div>
 		<?php
 			//debug($this->Session->read('state'));
-			//echo $this->element('sql_dump');
+			echo $this->element('sql_dump');
 			echo $this->Js->writeBuffer();
 		?>
 	</div>
