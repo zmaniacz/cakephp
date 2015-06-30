@@ -7,7 +7,7 @@ if [ $# = 1 ]; then
 OutputDirectory=$DIR/output/$1/" > LFScoreParser.properties
 	mkdir -p output/$1/
 	mkdir -p pending/$1/
-	java -Xmx100M -jar LFScoreParser.jar
+	java -Xmx100M -jar LFScoreParser-XML.jar
 	mv output/$1/*.pdf ../pdf/
 	mv output/$1/*.csv pending/$1/
 	rm output/$1/*

@@ -13,6 +13,7 @@
 *.pdf
 *.csv
 *.mo
+*.properties
 
 # IDE and editor specific files #
 #################################
