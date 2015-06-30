@@ -27,6 +27,17 @@
 ?>
 <h3>
 	<?php
+		if(AuthComponent::user('role') === 'admin') {
+			echo $this->Form->input('game_name', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+		} else {
+			if(!empty($game['Game']['game_name'])) {
+				echo $game['Game']['game_name'];
+			}
+		}
+	?>	
+</h3>
+<h3>
+	<?php
 		if($game['Game']['red_team_id'] != null)
 			echo $teams[$game['Game']['red_team_id']];
 		else
