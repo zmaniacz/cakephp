@@ -44,6 +44,12 @@ class GamesController extends AppController {
 
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Game->save($this->request->data)) {
+				
+				if(!empty($this->request->data['Game']['match'])) {
+					$this->loadModel('Match');
+					$this->Match->addGame($this->request->data['Game']['match'], $this->request->data['Game']['id']);
+				}
+				
 				$this->Session->setFlash(__('The game has been saved.'));
 				return $this->redirect(array('action' => 'view', $id));
 			} else {
@@ -72,6 +78,7 @@ class GamesController extends AppController {
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
+				$this->set('available_matches', $this->League->getAvailableMatches($game));
 			}
 			
 			$this->set('game', $game);

@@ -22,19 +22,28 @@ class LeaguesController extends AppController {
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
 	}
 
-	public function standings($league_id = null) {
-		if(is_null($league_id))
+	public function standings() {
+		if(!$this->Session->check('state.leagueID') && $this->Session->read('state.leagueID') > 0)
 			$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
+		
+		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
+		$this->set('standings', $this->League->getTeamStandings($this->Session->read('state')));
+		$this->set('details', $this->League->getLeagueDetails($this->Session->read('state')));
 	}
 
 	public function ajax_getLeagues() {
 		$this->request->onlyAllow('ajax');
-		$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));
+		$this->set('leagues', $this->League->getLeagues());
 	}
 
 	public function ajax_getTeams() {
 		$this->request->onlyAllow('ajax');
 		$this->set('teams', $this->League->getTeamStandings($this->Session->read('state')));
+	}
+	
+	public function ajax_getStandings() {
+		$this->request->onlyAllow('ajax');
+		$this->set('standings', $this->League->getTeamStandings($this->Session->read('state')));
 	}
 
 /**
@@ -46,7 +55,7 @@ class LeaguesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->League->create();
 			if ($this->League->save($this->request->data)) {
-				return $this->flash(__('The league has been saved.'), array('controller' => 'leagues', 'action' => 'index'));
+				return $this->flash(__('The league has been saved.'), array('controller' => 'leagues', 'action' => 'standings'));
 			}
 		}
 		$centers = $this->League->Center->find('list');
@@ -57,14 +66,50 @@ class LeaguesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->League->Team->create();
 			if ($this->League->Team->save($this->request->data)) {
-				return $this->flash(__('The team has been saved.'), array('controller' => 'leagues', 'action' => 'standings'));
+				$this->Session->setFlash(__('The team has been saved.'));
+				$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 			}
 		}
 
-		$leagues = $this->League->find('list', array('conditions' => array('id' => $this->Session->read('filter.value'))));
+		$leagues = $this->League->find('list', array('conditions' => array('id' => $this->Session->read('state.leagueID'))));
 		$this->set(compact('leagues'));
-		$captains = $this->League->Team->Player->find('list');
-		$this->set(compact('captains'));
+		//$captains = $this->League->Team->Player->find('list');
+		//$this->set(compact('captains'));
+	}
+	
+	public function addRound() {
+		if ($this->request->is('post')) {
+			$this->League->Round->create();
+			if ($this->League->Round->save($this->request->data)) {
+				$this->Session->setFlash(__('The round has been created.'));
+				$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
+			}
+		}
+	}
+	
+	public function addMatch($league_id, $round_id) {
+		if ($this->request->is('post')) {
+			$match = $this->League->Round->Match->find('first', array(
+				'conditions' => array(
+					'round_id' => $this->request->data['League']['round_id']
+				),
+				'order' => 'match DESC'
+			));
+			$match_start = ($match) ? $match['Match']['match'] : 0;
+			
+			for($i = 0; $i < $this->request->data['League']['matches']; $i++) {
+				$match_start++;
+				$this->League->Round->Match->create();
+				$this->League->Round->Match->set('match', $match_start);
+				$this->League->Round->Match->set('round_id', $this->request->data['League']['round_id']);
+				$this->League->Round->Match->save();
+			}
+			
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
+		} else {
+			$this->set('league', $this->League->findById($league_id));
+			$this->set('round', $this->League->Round->findById($round_id));
+		}
 	}
 
 /**
@@ -88,6 +133,18 @@ class LeaguesController extends AppController {
 		}
 		$centers = $this->League->Center->find('list');
 		$this->set(compact('centers'));
+	}
+	
+	public function editMatch($id = null) {
+		if (!$this->League->Round->Match->exists($id)) {
+			throw new NotFoundException(__('Invalid match'));
+		}
+		if ($this->request->is(array('post', 'put'))) {
+			if($this->League->Round->Match->save($this->request->data)) {
+				$this->Session->setFlash(__('Match saved'));
+				$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
+			}
+		}
 	}
 
 /**

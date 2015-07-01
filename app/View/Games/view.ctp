@@ -15,15 +15,31 @@
 	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->create('Game');
 		echo $this->Form->input('id');
+		echo $this->Form->input('type', array('type' => 'select', 
+			'options' => array(
+				'social' => 'Social',
+				'league' => 'League',
+				'tournament' => 'Tournament'
+			), 
+			'class' => 'form-control', 
+			'div' => array('class' => 'form-group'
+		)));
 		if(isset($game['Game']['league_id'])) {
-			echo $this->Form->input('league_round', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
-			echo $this->Form->input('league_match', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
-			echo $this->Form->input('league_game', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
+			echo $this->Form->input('league_id', array('type' => 'hidden'));
+			echo $this->Form->input('match', array(
+				'type' => 'select', 
+				'options' => array($available_matches),
+				'empty' => 'Select a match',
+				'selected' => $game['Game']['match_id'],
+				'class' => 'form-control', 
+				'div' => array('class' => 'form-group')
+			));
 		}
-	} else {
-		if(isset($game['Game']['league_id']))
-			echo '<h3>R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game']."</h3>";
 	}
+	if(isset($game['Game']['league_id']))
+		echo '<h3>R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game']."</h3>";
+	else
+		$game['Game']['game_name'];
 ?>
 <h3>
 	<?php
@@ -98,9 +114,9 @@ if($game['Game']['winner'] == 'Green') {
 			<?php
 				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {
 					if($game['Game']['winner'] == 'Green')
-						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 					else
-						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 				} else {echo $winner;}
 			?>
 		</h4>
@@ -195,9 +211,9 @@ if($game['Game']['winner'] == 'Green') {
 			<?php
 				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {
 					if($game['Game']['winner'] == 'Green')
-						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 					else
-						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
 				} else {echo $loser;}
 			?>
 		</h4>

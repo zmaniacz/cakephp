@@ -73,7 +73,7 @@ class ScorecardsController extends AppController {
 			$this->loadModel('League');
 			$league = $this->League->findById($this->request->data['league_id']);
 			$this->Session->write('state.centerID', $league['League']['center_id']);
-			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $this->request->data['league_id']));
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		} else {
 			$this->Session->delete('state.leagueID');
 			$this->loadModel('League');

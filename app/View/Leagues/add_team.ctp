@@ -1,12 +1,16 @@
-<div class="teams form">
-<?php echo $this->Form->create('Team'); ?>
-	<fieldset>
-		<legend><?php echo 'Add Team'; ?></legend>
-	<?php
-		echo $this->Form->input('name');
-		echo $this->Form->input('league_id');
-		echo $this->Form->input('captain_id');
-	?>
-	</fieldset>
-<?php echo $this->Form->end('Submit'); ?>
+<div id="team_add" class="panel panel-info">
+	<div class="panel-heading" role="tab" id="team_add_heading">
+		<h4 class="panel-title">
+			Add Team
+		</h4>
+	</div>
+	<div class="panel-body">
+		<?php
+			echo $this->Form->create('Team');
+			echo $this->Form->input('name', array('class' => 'form-control','div' => array('class' => 'form-group')));
+			echo $this->Form->input('league_id', array('class' => 'form-control','div' => array('class' => 'form-group')));
+			//echo $this->Form->input('captain_id', array('class' => 'form-control','div' => array('class' => 'form-group')));
+			echo $this->Form->end('Submit');
+		?>
+	</div>
 </div>
