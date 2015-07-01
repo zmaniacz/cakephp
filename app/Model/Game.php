@@ -86,7 +86,13 @@ class Game extends AppModel {
 			$conditions[] = array('Game.league_id' => $state['leagueID']);
 
 		$games = $this->find('all', array(
-			'contain' => array('Red_Team', 'Green_Team', 'League'),
+			'contain' => array(
+				'Red_Team',
+				'Green_Team',
+				'Match' => array(
+					'Round'
+				)
+			),
 			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
 		));

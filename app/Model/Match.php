@@ -104,9 +104,6 @@ class Match extends AppModel {
 			)
 		));
 		
-		//$this->log($this->getDataSource()->getLog(false, false), 'debug');
-		//$this->log($match, 'debug');
-		
 		$team_1_points = 0;
 		$team_2_points = 0;
 		
