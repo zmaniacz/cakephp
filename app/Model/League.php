@@ -177,12 +177,15 @@ class League extends AppModel {
 			$standings[] = array('id' => $team['Team']['id'], 'name' => $team['Team']['name'], 'points' => $match_points, 'played' => $played, 'won' => $won, 'lost' => $played-$won, 'matches_won' => 0, 'elims' => $elims, 'for' => $total_points_for, 'against' => $total_points_against, 'ratio' => (($total_points_for > 0) ? $total_points_for/$total_points_against : 0));
 		}
 		
-		foreach ($standings as $key => $row) {
-		    $arr_points[$key]  = $row['points'];
-			$arr_ratio[$key]  = $row['ratio'];
-		}
 		
-		array_multisort($arr_points, SORT_DESC, $arr_ratio, SORT_DESC, $standings);
+		if(!empty($standings)) {
+			foreach ($standings as $key => $row) {
+			    $arr_points[$key]  = $row['points'];
+				$arr_ratio[$key]  = $row['ratio'];
+			}
+			
+			array_multisort($arr_points, SORT_DESC, $arr_ratio, SORT_DESC, $standings);
+		}
 		
 		return $standings;
 	}
