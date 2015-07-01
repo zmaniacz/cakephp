@@ -54,7 +54,15 @@
 							<ul class="nav navbar-nav">
 								<li><a href="/scorecards/overall">Top Players</a></li>
 								<li><a href="/games/index">Game List</a></li>
-								<li><a href="/scorecards/nightly">Nightly Stats</a></li>
+								<li>
+								<?php
+									if($this->Session->read('state.gametype') == 'league') {
+										echo $this->Html->link('Standings', array('controller' => 'leagues', 'action' => 'standings'));
+									} else {
+										echo $this->Html->link('Nightly Stats', array('controller' => 'scorecards', 'action' => 'nightly'));
+									}
+								?>
+								</li>
 								<li><a href="/scorecards/leaderboards">Leader(Loser)boards</a></li>
 								<li><a href="/games/overall">Center Stats</a></li>
 								<li><a href="/scorecards/allcenter">All-Center Teams</a></li>
@@ -107,7 +115,7 @@
 		</div>
 		<?php
 			//debug($this->Session->read('state'));
-			//echo $this->element('sql_dump');
+			echo $this->element('sql_dump');
 			echo $this->Js->writeBuffer();
 		?>
 	</div>

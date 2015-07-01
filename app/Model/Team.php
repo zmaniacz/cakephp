@@ -77,15 +77,30 @@ class Team extends AppModel {
 		)
 	);
 	
-	public function getTeamStandings($league_id) {
-		$red_teams = $this->find('all', array(
-			'contain' => array('Red_Game', 'Green_Game'),
+	public function getTeamMatches($team_id, $state) {
+		$league_id = $state['leagueID'];
+		
+		$rounds = $this->League->find('first',array(
+			'contain' => array(
+				'Round' => array(
+					'Match' => array(
+						'Game_1',
+						'Game_2',
+						'conditions' => array(
+							'OR' => array(
+								'Match.team_1_id' => $team_id,
+								'Match.team_2_id' => $team_id
+							)
+						)
+					)
+				)
+			),
 			'conditions' => array(
-				'Team.league_id' => $league_id
+				'League.id' => $league_id
 			)
 		));
-		var_dump($red_teams);
-		return $red_teams;
+		
+		return $rounds;
 	}
 
 }
