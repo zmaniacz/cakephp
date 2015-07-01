@@ -36,16 +36,16 @@
 				<tbody>
 					<?php foreach($standings as $team): ?>
 					<tr>
-						<td><?= $team['Team']['name']; ?></td>
-						<td><?= $team['Team']['points']; ?></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td><?= $team['name']; ?></td>
+						<td><?= $team['points']; ?></td>
+						<td><?= $team['played']; ?></td>
+						<td><?= $team['won']; ?></td>
+						<td><?= $team['lost']; ?></td>
+						<td><?= $team['matches_won']; ?></td>
+						<td><?= $team['elims']; ?></td>
+						<td><?= $team['for']; ?></td>
+						<td><?= $team['against']; ?></td>
+						<td><?= round($team['ratio'], 2); ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -154,4 +154,3 @@
 <script>
 	$('#round_tabs a:first').tab('show')
 </script>
-<?php debug($details); ?>

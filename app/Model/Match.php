@@ -12,18 +12,16 @@ class Match extends AppModel {
 		'Game_1' => array(
 			'className' => 'Game',
 			'foreignKey' => 'match_id',
-			'finderQuery' => 'SELECT Game_1.* 
-								FROM games as Game_1 
-								WHERE Game_1.match_id = {$__cakeID__$} 
-								AND Game_1.red_team_id IN (SELECT team_1_id FROM matches WHERE match_id={$__cakeID__$})'
+			'conditions' => array(
+				'Game_1.league_game' => 1
+			)
 		),
 		'Game_2' => array(
 			'className' => 'Game',
 			'foreignKey' => 'match_id',
-			'finderQuery' => 'SELECT Game_2.* 
-								FROM games as Game_2 
-								WHERE Game_2.match_id = {$__cakeID__$} 
-								AND Game_2.red_team_id IN (SELECT team_2_id FROM matches WHERE match_id={$__cakeID__$})'
+			'conditions' => array(
+				'Game_2.league_game' => 2
+			)
 		)
 	);
 
@@ -43,8 +41,6 @@ class Match extends AppModel {
 	);
 	
 	public function addGame($match_id, $game_id) {
-		$this->log($match_id, 'debug');
-		$this->log($game_id, 'debug');
 		
 		$match = $this->find('first', array(
 			'contain' => array(
@@ -68,11 +64,13 @@ class Match extends AppModel {
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_1']['id'];
 				$game['Game']['green_team_id'] = $match['Team_2']['id'];
+				$game['Game']['league_game'] = 1;
 			} elseif($match['Team_1']['id'] == $game['Game']['green_team_id']) {
 				//nope it's game 2
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_2']['id'];
 				$game['Game']['green_team_id'] = $match['Team_1']['id'];
+				$game['Game']['league_game'] = 2;
 			}
 		} else {
 			//is game 1 already set?
@@ -80,11 +78,13 @@ class Match extends AppModel {
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_1']['id'];
 				$game['Game']['green_team_id'] = $match['Team_2']['id'];
+				$game['Game']['league_game'] = 1;
 			} elseif(empty($match['Game_2']['id'])) {
 				//yup, so this is game 2
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_2']['id'];
 				$game['Game']['green_team_id'] = $match['Team_1']['id'];
+				$game['Game']['league_game'] = 2;
 			}
 		}
 		$this->Game->save($game);
@@ -125,18 +125,13 @@ class Match extends AppModel {
 				$team_1_points += 2;
 			}
 		}
-		
-		$this->log($team_1_points, 'debug');
-		$this->log($team_2_points, 'debug');
 			
 		//both games are logged
 		if(!empty($match['Game_1']['id']) && !empty($match['Game_2']['id'])) {
 			if($team_1_points == $team_2_points) {
 				//tie round, goes to score
 				$team_1_total_score = $match['Game_1']['red_score'] + $match['Game_1']['red_adj'] + $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
-				$this->log($team_1_total_score, 'debug');
 				$team_2_total_score = $match['Game_1']['green_score'] + $match['Game_1']['green_adj'] + $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
-				$this->log($team_2_total_score, 'debug');
 				
 				if($team_1_total_score > $team_2_total_score) {
 					$team_1_points += 2;
@@ -156,10 +151,6 @@ class Match extends AppModel {
 		
 		$match['Match']['team_1_points'] = $team_1_points;
 		$match['Match']['team_2_points'] = $team_2_points;
-		$this->log($match, 'debug');
-		if($this->save($match))
-			$this->log('success', 'debug');
-		else
-			$this->log('fail', 'debug');
+		$this->save($match);
 	}
 }

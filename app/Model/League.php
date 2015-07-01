@@ -87,12 +87,104 @@ class League extends AppModel {
 		$league_id = $state['leagueID'];
 		
 		$teams = $this->Team->find('all', array(
+			'contain' => array(
+				'Match_Team1' => array(
+					'Game_1',
+					'Game_2'
+				),
+				'Match_Team2' => array(
+					'Game_1',
+					'Game_2'
+				)
+			),
 			'conditions' => array(
 				'Team.league_id' => $league_id
 			),
 			'order' => 'points DESC'
 		));
-		return $teams;
+		
+		$standings = array();
+		
+		foreach($teams as $team) {
+			$match_points = 0;
+			$played = 0;
+			$won = 0;
+			$match_won = 0;
+			$elims = 0;
+			$total_points_for = 0;
+			$total_points_against = 0;
+			
+			foreach($team['Match_Team1'] as $match_1) {
+				$match_points += $match_1['team_1_points'];
+				
+				if(!empty($match_1['Game_1'])) {
+					$played++;
+					
+					if($match_1['Game_1']['winner'] == 'Red')
+						$won++;
+						
+					if($match_1['Game_1']['green_eliminated'] == 1)
+						$elims++;
+						
+					$total_points_for += $match_1['Game_1']['red_score'] + $match_1['Game_1']['red_adj'];
+					$total_points_against += $match_1['Game_1']['green_score'] + $match_1['Game_1']['green_adj'];
+				}
+				
+				if(!empty($match_1['Game_2'])) {
+					$played++;
+					
+					if($match_1['Game_2']['winner'] == 'Green')
+						$won++;
+						
+					if($match_1['Game_2']['red_eliminated'] == 1)
+						$elims++;
+						
+					$total_points_for += $match_1['Game_2']['green_score'] + $match_1['Game_2']['green_adj'];
+					$total_points_against += $match_1['Game_2']['red_score'] + $match_1['Game_2']['red_adj'];
+				}
+			}
+			
+			foreach($team['Match_Team2'] as $match_2) {
+				$match_points += $match_2['team_2_points'];
+				
+				if(!empty($match_2['Game_1'])) {
+					$played++;
+					
+					if($match_2['Game_1']['winner'] == 'Green')
+						$won++;
+						
+					if($match_2['Game_1']['red_eliminated'] == 1)
+						$elims++;
+						
+					$total_points_for += $match_2['Game_1']['green_score'] + $match_2['Game_1']['green_adj'];
+					$total_points_against += $match_2['Game_1']['red_score'] + $match_2['Game_1']['red_adj'];
+				}
+				
+				if(!empty($match_2['Game_2'])) {
+					$played++;
+					
+					if($match_2['Game_2']['winner'] == 'Red')
+						$won++;
+						
+					if($match_2['Game_2']['green_eliminated'] == 1)
+						$elims++;
+						
+					$total_points_for += $match_2['Game_2']['red_score'] + $match_2['Game_2']['red_adj'];
+					$total_points_against += $match_2['Game_2']['green_score'] + $match_2['Game_2']['green_adj'];
+				}
+			}
+			
+			$standings[] = array('id' => $team['Team']['id'], 'name' => $team['Team']['name'], 'points' => $match_points, 'played' => $played, 'won' => $won, 'lost' => $played-$won, 'matches_won' => 0, 'elims' => $elims, 'for' => $total_points_for, 'against' => $total_points_against, 'ratio' => (($total_points_for > 0) ? $total_points_for/$total_points_against : 0));
+		}
+		
+		foreach ($standings as $key => $row) {
+		    $arr_points[$key]  = $row['points'];
+			$arr_ratio[$key]  = $row['ratio'];
+		}
+		
+		array_multisort($arr_points, SORT_DESC, $arr_ratio, SORT_DESC, $standings);
+		
+		return $standings;
 	}
 
 	public function getTeams($league_id) {
