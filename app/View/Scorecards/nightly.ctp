@@ -15,59 +15,23 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
-			"scrollX" : true,
 			"searching": false,
 			"info": false,
 			"paging": false,
 			"ordering": false,
 			"ajax" : {
 				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json')); ?>",
-				"dataSrc" : "games"
+				"dataSrc" : "response"
 			},
 			"columns" : [
-				{
-					"data" : "Game.game_name",
-					"render" : function(data, type, row, meta) {
-						if(row.Game.type == 'league' || row.Game.type == 'tournament') {
-							return '<a href="/games/view/'+row.Game.id+'">'+row.League.name+' - R'+row.Game.league_round+' M'+row.Game.league_match+' G'+row.Game.league_game+'</a>';
-						} else {
-							return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>';
-						}
-					}
-				},
-				{ "data" : "Game.game_datetime" },
-				{ 
-					"data" : "Game", 
-					"render" : function(data, type, row, meta) {
-						if(row.Game.winner == 'Red') {
-							return (row.Game.red_team_id == null ? 'Red Team' : row.Red_Team.name)+': '+(row.Game.red_score+row.Game.red_adj);
-						} else {
-							return (row.Game.green_team_id == null ? 'Green Team' : row.Green_Team.name)+': '+(row.Game.green_score+row.Game.green_adj);
-						}
-					}
-				},
-				{ 
-					"data" : "Game", 
-					"render" : function(data, type, row, meta) {
-						if(row.Game.winner == 'Red') {
-							return (row.Game.green_team_id == null ? 'Green Team' : row.Green_Team.name)+': '+(row.Game.green_score+row.Game.green_adj);
-						} else {
-							return (row.Game.red_team_id == null ? 'Red Team' : row.Red_Team.name)+': '+(row.Game.red_score+row.Game.red_adj);
-						}
-					}
-				},
-				{
-					"data" : "Game.pdf_id",
-					"render" : function(data, type, row, meta) {
-						if(data == null)
-							return 'N/A';
-						else
-							return '<a href="/pdf/'+data+'.pdf">PDF</a>';
-					}
-				}
+				{ "data" : "game_name", },
+				{ "data" : "game_datetime" },
+				{ "data" : "winner" },
+				{ "data" : "loser" },
+				{ "data" : "pdf" }
 			],
 			"rowCallback" : function(row, data) {
-				if(data.Game.winner == "Red")
+				if(data.winner_color == "Red")
 					$(row).addClass('danger');
 				else
 					$(row).addClass('success');
@@ -87,7 +51,6 @@
 		});
 
 		var overall = $('#overall').DataTable( {
-			"scrollX" : true,
 			"deferRender" : true,
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
@@ -160,15 +123,17 @@
 	</div>
 	<div id="collapse_game_list" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
-			<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
-				<thead>
-					<th>Game</th>
-					<th>Time</th>
-					<th>Winner Score</th>
-					<th>Loser Score</th>
-					<th>Scorecard PDF</th>
-				</thead>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
+					<thead>
+						<th>Game</th>
+						<th>Time</th>
+						<th>Winner Score</th>
+						<th>Loser Score</th>
+						<th>Scorecard PDF</th>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
@@ -181,26 +146,28 @@
 		</div>
 		<div id="collapse_overall" class="panel-collapse collapse in" role="tabpanel">
 			<div class="panel-body">
-				<table class="table table-striped table-bordered table-hover" id="overall">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Game</th>
-							<th>Position</th>
-							<th rowspan="2">Score</th>
-							<th rowspan="2">MVP</th>
-							<th rowspan="2">Accuracy</th>
-							<th rowspan="2">Hit Diff</th>
-							<th rowspan="2">Medic Hits</th>
-							<th rowspan="2">Shot Team</th>
-						</tr>
-						<tr>
-							<th class="searchable">Name</th>
-							<th class="searchable">Game</th>
-							<th class="searchable">Position</th>
-						</tr>
-					</thead>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover" id="overall">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Game</th>
+								<th>Position</th>
+								<th rowspan="2">Score</th>
+								<th rowspan="2">MVP</th>
+								<th rowspan="2">Accuracy</th>
+								<th rowspan="2">Hit Diff</th>
+								<th rowspan="2">Medic Hits</th>
+								<th rowspan="2">Shot Team</th>
+							</tr>
+							<tr>
+								<th class="searchable">Name</th>
+								<th class="searchable">Game</th>
+								<th class="searchable">Position</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -212,22 +179,24 @@
 		</div>
 		<div id="collapse_medic_hits" class="panel-collapse collapse" role="tabpanel">
 			<div class="panel-body">
-				<table class="table table-striped table-bordered table-hover" id="medic_hits">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th rowspan="2">Total Medic Hits (All)</th>
-							<th rowspan="2">Average Medic Hits (All)</th>
-							<th rowspan="2">Games Played (All)</th>
-							<th rowspan="2">Total Medic Hits (Non-Resupply)</th>
-							<th rowspan="2">Average Medic Hits (Non-Resupply)</th>
-							<th rowspan="2">Games Played (Non-Resupply)</th>
-						</tr>
-						<tr>
-							<th class="searchable">Name</th>
-						</tr>
-					</thead>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover" id="medic_hits">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th rowspan="2">Total Medic Hits (All)</th>
+								<th rowspan="2">Average Medic Hits (All)</th>
+								<th rowspan="2">Games Played (All)</th>
+								<th rowspan="2">Total Medic Hits (Non-Resupply)</th>
+								<th rowspan="2">Average Medic Hits (Non-Resupply)</th>
+								<th rowspan="2">Games Played (Non-Resupply)</th>
+							</tr>
+							<tr>
+								<th class="searchable">Name</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

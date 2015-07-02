@@ -73,7 +73,7 @@ class Game extends AppModel {
 		return $overall;
 	}
 
-	public function getGameList($state) {
+	public function getGameList($date = null, $state) {
 		$conditions = array();
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
@@ -84,6 +84,9 @@ class Game extends AppModel {
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
 			$conditions[] = array('Game.league_id' => $state['leagueID']);
+			
+		if(!is_null($date))
+			$conditions[] = array('DATE(Game.game_datetime)' => $date);
 
 		$games = $this->find('all', array(
 			'contain' => array(
@@ -96,30 +99,6 @@ class Game extends AppModel {
 			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
 		));
-		return $games;
-	}
-
-	public function getGamesByDate($date, $state) {
-		$conditions = array();
-		
-		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('Game.center_id' => $state['centerID']);
-		
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('Game.type' => $state['gametype']);
-		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Game.league_id' => $state['leagueID']);
-		
-		if(!is_null($date))
-			$conditions[] = array('DATE(Game.game_datetime)' => $date);
-	
-		$games = $this->find('all', array(
-			'contain' => array('Red_Team', 'Green_Team', 'League'),
-			'conditions' => $conditions,
-			'order' => 'Game.game_datetime ASC'
-		));
-		$this->log($this->getDataSource()->getLog(false, false), 'debug');
 		return $games;
 	}
 	
