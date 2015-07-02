@@ -52,8 +52,6 @@
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
-								<li><a href="/scorecards/overall">Top Players</a></li>
-								<li><a href="/games/index">Game List</a></li>
 								<li>
 								<?php
 									if($this->Session->read('state.gametype') == 'league') {
@@ -63,6 +61,8 @@
 									}
 								?>
 								</li>
+								<li><a href="/scorecards/overall">Top Players</a></li>
+								<li><a href="/games/index">Game List</a></li>
 								<li><a href="/scorecards/leaderboards">Leader(Loser)boards</a></li>
 								<li><a href="/games/overall">Center Stats</a></li>
 								<li><a href="/scorecards/allcenter">All-Center Teams</a></li>
@@ -115,7 +115,7 @@
 		</div>
 		<?php
 			//debug($this->Session->read('state'));
-			echo $this->element('sql_dump');
+			//echo $this->element('sql_dump');
 			echo $this->Js->writeBuffer();
 		?>
 	</div>

@@ -27,35 +27,41 @@
 									</h4>
 								</div>
 								<div class="panel-body">
-									<table class="table table-striped table-bordered table-hover table-condensed" id="match<?= $match['id']; ?>">
-										<thead>
-											<th>Team</th>
-											<th>Points</th>
-											<th>Game 1 Score</th>
-											<th>Game 2 Score</th>
-											<th>Total</th>
-										</thead>
-										<tbody>
-											<tr>
-												<td>
-												<?= (is_null($match['team_1_id'])) ? "TBD" : $teams[$match['team_1_id']]; ?>
-												</td>
-												<td class="text-center"><?= $match['team_1_points']; ?></td>
-												<td class="danger text-center"><?= (!empty($match['Game_1'])) ? $this->Html->link($match['Game_1']['red_score'] + $match['Game_1']['red_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_1']['id'])) : ""; ?></td>
-												<td class="success text-center"><?= (!empty($match['Game_2'])) ? $this->Html->link($match['Game_2']['green_score'] + $match['Game_2']['green_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_2']['id'])) : ""; ?></td>
-												<td class="text-center"><?= (!empty($match['Game_1']) && !empty($match['Game_2'])) ? $match['Game_1']['red_score'] + $match['Game_1']['red_adj'] + $match['Game_2']['green_score'] + $match['Game_2']['green_adj'] : ""; ?></td>
-											</tr>
-											<tr>
-												<td>
-												<?= (is_null($match['team_2_id'])) ? "TBD" : $teams[$match['team_2_id']]; ?>
-												</td>
-												<td class="text-center"><?= $match['team_2_points']; ?></td>
-												<td class="success text-center"><?= (!empty($match['Game_1'])) ? $this->Html->link($match['Game_1']['green_score'] + $match['Game_1']['green_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_1']['id'])) : ""; ?></td>
-												<td class="danger text-center"><?= (!empty($match['Game_2'])) ? $this->Html->link($match['Game_2']['red_score'] + $match['Game_2']['red_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_2']['id'])) : ""; ?></td>
-												<td class="text-center"><?= (!empty($match['Game_1']) && !empty($match['Game_2'])) ? $match['Game_1']['green_score'] + $match['Game_1']['green_adj'] + $match['Game_2']['red_score'] + $match['Game_2']['red_adj'] : ""; ?></td>
-											</tr>
-										</tbody>
-									</table>
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered table-hover table-condensed" id="match<?= $match['id']; ?>">
+											<thead>
+												<th class="col-xs-4">Team</th>
+												<th class="col-xs-2">Points</th>
+												<th class="col-xs-2">Game 1 Score</th>
+												<th class="col-xs-2">Game 2 Score</th>
+												<th class="col-xs-2">Total</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+													<?php
+														echo (is_null($match['team_1_id'])) ? "TBD" : $this->Html->link($teams[$match['team_1_id']], array('controller' => 'teams', 'action' => 'view', $match['team_1_id']), array('class' => 'btn btn-block btn-info'));
+													?>
+													</td>
+													<td class="text-center"><?= $match['team_1_points']; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_1'])) ? $this->Html->link($match['Game_1']['red_score'] + $match['Game_1']['red_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_1']['id']), array('class' => 'btn btn-block btn-danger')) : ""; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_2'])) ? $this->Html->link($match['Game_2']['green_score'] + $match['Game_2']['green_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_2']['id']), array('class' => 'btn btn-block btn-success')) : ""; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_1']) && !empty($match['Game_2'])) ? $match['Game_1']['red_score'] + $match['Game_1']['red_adj'] + $match['Game_2']['green_score'] + $match['Game_2']['green_adj'] : ""; ?></td>
+												</tr>
+												<tr>
+													<td>
+													<?php
+														echo (is_null($match['team_2_id'])) ? "TBD" : $this->Html->link($teams[$match['team_2_id']], array('controller' => 'teams', 'action' => 'view', $match['team_2_id']), array('class' => 'btn btn-block btn-info'));
+													?>
+													</td>
+													<td class="text-center"><?= $match['team_2_points']; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_1'])) ? $this->Html->link($match['Game_1']['green_score'] + $match['Game_1']['green_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_1']['id']), array('class' => 'btn btn-block btn-success')) : ""; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_2'])) ? $this->Html->link($match['Game_2']['red_score'] + $match['Game_2']['red_adj'], array('controller' => 'Games', 'action' => 'view', $match['Game_2']['id']), array('class' => 'btn btn-block btn-danger')) : ""; ?></td>
+													<td class="text-center"><?= (!empty($match['Game_1']) && !empty($match['Game_2'])) ? $match['Game_1']['green_score'] + $match['Game_1']['green_adj'] + $match['Game_2']['red_score'] + $match['Game_2']['red_adj'] : ""; ?></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						<?php } ?>
