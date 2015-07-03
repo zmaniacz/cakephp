@@ -90,6 +90,7 @@
 							<li><?= $this->Html->link('All', array(
 														'controller' => $this->request->params['controller'], 
 														'action' => 'index',
+														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'all',
 															'centerID' => $this->Session->read('state.centerID'),
@@ -100,6 +101,7 @@
 							<li><?= $this->Html->link('Social', array(
 														'controller' => $this->request->params['controller'], 
 														'action' => 'index',
+														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'social',
 															'centerID' => $this->Session->read('state.centerID'),
@@ -110,6 +112,7 @@
 							<li><?= $this->Html->link('Competitive', array(
 														'controller' => $this->request->params['controller'], 
 														'action' => 'index',
+														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'league',
 															'centerID' => $this->Session->read('state.centerID'),
@@ -136,12 +139,13 @@
 							<li><?= $this->Html->link('All Games', array(
 									'controller' => $this->request->params['controller'], 
 									'action' => $this->request->params['action'],
-										'?' => array(
-											'gametype' => $this->Session->read('state.gametype'),
-											'centerID' => 0,
-											'leagueID' => 0
-										)
-									));
+									implode(",", $this->request->pass),
+									'?' => array(
+										'gametype' => $this->Session->read('state.gametype'),
+										'centerID' => 0,
+										'leagueID' => 0
+									)
+								));
 								?>
 							</li>
 							<li class="divider"></li>
@@ -152,12 +156,13 @@
 										echo "<li>".$this->Html->link($value, array(
 											'controller' => $this->request->params['controller'], 
 											'action' => $this->request->params['action'],
-												'?' => array(
-													'gametype' => $this->Session->read('state.gametype'),
-													'centerID' => $key,
-													'leagueID' => 0
-												)
-											));
+											implode(",", $this->request->pass),
+											'?' => array(
+												'gametype' => $this->Session->read('state.gametype'),
+												'centerID' => $key,
+												'leagueID' => 0
+											)
+										));
 									}
 								}
 								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
@@ -166,12 +171,13 @@
 										echo "<li>".$this->Html->link($value, array(
 											'controller' => $this->request->params['controller'], 
 											'action' => $this->request->params['action'],
-												'?' => array(
-													'gametype' => 'league',
-													'centerID' => 0,
-													'leagueID' => $key
-												)
-											));
+											implode(",", $this->request->pass),
+											'?' => array(
+												'gametype' => 'league',
+												'centerID' => 0,
+												'leagueID' => $key
+											)
+										));
 									}
 								}
 							?>
