@@ -23,19 +23,7 @@ class ScorecardsController extends AppController {
 	}
 
 	public function index() {
-		if($this->request->is('post')) {
-			$this->Session->write('state.gametype', $this->request->data['gametype']);
-			if($this->request->data['gametype'] == 'all' || $this->request->data['gametype'] == 'social') {
-				$this->redirect(array('controller' => 'scorecards', 'action' => 'pickCenter'));
-			} elseif ($this->request->data['gametype'] == 'league') {
-				$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
-			} else {
-				$this->redirect(array('controller' => 'scorecards', 'action' => 'index'));
-			}
-		} else {
-			//Hitting the index will always clear existing state and start you over from the beginning
-			$this->Session->write('state', '');
-		}
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly', '?' => array('gametype' => $this->Session->read('state.gametype'), 'centerID' => $this->Session->read('state.centerID'), 'leagueID' => $this->Session->read('state.leagueID'))));
 	}
 	
 	public function setState($gametype, $league_id, $center_id) {
@@ -54,31 +42,6 @@ class ScorecardsController extends AppController {
 			
 		if($gametype == 'league')
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $league_id));
-	}
-	
-	public function pickCenter() {
-		if($this->request->is('post')) {
-			$this->Session->write('state.centerID', $this->request->data['center_id']);
-			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
-		} else {
-			$this->Session->delete('state.centerID');
-			$this->loadModel('Center');
-			$this->set('centers', $this->Center->find('all'));
-		}
-	}
-	
-	public function pickLeague() {
-		if($this->request->is('post')) {
-			$this->Session->write('state.leagueID', $this->request->data['league_id']);
-			$this->loadModel('League');
-			$league = $this->League->findById($this->request->data['league_id']);
-			$this->Session->write('state.centerID', $league['League']['center_id']);
-			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
-		} else {
-			$this->Session->delete('state.leagueID');
-			$this->loadModel('League');
-			$this->set('leagues', $this->League->getLeagues($this->Session->read('state')));
-		}
 	}
 	
 	public function phpview() {
