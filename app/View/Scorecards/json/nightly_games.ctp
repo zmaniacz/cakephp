@@ -1,6 +1,5 @@
 <?php
 	$response = array();
-	$this->log($games, 'debug');
 	
 	foreach($games as $game) {
 		if(!empty($game['Match']['id'])) {

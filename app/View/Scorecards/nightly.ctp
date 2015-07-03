@@ -20,7 +20,7 @@
 			"paging": false,
 			"ordering": false,
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json'))); ?>",
 				"dataSrc" : "response"
 			},
 			"columns" : [
@@ -55,7 +55,7 @@
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>",
 				"dataSrc" : "scorecards"
 			},
 			"columns" : [
@@ -94,7 +94,7 @@
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
-				"url" : "<?php echo $this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json')); ?>",
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json'))); ?>",
 				"dataSrc" : "medic_hits"
 			},
 			"columns" : [
