@@ -60,15 +60,15 @@
 									}
 								?>
 								</li>
-								<li><a href="/scorecards/overall">Top Players</a></li>
-								<li><a href="/games/index">Game List</a></li>
-								<li><a href="/scorecards/leaderboards">Leader(Loser)boards</a></li>
-								<li><a href="/games/overall">Center Stats</a></li>
-								<li><a href="/scorecards/allcenter">All-Center Teams</a></li>
-								<li><a href="/penalties/index">Penalties</a></li>
-								<li><a href="/pages/aboutSM5">About SM5</a></li>
+								<li><?= $this->Html->link('Top Players', array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
+								<li><?= $this->Html->link('Game List', array('controller' => 'games', 'action' => 'index')); ?></li>
+								<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
+								<li><?= $this->Html->link('Center Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
+								<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
+								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
+								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin'): ?>
-									<li><a href="/uploads">Upload PDFs</li>
+									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
@@ -89,7 +89,7 @@
 						<ul class="dropdown-menu">
 							<li><?= $this->Html->link('All', array(
 														'controller' => $this->request->params['controller'], 
-														'action' => 'index',
+														'action' => $this->request->params['action'],
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'all',
@@ -100,7 +100,7 @@
 							</li>
 							<li><?= $this->Html->link('Social', array(
 														'controller' => $this->request->params['controller'], 
-														'action' => 'index',
+														'action' => $this->request->params['action'],
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'social',
@@ -111,7 +111,7 @@
 							</li>
 							<li><?= $this->Html->link('Competitive', array(
 														'controller' => $this->request->params['controller'], 
-														'action' => 'index',
+														'action' => $this->request->params['action'],
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'league',
