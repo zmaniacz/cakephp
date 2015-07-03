@@ -43,7 +43,6 @@
 					<div class="container-fluid">
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
@@ -83,26 +82,101 @@
 					</div>
 				</nav>
 				<ul class="breadcrumb">
-					<li><?= $this->Html->link('Home', array('controller' => 'scorecards', 'action' => 'index')); ?></li>
-					<?php
-						if($this->Session->check('state.gametype')) {
-							if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
-								echo "<li>".$this->Html->link((($this->Session->read('state.gametype') == 'all') ? 'All Games' : 'Social Games'), array('controller' => 'scorecards', 'action' => 'index'))."</li>";
-								if($this->Session->check('state.centerID')) {
-									if($this->Session->read('state.centerID') > 0){
-										echo "<li>".$this->Html->link($selected_center['Center']['name'], array('controller' => 'scorecards', 'action' => 'pickCenter'))."</li>";
-									} else {
-										echo "<li>".$this->Html->link('All Centers', array('controller' => 'scorecards', 'action' => 'pickCenter'))."</li>";
+					<li class="dropdown">
+						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+						<?=	Inflector::camelize(($this->Session->read('state.gametype') == 'league') ? 'competitive' : $this->Session->read('state.gametype')); ?> 
+						 <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><?= $this->Html->link('All', array(
+														'controller' => $this->request->params['controller'], 
+														'action' => 'index',
+														'?' => array(
+															'gametype' => 'all',
+															'centerID' => $this->Session->read('state.centerID'),
+															'leagueID' => $this->Session->read('state.leagueID')
+														)
+								)); ?>
+							</li>
+							<li><?= $this->Html->link('Social', array(
+														'controller' => $this->request->params['controller'], 
+														'action' => 'index',
+														'?' => array(
+															'gametype' => 'social',
+															'centerID' => $this->Session->read('state.centerID'),
+															'leagueID' => 0
+														)
+								)); ?>
+							</li>
+							<li><?= $this->Html->link('Competitive', array(
+														'controller' => $this->request->params['controller'], 
+														'action' => 'index',
+														'?' => array(
+															'gametype' => 'league',
+															'centerID' => $this->Session->read('state.centerID'),
+															'leagueID' => $this->Session->read('state.leagueID')
+														)
+								)); ?>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+							<?php
+								if($this->Session->read('state.leagueID') > 0) {
+									echo $leagues[$this->Session->read('state.leagueID')];
+								} elseif($this->Session->read('state.centerID') > 0) {
+									echo $centers[$this->Session->read('state.centerID')];
+								} else {
+									echo 'All Games';
+								}
+							?>
+						 <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li><?= $this->Html->link('All Games', array(
+									'controller' => $this->request->params['controller'], 
+									'action' => $this->request->params['action'],
+										'?' => array(
+											'gametype' => $this->Session->read('state.gametype'),
+											'centerID' => 0,
+											'leagueID' => 0
+										)
+									));
+								?>
+							</li>
+							<li class="divider"></li>
+							<?php
+								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
+									echo "<li class=\"dropdown-header\">Centers</li>";
+									foreach($centers as $key => $value) {
+										echo "<li>".$this->Html->link($value, array(
+											'controller' => $this->request->params['controller'], 
+											'action' => $this->request->params['action'],
+												'?' => array(
+													'gametype' => $this->Session->read('state.gametype'),
+													'centerID' => $key,
+													'leagueID' => 0
+												)
+											));
 									}
 								}
-							} elseif($this->Session->read('state.gametype') == 'league') {
-								echo "<li>".$this->Html->link('League', array('controller' => 'scorecards', 'action' => 'pickLeague'))."</li>";
-								if($this->Session->check('state.leagueID'))
-									echo "<li>".$this->Html->link($selected_league['Center']['name']." - ".$selected_league['League']['name'], array('controller' => 'leagues', 'action' => 'standings'))."</li>";	
-							}
-								
-						}
-					?>
+								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
+									echo "<li class=\"dropdown-header\">Competitions</li>";
+									foreach($leagues as $key => $value) {
+										echo "<li>".$this->Html->link($value, array(
+											'controller' => $this->request->params['controller'], 
+											'action' => $this->request->params['action'],
+												'?' => array(
+													'gametype' => 'league',
+													'centerID' => 0,
+													'leagueID' => $key
+												)
+											));
+									}
+								}
+							?>
+						</ul>
+					</li>
 				</ul>
 			</div>
 			<hr>

@@ -63,18 +63,30 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		if(!$this->Session->check('state')) {
-			$this->Session->write('state', '');
-			$this->redirect(array('controller' => 'scorecards', 'action' => 'index'));
+		$this->log($this->request, 'debug');
+		//read state from the querystring; default to social games at LTC if no state passed
+		if(!is_null($this->request->query('gametype'))) {
+			$this->Session->write('state.gametype', $this->request->query('gametype'));
+		} else {
+			$this->Session->write('state.gametype', 'social');
 		}
 		
-		if($this->Session->check('state.gametype') && ($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->check('state.centerID')) {
-			if($this->Session->read('state.centerID') > 0) {
-				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
-			}
+		if(!is_null($this->request->query('centerID'))) {
+			$this->Session->write('state.centerID', $this->request->query('centerID'));
+		} else {
+			$this->Session->write('state.centerID', 1);
 		}
 		
-		if($this->Session->check('state.gametype') && $this->Session->read('state.gametype') == 'league' && $this->Session->check('state.leagueID')) {
+		if(!is_null($this->request->query('leagueID'))) {
+			$this->Session->write('state.leagueID', $this->request->query('leagueID'));
+		} else {
+			$this->Session->write('state.leagueID', 0);
+		}
+		
+		//get a center and league object for use throughout the app
+		if(($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->read('state.centerID') > 0) {
+			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+		} elseif($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0) {
 			$league = $this->League->find('first', array(
 				'contain' => array(
 					'Center'
@@ -84,6 +96,10 @@ class AppController extends Controller {
 				)
 			));
 			$this->set('selected_league', $league);
+			$this->set('selected_center', $this->Center->findById($league['Center']['id']));
 		}
+		
+		$this->set('centers', $this->Center->find('list'));
+		$this->set('leagues', $this->League->find('list'));
 	}
 }
