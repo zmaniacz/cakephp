@@ -73,7 +73,7 @@
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<?php if (AuthComponent::user('id')): ?>
-									<p class="navbar-text"><?= AuthComponent::user('username') ?></p><a class="btn btn-info navbar-btn" href="/users/logout" role="button">Logout</a>
+									<?= AuthComponent::user('username') ?> <a class="btn btn-info navbar-btn" href="/users/logout" role="button">Logout</a>
 								<?php else: ?>
 									<a class="btn btn-info navbar-btn" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
