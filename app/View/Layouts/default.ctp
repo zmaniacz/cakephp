@@ -93,8 +93,8 @@
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'all',
-															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => $this->Session->read('state.leagueID')
+															'centerID' => 0,
+															'leagueID' => 0
 														)
 								)); ?>
 							</li>
@@ -115,7 +115,7 @@
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'league',
-															'centerID' => $this->Session->read('state.centerID'),
+															'centerID' => 0,
 															'leagueID' => $this->Session->read('state.leagueID')
 														)
 								)); ?>
