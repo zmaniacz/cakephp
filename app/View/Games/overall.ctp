@@ -96,7 +96,7 @@ function overallData(data) {
 $(document).ready(function(){	
 	$.ajax({
 		type: 'get',
-		url: '<?php echo $this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json')); ?>',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json'))); ?>',
 		dataType: 'json',
 		success: function(data) {
 			overallData(data);

@@ -214,7 +214,7 @@ function displayPositionSpider(data) {
 $(document).ready(function(){
 	$.ajax({
 		type: 'get',
-		url: '<?php echo $this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json')); ?>',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json'))); ?>',
 		dataType: 'json',
 		success: function(data) {
 			displayWinLossPie(data);
@@ -226,7 +226,7 @@ $(document).ready(function(){
 	
 	$.ajax({
 		type: 'get',
-		url: '<?php echo $this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json')); ?>',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json'))); ?>',
 		dataType: 'json',
 		success: function(data) {
 			displayPositionSpider(data);
@@ -837,7 +837,7 @@ $(document).ready(function(){
 		"orderCellsTop" : true,
 		"dom": '<"H"lr>t<"F"ip>',
 		"ajax" : {
-			"url" : "<?php echo $this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json')); ?>",
+			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>",
 			"dataSrc" : "scorecards"
 		},
 		"columns" : [

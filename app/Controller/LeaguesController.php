@@ -19,7 +19,7 @@ class LeaguesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
+		$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 	}
 
 	public function standings() {

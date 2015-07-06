@@ -316,7 +316,7 @@ $('.switch_sub_cbox').change(function() {
 
 $('.switch_sub_cbox').change(function() {
 	$.ajax({
-		url: "/Scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
+		url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
 	});
 });
 </script>
