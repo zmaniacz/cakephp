@@ -162,7 +162,7 @@ $(document).ready(function() {
 <ul>
 	<li>All Players</li>
 	<ul>
-		<li>Accuracy: 1 point for every 10% of accuracy, rounded up (ie 75% = 8 pts).</li>
+		<li>Accuracy: .1 point for every 1% of accuracy, rounded up (ie 75% = 7.5 pts).</li>
 		<li>Medic Hits: 1 point for each hit on an enemy Medic. -1 for hitting your own Medic.</li>
 		<li>Elimination: 2 points if your team eliminates the other team.</li>
 		<li>Cancel opponent's nuke: 3 points.</li>
@@ -198,5 +198,6 @@ $(document).ready(function() {
 		<li>Power Boost: 2 points each time you activate power boost.</li>
 		<li>Survival Bonus: 1 point if you are still alive when the game clock expires.</li>
 		<li>Score bonus: 1 point for every full 1000 points over 2000.</li>
+		<li>Score bonus: 1 point for scoring at least 3000 points</li>
 	</ul>
 </ul>
