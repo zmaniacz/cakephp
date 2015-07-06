@@ -14,7 +14,7 @@
 			'score' => $score['Scorecard']['score'],
 			'mvp_points' => $score['Scorecard']['mvp_points'],
 			'accuracy' => round($score['Scorecard']['accuracy']*100,2),
-			'hit_diff' => round($score['Scorecard']['shot_opponent']/$score['Scorecard']['times_zapped'],2),
+			'hit_diff' => ($score['Scorecard']['times_zapped'] > 0) ? round($score['Scorecard']['shot_opponent']/$score['Scorecard']['times_zapped'],2) : $score['Scorecard']['shot_opponent'],
 			'medic_hits' => $score['Scorecard']['medic_hits'],
 			'shot_team' => $score['Scorecard']['shot_team']
 		);
