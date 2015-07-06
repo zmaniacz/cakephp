@@ -253,7 +253,7 @@ class Player extends AppModel {
 		return $results;
 	}
 	
-	public function getMedianMVPByPosition($id = null, $filter = null) {
+	public function getMedianMVPByPosition($id = null, $state = null) {
 		$fields = array('position','mvp_points');
 		$conditions = array();
 		$limit = null;
@@ -269,6 +269,9 @@ class Player extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
 			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
