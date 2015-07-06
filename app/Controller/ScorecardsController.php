@@ -44,7 +44,7 @@ class ScorecardsController extends AppController {
 			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 			
 		if($gametype == 'league')
-			$this->redirect(array('controller' => 'leagues', 'action' => 'standings', $league_id));
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 	}
 	
 	public function phpview() {

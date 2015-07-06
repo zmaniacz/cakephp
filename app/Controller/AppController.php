@@ -63,7 +63,6 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$this->log($this->request, 'debug');
 		//read state from the querystring; default to social games at LTC if no state passed
 		if(!is_null($this->request->query('gametype'))) {
 			$this->Session->write('state.gametype', $this->request->query('gametype'));
