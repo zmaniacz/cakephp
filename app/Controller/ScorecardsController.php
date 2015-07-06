@@ -9,6 +9,9 @@ class ScorecardsController extends AppController {
 			'pickCenter',
 			'pickLeague',
 			'overall',
+			'getOverallStats',
+			'getOverallAverages',
+			'getOverallMedicHits',
 			'nightly',
 			'tournament',
 			'nightlyStats',
@@ -48,14 +51,36 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function overall() {	
-		$this->set('commander', $this->Scorecard->getPositionStats('Commander',$this->Session->read('state')));
-		$this->set('heavy', $this->Scorecard->getPositionStats('Heavy Weapons',$this->Session->read('state')));
-		$this->set('scout', $this->Scorecard->getPositionStats('Scout',$this->Session->read('state')));
-		$this->set('ammo', $this->Scorecard->getPositionStats('Ammo Carrier',$this->Session->read('state')));
-		$this->set('medic', $this->Scorecard->getPositionStats('Medic',$this->Session->read('state')));
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
-		$this->set('averages', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
     }
+	
+	public function getOverallStats($position) {
+		switch ($position) {
+			case 'commander':
+				$this->set('response', $this->Scorecard->getPositionStats('Commander',$this->Session->read('state')));
+				break;
+			case 'heavy':
+				$this->set('response', $this->Scorecard->getPositionStats('Heavy Weapons',$this->Session->read('state')));
+				break;
+			case 'scout':
+				$this->set('response', $this->Scorecard->getPositionStats('Scout',$this->Session->read('state')));
+				break;
+			case 'ammo':
+				$this->set('response', $this->Scorecard->getPositionStats('Ammo Carrier',$this->Session->read('state')));
+				break;
+			case 'medic':
+				$this->set('response', $this->Scorecard->getPositionStats('Medic',$this->Session->read('state')));
+				break;
+		}
+	}
+	
+	public function getOverallAverages() {
+		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
+	}
+	
+	public function getOverallMedicHits() {
+		$this->request->allowMethod('ajax');
+		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
+	}
 	
 	public function nightly() {
 
