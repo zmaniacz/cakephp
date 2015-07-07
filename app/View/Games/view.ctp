@@ -313,10 +313,9 @@ if($game['Game']['winner'] == 'Green') {
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="mvpModalLabel">New message</h4>
+        <h4 class="modal-title" id="mvpModalLabel">MVP Details</h4>
       </div>
       <div class="modal-body">
-		  Loading...
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -328,6 +327,7 @@ if($game['Game']['winner'] == 'Green') {
 <script>
 	$('#mvpModal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
+		$(this).find(".modal-body").text("Loading...");
 		$(this).find(".modal-body").load(button.attr("target"));
 	});
 
