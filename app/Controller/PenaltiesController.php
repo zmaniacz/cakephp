@@ -17,7 +17,7 @@ class PenaltiesController extends AppController {
 	public $components = array('Paginator', 'Session');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','view');
+		$this->Auth->allow('index','view','getPenalty');
 		parent::beforeFilter();
 	}
 
@@ -159,5 +159,22 @@ class PenaltiesController extends AppController {
 		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);		
 		
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
+	}
+	
+	public function getPenalty($id) {
+		$this->request->allowMethod('ajax');
+		$options = array('conditions' => array('Penalty.' . $this->Penalty->primaryKey => $id));
+		$this->Penalty->contain(array(
+			'Scorecard' => array(
+				'fields' => array(),
+				'Game' => array(
+					'fields' => array('id','game_name','game_description','game_datetime')	
+				),
+				'Player' => array(
+					'fields' => array('id','player_name')
+				)
+			)
+		));
+		$this->set('penalty', $this->Penalty->find('first', $options));
 	}
 }
