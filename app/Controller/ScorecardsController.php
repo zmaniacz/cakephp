@@ -20,7 +20,8 @@ class ScorecardsController extends AppController {
 			'nightlyMedicHits',
 			'allcenter',
 			'playerScorecards',
-			'leaderboards'
+			'leaderboards',
+			'getMVPBreakdown'
 		);
 		parent::beforeFilter();
 	}
@@ -140,6 +141,11 @@ class ScorecardsController extends AppController {
 		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('state')));
 		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('state')));
 		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('state')));
+	}
+	
+	public function getMVPBreakdown($id) {
+		$this->request->allowMethod('ajax');
+		$this->set('score', $this->Scorecard->findById($id));
 	}
 	
 	public function ajax_switchSub($id) {

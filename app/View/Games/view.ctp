@@ -176,7 +176,7 @@ if($game['Game']['winner'] == 'Green') {
 						echo "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']))."</td>";
 						echo "<td>".$score['position']."</td>";
 						echo "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
-						echo "<td>".$score['mvp_points']."</td>";
+						echo "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 						echo "<td>".$score['lives_left']."</td>";
 						echo "<td>".$score['shots_left']."</td>";
 						echo "<td>".$score['shot_opponent']."</td>";
@@ -273,7 +273,7 @@ if($game['Game']['winner'] == 'Green') {
 						echo "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']))."</td>";
 						echo "<td>".$score['position']."</td>";
 						echo "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
-						echo "<td>".$score['mvp_points']."</td>";
+						echo "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 						echo "<td>".$score['lives_left']."</td>";
 						echo "<td>".$score['shots_left']."</td>";
 						echo "<td>".$score['shot_opponent']."</td>";
@@ -308,8 +308,29 @@ if($game['Game']['winner'] == 'Green') {
 		echo $this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
 	}
 ?>
+<div class="modal fade" id="mvpModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mvpModalLabel">New message</h4>
+      </div>
+      <div class="modal-body">
+		  Loading...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
+	$('#mvpModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		$(this).find(".modal-body").load(button.attr("target"));
+	});
+
 $('.switch_sub_cbox').change(function() {
 	$(this).closest('tr').toggleClass("sub", this.checked);
 }).change();
