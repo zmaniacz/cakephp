@@ -118,17 +118,17 @@
 		<div id="collapse_overall" class="panel-collapse collapse in" role="tabpanel">
 			<div class="panel-body">
 				<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover" id="overall">
+					<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
 						<thead>
-							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Name" /></th>
-							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Game" /></th>
-							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Position" /></th>
-							<th class="col-xs-1">Score</th>
-							<th class="col-xs-1">MVP</th>
-							<th class="col-xs-1">Accuracy</th>
-							<th class="col-xs-1">Hit Diff</th>
-							<th class="col-xs-1">Medic Hits</th>
-							<th class="col-xs-1">Shot Team</th>
+							<th class="searchable"><input type="text" class="form-control" placeholder="Name" /></th>
+							<th class="searchable"><input type="text" class="form-control" placeholder="Game" /></th>
+							<th class="searchable"><input type="text" class="form-control" placeholder="Position" /></th>
+							<th>Score</th>
+							<th>MVP</th>
+							<th>Accuracy</th>
+							<th>Hit Diff</th>
+							<th>Medic Hits</th>
+							<th>Shot Team</th>
 						</thead>
 					</table>
 				</div>
@@ -144,7 +144,7 @@
 		<div id="collapse_medic_hits" class="panel-collapse collapse" role="tabpanel">
 			<div class="panel-body">
 				<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover" id="medic_hits">
+					<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
 						<thead>
 							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Name" /></th>
 							<th class="col-xs-1">Total Medic Hits (All)</th>
