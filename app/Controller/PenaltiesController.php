@@ -141,23 +141,22 @@ class PenaltiesController extends AppController {
 		$penalty = $this->Penalty->findById($id);
 		$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);
 
-		//remove a penalty to the socrecard record and recalc MVP
-		$scorecard['Scorecard']['penalties'] -= 1;
-		if($scorecard['Scorecard']['penalties'] < 0)
-			$scorecard['Scorecard']['penalties'] = 0;
-		
-		$scorecard['Scorecard']['mvp_points'] = null;
-		$this->Penalty->Scorecard->save($scorecard);
-		$this->Penalty->Scorecard->generateMVP();
-
 		if ($this->Penalty->delete()) {
-			$this->Session->setFlash(__('The penalty has been deleted.'));
+			$this->Session->setFlash(__('The penalty has been deleted.'), 'default', array('class' => 'alert-success'));
+			
+			//remove a penalty to the socrecard record and recalc MVP
+			$scorecard['Scorecard']['penalties'] -= 1;
+			if($scorecard['Scorecard']['penalties'] < 0)
+				$scorecard['Scorecard']['penalties'] = 0;
+			
+			$scorecard['Scorecard']['mvp_points'] = null;
+			$this->Penalty->Scorecard->save($scorecard);
+			$this->Penalty->Scorecard->generateMVP();
 		} else {
-			$this->Session->setFlash(__('The penalty could not be deleted. Please, try again.'));
+			$this->Session->setFlash(__('The penalty could not be deleted. Please, try again.'), 'default', array('class' => 'alert-danger'));
 		}
 		
-		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);		
-		
+		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 	}
 	
