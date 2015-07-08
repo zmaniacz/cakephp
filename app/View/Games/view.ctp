@@ -10,10 +10,10 @@
 </script>
 <div class="well well-lg">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
 <?php
-	/*if(AuthComponent::user('role') === 'admin') {
+	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->create('Game');
 		echo $this->Form->input('id');
-		echo $this->Form->input('type', array('type' => 'select', 
+		/*echo $this->Form->input('type', array('type' => 'select', 
 			'options' => array(
 				'social' => 'Social',
 				'league' => 'League',
@@ -21,7 +21,7 @@
 			), 
 			'class' => 'form-control', 
 			'div' => array('class' => 'form-group'
-		)));
+		)));*/
 		if(isset($game['Game']['league_id'])) {
 			echo $this->Form->input('league_id', array('type' => 'hidden'));
 			echo $this->Form->input('match', array(
@@ -33,44 +33,41 @@
 				'div' => array('class' => 'form-group')
 			));
 		}
-	}*/
-	if(isset($game['Game']['league_id']))
-		echo '<h3>R'.$game['Game']['league_round'].' M'.$game['Game']['league_match'].' G'.$game['Game']['league_game']."</h3>";
-	else
-		$game['Game']['game_name'];
+	}
 ?>
 <h3>
 	<?php
-		if(AuthComponent::user('role') === 'admin') {
-			/*echo $this->Form->input('game_name', array('class' => 'form-control', 'div' => array('class' => 'form-group')));*/
+		if(isset($game['Game']['league_id'])) {
+			echo 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'];
+		} elseif(AuthComponent::user('role') === 'admin') {
+			echo $this->Form->input('game_name', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
 		} else {
-			if(!empty($game['Game']['game_name'])) {
-				echo $game['Game']['game_name'];
-			}
+			echo $game['Game']['game_name'];
 		}
 	?>	
 </h3>
 <h3>
 	<?php
 		if($game['Game']['red_team_id'] != null)
-			echo $teams[$game['Game']['red_team_id']];
+			echo $this->Html->link($teams[$game['Game']['red_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-danger'));
 		else
 			echo "Red Team";
 
 		echo " vs ";
 
 		if($game['Game']['green_team_id'] != null)
-			echo $teams[$game['Game']['green_team_id']];
+			echo $this->Html->link($teams[$game['Game']['green_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-success'));
 		else
 			echo "Green Team";
 
 		if (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) {
-			echo $this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf");
+			echo " - ".$this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf");
 		} elseif (file_exists(WWW_ROOT."/pdf/".$game['Game']['pdf_id'].".pdf")) {
-			echo $this->Html->link("PDF", "/pdf/".$game['Game']['pdf_id'].".pdf");
+			echo " - ".$this->Html->link("PDF", "/pdf/".$game['Game']['pdf_id'].".pdf");
 		}
 	?>
 </h3>
+<hr>
 <?php 
 	if($game['Game']['winner'] == 'Green') {
 		$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
@@ -118,7 +115,13 @@
 		}
 		
 		$score_line .= "<tr class=\"text-center\">";
-		$score_line .= "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")." ".((!(AuthComponent::user('role') === 'admin')) ? "disabled" : "")."></form></td>";
+		
+		if(AuthComponent::user('role') === 'admin') {
+			$score_line .= "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
+		} else {
+			$score_line .= (($score['is_sub']) ? "<td class=\"text-warning\"><span class=\"glyphicon glyphicon-asterisk\"></span></td>" : "<td></td>");
+		}
+		
 		$score_line .= (($score['lives_left'] > 0) ? "<td class=\"text-success\"><span class=\"glyphicon glyphicon-ok\"></span>" : "<td class=\"text-danger text-center\"><span class=\"glyphicon glyphicon-remove\"></span>")."</td>";
 		$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-info btn-block'))."</td>";
 		$score_line .= "<td>".$score['position']."</td>";
@@ -153,16 +156,9 @@
 ?>
 <div id="winner_panel" class="<?= $winner_panel; ?>">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#winner_panel" data-target="#collapse_winner_panel" role="tab" id="winner_panel_heading">
-		<h4 class="panel-title">
-			<?php
-				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {
-					/*if($game['Game']['winner'] == 'Green')
-						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
-					else
-						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
-				*/} else {echo $winner;}
-			?>
-		</h4>
+		<h3 class="panel-title">
+			<?= $winner; ?>
+		</h3>
 	</div>
 	<div id="collapse_winner_panel" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
@@ -203,16 +199,9 @@
 </div>
 <div id="loser_panel" class="<?= $loser_panel; ?>">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#loser_panel" data-target="#collapse_loser_panel" role="tab" id="loser_panel_heading">
-		<h4 class="panel-title">
-			<?php
-				if(AuthComponent::user('role') === 'admin' && isset($game['Game']['league_id'])) {/*
-					if($game['Game']['winner'] == 'Green')
-						echo $this->Form->input('red_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['red_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
-					else
-						echo $this->Form->input('green_team_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $game['Game']['green_team_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
-				*/} else {echo $loser;}
-			?>
-		</h4>
+		<h3 class="panel-title">
+			<?= $loser; ?>
+		</h3>
 	</div>
 	<div id="collapse_loser_panel" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
@@ -252,10 +241,10 @@
 	</div>
 </div>
 <?php
-	/*if(AuthComponent::user('role') === 'admin') {
+	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
 		echo $this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
-	}*/
+	}
 ?>
 <div class="modal fade" id="mvpModal" tabindex="-1">
   <div class="modal-dialog modal-sm">
@@ -300,10 +289,6 @@
 		$(this).find(".modal-body").text("Loading...");
 		$(this).find(".modal-body").load(button.attr("target"));
 	});
-
-$('.switch_sub_cbox').change(function() {
-	$(this).closest('tr').toggleClass("sub", this.checked);
-}).change();
 
 $('.switch_sub_cbox').change(function() {
 	$.ajax({

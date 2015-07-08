@@ -61,6 +61,9 @@ class GamesController extends AppController {
 			$this->Game->contain(array(
 				'Scorecard' => array(
 					'Penalty'
+				),
+				'Match' => array(
+					'Round'
 				)
 			));
 			$game = $this->Game->findById($id);

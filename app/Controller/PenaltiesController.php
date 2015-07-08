@@ -136,7 +136,6 @@ class PenaltiesController extends AppController {
 		if (!$this->Penalty->exists()) {
 			throw new NotFoundException(__('Invalid penalty'));
 		}
-		$this->request->onlyAllow('post', 'delete');
 
 		$penalty = $this->Penalty->findById($id);
 		$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);

@@ -23,5 +23,5 @@
 </dl>
 <?php if(AuthComponent::user('role') === 'admin'): ?>
 <a href=<?= $this->Html->url(array('controller' => 'penalties', 'action' => 'edit', $penalty['Penalty']['id'])); ?> class="btn btn-warning" role="button">Edit Penalty</a>
-<?= $this->Form->postButton(__('Delete Penalty'), array('controller' => 'penalties', 'action' => 'delete', $penalty['Penalty']['id']), array('class' => 'btn btn-danger'), __('Are you sure you want to delete # %s?', $penalty['Penalty']['id'])); ?>
+<?= $this->Html->link("Delete Penalty", array('controller' => 'penalties', 'action' => 'delete', $penalty['Penalty']['id']), array('class' => 'btn btn-danger')); ?>
 <?php endif; ?>
