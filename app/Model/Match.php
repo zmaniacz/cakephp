@@ -40,7 +40,7 @@ class Match extends AppModel {
 		)
 	);
 	
-	public function addGame($match_id, $game_id) {
+	public function addGame($match_id, $game_number, $game_id) {
 		
 		$match = $this->find('first', array(
 			'contain' => array(
@@ -73,14 +73,12 @@ class Match extends AppModel {
 				$game['Game']['league_game'] = 2;
 			}
 		} else {
-			//is game 1 already set?
-			if(empty($match['Game_1']['id'])) {
+			if($game_number == 1) {
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_1']['id'];
 				$game['Game']['green_team_id'] = $match['Team_2']['id'];
 				$game['Game']['league_game'] = 1;
-			} elseif(empty($match['Game_2']['id'])) {
-				//yup, so this is game 2
+			} elseif($game_number == 1) {
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_2']['id'];
 				$game['Game']['green_team_id'] = $match['Team_1']['id'];

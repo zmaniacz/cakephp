@@ -221,7 +221,6 @@ class League extends AppModel {
 		return $rounds;
 	}
 
-	//this sauce is bad
 	public function getAvailableMatches($game = null) {
 		$conditions = array();
 		$match_list = array();
@@ -252,35 +251,29 @@ class League extends AppModel {
 			}
 		}
 		
-		$matches = $this->Round->Match->find('all', array(
+		$league = $this->find('first', array(
 			'contain' => array(
-				'Game_1' => array('fields' => array('id')),
-				'Game_2' => array('fields' => array('id')),
-				'Round',
-				'Team_1' => array('fields' => array('id', 'name')),
-				'Team_2' => array('fields' => array('id', 'name'))
+				'Round' => array(
+					'Match' => array(
+						'Game_1' => array('fields' => array('id')),
+						'Game_2' => array('fields' => array('id')),
+						'Team_1' => array('fields' => array('id', 'name')),
+						'Team_2' => array('fields' => array('id', 'name')),
+					)
+				)
 			),
-			'conditions' => $conditions
+			'conditions' => array('League.id' => $game['Game']['league_id'])
 		));
 
-		foreach($matches as $match) {
-			$match_list[$match['Match']['id']] = "R".$match['Round']['round']." M".$match['Match']['match']." - ".$match['Team_1']['name']." v ".$match['Team_2']['name'];
+		foreach($league['Round'] as &$round) {
+			foreach($round['Match'] as $key => $match) {
+				if(empty($match['Team_1']) || empty($match['Team_2']) || (!empty($match['Game_1']) && !empty($match['Game_2']))) {
+					if($match['id'] != $game['Game']['match_id'])
+						unset($round['Match'][$key]);
+				}
+			}
 		}
-		
-		if(!empty($game['Game']['match_id'])) {
-			$match = $this->Round->Match->find('first', array(
-				'contain' => array(
-					'Round',
-					'Team_1' => array('fields' => array('id', 'name')),
-					'Team_2' => array('fields' => array('id', 'name'))
-				),
-				'conditions' => array(
-					'Match.id' => $game['Game']['match_id']
-				)
-			));
-			$match_list[$match['Match']['id']] = "R".$match['Round']['round']." M".$match['Match']['match']." - ".$match['Team_1']['name']." v ".$match['Team_2']['name'];
-		}
-		
-		return $match_list;
+
+		return $league;
 	}
 }

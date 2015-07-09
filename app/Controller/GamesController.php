@@ -47,7 +47,8 @@ class GamesController extends AppController {
 				
 				if(!empty($this->request->data['Game']['match'])) {
 					$this->loadModel('Match');
-					$this->Match->addGame($this->request->data['Game']['match'], $this->request->data['Game']['id']);
+					$match = explode("|", $this->request->data['Game']['match']);
+					$this->Match->addGame($match[0], $match[1], $this->request->data['Game']['id']);
 				}
 				
 				$this->Session->setFlash(__('The game has been saved.'));
@@ -80,8 +81,11 @@ class GamesController extends AppController {
 				array_multisort($team, SORT_ASC, $rank, SORT_ASC, $game['Scorecard']);
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
+				$this->loadModel('LeagueGame');
+				
 				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
 				$this->set('available_matches', $this->League->getAvailableMatches($game));
+				$this->set('neighbors', $this->LeagueGame->getPrevNextGame($game['Game']['id']));
 			}
 			
 			$this->set('game', $game);

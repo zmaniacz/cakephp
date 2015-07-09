@@ -8,7 +8,16 @@
 		} );
 	} );
 </script>
-<div class="well well-lg">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
+<?php if(AuthComponent::user('role') === 'admin'): ?>
+<div class="well well-lg">
+	<h3 class="text-danger">IMPORTANT</h3>
+	<p class="lead">
+		Matches MUST be configured on the standings page before they can be applied here.
+		In the dropdown, teams are listed in order of RED v GREEN.  Be sure to choose the 
+		appropriate game number based on that.
+	</p>	
+</div>
+<?php endif; ?>
 <?php
 	if(AuthComponent::user('role') === 'admin') {
 		echo $this->Form->create('Game');
@@ -23,30 +32,52 @@
 			'div' => array('class' => 'form-group'
 		)));*/
 		if(isset($game['Game']['league_id'])) {
+			$match_list = array();
+			foreach($available_matches['Round'] as $round) {
+				foreach($round['Match'] as $match) {
+					if(empty($match['Game_1']) || $match['Game_1']['id'] == $game['Game']['id'])
+						$match_list[$match['id']."|1"] = "R{$round['round']} M{$match['match']} G1 - {$match['Team_1']['name']} v {$match['Team_2']['name']}";
+					
+					if(empty($match['Game_2']) || $match['Game_2']['id'] == $game['Game']['id'])
+						$match_list[$match['id']."|2"] = "R{$round['round']} M{$match['match']} G2 - {$match['Team_2']['name']} v {$match['Team_1']['name']}";
+				}
+			}
+			
 			echo $this->Form->input('league_id', array('type' => 'hidden'));
 			echo $this->Form->input('match', array(
 				'type' => 'select', 
-				'options' => array($available_matches),
-				'empty' => 'Select a match',
-				'selected' => $game['Game']['match_id'],
+				'options' => array($match_list),
+				'empty' => 'Select a match/game',
+				'selected' => $game['Game']['match_id']."|".$game['Game']['league_game'],
 				'class' => 'form-control', 
 				'div' => array('class' => 'form-group')
 			));
 		}
 	}
 ?>
-<h3>
+<h3 class="text-center">
 	<?php
-		if(isset($game['Game']['league_id'])) {
+		if(isset($game['Game']['league_id']) && !is_null($game['Match']['id'])) {
 			echo 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'];
 		} elseif(AuthComponent::user('role') === 'admin') {
 			echo $this->Form->input('game_name', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
 		} else {
 			echo $game['Game']['game_name'];
 		}
-	?>	
+		
+		if(AuthComponent::user('role') === 'admin') {
+			echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
+			echo $this->Html->link("Delete Game", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
+		}
+	?>
 </h3>
-<h3>
+<h3 class="row">
+	<span class="col-md-4">
+	<?php if(!empty($neighbors['prev'])): ?>
+		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+	<?php endif; ?>
+	</span>
+	<span class="col-md-4 text-center">
 	<?php
 		if($game['Game']['red_team_id'] != null)
 			echo $this->Html->link($teams[$game['Game']['red_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-danger'));
@@ -66,8 +97,15 @@
 			echo " - ".$this->Html->link("PDF", "/pdf/".$game['Game']['pdf_id'].".pdf");
 		}
 	?>
+	</span>
+	<span class="col-md-4 text-right">
+	<?php if(!empty($neighbors['next'])): ?>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+	<?php endif; ?>
+	</span>
 </h3>
 <hr>
+<div class="well well-sm">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
 <?php 
 	if($game['Game']['winner'] == 'Green') {
 		$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
@@ -240,12 +278,6 @@
 		</div>
 	</div>
 </div>
-<?php
-	if(AuthComponent::user('role') === 'admin') {
-		echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
-		echo $this->Html->link("Delete", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
-	}
-?>
 <div class="modal fade" id="mvpModal" tabindex="-1">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
