@@ -20,17 +20,19 @@
 <?php endif; ?>
 <?php
 	if(AuthComponent::user('role') === 'admin') {
-		echo $this->Form->create('Game');
+		echo $this->Form->create('Game', array(
+			'class' => 'form-horizontal', 
+			'role' => 'form',
+			'inputDefaults' => array(
+			    'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+			    'div' => array('class' => 'form-group'),
+			    'class' => array('form-control'),
+			    'label' => array('class' => 'col-lg-2 control-label'),
+			    'between' => '<div class="col-lg-3">',
+			    'after' => '</div>',
+			    'error' => array('attributes' => array('wrap' => 'span', 'class' => 'help-inline')),
+		)));
 		echo $this->Form->input('id');
-		/*echo $this->Form->input('type', array('type' => 'select', 
-			'options' => array(
-				'social' => 'Social',
-				'league' => 'League',
-				'tournament' => 'Tournament'
-			), 
-			'class' => 'form-control', 
-			'div' => array('class' => 'form-group'
-		)));*/
 		if(isset($game['Game']['league_id'])) {
 			$match_list = array();
 			foreach($available_matches['Round'] as $round) {
@@ -42,35 +44,29 @@
 						$match_list[$match['id']."|2"] = "R{$round['round']} M{$match['match']} G2 - {$match['Team_2']['name']} v {$match['Team_1']['name']}";
 				}
 			}
-			
 			echo $this->Form->input('league_id', array('type' => 'hidden'));
 			echo $this->Form->input('match', array(
 				'type' => 'select', 
 				'options' => array($match_list),
 				'empty' => 'Select a match/game',
 				'selected' => $game['Game']['match_id']."|".$game['Game']['league_game'],
-				'class' => 'form-control', 
-				'div' => array('class' => 'form-group')
 			));
+		} else {
+			echo $this->Form->input('game_name');
 		}
-	}
-?>
-<h3 class="text-center">
-	<?php
+		
+		echo $this->Form->end(array('value' => 'Update', 'class' => 'btn btn-warning'));
+		echo $this->Html->link("Delete Game", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
+	} else {
+		echo "<h3 class=\"text-center\">";
 		if(isset($game['Game']['league_id']) && !is_null($game['Match']['id'])) {
 			echo 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'];
-		} elseif(AuthComponent::user('role') === 'admin') {
-			echo $this->Form->input('game_name', array('class' => 'form-control', 'div' => array('class' => 'form-group')));
 		} else {
 			echo $game['Game']['game_name'];
 		}
-		
-		if(AuthComponent::user('role') === 'admin') {
-			echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
-			echo $this->Html->link("Delete Game", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
-		}
-	?>
-</h3>
+		echo "</h3>";
+	}
+?>
 <h3 class="row">
 	<span class="col-md-4">
 	<?php if(!empty($neighbors['prev'])): ?>
@@ -100,7 +96,7 @@
 	</span>
 	<span class="col-md-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
 	<?php endif; ?>
 	</span>
 </h3>
@@ -322,9 +318,9 @@
 		$(this).find(".modal-body").load(button.attr("target"));
 	});
 
-$('.switch_sub_cbox').change(function() {
-	$.ajax({
-		url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
+	$('.switch_sub_cbox').change(function() {
+		$.ajax({
+			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
+		});
 	});
-});
 </script>

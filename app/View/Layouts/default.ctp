@@ -51,15 +51,13 @@
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
-								<li>
-								<?php
+								<li><?php
 									if($this->Session->read('state.gametype') == 'league') {
 										echo $this->Html->link('Standings', array('controller' => 'leagues', 'action' => 'standings'));
 									} else {
 										echo $this->Html->link('Nightly Stats', array('controller' => 'scorecards', 'action' => 'nightly'));
 									}
-								?>
-								</li>
+								?></li>
 								<li><?= $this->Html->link('Top Players', array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
 								<li><?= $this->Html->link('Game List', array('controller' => 'games', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
