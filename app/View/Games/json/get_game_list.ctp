@@ -10,16 +10,19 @@
 			$game_name = $game['Game']['game_name'];
 		}
 		
-		$red_team = ($game['Game']['red_team_id'] == null) ? 'Red Team' : $game['Red_Team']['name'];
-		$green_team = ($game['Game']['green_team_id'] == null) ? 'Green Team' : $game['Green_Team']['name'];
+		$red_score = $game['Game']['red_score']+$game['Game']['red_adj'];
+		$green_score = $game['Game']['green_score']+$game['Game']['green_adj'];
+		
+		$red_team = ($game['Game']['red_team_id'] == null) ? "Red Team : $red_score" : $this->Html->link("{$game['Red_Team']['name']} : $red_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-block btn-danger'));
+		$green_team = ($game['Game']['green_team_id'] == null) ? "Green Team : $green_score" : $this->Html->link("{$game['Green_Team']['name']} : $green_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-block btn-success'));
 		
 		if($game['Game']['winner'] == 'Red') {
-			$winner =  $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj']);
-			$loser = $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj']);
+			$winner =  $red_team;
+			$loser = $green_team;
 			$options = array('class' => 'btn btn-danger btn-block');
 		} else {
-			$winner = $green_team.": ".($game['Game']['green_score']+$game['Game']['green_adj']);
-			$loser = $red_team.": ".($game['Game']['red_score']+$game['Game']['red_adj']);
+			$winner = $green_team;
+			$loser = $red_team;
 			$options = array('class' => 'btn btn-success btn-block');
 		}
 		
@@ -30,6 +33,7 @@
 		}
 		
 		$data[] = array(
+			'id' => $game['Game']['id'],
 			'game_name' => $this->Html->link($game_name, array('controller' => 'games', 'action' => 'view', $game['Game']['id']), $options),
 			'game_datetime' => $game['Game']['game_datetime'],
 			'winner' => $winner,

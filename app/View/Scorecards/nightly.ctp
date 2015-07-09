@@ -20,7 +20,7 @@
 			"paging": false,
 			"ordering": false,
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyGames', $current_date, 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{ "data" : "game_name", },

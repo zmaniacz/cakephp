@@ -107,11 +107,6 @@ class ScorecardsController extends AppController {
 		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
 	}
 
-	public function nightlyGames($date = null) {
-		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Scorecard->Game->getGameList($date, $this->Session->read('state')));
-	}
-
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
