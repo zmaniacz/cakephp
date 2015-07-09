@@ -78,7 +78,7 @@ class Match extends AppModel {
 				$game['Game']['red_team_id'] = $match['Team_1']['id'];
 				$game['Game']['green_team_id'] = $match['Team_2']['id'];
 				$game['Game']['league_game'] = 1;
-			} elseif($game_number == 1) {
+			} elseif($game_number == 2) {
 				$game['Game']['match_id'] = $match['Match']['id'];
 				$game['Game']['red_team_id'] = $match['Team_2']['id'];
 				$game['Game']['green_team_id'] = $match['Team_1']['id'];
