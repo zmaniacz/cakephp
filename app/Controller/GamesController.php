@@ -17,7 +17,7 @@ class GamesController extends AppController {
 	public $components = array('Paginator', 'Session');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','view','overall','overallWinLossDetail');
+		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList');
 		parent::beforeFilter();
 	}
 
