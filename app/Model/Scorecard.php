@@ -615,13 +615,19 @@ class Scorecard extends AppModel {
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
 			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
-		$games = $this->find('all', array(
+		$scorecards = $this->find('all', array(
 			'conditions' => $conditions,
 			'order' => 'Scorecard.game_datetime DESC',
-			'contain' => array('Game' => array('Red_Team', 'Green_Team', 'League'))
+			'contain' => array('Game' => array(
+				'Red_Team', 
+				'Green_Team', 
+				'Match' =>array(
+					'Round'
+				)
+			))
 		));
 		
-		return $games;
+		return $scorecards;
 	}
 	
 	public function getPlayerTopScorecardsMVPById($player_id, $position = "") {

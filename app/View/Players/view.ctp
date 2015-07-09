@@ -832,44 +832,42 @@ $(document).ready(function(){
 	});
 
 	var gameListTable = $('#game_list').DataTable( {
-		"scrollX" : true,
 		"deferRender" : true,
 		"orderCellsTop" : true,
 		"dom": '<"H"lr>t<"F"ip>',
 		"ajax" : {
-			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>",
-			"dataSrc" : "scorecards"
+			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>"
 		},
 		"columns" : [
-			{ "data" : "Game.game_name", "render" : function(data, type, row, meta) {return '<a href="/games/view/'+row.Game.id+'">'+data+'</a>'}},
-			{ "data" : "Game.game_datetime"},
-			{ "data" : "W", "render" : function(data, typw, row, meta) {if(row.Scorecard.team == row.Game.winner) {return "W";} else {return "L";}} },
-			{ "data" : "Scorecard.team"},
-			{ "data" : "Scorecard.position" },
-			{ "data" : "Scorecard.score" },
-			{ "data" : "Scorecard.accuracy", "render" : function(data, type, row, meta) {return parseFloat(data*100).toFixed(2)+'%';} },
-			{ "data" : "Scorecard.mvp_points" },
-			{ "data" : "Scorecard.lives_left" },
-			{ "data" : "Scorecard.shots_left" },
-			{ "data" : "Scorecard.shot_opponent" },
-			{ "data" : "Scorecard.times_zapped" },
-			{ "data" : "Scorecard.shot_opponent", "render" : function(data, type, row, meta) {var diff = (data/row.Scorecard.times_zapped); return diff.toFixed(2);} },
-			{ "data" : "Scorecard.missile_hits", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander" || row.Scorecard.position == "Heavy Weapons") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.times_missiled" },
-			{ "data" : "Scorecard.medic_hits" },
-			{ "data" : "Scorecard.medic_nukes", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.shot_3hit", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Scout") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.shot_team" },
-			{ "data" : "Scorecard.missiled_team", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander" || row.Scorecard.position == "Heavy Weapons") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.own_medic_hits" },
-			{ "data" : "Scorecard.nukes_activated", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.nukes_detonated", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Commander") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.nukes_canceled" },
-			{ "data" : "Scorecard.own_nuke_cancels" },
-			{ "data" : "Scorecard.scout_rapid", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Scout") {return data;} else {return "-";}} },
-			{ "data" : "Scorecard.ammo_boost", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Ammo Carrier") {return data;} else if(row.Scorecard.position == "Medic") {return row.Scorecard.life_boost;} else {return "-";}} },
-			{ "data" : "Scorecard.resupplies", "render" : function(data, typw, row, meta) {if(row.Scorecard.position == "Ammo Carrier" || row.Scorecard.position == "Medic") {return data;} else {return "-";}} },
-			{ "data" : "Game.pdf_id", "render" : function(data, type, row, meta) { if(data == null)	return 'N/A'; else return '<a href="/pdf/'+data+'.pdf">PDF</a>'; } }
+			{ "data" : "game_name" },
+			{ "data" : "game_datetime" },
+			{ "data" : "winloss" },
+			{ "data" : "team" },
+			{ "data" : "position" },
+			{ "data" : "score" },
+			{ "data" : "accuracy" },
+			{ "data" : "mvp_points" },
+			{ "data" : "lives_left" },
+			{ "data" : "shots_left" },
+			{ "data" : "shot_opponent" },
+			{ "data" : "times_zapped" },
+			{ "data" : "hit_diff" },
+			{ "data" : "missile_hits" },
+			{ "data" : "times_missiled" },
+			{ "data" : "medic_hits" },
+			{ "data" : "medic_nukes" },
+			{ "data" : "shot_3hit" },
+			{ "data" : "shot_team" },
+			{ "data" : "missiled_team" },
+			{ "data" : "own_medic_hits" },
+			{ "data" : "nukes_activated" },
+			{ "data" : "nukes_detonated" },
+			{ "data" : "nukes_canceled" },
+			{ "data" : "own_nuke_cancels" },
+			{ "data" : "scout_rapid" },
+			{ "data" : "boost" },
+			{ "data" : "resupplies" },
+			{ "data" : "pdf" }
 		],
 		"order": [[ 1, "desc" ]]
 	});
@@ -899,48 +897,50 @@ $(document).ready(function(){
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
-		<table id="game_list" class="table table-striped table-hover table-border">
-			<thead>
-				<tr>
-					<th>Game</th>
-					<th>Time</th>
-					<th>W/L</th>
-					<th>Team</th>
-					<th>Position</th>
-					<th rowspan="2">Score</th>
-					<th rowspan="2">Accuracy</th>
-					<th rowspan="2">MVP Points</th>
-					<th rowspan="2">Lives Left</th>
-					<th rowspan="2">Shots Left</th>
-					<th rowspan="2">Shot Opponent</th>
-					<th rowspan="2">Got Shot</th>
-					<th rowspan="2">Hit Diff</th>
-					<th rowspan="2">Missiled</th>
-					<th rowspan="2">Got Missiled</th>
-					<th rowspan="2">Medic Hits</th>
-					<th rowspan="2">Medic Nukes</th>
-					<th rowspan="2">Shot 3-Hits</th>
-					<th rowspan="2">Shot Team</th>
-					<th rowspan="2">Missiled Team</th>
-					<th rowspan="2">Shot Own Medic</th>
-					<th rowspan="2">Nukes Activated</th>
-					<th rowspan="2">Nukes Detonated</th>
-					<th rowspan="2">Nuke Cancels</th>
-					<th rowspan="2">Own Nuke Cancels</th>
-					<th rowspan="2">Rapid Fires</th>
-					<th rowspan="2">Boosts</th>
-					<th rowspan="2">Resupplies</th>
-					<th rowspan="2">PDF</th>
-				</tr>
-				<tr>
-					<th class="searchable">Game</th>
-					<th class="searchable">Time</th>
-					<th class="searchable">W/L</th>
-					<th class="searchable">Team</th>
-					<th class="searchable">Position</th>
-				</tr>
-			</thead>
-		</table>
+		<div class="table-responsive">
+			<table id="game_list" class="table table-striped table-hover table-border table-condensed">
+				<thead>
+					<tr>
+						<th>Game</th>
+						<th>Time</th>
+						<th>W/L</th>
+						<th>Team</th>
+						<th>Position</th>
+						<th rowspan="2">Score</th>
+						<th rowspan="2">Accuracy</th>
+						<th rowspan="2">MVP Points</th>
+						<th rowspan="2">Lives Left</th>
+						<th rowspan="2">Shots Left</th>
+						<th rowspan="2">Shot Opponent</th>
+						<th rowspan="2">Got Shot</th>
+						<th rowspan="2">Hit Diff</th>
+						<th rowspan="2">Missiled</th>
+						<th rowspan="2">Got Missiled</th>
+						<th rowspan="2">Medic Hits</th>
+						<th rowspan="2">Medic Nukes</th>
+						<th rowspan="2">Shot 3-Hits</th>
+						<th rowspan="2">Shot Team</th>
+						<th rowspan="2">Missiled Team</th>
+						<th rowspan="2">Shot Own Medic</th>
+						<th rowspan="2">Nukes Activated</th>
+						<th rowspan="2">Nukes Detonated</th>
+						<th rowspan="2">Nuke Cancels</th>
+						<th rowspan="2">Own Nuke Cancels</th>
+						<th rowspan="2">Rapid Fires</th>
+						<th rowspan="2">Boosts</th>
+						<th rowspan="2">Resupplies</th>
+						<th rowspan="2">PDF</th>
+					</tr>
+					<tr>
+						<th class="searchable">Game</th>
+						<th class="searchable">Time</th>
+						<th class="searchable">W/L</th>
+						<th class="searchable">Team</th>
+						<th class="searchable">Position</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="overall_tab">
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
