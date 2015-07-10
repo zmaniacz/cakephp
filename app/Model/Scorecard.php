@@ -974,30 +974,30 @@ class Scorecard extends AppModel {
 		}
 	
 		if(!isset($team_a['Ammo Carrier']))
-			$team_a['Ammo Carrier'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Ammo Carrier'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Commander']))
-			$team_a['Commander'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Commander'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Heavy Weapons']))
-			$team_a['Heavy Weapons'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Heavy Weapons'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Medic']))
-			$team_a['Medic'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Medic'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Scout']))
-			$team_a['Scout'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Scout'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_a['Scout2']))
-			$team_a['Scout2'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_a['Scout2'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 
 		if(!isset($team_b['Ammo Carrier']))
-			$team_b['Ammo Carrier'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Ammo Carrier'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Commander']))
-			$team_b['Commander'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Commander'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Heavy Weapons']))
-			$team_b['Heavy Weapons'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Heavy Weapons'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Medic']))
-			$team_b['Medic'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Medic'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Scout']))
-			$team_b['Scout'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Scout'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 		if(!isset($team_b['Scout2']))
-			$team_b['Scout2'] = array('player_id' => 'N/A', 'avg_mvp' => 0);
+			$team_b['Scout2'] = array('player_id' => 0, 'player_name' => 'N/A', 'avg_mvp' => 0);
 
 		$results = array('team_a' => $team_a, 'team_b' => $team_b);
 	

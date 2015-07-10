@@ -13,7 +13,7 @@ class PlayersController extends AppController {
 	}
 	
 	public function view($id = null) {
-		if($id == null) {
+		if($id == null || $id <= 0) {
 			$this->redirect(array('controller' => 'Players', 'action' => 'index'));
 		} else {
 			$this->set('id', $id);
