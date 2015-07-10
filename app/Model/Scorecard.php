@@ -819,7 +819,7 @@ class Scorecard extends AppModel {
 		return $streaks;
 	}
 
-	public function getLossStreaks($center_id = null, $filter = null) {
+	public function getLossStreaks($state) {
 		$where = "1";
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
