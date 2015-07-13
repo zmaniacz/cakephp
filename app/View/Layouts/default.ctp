@@ -181,19 +181,6 @@
 							?>
 						</ul>
 					</li>
-					<?php
-						if($this->Session->read('state.gametype') == 'league') {
-							if($this->Session->read('state.show_subs') == 'true') {
-								$text = "Hide Subs";
-								$value = "false";
-							} else {
-								$text = "Show Subs";
-								$value = "true";		
-							}
-						
-							echo $this->Html->link($text, array('controller' => 'scorecards', 'action' => 'filterSub', $value), array('class' => 'btn btn-info pull-right'));
-						}
-					?>
 				</ul>
 			</div>
 			<hr>

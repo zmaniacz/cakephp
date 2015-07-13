@@ -290,19 +290,24 @@ class Scorecard extends AppModel {
 		$min_games = null;
 
 		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('center_id' => $state['centerID']);
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
 
 		if(!is_null($role))
-			$conditions[] = array('position' => $role);
+			$conditions[] = array('Scorecard.position' => $role);
 		
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('type' => $state['gametype']);
-		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
-			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
-				$conditions[] = array('Scorecard.is_sub' => 0);
+		if(isset($state['gametype']) && $state['gametype'] != 'all') {
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+			
+			if($state['gametype'] == 'league') {
+				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
+					$conditions[] = array('Scorecard.is_sub >=' => 0);
+				else
+					$conditions[] = array('Scorecard.is_sub' => 0);
+			}
 		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 		
 		$scores = $this->find('all', array(
 			'fields' => array(
@@ -344,16 +349,24 @@ class Scorecard extends AppModel {
 		$conditions = array();
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('center_id' => $state['centerID']);
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
 		
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('type' => $state['gametype']);
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
-			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
-				$conditions[] = array('Scorecard.is_sub' => 0);
+		if(isset($state['gametype']) && $state['gametype'] != 'all') {
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+			
+			if($state['gametype'] == 'league') {
+				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
+					$conditions[] = array('Scorecard.is_sub >=' => 0);
+				else
+					$conditions[] = array('Scorecard.is_sub' => 0);
+			}
 		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
 		$players = $this->find('all', array(
 			'fields' => array(
@@ -454,15 +467,20 @@ class Scorecard extends AppModel {
 		if(isset($state['centerID']) && $state['centerID'] > 0)
 			$conditions[] = array('center_id' => $state['centerID']);
 		
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
+		if(isset($state['gametype']) && $state['gametype'] != 'all') {
 			$conditions[] = array('type' => $state['gametype']);
-		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
-			$conditions[] = array('league_id' => $state['leagueID']);
-			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
-				$conditions[] = array('is_sub' => 0);
+			
+			if($state['gametype'] == 'league') {
+				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
+					$conditions[] = array('is_sub >=' => 0);
+				else
+					$conditions[] = array('is_sub' => 0);
+			}
 		}
-
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
+			
 		$subQueryConditions = $conditions;
 
 		$subQueryConditions[] = array('position NOT IN ("Medic", "Ammo Carrier")');
@@ -704,6 +722,17 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all') {
+			$conditions[] = array('type' => $state['gametype']);
+			
+			if($state['gametype'] == 'league') {
+				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
+					$conditions[] = array('is_sub >=' => 0);
+				else
+					$conditions[] = array('is_sub' => 0);
+			}
+		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
 			$conditions[] = array('league_id' => $state['leagueID']);

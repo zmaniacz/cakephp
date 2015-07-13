@@ -9,6 +9,19 @@
 		} );
 	} );
 </script>
+<?php
+	if($this->Session->read('state.gametype') == 'league') {
+		if($this->Session->read('state.show_subs') == 'true') {
+			$text = "Hide Subs";
+			$value = "false";
+		} else {
+			$text = "Show Subs";
+			$value = "true";		
+		}
+	
+		echo "<h3>".$this->Html->link($text, array('controller' => 'scorecards', 'action' => 'filterSub', $value), array('class' => 'btn btn-info'))."</h3>";
+	}
+?>
 <div id="games_points" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#games_points" data-target="#collapse_games_points"" role="tab" id="games_points_heading">
 		<h4 class="panel-title">
