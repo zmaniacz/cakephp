@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		var oTable = $('.display').DataTable( {
+		$('.display').DataTable( {
 			"order": [[1, "desc"]],
 			"searching": false,
 			"lengthChange": false,
