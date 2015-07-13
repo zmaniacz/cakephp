@@ -21,7 +21,8 @@ class ScorecardsController extends AppController {
 			'allcenter',
 			'playerScorecards',
 			'leaderboards',
-			'getMVPBreakdown'
+			'getMVPBreakdown',
+			'filterSub'
 		);
 		parent::beforeFilter();
 	}
@@ -150,5 +151,10 @@ class ScorecardsController extends AppController {
 		$scorecard = $this->Scorecard->read(null, $id);
 		$this->Scorecard->set('is_sub', (($scorecard['Scorecard']['is_sub']) ? 0 : 1) );
 		$this->Scorecard->save();
+	}
+	
+	public function filterSub($showSubs = false) {
+		$this->Session->write('state.show_subs', $showSubs);
+		$this->redirect($this->request->referer());
 	}
 }

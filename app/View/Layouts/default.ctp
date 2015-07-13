@@ -71,9 +71,9 @@
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<?php if (AuthComponent::user('id')): ?>
-									<?= AuthComponent::user('username') ?> <a class="btn btn-info navbar-btn" href="/users/logout" role="button">Logout</a>
+									<?= AuthComponent::user('username') ?> <a class="btn btn-info" href="/users/logout" role="button">Logout</a>
 								<?php else: ?>
-									<a class="btn btn-info navbar-btn" href="/users/login" role="button">Login</a>
+									<a class="btn btn-info" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 							</ul>
 						</div>
@@ -181,6 +181,19 @@
 							?>
 						</ul>
 					</li>
+					<?php
+						if($this->Session->read('state.gametype') == 'league') {
+							if($this->Session->read('state.show_subs') == 'true') {
+								$text = "Hide Subs";
+								$value = "false";
+							} else {
+								$text = "Show Subs";
+								$value = "true";		
+							}
+						
+							echo $this->Html->link($text, array('controller' => 'scorecards', 'action' => 'filterSub', $value), array('class' => 'btn btn-info pull-right'));
+						}
+					?>
 				</ul>
 			</div>
 			<hr>
