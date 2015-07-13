@@ -92,10 +92,15 @@ class UploadsController extends AppController {
 		$green_pens = 0;
 
 		while (($csvline = fgetcsv($handle)) !== FALSE) {
+			//Start Syracuse hack
+			//format sample:  9:03pm Jul-5-2015
+			$datetime = null;
+			$datetime = preg_replace('/(\d{1,2}:\d{2}(am|pm))\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{1})-(\d{4})/', '$1 $3-0$4-$5', $csvline[1]);
+			
 			$this->Scorecard->create();
 			$this->Scorecard->set(array(
-				'player_name' => $csvline[0], 
-				'game_datetime' => date("Y-m-d H-i-s",strtotime($csvline[1])), 
+				'player_name' => "$csvline[0]", 
+				'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
 				'team' => $csvline[2], 
 				'position' => $csvline[3], 
 				'score' => ($csvline[4]+(1000*$csvline[22])),
