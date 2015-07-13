@@ -300,7 +300,8 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
 			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
-			$conditions[] = array('Scorecard.is_sub' => 0);
+			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
+				$conditions[] = array('Scorecard.is_sub' => 0);
 		}
 		
 		$scores = $this->find('all', array(
@@ -350,7 +351,8 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
 			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
-			$conditions[] = array('Scorecard.is_sub' => 0);
+			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
+				$conditions[] = array('Scorecard.is_sub' => 0);
 		}
 
 		$players = $this->find('all', array(
@@ -457,7 +459,8 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
 			$conditions[] = array('league_id' => $state['leagueID']);
-			$conditions[] = array('is_sub' => 0);
+			if(isset($state['show_subs']) && $state['show_subs'] != 'true')
+				$conditions[] = array('is_sub' => 0);
 		}
 
 		$subQueryConditions = $conditions;
