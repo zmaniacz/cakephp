@@ -666,62 +666,29 @@ class Scorecard extends AppModel {
 		return $games;
 	}
 
-	public function getOverallAverages($filter_type = null, $games_limit = null, $center_id = null, $filter = null) {
+	public function getOverallAverages($state) {
 		$conditions = array();
 		
-		if(!is_null($center_id))
-			$conditions[] = array('center_id' => $center_id);
-
-		if(!is_null($filter)) {
-			if($filter['type'] != 'all') {
-				$conditions[] = array('type' => $filter['type']);
-			}
-		}
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
 		
-		if(is_null($games_limit)) {
-			$overall = $this->find('all', array(
-				'fields' => array(
-					'position',
-					'AVG(score) as avg_score',
-					'AVG(mvp_points) as avg_mvp'
-				),
-				'conditions' => $conditions,
-				'group' => array(
-					'position'
-				)
-			));
-		} elseif($filter_type == 'numeric') {
-			$overall = $this->query("
-				SELECT position,
-					AVG(score) as avg_score,
-					AVG(mvp_points) as avg_mvp
-				FROM (
-					SELECT position,
-						score,
-						mvp_points
-					FROM scorecards
-					WHERE center_id = $center_id
-					ORDER BY game_datetime DESC
-					LIMIT $games_limit
-				) as Scorecard
-				GROUP BY position
-			");
-		} elseif($filter_type == 'date') {
-			$overall = $this->query("
-				SELECT position,
-					AVG(score) as avg_score,
-					AVG(mvp_points) as avg_mvp
-				FROM (
-					SELECT position,
-						score,
-						mvp_points
-					FROM scorecards
-					WHERE DATEDIFF(DATE(NOW()),DATE(game_datetime)) <= $games_limit AND center_id = $center_id
-					ORDER BY game_datetime DESC
-				) as Scorecard
-				GROUP BY position
-			");
-		}
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+		
+		$overall = $this->find('all', array(
+			'fields' => array(
+				'position',
+				'AVG(score) as avg_score',
+				'AVG(mvp_points) as avg_mvp'
+			),
+			'conditions' => $conditions,
+			'group' => array(
+				'position'
+			)
+		));
 
 		return $overall;
 	}
