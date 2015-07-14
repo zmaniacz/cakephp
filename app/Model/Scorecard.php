@@ -330,18 +330,17 @@ class Scorecard extends AppModel {
 				'AVG(resupplies) as avg_resup',
 				'AVG(Scorecard.lives_left) as avg_lives',
 				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate'
-			),				
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array('id', 'player_name')
+				)
+			),
 			'conditions' => $conditions,
 			'group' => "player_id".(($min_games > 0) ? " HAVING games_played >= $min_games" : ""),
 			'order' => 'avg_mvp DESC'
 		));
-
-		//add in the player_name to the results
-		foreach($scores as &$score) {
-			$player = $this->Player->findById($score['Scorecard']['player_id']);
-			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
-		}
-
+		
 		return $scores;
 	}
 	
@@ -399,9 +398,25 @@ class Scorecard extends AppModel {
 				$results[$player['Scorecard']['player_id']] = array();
 				$results[$player['Scorecard']['player_id']]['player_name'] = $players[$player['Scorecard']['player_id']];
 			}
+			
 			$results[$player['Scorecard']['player_id']]['avg_avg_mvp'] = $player[0]['avg_mvp'];
 			$results[$player['Scorecard']['player_id']]['avg_avg_acc'] = $player[0]['avg_acc'];
 			$results[$player['Scorecard']['player_id']]['total_games'] = $player[0]['games_played'];
+			$results[$player['Scorecard']['player_id']]['Commander']['avg_mvp'] = 0;
+			$results[$player['Scorecard']['player_id']]['Commander']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Commander']['games_played'] = 0;
+			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['avg_mvp'] = 0;
+			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['games_played'] = 0;
+			$results[$player['Scorecard']['player_id']]['Scout']['avg_mvp'] = 0;
+			$results[$player['Scorecard']['player_id']]['Scout']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Scout']['games_played'] = 0;
+			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['avg_mvp'] = 0;
+			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['games_played'] = 0;
+			$results[$player['Scorecard']['player_id']]['Medic']['avg_mvp'] = 0;
+			$results[$player['Scorecard']['player_id']]['Medic']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Medic']['games_played'] = 0;
 		}
 		
 		foreach($players_position as $player) {
@@ -410,43 +425,6 @@ class Scorecard extends AppModel {
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
 		}
 		
-		foreach($results as &$result) {
-			$total_mvp = 0;
-			$total_acc = 0;
-			$total_games_played = 0;
-			$positions = 0;
-
-			if(!isset($result['Ammo Carrier'])) {
-				$result['Ammo Carrier']['avg_mvp'] = 0;
-				$result['Ammo Carrier']['avg_acc'] = 0;
-				$result['Ammo Carrier']['games_played'] = 0;
-			}
-
-			if(!isset($result['Commander'])) {
-				$result['Commander']['avg_mvp'] = 0;
-				$result['Commander']['avg_acc'] = 0;
-				$result['Commander']['games_played'] = 0;
-			}
-
-
-			if(!isset($result['Heavy Weapons'])) {
-				$result['Heavy Weapons']['avg_mvp'] = 0;
-				$result['Heavy Weapons']['avg_acc'] = 0;
-				$result['Heavy Weapons']['games_played'] = 0;
-			}
-
-			if(!isset($result['Scout'])) {
-				$result['Scout']['avg_mvp'] = 0;
-				$result['Scout']['avg_acc'] = 0;
-				$result['Scout']['games_played'] = 0;
-			}
-
-			if(!isset($result['Medic'])) {
-				$result['Medic']['avg_mvp'] = 0;
-				$result['Medic']['avg_acc'] = 0;
-				$result['Medic']['games_played'] = 0;
-			}
-		}
 		return $results;
 	}
 	
