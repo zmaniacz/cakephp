@@ -113,7 +113,7 @@
 														implode(",", $this->request->pass),
 														'?' => array(
 															'gametype' => 'league',
-															'centerID' => 0,
+															'centerID' => $this->Session->read('state.centerID'),
 															'leagueID' => $this->Session->read('state.leagueID')
 														)
 								)); ?>
@@ -165,15 +165,15 @@
 								}
 								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
 									echo "<li class=\"dropdown-header\">Competitions</li>";
-									foreach($leagues as $key => $value) {
-										echo "<li>".$this->Html->link($value, array(
+									foreach($league_details as $league) {
+										echo "<li>".$this->Html->link($league['League']['name'], array(
 											'controller' => $this->request->params['controller'], 
 											'action' => $this->request->params['action'],
 											implode(",", $this->request->pass),
 											'?' => array(
 												'gametype' => 'league',
-												'centerID' => 0,
-												'leagueID' => $key
+												'centerID' => $league['League']['center_id'],
+												'leagueID' => $league['League']['id']
 											)
 										));
 									}
