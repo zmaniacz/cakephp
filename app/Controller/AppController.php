@@ -96,6 +96,7 @@ class AppController extends Controller {
 			));
 			$this->set('selected_league', $league);
 			$this->set('selected_center', $this->Center->findById($league['Center']['id']));
+			$this->Session->write('state.centerID', $league['Center']['id']);
 		}
 		
 		$this->set('centers', $this->Center->find('list'));
