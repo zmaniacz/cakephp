@@ -368,7 +368,7 @@ class Scorecard extends AppModel {
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
 			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
-		$players = $this->find('all', array(
+		$players_position = $this->find('all', array(
 			'fields' => array(
 				'player_id',
 				'position',
@@ -380,13 +380,31 @@ class Scorecard extends AppModel {
 			'group' => 'player_id, position'
 		));
 		
+		$players_overall = $this->find('all', array(
+			'fields' => array(
+				'player_id',
+				'AVG(mvp_points) as avg_mvp',
+				'AVG(accuracy) as avg_acc',
+				'COUNT(game_datetime) as games_played' 
+			),
+			'conditions' => $conditions,
+			'group' => 'player_id'
+		));
+		
+		$players = $this->Player->find('list');
+		
 		$results = array();
-		foreach($players as $player) {
+		foreach($players_overall as $player) {
 			if(!isset($results[$player['Scorecard']['player_id']])) {
 				$results[$player['Scorecard']['player_id']] = array();
-				$tmp_player = $this->Player->findById($player['Scorecard']['player_id']);
-				$results[$player['Scorecard']['player_id']]['player_name'] = $tmp_player['Player']['player_name'];
+				$results[$player['Scorecard']['player_id']]['player_name'] = $players[$player['Scorecard']['player_id']];
 			}
+			$results[$player['Scorecard']['player_id']]['avg_avg_mvp'] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']]['avg_avg_acc'] = $player[0]['avg_acc'];
+			$results[$player['Scorecard']['player_id']]['total_games'] = $player[0]['games_played'];
+		}
+		
+		foreach($players_position as $player) {
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
@@ -398,65 +416,36 @@ class Scorecard extends AppModel {
 			$total_games_played = 0;
 			$positions = 0;
 
-			if(isset($result['Ammo Carrier'])) {
-				$total_mvp += $result['Ammo Carrier']['avg_mvp'];
-				$total_acc += $result['Ammo Carrier']['avg_acc'];
-				$total_games_played += $result['Ammo Carrier']['games_played'];
-				$positions++;
-			} else {
+			if(!isset($result['Ammo Carrier'])) {
 				$result['Ammo Carrier']['avg_mvp'] = 0;
 				$result['Ammo Carrier']['avg_acc'] = 0;
 				$result['Ammo Carrier']['games_played'] = 0;
 			}
 
-			if(isset($result['Commander'])) {
-				$total_mvp += $result['Commander']['avg_mvp'];
-				$total_acc += $result['Commander']['avg_acc'];
-				$total_games_played += $result['Commander']['games_played'];
-				$positions++;
-			} else {
+			if(!isset($result['Commander'])) {
 				$result['Commander']['avg_mvp'] = 0;
 				$result['Commander']['avg_acc'] = 0;
 				$result['Commander']['games_played'] = 0;
 			}
 
 
-			if(isset($result['Heavy Weapons'])) {
-				$total_mvp += $result['Heavy Weapons']['avg_mvp'];
-				$total_acc += $result['Heavy Weapons']['avg_acc'];
-				$total_games_played += $result['Heavy Weapons']['games_played'];
-				$positions++;
-			} else {
+			if(!isset($result['Heavy Weapons'])) {
 				$result['Heavy Weapons']['avg_mvp'] = 0;
 				$result['Heavy Weapons']['avg_acc'] = 0;
 				$result['Heavy Weapons']['games_played'] = 0;
 			}
 
-			if(isset($result['Scout'])) {
-				$total_mvp += $result['Scout']['avg_mvp'];
-				$total_acc += $result['Scout']['avg_acc'];
-				$total_games_played += $result['Scout']['games_played'];
-				$positions++;
-			} else {
+			if(!isset($result['Scout'])) {
 				$result['Scout']['avg_mvp'] = 0;
 				$result['Scout']['avg_acc'] = 0;
 				$result['Scout']['games_played'] = 0;
 			}
 
-			if(isset($result['Medic'])) {
-				$total_mvp += $result['Medic']['avg_mvp'];
-				$total_acc += $result['Medic']['avg_acc'];
-				$total_games_played += $result['Medic']['games_played'];
-				$positions++;
-			} else {
+			if(!isset($result['Medic'])) {
 				$result['Medic']['avg_mvp'] = 0;
 				$result['Medic']['avg_acc'] = 0;
 				$result['Medic']['games_played'] = 0;
 			}
-			
-			$result['avg_avg_mvp'] = $total_mvp/$positions;
-			$result['avg_avg_acc'] = $total_acc/$positions;
-			$result['total_games'] = $total_games_played;
 		}
 		return $results;
 	}
