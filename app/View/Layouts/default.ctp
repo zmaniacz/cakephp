@@ -26,7 +26,7 @@
 		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js');
 		echo $this->Html->script('//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js');
 		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js');
-		echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
+		echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/yeti/bootstrap.min.css', array('title' => 'main'));
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('laserforce');
 	?>
@@ -35,6 +35,14 @@
 		<?php echo $title_for_layout; ?>
 	</title>
 </head>
+<script>
+	$(document).ready(function() {
+		var theme = localStorage.theme;
+		if (theme) {
+			set_theme(theme);
+		}
+	});
+</script>
 <body>
 	<div class="container">
 		<div id="container">
@@ -70,11 +78,20 @@
 								<?php endif; ?>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
+								<li class="dropdown" id="theme-dropdown">
+									<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Theme<span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li><a href="#" class="change-style-menu-item" rel="slate">Dark</a></li>
+										<li><a href="#" class="change-style-menu-item" rel="yeti">Light</a></li>
+									</ul>
+								</li>
+								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<?= AuthComponent::user('username') ?> <a class="btn btn-info" href="/users/logout" role="button">Logout</a>
+									<?= AuthComponent::user('username') ?> <a class="btn btn-info btn-sm" href="/users/logout" role="button">Logout</a>
 								<?php else: ?>
-									<a class="btn btn-info" href="/users/login" role="button">Login</a>
+									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -208,6 +225,19 @@
 						$(this).find(".modal-body").text("Loading...");
 						$(this).find(".modal-body").load(button.attr("target"));
 					});
+					
+					jQuery(function($) {
+					    $('body').on('click', '.change-style-menu-item', function() {
+					      var theme_name = $(this).attr('rel');
+					      var theme = "//netdna.bootstrapcdn.com/bootswatch/3.3.5/" + theme_name + "/bootstrap.min.css";
+					      set_theme(theme);
+					    });
+					});
+					
+					function set_theme(theme) {
+						$('link[title="main"]').attr('href', theme);
+						localStorage.theme = theme;
+					}
 				</script>
 			</div>
 			<div id="footer">
