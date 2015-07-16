@@ -23,8 +23,8 @@ class LeaguesController extends AppController {
 	}
 
 	public function standings() {
-		if(!$this->Session->check('state.leagueID') && $this->Session->read('state.leagueID') > 0)
-			$this->redirect(array('controller' => 'scorecards', 'action' => 'pickLeague'));
+		if($this->Session->read('state.gametype') != 'league' || !$this->Session->check('state.leagueID') || $this->Session->read('state.leagueID') <= 0)
+			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 		
 		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
 		$this->set('standings', $this->League->getTeamStandings($this->Session->read('state')));
