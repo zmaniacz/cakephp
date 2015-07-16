@@ -140,19 +140,16 @@
 		});
 	} );
 </script>
-<?php
-	if($this->Session->read('state.gametype') == 'league') {
-		if($this->Session->read('state.show_subs') == 'true') {
-			$text = "Hide Subs";
-			$value = "false";
-		} else {
-			$text = "Show Subs";
-			$value = "true";		
-		}
-	
-		echo "<h3>".$this->Html->link($text, array('controller' => 'scorecards', 'action' => 'filterSub', $value), array('class' => 'btn btn-info'))."</h3>";
-	}
-?>
+<?php if($this->Session->read('state.gametype') == 'league'): ?>
+	<form class="form-inline">
+		<div class="checkbox">
+			<label for="rounds_cbox">Show Finals</label>
+			<input type="checkbox" id="finals_cbox" <?= (($this->Session->read('state.show_finals') == 'true') ? "checked" : "")?>>
+			<label for="sub_cbox">Show Subs</label>
+			<input type="checkbox" id="sub_cbox" <?= (($this->Session->read('state.show_subs') == 'true') ? "checked" : "")?>>
+		</div>
+	</form>
+<?php endif; ?>
 <div id="overall" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#overall" data-target="#collapse_overall" role="tab" id="overall_heading">
 		<h4 class="panel-title">
@@ -363,3 +360,19 @@
 		</div>
 	</div>
 </div>
+<script>
+	$('#sub_cbox').change(function() {
+		if($('#sub_cbox').is(':checked')) {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'true'))); ?>";
+		} else {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'false'))); ?>";
+		}
+	});
+	$('#finals_cbox').change(function() {
+		if($('#finals_cbox').is(':checked')) {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
+		} else {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
+		}
+	});
+</script>

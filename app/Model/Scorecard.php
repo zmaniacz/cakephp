@@ -303,6 +303,13 @@ class Scorecard extends AppModel {
 					$conditions[] = array('Scorecard.is_sub >=' => 0);
 				else
 					$conditions[] = array('Scorecard.is_sub' => 0);
+					
+				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
+					$subQuery = new stdClass();
+					$subQuery->type = "expression";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+       		 		$conditions[] = $subQuery;
+				}
 			}
 		}
 		
@@ -361,6 +368,13 @@ class Scorecard extends AppModel {
 					$conditions[] = array('Scorecard.is_sub >=' => 0);
 				else
 					$conditions[] = array('Scorecard.is_sub' => 0);
+					
+				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
+					$subQuery = new stdClass();
+					$subQuery->type = "expression";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+       		 		$conditions[] = $subQuery;
+				}
 			}
 		}
 		
@@ -442,6 +456,13 @@ class Scorecard extends AppModel {
 					$conditions[] = array('is_sub >=' => 0);
 				else
 					$conditions[] = array('is_sub' => 0);
+
+				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
+					$subQuery = new stdClass();
+					$subQuery->type = "expression";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+       		 		$conditions[] = $subQuery;
+				}
 			}
 		}
 		
@@ -698,6 +719,13 @@ class Scorecard extends AppModel {
 					$conditions[] = array('is_sub >=' => 0);
 				else
 					$conditions[] = array('is_sub' => 0);
+					
+				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
+					$subQuery = new stdClass();
+					$subQuery->type = "expression";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+       		 		$conditions[] = $subQuery;
+				}
 			}
 		}
 		
