@@ -88,43 +88,106 @@ class League extends AppModel {
 		
 		$conditions[] = array('Team.league_id' => $state['leagueID']);
 		
-		$rounds = $this->League->find('all',array(
+		$rounds = $this->find('first', array(
 			'contain' => array(
 				'Round' => array(
 					'Match' => array(
 						'Game_1',
 						'Game_2'
-					)
+					),
+					'conditions' => array('Round.is_finals' => '0')
 				)
 			),
-			'conditions' => array(
-				'League.id' => $league_id
-			)
+			'conditions' => array('id' => $state['leagueID'])
 		));
 		
-		$new_standings = array();
+		$teams = $this->Team->find('list', array('conditions' => array('Team.league_id' => $state['leagueID'])));
 		
-		foreach($rounds as $round) {
-			if($round['Round']['is_finals'] == 0) {
-				foreach($round['Match'] as $match) {
+		$standings = array();
+		
+		foreach($teams as $id => $name) {
+			$standings[$id] = array('id' => $id, 'name' => $name, 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
+		}
+		
+		$this->log($rounds, 'debug');
+		
+		foreach($rounds['Round'] as $round) {
+			foreach($round['Match'] as $match) {
+				//Overall match points
+				$standings[$match['team_1_id']]['points'] += $match['team_1_points'];
+				$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
+				
+				//Matches Won
+				if($standings[$match['team_1_id']]['points'] > $standings[$match['team_2_id']]['points'])
+					$standings[$match['team_1_id']]['matches_won'] += 1;
+				else
+					$standings[$match['team_2_id']]['matches_won'] += 1;
+				
+				if(!empty($match['Game_1'])) {
 					if($match['Game_1']['winner'] == 'Red') {
-						$new_standings[$match['Game_1']['red_team_id']
+						$standings[$match['team_1_id']]['won'] += 1;
+						$standings[$match['team_2_id']]['lost'] += 1;
+					} else {
+						$standings[$match['team_1_id']]['lost'] += 1;
+						$standings[$match['team_2_id']]['won'] += 1;
 					}
+					
+					$standings[$match['team_1_id']]['for'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
+					$standings[$match['team_2_id']]['against'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
+					$standings[$match['team_2_id']]['for'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
+					$standings[$match['team_1_id']]['against'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
+					
+					$standings[$match['team_1_id']]['played'] += 1;
+					$standings[$match['team_2_id']]['played'] += 1;
+					
+					if($match['Game_1']['red_eliminated'])
+						$standings[$match['team_2_id']]['elims'] += 1;
+					
+					if($match['Game_1']['green_eliminated'])
+						$standings[$match['team_1_id']]['elims'] += 1;
+				}
+				
+				if(!empty($match['Game_2'])) {
+					if($match['Game_2']['winner'] == 'Red') {
+						$standings[$match['team_2_id']]['won'] += 1;
+						$standings[$match['team_1_id']]['lost'] += 1;
+					} else {
+						$standings[$match['team_2_id']]['lost'] += 1;
+						$standings[$match['team_1_id']]['won'] += 1;
+					}
+					
+					$standings[$match['team_2_id']]['for'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
+					$standings[$match['team_1_id']]['against'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
+					$standings[$match['team_1_id']]['for'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
+					$standings[$match['team_2_id']]['against'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
+					
+					$standings[$match['team_1_id']]['played'] += 1;
+					$standings[$match['team_2_id']]['played'] += 1;
+					
+					if($match['Game_2']['red_eliminated'])
+						$standings[$match['team_1_id']]['elims'] += 1;
+					
+					if($match['Game_2']['green_eliminated'])
+						$standings[$match['team_2_id']]['elims'] += 1;
 				}
 			}
 		}
 		
-		$teams = $this->Team->find('all', array(
+		/*$teams = $this->Team->find('all', array(
 			'contain' => array(
 				'Match_Team1' => array(
 					'Game_1',
 					'Game_2',
-					'Round'
+					'Round' => array(
+						'conditions' => array('Round.is_finals' => '0')
+					)
 				),
 				'Match_Team2' => array(
 					'Game_1',
 					'Game_2',
-					'Round'
+					'Round' => array(
+						'conditions' => array('Round.is_finals' => '0')
+					)
 				)
 			),
 			'conditions' => $conditions,
@@ -213,7 +276,7 @@ class League extends AppModel {
 			}
 			
 			array_multisort($arr_points, SORT_DESC, $arr_ratio, SORT_DESC, $standings);
-		}
+		}*/
 		
 		return $standings;
 	}
