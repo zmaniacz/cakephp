@@ -173,6 +173,11 @@ class League extends AppModel {
 			}
 		}
 		
+		foreach($standings as &$standing) {
+			if($standing['against'] > 0)
+				$standing['ratio'] = $standing['for']/$standing['against'];
+		}
+		
 		/*$teams = $this->Team->find('all', array(
 			'contain' => array(
 				'Match_Team1' => array(
