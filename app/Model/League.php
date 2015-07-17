@@ -84,22 +84,50 @@ class League extends AppModel {
 	}
 
 	public function getTeamStandings($state) {
-		$league_id = $state['leagueID'];
+		$conditions = array();
+		
+		$conditions[] = array('Team.league_id' => $state['leagueID']);
+		
+		$rounds = $this->League->find('all',array(
+			'contain' => array(
+				'Round' => array(
+					'Match' => array(
+						'Game_1',
+						'Game_2'
+					)
+				)
+			),
+			'conditions' => array(
+				'League.id' => $league_id
+			)
+		));
+		
+		$new_standings = array();
+		
+		foreach($rounds as $round) {
+			if($round['Round']['is_finals'] == 0) {
+				foreach($round['Match'] as $match) {
+					if($match['Game_1']['winner'] == 'Red') {
+						$new_standings[$match['Game_1']['red_team_id']
+					}
+				}
+			}
+		}
 		
 		$teams = $this->Team->find('all', array(
 			'contain' => array(
 				'Match_Team1' => array(
 					'Game_1',
-					'Game_2'
+					'Game_2',
+					'Round'
 				),
 				'Match_Team2' => array(
 					'Game_1',
-					'Game_2'
+					'Game_2',
+					'Round'
 				)
 			),
-			'conditions' => array(
-				'Team.league_id' => $league_id
-			),
+			'conditions' => $conditions,
 			'order' => 'points DESC'
 		));
 		
