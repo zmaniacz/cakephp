@@ -10,38 +10,38 @@
 				if(AuthComponent::user('role') === 'admin')
 					echo $this->Html->link('New Team', array('controller' => 'leagues', 'action' => 'addTeam'), array('class' => 'btn btn-success'));
 			?>
-			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-hover table-condensed" id="team_standings">
-					<thead>
-						<th class="col-xs-2">Team</th>
-						<th class="col-xs-1">Points</th>
-						<th class="col-xs-1">Played</th>
-						<th class="col-xs-1">Won</th>
-						<th class="col-xs-1">Lost</th>
-						<th class="col-xs-1">Match</th>
-						<th class="col-xs-1">Eliminations</th>
-						<th class="col-xs-1">For</th>
-						<th class="col-xs-1">Against</th>
-						<th class="col-xs-1">Ratio</th>
-					</thead>
-					<tbody>
-						<?php foreach($standings as $team): ?>
-						<tr>
-							<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
-							<td><?= $team['points']; ?></td>
-							<td><?= $team['played']; ?></td>
-							<td><?= $team['won']; ?></td>
-							<td><?= $team['lost']; ?></td>
-							<td><?= $team['matches_won']; ?></td>
-							<td><?= $team['elims']; ?></td>
-							<td><?= $team['for']; ?></td>
-							<td><?= $team['against']; ?></td>
-							<td><?= round($team['ratio'], 2); ?></td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-hover table-condensed" id="team_standings">
+				<thead>
+					<th class="col-xs-2">Team</th>
+					<th class="col-xs-1">Points</th>
+					<th class="col-xs-1">Played</th>
+					<th class="col-xs-1">Won</th>
+					<th class="col-xs-1">Lost</th>
+					<th class="col-xs-1">Match</th>
+					<th class="col-xs-1">Eliminations</th>
+					<th class="col-xs-1">For</th>
+					<th class="col-xs-1">Against</th>
+					<th class="col-xs-1">Ratio</th>
+				</thead>
+				<tbody>
+					<?php foreach($standings as $team): ?>
+					<tr>
+						<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
+						<td><?= $team['points']; ?></td>
+						<td><?= $team['played']; ?></td>
+						<td><?= $team['won']; ?></td>
+						<td><?= $team['lost']; ?></td>
+						<td><?= $team['matches_won']; ?></td>
+						<td><?= $team['elims']; ?></td>
+						<td><?= $team['for']; ?></td>
+						<td><?= $team['against']; ?></td>
+						<td><?= round($team['ratio'], 2); ?></td>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
