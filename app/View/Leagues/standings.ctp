@@ -88,7 +88,8 @@
 											echo $this->Form->hidden('Match.round_id', array('value' => $match['round_id']));
 										}
 									?>
-									<div class="table-responsive">
+								</div>
+																	<div class="table-responsive">
 										<table class="table table-striped table-bordered table-hover table-condensed" id="match<?= $match['id']; ?>">
 											<thead>
 												<th class="col-xs-4">Team</th>
@@ -136,7 +137,6 @@
 											echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
 										}
 									?>
-								</div>
 							</div>
 						<?php } ?>
 					</div>
