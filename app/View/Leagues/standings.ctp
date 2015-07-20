@@ -45,6 +45,15 @@
 		</div>
 	</div>
 </div>
+<ul class="nav nav-tabs" id="round_tabs">
+	<?php foreach($details['Round'] as $round): ?>
+		<li>
+			<a href="#round<?= $round['id']; ?>" data-toggle="tab">
+				<?= ($round['is_finals']) ? "Finals" : "Round ".$round['round']; ?>
+			</a>
+		</li>
+	<?php endforeach; ?>
+</ul>
 <div id="accordion" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_rounds" role="tab" id="rounds_heading">
 		<h4 class="panel-title">
@@ -57,15 +66,6 @@
 				if(AuthComponent::user('role') === 'admin')
 					echo $this->Html->link('Add Round', array('controller' => 'leagues', 'action' => 'addRound'), array('class' => 'btn btn-success'));
 			?>
-			<ul class="nav nav-tabs" id="round_tabs">
-				<?php foreach($details['Round'] as $round): ?>
-					<li>
-						<a href="#round<?= $round['id']; ?>" data-toggle="tab">
-							<?= ($round['is_finals']) ? "Finals" : "Round ".$round['round']; ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
 			<div class="tab-content">
 				<?php foreach($details['Round'] as $round) { ?>
 					<div class="tab-pane" id="round<?= $round['id']; ?>">
