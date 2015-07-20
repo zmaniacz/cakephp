@@ -106,7 +106,7 @@ class League extends AppModel {
 		$standings = array();
 		
 		foreach($teams as $id => $name) {
-			$standings[$id] = array('id' => $id, 'name' => $name, 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
+			$standings[$id] = array('id' => $id, 'name' => $name, 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_played' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
 		}
 		
 		$this->log($rounds, 'debug');
@@ -176,6 +176,8 @@ class League extends AppModel {
 		foreach($standings as &$standing) {
 			if($standing['against'] > 0)
 				$standing['ratio'] = $standing['for']/$standing['against'];
+			
+			$standing['matches_played'] = $standing['played']/2;
 		}
 		
 		if(!empty($standings)) {

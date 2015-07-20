@@ -16,10 +16,8 @@
 				<thead>
 					<th class="col-xs-2">Team</th>
 					<th class="col-xs-1">Points</th>
-					<th class="col-xs-1">Played</th>
-					<th class="col-xs-1">Won</th>
-					<th class="col-xs-1">Lost</th>
-					<th class="col-xs-1">Match</th>
+					<th class="col-xs-1">Matches Won/Played</th>
+					<th class="col-xs-1">Games Won/Played</th>
 					<th class="col-xs-1">Eliminations</th>
 					<th class="col-xs-1">For</th>
 					<th class="col-xs-1">Against</th>
@@ -30,10 +28,8 @@
 					<tr>
 						<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
 						<td><?= $team['points']; ?></td>
-						<td><?= $team['played']; ?></td>
-						<td><?= $team['won']; ?></td>
-						<td><?= $team['lost']; ?></td>
-						<td><?= $team['matches_won']; ?></td>
+						<td><?= $team['matches_won']; ?> / <?= $team['matches_played']; ?></td>
+						<td><?= $team['won']; ?> / <?= $team['played']; ?></td>
 						<td><?= $team['elims']; ?></td>
 						<td><?= $team['for']; ?></td>
 						<td><?= $team['against']; ?></td>
