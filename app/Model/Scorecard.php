@@ -87,8 +87,29 @@ class Scorecard extends AppModel {
 			$mvp += $score['Scorecard']['nukes_detonated'];
 			
 			//maybe hide better
-			$mvp += ($score['Scorecard']['nukes_activated'] - $score['Scorecard']['nukes_detonated']) * -3;
-
+			if($score['Scorecard']['nukes_activated'] - $score['Scorecard']['nukes_detonated'] > 0) {
+				$conditions = array();
+				
+				$conditions[] = array('game_id' => $score['Scorecard']['game_id']);
+				
+				if($score['Scorecard']['team'] == 'Red')
+					$conditions[] = array('team' => 'Green');
+				else
+					$conditions[] = array('team' => 'Red');
+				
+				$nukes = $this->find('all',
+					array(
+						'fields' => array(
+							'SUM(nukes_canceled) AS all_nukes_canceled'
+						),
+						'conditions' => $conditions
+					)
+				);
+				
+				if($nukes[0][0]['all_nukes_canceled'] > 0)
+					$mvp += $nukes[0][0]['all_nukes_canceled'] * -3;
+			}
+			
 			//make commanders cry
 			$mvp += $score['Scorecard']['nukes_canceled'] *3;
 			

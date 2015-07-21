@@ -31,85 +31,86 @@
 		
 		$('#commander_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[3, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'commander', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : "name" },
+				{ "data" : "games_played" },
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "nuke_ratio" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_missiles" },
-				{ "data" : "avg_medic_hits" },
-				{ "data" : "games_played" },
+				{ "data" : "avg_medic_hits" }
 			]
 		});
 		
 		$('#heavy_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[3, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'heavy', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : "name" },
+				{ "data" : "games_played" },
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_missiles" },
-				{ "data" : "avg_medic_hits" },
-				{ "data" : "games_played" },
+				{ "data" : "avg_medic_hits" }
 			]
 		});
 		
 		$('#scout_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[3, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'scout', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : "name" },
+				{ "data" : "games_played" },
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_3hit" },
-				{ "data" : "avg_medic_hits" },
-				{ "data" : "games_played" },
+				{ "data" : "avg_medic_hits" }
 			]
 		});
 		
 		$('#ammo_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[3, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ammo', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : "name" },
+				{ "data" : "games_played" },
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_ammo_boost" },
-				{ "data" : "avg_resup" },
-				{ "data" : "games_played" },
+				{ "data" : "avg_resup" }
 			]
 		});
 		
 		$('#medic_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[3, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'medic', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : "name" },
+				{ "data" : "games_played" },
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -117,8 +118,7 @@
 				{ "data" : "avg_life_boost" },
 				{ "data" : "avg_resup" },
 				{ "data" : "avg_lives" },
-				{ "data" : "elim_rate" },
-				{ "data" : "games_played" },
+				{ "data" : "elim_rate" }	
 			]
 		});
 		
@@ -209,6 +209,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Games Played</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -216,7 +217,6 @@
 							<th>Hit Differential</th>
 							<th>Average Missiles</th>
 							<th>Average Medic Hits</th>
-							<th>Games Played</th>
 						</tr>
 					</thead>
 				</table>
@@ -237,13 +237,13 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Games Played</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average Missiles</th>
 							<th>Average Medic Hits</th>
-							<th>Games Played</th>
 						</tr>
 					</thead>
 				</table>
@@ -264,13 +264,13 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Games Played</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average 3Hit Hits</th>
 							<th>Average Medic Hits</th>
-							<th>Games Played</th>
 						</tr>
 					</thead>
 				</table>
@@ -291,13 +291,13 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Games Played</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average Boosts</th>
 							<th>Average Resupplies</th>
-							<th>Games Played</th>
 						</tr>
 					</thead>
 				</table>
@@ -318,6 +318,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Games Played</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -326,7 +327,6 @@
 							<th>Average Resupplies</th>
 							<th>Average Lives Left</th>
 							<th class="team_elim">Team Elimination Rate</th>
-							<th>Games Played</th>
 						</tr>
 					</thead>
 				</table>
