@@ -354,8 +354,8 @@
 	<div id="collapse_misc_mischief" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-sm-6 col-sm-offset-3">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="shots_fired_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Shots Fired</th>
@@ -366,6 +366,24 @@
 							<tr>
 								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
 								<td><?php echo $row[0]['shots_fired_total']; ?></td>
+							</tr>
+							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="penalties_total_table">
+						<thead>
+							<th>Name</th>
+							<th>Shots Fired</th>
+						</thead>
+						<tbody>
+							<?php foreach ($penalties as $row): ?>
+							<?php if ($row[0]['penalties'] > 0): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $row[0]['penalties']; ?></td>
 							</tr>
 							<?php endif; ?>
 							<?php endforeach; ?>

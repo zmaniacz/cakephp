@@ -136,6 +136,7 @@ class ScorecardsController extends AppController {
 
 	public function leaderboards() {
 		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('state')));
+		$this->set('penalties', $this->Scorecard->getPenaltyCount($this->Session->read('state')));
 		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('state')));
 		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('state')));
 	}
