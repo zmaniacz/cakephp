@@ -112,7 +112,16 @@ class Scorecard extends AppModel {
 			
 			//lose 5 points for every penalty in competitive games only
 			if($score['Scorecard']['type'] == 'league' || $score['Scorecard']['type'] == 'tournament') {
-				$mvp += $score['Scorecard']['penalties'] * -5;
+				$penalties = $this->Penalty->find('all', array(
+					'conditions' => array(
+						'scorecard_id' => $score['Scorecard']['id']
+					)
+				));
+				
+				foreach($penalties as $penalty) {
+					if($penalty['Penalty']['type'] != 'Penalty Removed')
+						$mvp += -5;
+				}
 			}
 			
 			//raping 3hits.  the math looks weird, but it works and gets the desired result
