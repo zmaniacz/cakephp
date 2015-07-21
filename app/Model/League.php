@@ -118,11 +118,13 @@ class League extends AppModel {
 				$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
 				
 				//Matches Won
-				if(!empty($match['team_1_points']) && !empty($match['team_2_points'])) {
-					if($match['team_1_points'] > $match['team_2_points'])
-						$standings[$match['team_1_id']]['matches_won'] += 1;
-					else
-						$standings[$match['team_2_id']]['matches_won'] += 1;
+				if(!is_null($match['team_1_points']) && !is_null($match['team_2_points'])) {
+					if($match['team_1_points'] + $match['team_2_points'] == 6) {
+						if($match['team_1_points'] > $match['team_2_points'])
+							$standings[$match['team_1_id']]['matches_won'] += 1;
+						elseif($match['team_1_points'] < $match['team_2_points'])
+							$standings[$match['team_2_id']]['matches_won'] += 1;
+					}
 				}
 				
 				if(!empty($match['Game_1'])) {
