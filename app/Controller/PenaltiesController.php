@@ -71,15 +71,23 @@ class PenaltiesController extends AppController {
 			if ($this->Penalty->save($this->request->data)) {
 				$this->Session->setFlash(__('The penalty has been saved.'));
 
-				$scorecard = $this->Penalty->Scorecard->findById($this->request->data['Penalty']['scorecard_id']);
+				$scorecard = $this->Penalty->Scorecard->find('first', array(
+					'contain' => array(
+						'Game' => array(
+							'Match'
+						)
+					),
+					'conditions' => array('Scorecard.id' => $this->request->data['Penalty']['scorecard_id'])
+				));
 
-				//add a penalty to the socrecard record and recalc MVP
+				//add a penalty to the scorecard record and recalc MVP
 				$scorecard['Scorecard']['penalties'] += 1;
 				$scorecard['Scorecard']['mvp_points'] = null;
 				$this->Penalty->Scorecard->save($scorecard);
 				$this->Penalty->Scorecard->generateMVP();
 
 				$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
+				$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
 				
 				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 			} else {
@@ -106,10 +114,18 @@ class PenaltiesController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			
 			$penalty = $this->Penalty->findById($id);
-			$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);
+			$scorecard = $this->Penalty->Scorecard->find('first', array(
+				'contain' => array(
+					'Game' => array(
+						'Match'
+					)
+				),
+				'conditions' => array('Scorecard.id' => $this->request->data['Penalty']['scorecard_id'])
+			));
 
 			if ($this->Penalty->save($this->request->data)) {
 				$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
+				$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
 				$this->Session->setFlash(__('The penalty has been saved.'));
 				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 			} else {
@@ -138,7 +154,14 @@ class PenaltiesController extends AppController {
 		}
 
 		$penalty = $this->Penalty->findById($id);
-		$scorecard = $this->Penalty->Scorecard->findById($penalty['Penalty']['scorecard_id']);
+		$scorecard = $this->Penalty->Scorecard->find('first', array(
+			'contain' => array(
+				'Game' => array(
+					'Match'
+				)
+			),
+			'conditions' => array('Scorecard.id' => $penalty['Penalty']['scorecard_id'])
+		));
 
 		if ($this->Penalty->delete()) {
 			$this->Session->setFlash(__('The penalty has been deleted.'), 'default', array('class' => 'alert-success'));
@@ -156,6 +179,7 @@ class PenaltiesController extends AppController {
 		}
 		
 		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
+		$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 	}
 	
