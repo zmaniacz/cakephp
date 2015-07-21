@@ -376,7 +376,7 @@
 					<table class="display table table-striped table-bordered table-hover table-condensed" id="penalties_total_table">
 						<thead>
 							<th>Name</th>
-							<th>Shots Fired</th>
+							<th>Penalties</th>
 						</thead>
 						<tbody>
 							<?php foreach ($penalties as $row): ?>
