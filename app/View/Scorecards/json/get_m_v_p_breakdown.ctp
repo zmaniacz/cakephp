@@ -1,6 +1,6 @@
 <?php
 	$mvp = array();
-	
+
 	switch($score['Scorecard']['position']) {
 		case "Ammo Carrier":
 			$mvp['Position Score Bonus'] = max(ceil(($score['Scorecard']['score']-3999)/1000),0);
@@ -37,7 +37,15 @@
 	$mvp['Your Nukes Canceled'] = ($score['Scorecard']['nukes_activated'] - $score['Scorecard']['nukes_detonated'])*-3;
 	$mvp['Team Nukes Canceled'] = $score['Scorecard']['own_nuke_cancels'] * -3;
 	$mvp['Elimination Penalty'] = ($score['Scorecard']['lives_left'] <= 0 && $score['Scorecard']['position'] != 'Medic') ? -1 : 0;
-	$mvp['Penalties'] = ($score['Scorecard']['type'] == 'league' || $score['Scorecard']['type'] == 'tournament') ? $score['Scorecard']['penalties'] * -5 : 0;
+	
+	$mvp['Penalties'] = 0;
+	if($score['Scorecard']['type'] == 'league' || $score['Scorecard']['type'] == 'tournament') {
+		foreach($score['Penalty'] as $penalty) {
+			if($penalty['type'] != 'Penalty Removed') {
+				$mvp['Penalties'] += -5;
+			}
+		}
+	}
 ?>
 <dl class="dl-horizontal">
 	<?php foreach($mvp as $key => $value): ?>

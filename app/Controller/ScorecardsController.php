@@ -143,7 +143,18 @@ class ScorecardsController extends AppController {
 	
 	public function getMVPBreakdown($id) {
 		$this->request->allowMethod('ajax');
-		$this->set('score', $this->Scorecard->findById($id));
+		$scorecard = $this->Scorecard->find('first', 
+			array(
+				'contain' => array(
+					'Penalty'
+				),
+				'conditions' => array(
+					'id' => $id
+				)
+			)
+		);
+		
+		$this->set('score', $scorecard);
 	}
 	
 	public function ajax_switchSub($id) {
