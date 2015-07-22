@@ -155,7 +155,7 @@ class Scorecard extends AppModel {
 			$mvp += $score['Scorecard']['missiled_team'] * -3;
 			
 			//WINNER
-			$mvp += $score['Scorecard']['elim_other_team'] * 2;
+			$mvp += $score['Scorecard']['elim_other_team'] * 3;
 			
 			$score['Scorecard']['mvp_points'] = max($mvp,0);
 
