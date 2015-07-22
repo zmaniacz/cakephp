@@ -88,7 +88,7 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function nightly() {
-		if($this->Session->read('state.gametype') == 'league')
+		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		
 		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
