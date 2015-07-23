@@ -1101,7 +1101,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
-			$min_games = 3;
+			$min_games = 9;
 			$conditions[] = array('league_id' => $state['leagueID']);
 		}
 		
