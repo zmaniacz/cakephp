@@ -23,7 +23,8 @@ class ScorecardsController extends AppController {
 			'leaderboards',
 			'getMVPBreakdown',
 			'filterSub',
-			'filterFinals'
+			'filterFinals',
+			'filterRounds'
 		);
 		parent::beforeFilter();
 	}

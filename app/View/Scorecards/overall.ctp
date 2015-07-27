@@ -124,7 +124,7 @@
 		
 		$('#overall_medic_hits_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[1, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallMedicHits', 'ext' => 'json'))); ?>"
 			},
@@ -143,7 +143,7 @@
 <?php if($this->Session->read('state.gametype') == 'league'): ?>
 	<form class="form-inline">
 		<div class="checkbox">
-			<label for="rounds_cbox">Show Rounds/label>
+			<label for="rounds_cbox">Show Rounds</label>
 			<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>
 			<label for="finals_cbox">Show Finals</label>
 			<input type="checkbox" id="finals_cbox" <?= (($this->Session->read('state.show_finals') == 'true') ? "checked" : "")?>>
