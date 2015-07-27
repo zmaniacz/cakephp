@@ -23,7 +23,8 @@ class ScorecardsController extends AppController {
 			'leaderboards',
 			'getMVPBreakdown',
 			'filterSub',
-			'filterFinals'
+			'filterFinals',
+			'filterRounds'
 		);
 		parent::beforeFilter();
 	}
@@ -175,6 +176,11 @@ class ScorecardsController extends AppController {
 	
 	public function filterFinals($showFinals = false) {
 		$this->Session->write('state.show_finals', $showFinals);
+		$this->redirect($this->request->referer());
+	}
+	
+	public function filterRounds($showRounds = false) {
+		$this->Session->write('state.show_rounds', $showRounds);
 		$this->redirect($this->request->referer());
 	}
 }

@@ -124,7 +124,7 @@
 		
 		$('#overall_medic_hits_table').DataTable( {
 			"deferRender" : true,
-			"order": [[2, "desc"]],
+			"order": [[1, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallMedicHits', 'ext' => 'json'))); ?>"
 			},
@@ -143,7 +143,9 @@
 <?php if($this->Session->read('state.gametype') == 'league'): ?>
 	<form class="form-inline">
 		<div class="checkbox">
-			<label for="rounds_cbox">Show Finals</label>
+			<label for="rounds_cbox">Show Rounds</label>
+			<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>
+			<label for="finals_cbox">Show Finals</label>
 			<input type="checkbox" id="finals_cbox" <?= (($this->Session->read('state.show_finals') == 'true') ? "checked" : "")?>>
 			<label for="sub_cbox">Show Subs</label>
 			<input type="checkbox" id="sub_cbox" <?= (($this->Session->read('state.show_subs') == 'true') ? "checked" : "")?>>
@@ -373,6 +375,13 @@
 			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
 		} else {
 			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
+		}
+	});
+	$('#rounds_cbox').change(function() {
+		if($('#rounds_cbox').is(':checked')) {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'true'))); ?>";
+		} else {
+			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'false'))); ?>";
 		}
 	});
 </script>
