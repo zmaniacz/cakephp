@@ -177,4 +177,9 @@ class ScorecardsController extends AppController {
 		$this->Session->write('state.show_finals', $showFinals);
 		$this->redirect($this->request->referer());
 	}
+	
+	public function filterRounds($showRounds = false) {
+		$this->Session->write('state.show_rounds', $showRounds);
+		$this->redirect($this->request->referer());
+	}
 }

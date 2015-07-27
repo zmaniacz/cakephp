@@ -82,6 +82,10 @@ class AppController extends Controller {
 			$this->Session->write('state.leagueID', 0);
 		}
 		
+		if(!$this->Session->check('state.show_rounds')) {
+			$this->Session->write('state.show_rounds', true);
+		}
+		
 		//get a center and league object for use throughout the app
 		if(($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->read('state.centerID') > 0) {
 			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
