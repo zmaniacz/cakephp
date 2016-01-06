@@ -46,7 +46,15 @@ class Player extends AppModel {
 			'className' => 'PlayersName',
 			'foreignKey' => 'player_id',
 			'dependent' => false
-		)
+		),
+        'PlayerHits' => array(
+            'className' => 'Hit',
+            'foreignKey' => 'player_id',
+        ),
+        'HitPlayer' => array(
+            'className' => 'Hit',
+            'foreignKey' => 'target_id',
+        )
 	);
 
 
@@ -378,6 +386,16 @@ class Player extends AppModel {
 			array('Scorecard.player_id' => $master_id),
 			array('Scorecard.player_id' => $target_id)
 		);
+        
+      	$this->PlayerHits>updateAll(
+			array('Hit.player_id' => $master_id),
+			array('Hit.player_id' => $target_id)
+		);
+        
+        $this->HitPlayer>updateAll(
+			array('Hit.target_id' => $master_id),
+			array('Hit.target_id' => $target_id)
+		);  
 		//delete the old player record
 		$this->delete($target_id);
 	}

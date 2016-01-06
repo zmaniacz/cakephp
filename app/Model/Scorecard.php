@@ -16,6 +16,10 @@ class Scorecard extends AppModel {
 		'Penalty' => array(
 			'className' => 'Penalty',
 			'foreignkey' => 'scorecard_id'
+		),
+        'Hit' => array(
+			'className' => 'Hit',
+			'foreignkey' => 'scorecard_id'
 		)
 	);
 

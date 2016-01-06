@@ -9,7 +9,7 @@ OutputDirectory=$DIR/output/$1/" > LFScoreParser.properties
 	mkdir -p pending/$1/
 	java -Xmx100M -jar LFScoreParser.jar
 	mv output/$1/*.pdf ../pdf/
-	mv output/$1/*.csv pending/$1/
+	mv output/$1/*.xml pending/$1/
 	rm output/$1/*
 	exit 0
 else

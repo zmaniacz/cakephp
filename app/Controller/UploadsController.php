@@ -1,5 +1,5 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('AppController', 'Controller', 'Xml', 'Utility');
 
 class UploadsController extends AppController {
 	public $uses = array('Scorecard');
@@ -85,82 +85,95 @@ class UploadsController extends AppController {
 		}
 
 		$row=0;
-		$handle = fopen($path.DS.$latest_filename,"r");
-		fgetcsv($handle);
+		$xmlString = file_get_contents($path.DS.$latest_filename);
+        $xml = Xml::toArray(Xml::build($xmlString));
+        $this->log($xml['game'], 'debug');
 
 		$red_pens = 0;
 		$green_pens = 0;
+        
+        foreach($xml as $game) {
+            
 
-		while (($csvline = fgetcsv($handle)) !== FALSE) {
-			//Start Syracuse hack
-			//format sample:  9:03pm Jul-5-2015
-			$datetime = null;
-			$datetime = preg_replace('/(\d{1,2}:\d{2}(am|pm))\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{1})-(\d{4})/', '$1 $3-0$4-$5', $csvline[1]);
-			
-			$this->Scorecard->create();
-			$this->Scorecard->set(array(
-				'player_name' => "$csvline[0]", 
-				'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
-				'team' => $csvline[2], 
-				'position' => $csvline[3], 
-				'score' => ($csvline[4]+(1000*$csvline[22])),
-				'shots_hit' => $csvline[6],
-				'shots_fired' => $csvline[7],
-				'accuracy' => (($csvline[7] > 0) ? ($csvline[6]/$csvline[7]) : 0),
-				'times_zapped' => $csvline[8],
-				'times_missiled' => $csvline[9],
-				'missile_hits' => $csvline[10],
-				'nukes_detonated' => $csvline[11],
-				'nukes_activated' => $csvline[12],
-				'nukes_canceled' => $csvline[13],
-				'medic_hits' => $csvline[14],
-				'own_medic_hits' => $csvline[15],
-				'medic_nukes' => $csvline[16],
-				'scout_rapid' => $csvline[17],
-				'life_boost' => $csvline[18],
-				'ammo_boost' => $csvline[19],
-				'lives_left' => $csvline[20],
-				'shots_left' => $csvline[21],
-				'penalties' => $csvline[22],
-				'shot_3hit' => $csvline[23],
-				'elim_other_team' => $csvline[24],
-				'team_elim' => $csvline[25],
-				'own_nuke_cancels' => $csvline[26],
-				'shot_opponent' => $csvline[27],
-				'shot_team' => $csvline[28],
-				'missiled_opponent' => $csvline[29],
-				'missiled_team' => $csvline[30],
-				'resupplies' => $csvline[31],
-				'rank' => $csvline[32],
-				'bases_destroyed' => $csvline[33],
-				'sp_earned' => ($csvline[27] + ($csvline[29]*2) + ($csvline[33]*5)),
-				'sp_spent' => (($csvline[12]*20) + ($csvline[18]*10) + ($csvline[19]*15)),
-				'pdf_id' => (isset($csvline[34]) ? $csvline[34] : null),
-				'center_id' => $center_id,
-				'type' => $type,
-				'league_id' => $league_id
-			));
+            //Start Syracuse hack
+            //format sample:  9:03pm Jul-5-2015
+            $datetime = null;
+            $datetime = preg_replace('/(\d{1,2}:\d{2}(am|pm))\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{1})-(\d{4})/', '$1 $3-0$4-$5', $game['date']);
+            
+            foreach($game['player'] as $player) {
+                
+                $this->Scorecard->create();
+                $this->Scorecard->set(array(
+                    'player_name' => "$player[name]", 
+                    'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
+                    'team' => $player['team'], 
+                    'position' => $player['position'], 
+                    'score' => ($player['score']+(1000*$player['penalties'])),
+                    'shots_hit' => $player['shotsHit'],
+                    'shots_fired' => $player['shotsFired'],
+                    'accuracy' => (($player['shotsFired'] > 0) ? ($player['shotsHit']/$player['shotsFired']) : 0),
+                    'times_zapped' => $player['timesZapped'],
+                    'times_missiled' => $player['timesMissled'],
+                    'missile_hits' => $player['missleHits'],
+                    'nukes_detonated' => $player['nukesDetonated'],
+                    'nukes_activated' => $player['nukesActivated'],
+                    'nukes_canceled' => $player['nukeCancels'],
+                    'medic_hits' => $player['medicHits'],
+                    'own_medic_hits' => $player['ownMedicHits'],
+                    'medic_nukes' => $player['medicNukes'],
+                    'scout_rapid' => $player['scoutRapid'],
+                    'life_boost' => $player['lifeBoost'],
+                    'ammo_boost' => $player['ammoBoost'],
+                    'lives_left' => $player['livesLeft'],
+                    'shots_left' => $player['shotsLeft'],
+                    'penalties' => $player['penalties'],
+                    'shot_3hit' => $player['shot3hit'],
+                    'elim_other_team' => $player['elimOtherTeam'],
+                    'team_elim' => $player['teamElim'],
+                    'own_nuke_cancels' => $player['ownNukeCancels'],
+                    'shot_opponent' => $player['shotOpponent'],
+                    'shot_team' => $player['shotTeam'],
+                    'missiled_opponent' => $player['missiledOpponent'],
+                    'missiled_team' => $player['missiledTeam'],
+                    'resupplies' => $player['resupplies'],
+                    'rank' => $player['rank'],
+                    'bases_destroyed' => $player['basesDestroyed'],
+                    'sp_earned' => ($player['shotOpponent'] + ($player['missiledOpponent']*2) + ($player['basesDestroyed']*5)),
+                    'sp_spent' => (($player['nukesActivated']*20) + ($player['lifeBoost']*10) + ($player['ammoBoost']*15)),
+                    'pdf_id' => (isset($game['file']) ? $game['file'] : null),
+                    'center_id' => $center_id,
+                    'type' => $type,
+                    'league_id' => $league_id
+                ));
 
+                if($this->Scorecard->save()) {
+                    $row++;
+                    
+                    $scorecard_id = $this->Scorecard->getLastInsertId();
 
-			if($this->Scorecard->save()) {
-				$row++;
-
-				for($i=1; $i<=$csvline[22]; $i++) {
-					$this->Scorecard->Penalty->create();
-					$this->Scorecard->Penalty->set(array(
-						'type' => 'Unknown',
-						'value' => -1000,
-						'scorecard_id' => $this->Scorecard->getLastInsertId()
-					));
-					$this->Scorecard->Penalty->save();
-				}
-			}
-		}
-		fclose($handle);
+                    for($i=1; $i<=$player['penalties']; $i++) {
+                        $this->Scorecard->Penalty->create();
+                        $this->Scorecard->Penalty->set(array(
+                            'type' => 'Unknown',
+                            'value' => -1000,
+                            'scorecard_id' => $scorecard_id
+                        ));
+                        $this->Scorecard->Penalty->save();
+                    }
+                    
+                    $this->Scorecard->generatePlayers();
+                    
+                    foreach($player['playerTarget'] as $hits) {
+                        $this->Scorecard->Hit->storeHits($player['name'], $scorecard_id, $hits);
+                    }
+                    
+                }
+            }
+        }
 		
 		$this->Scorecard->generateMVP();
 		$this->Scorecard->generateGames();
-		$this->Scorecard->generatePlayers();
+		//$this->Scorecard->generatePlayers();
 		
 		$this->Session->setFlash("Added $row scorecards");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
