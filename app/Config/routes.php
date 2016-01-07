@@ -19,7 +19,7 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-	
+
 	Router::connect('/', array('controller' => 'scorecards', 'action' => 'setState', 'all', null, null));
 	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'league', 6, 7));
 	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 8));
