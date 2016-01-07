@@ -813,7 +813,6 @@ class Scorecard extends AppModel {
         $results = array();
         
         foreach($hits as $hit) {
-            $this->log($hit, 'debug');
             foreach($hit['Hit'] as $record) {
                 if($record['Player']['id'] == $player_id) {
                     $results[$record['Target']['id']]['hit'] = $record['hits'];
