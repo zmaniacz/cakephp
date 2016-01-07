@@ -86,15 +86,13 @@ class UploadsController extends AppController {
 
 		$row=0;
 		$xmlString = file_get_contents($path.DS.$latest_filename);
-        $this->log($xmlString, 'debug');
         $xml = Xml::toArray(Xml::build($xmlString));
+        $games = $xml['games'];
 
 		$red_pens = 0;
 		$green_pens = 0;
         
-        foreach($xml as $game) {
-            
-
+        foreach($games['game'] as $game) {
             //Start Syracuse hack
             //format sample:  9:03pm Jul-5-2015
             $datetime = null;
