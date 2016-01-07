@@ -61,7 +61,8 @@ class GamesController extends AppController {
 
 			$this->Game->contain(array(
 				'Scorecard' => array(
-					'Penalty'
+					'Penalty',
+                    'Hit'
 				),
 				'Match' => array(
 					'Round'

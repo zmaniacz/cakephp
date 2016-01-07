@@ -163,7 +163,7 @@
 		$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 		$score_line .= "<td>".$score['lives_left']."</td>";
 		$score_line .= "<td>".$score['shots_left']."</td>";
-		$score_line .= "<td>".$score['shot_opponent']."</td>";
+        $score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".$score['shot_opponent']."</button></td>";
 		$score_line .= "<td>".$score['times_zapped']."</td>";
 		$score_line .= "<td>".$score['missiled_opponent']."</td>";
 		$score_line .= "<td>".$score['times_missiled']."</td>";
@@ -289,9 +289,28 @@
     </div>
   </div>
 </div>
-
+<div class="modal fade" id="hitModal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="hitModalLabel">Hit Details</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 	$('#penaltyModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		$(this).find(".modal-body").text("Loading...");
+		$(this).find(".modal-body").load(button.attr("target"));
+	});
+    $('#hitModal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget);
 		$(this).find(".modal-body").text("Loading...");
 		$(this).find(".modal-body").load(button.attr("target"));

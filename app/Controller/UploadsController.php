@@ -87,7 +87,6 @@ class UploadsController extends AppController {
 		$row=0;
 		$xmlString = file_get_contents($path.DS.$latest_filename);
         $xml = Xml::toArray(Xml::build($xmlString));
-        $this->log($xml['game'], 'debug');
 
 		$red_pens = 0;
 		$green_pens = 0;

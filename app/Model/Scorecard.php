@@ -781,6 +781,71 @@ class Scorecard extends AppModel {
 
 		return $overall;
 	}
+    
+    public function getHitDetails($player_id, $game_id) {
+        $hits = $this->find('all', array(
+            'fields' => array(
+                'id',
+                'player_name',
+                'team',
+                'position',
+                'rank',
+                'player_id',
+                'game_id'
+            ),
+            'contain' => array(
+                'Hit' => array(
+                    'conditions' => array(
+                        "OR" =>array(
+                            'player_id' => $player_id,
+                            'target_id' => $player_id
+                        )
+                    ),
+                    'Player',
+                    'Target'
+                )
+            ),
+            'conditions' => array(
+                'game_id' => $game_id
+            )
+        ));
+        
+        $results = array();
+        
+        foreach($hits as $hit) {
+            $this->log($hit, 'debug');
+            foreach($hit['Hit'] as $record) {
+                if($record['Player']['id'] == $player_id) {
+                    $results[$record['Target']['id']]['hit'] = $record['hits'];
+                    $results[$record['Target']['id']]['missile'] = $record['missiles'];
+                } else {
+                    $results[$record['Player']['id']]['id'] = $record['Player']['id'];
+                    $results[$record['Player']['id']]['name'] = $record['Player']['player_name'];
+                    $results[$record['Player']['id']]['position'] = $hit['Scorecard']['position'];
+                    $results[$record['Player']['id']]['rank'] = $hit['Scorecard']['rank'];
+                    $results[$record['Player']['id']]['team'] = $hit['Scorecard']['team'];
+                    $results[$record['Player']['id']]['hitBy'] = $record['hits'];
+                    $results[$record['Player']['id']]['missileBy'] = $record['missiles'];
+                }
+            }
+            
+            if($hit['Scorecard']['player_id'] == $player_id) {
+                $results[$player_id]['id'] = $hit['Scorecard']['player_id'];
+                $results[$player_id]['name'] = $hit['Scorecard']['player_name'];
+                $results[$player_id]['position'] = $hit['Scorecard']['position'];
+                $results[$player_id]['team'] = $hit['Scorecard']['team'];
+                $results[$player_id]['rank'] = $hit['Scorecard']['rank'];
+            }
+        }
+
+        foreach ($results as $key => $row) {
+            $team[$key] = $row['team'];
+            $rank[$key] = $row['rank'];
+        }
+		array_multisort($team, SORT_ASC, $rank, SORT_ASC, $results);
+        
+        return $results;
+    }
 
 	public function getLeaderboards($state) {
 		$conditions = array();

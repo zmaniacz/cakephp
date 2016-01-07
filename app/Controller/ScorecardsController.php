@@ -22,6 +22,7 @@ class ScorecardsController extends AppController {
 			'playerScorecards',
 			'leaderboards',
 			'getMVPBreakdown',
+            'getHitBreakdown',
 			'filterSub',
 			'filterFinals',
 			'filterRounds'
@@ -159,6 +160,12 @@ class ScorecardsController extends AppController {
 		
 		$this->set('score', $scorecard);
 	}
+    
+    public function getHitBreakdown($player_id, $game_id) {
+        $this->request->allowMethod('ajax');
+        $this->set('hits', $this->Scorecard->getHitDetails($player_id, $game_id));
+        $this->set('player_id', $player_id);
+    }
 	
 	public function ajax_switchSub($id) {
 		$this->request->onlyAllow('ajax');
