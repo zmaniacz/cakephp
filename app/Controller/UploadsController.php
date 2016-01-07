@@ -86,6 +86,7 @@ class UploadsController extends AppController {
 
 		$row=0;
 		$xmlString = file_get_contents($path.DS.$latest_filename);
+        $this->log($xmlString, 'debug');
         $xml = Xml::toArray(Xml::build($xmlString));
 
 		$red_pens = 0;
