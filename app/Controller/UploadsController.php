@@ -92,7 +92,7 @@ class UploadsController extends AppController {
 		$green_pens = 0;
         $tmpIds = array();
         
-        foreach($xml['games'] as $game) {
+        foreach($xml['games']['game'] as $game) {
             //Start Syracuse hack
             //format sample:  9:03pm Jul-5-2015
             $datetime = null;
