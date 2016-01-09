@@ -87,12 +87,12 @@ class UploadsController extends AppController {
 		$row=0;
 		$xmlString = file_get_contents($path.DS.$latest_filename);
         $xml = Xml::toArray(Xml::build($xmlString));
-        $games = $xml['games'];
 
 		$red_pens = 0;
 		$green_pens = 0;
+        $tmpIds = array();
         
-        foreach($games['game'] as $game) {
+        foreach($xml['games'] as $game) {
             //Start Syracuse hack
             //format sample:  9:03pm Jul-5-2015
             $datetime = null;
@@ -157,14 +157,15 @@ class UploadsController extends AppController {
                             'scorecard_id' => $scorecard_id
                         ));
                         $this->Scorecard->Penalty->save();
-                    }
-                    
-                    $this->Scorecard->generatePlayers();
-                    
-                    foreach($player['playerTarget'] as $hits) {
-                        $this->Scorecard->Hit->storeHits($player['name'], $scorecard_id, $hits);
-                    }
-                    
+                    }                
+                    $tmpIds[$player['name']] = $scorecard_id;    
+                }
+            }
+            
+            $this->Scorecard->generatePlayers();
+            foreach($game['player'] as $player) {
+                foreach($player['playerTarget'] as $hits) {
+                    $this->Scorecard->Hit->storeHits($player['name'], $tmpIds[$player['name']], $hits);
                 }
             }
         }
