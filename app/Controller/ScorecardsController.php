@@ -124,13 +124,13 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function rebuild() {
-		$mvps = $this->Scorecard->generateMVP();
+		//$mvps = $this->Scorecard->generateMVP();
 		//$games = $this->Scorecard->generateGames(1);
 		//$players = $this->Scorecard->generatePlayers($this->Session->read('center.Center.id'), $this->Session->read('filter'));
 		//$existing = $players['existing'];
 		//$new = $players['new'];
 		
-		$this->Session->setFlash("Added $mvps MVP entries"); //, $games game entries, games for $existing players and $new new players");
+		//$this->Session->setFlash("Added $mvps MVP entries"); //, $games game entries, games for $existing players and $new new players");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 	}
 	

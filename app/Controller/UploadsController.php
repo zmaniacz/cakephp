@@ -87,10 +87,10 @@ class UploadsController extends AppController {
 		$row=0;
 		$xmlString = file_get_contents($path.DS.$latest_filename);
         $xml = Xml::toArray(Xml::build($xmlString));
-
-		$red_pens = 0;
-		$green_pens = 0;
-        $tmpIds = array();
+        
+        //jesus fuck this shit right here.  I mean really cakephp, what the goddamned fuck
+        //fix your fucking xml class fuck off
+        $xml['games']['game'] = isset($xml['games']['game'][0]) ? $xml['games']['game'] : array($xml['games']['game']);
         
         foreach($xml['games']['game'] as $game) {
             //Start Syracuse hack
@@ -99,6 +99,7 @@ class UploadsController extends AppController {
             $datetime = preg_replace('/(\d{1,2}:\d{2}(am|pm))\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{1})-(\d{4})/', '$1 $3-0$4-$5', $game['date']);
             
             foreach($game['player'] as $player) {
+                $player_id = $this->Scorecard->generatePlayer($player['name']);
                 
                 $this->Scorecard->create();
                 $this->Scorecard->set(array(
@@ -139,6 +140,7 @@ class UploadsController extends AppController {
                     'sp_earned' => ($player['shotOpponent'] + ($player['missiledOpponent']*2) + ($player['basesDestroyed']*5)),
                     'sp_spent' => (($player['nukesActivated']*20) + ($player['lifeBoost']*10) + ($player['ammoBoost']*15)),
                     'pdf_id' => (isset($game['file']) ? $game['file'] : null),
+                    'player_id' => $player_id,
                     'center_id' => $center_id,
                     'type' => $type,
                     'league_id' => $league_id
@@ -157,22 +159,18 @@ class UploadsController extends AppController {
                             'scorecard_id' => $scorecard_id
                         ));
                         $this->Scorecard->Penalty->save();
-                    }                
-                    $tmpIds[$player['name']] = $scorecard_id;    
-                }
-            }
-            
-            $this->Scorecard->generatePlayers();
-            foreach($game['player'] as $player) {
-                foreach($player['playerTarget'] as $hits) {
-                    $this->Scorecard->Hit->storeHits($player['name'], $tmpIds[$player['name']], $hits);
+                    }
+                          
+                    foreach($player['playerTarget'] as $hits) {
+                        $this->Scorecard->generatePlayer($hits['name']);
+                        $this->Scorecard->Hit->storeHits($player['name'], $scorecard_id, $hits);
+                    }  
                 }
             }
         }
 		
 		$this->Scorecard->generateMVP();
 		$this->Scorecard->generateGames();
-		//$this->Scorecard->generatePlayers();
 		
 		$this->Session->setFlash("Added $row scorecards");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));

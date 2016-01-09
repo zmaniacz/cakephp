@@ -273,6 +273,29 @@ class Scorecard extends AppModel {
 		
 		return $results;
 	}
+    
+    public function generatePlayer($player_name) {
+		$player = $this->Player->PlayersName->findByPlayerName($player_name);
+        
+        if(empty($player)) {
+            $this->Player->Create();
+            $this->Player->set(array(
+                'player_name' => $player_name
+            ));
+            $this->Player->save();
+            
+            $this->Player->PlayersName->Create();
+            $this->Player->PlayersName->set(array(
+                'player_id' => $this->Player->id,
+                'player_name' => $player_name
+            ));
+            $this->Player->PlayersName->save();
+		
+            return $this->Player->id;
+        } else {
+            return $player['PlayersName']['player_id'];
+        }
+	}
 	
 	public function getGameDates($state) {
 		$conditions[] = array();
