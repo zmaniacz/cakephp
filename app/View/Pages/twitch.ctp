@@ -1,1 +1,1 @@
-<iframe class="videoplayer" src="http://www.twitch.tv/embed?channel=khaldor" height="478" width="800" frameborder="0" scrolling="no"></iframe>
+<iframe src="http://www.twitch.tv/beanz2d2/embed" height="378" width="620" frameborder="0"></iframe>
