@@ -1,1 +1,2 @@
-<iframe src="http://www.twitch.tv/beanz2d2/embed&popout_chat=true" height="378" width="620" frameborder="0"></iframe>
+<iframe src="http://www.twitch.tv/beanz2d2/embed" height="378" width="620" frameborder="0"></iframe>
+<iframe frameborder="0" scrolling="no" id="chat_embed" src="http://www.twitch.tv/beanz2d2/chat" height="500" width="350"></iframe>
