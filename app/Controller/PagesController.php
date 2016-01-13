@@ -77,5 +77,10 @@ class PagesController extends AppController {
 	}
 
 	public function aboutSM5() {
+        //
 	}
+    
+    public function twitch() {
+        //
+    }
 }

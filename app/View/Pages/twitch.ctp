@@ -1,0 +1,1 @@
+<iframe class="videoplayer" src="http://www.twitch.tv/embed?channel=khaldor" height="478" width="800" frameborder="0" scrolling="no"></iframe>
