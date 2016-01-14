@@ -41,6 +41,21 @@
 		if (theme) {
 			set_theme(theme);
 		}
+        
+        $.ajax({ 
+            url:'https://api.twitch.tv/kraken/streams/beanz2d2',
+            dataType:'jsonp',
+            success:function(channel) { 
+                if(channel["stream"] == null) {
+                    $("twitch_status").addClass("label label-default").text("Offline");
+                } else {
+                    $("twitch_status").addClass("label label-danger").text("LIVE");
+                }
+            },
+            error:function() {
+                //request failed
+            }
+        });
 	});
 </script>
 <body>
@@ -73,6 +88,7 @@
 								<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
+                                <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch')); ?><span id="twitch_status"></span></li>
 								<?php if(AuthComponent::user('role') === 'admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
