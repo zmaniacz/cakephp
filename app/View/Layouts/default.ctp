@@ -47,9 +47,9 @@
             dataType:'jsonp',
             success:function(channel) { 
                 if(channel["stream"] == null) {
-                    $("twitch_status").addClass("label label-default").text("Offline");
+                    $("#twitch_status").addClass("label label-default").text("Offline");
                 } else {
-                    $("twitch_status").addClass("label label-danger").text("LIVE");
+                    $("#twitch_status").addClass("label label-danger").text("LIVE");
                 }
             },
             error:function() {
