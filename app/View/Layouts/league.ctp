@@ -56,6 +56,7 @@
 				<li><?php echo $this->Html->link("Game List", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'gameList')); ?></li>
 				<li><?php echo $this->Html->link("Penalties", array('controller' => 'leagues/'.$league['League']['id'], 'action' => 'penalties')); ?></li>
 				<li><?php echo $this->Html->link("About SM5", array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
+                <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
 				<?php
 					if(AuthComponent::user('role') === 'admin') {
 						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads', 'league_id' => $league['League']['id'], 'center_id' => $league['League']['center_id']))."</li>";

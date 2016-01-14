@@ -47,9 +47,9 @@
             dataType:'jsonp',
             success:function(channel) { 
                 if(channel["stream"] == null) {
-                    $("#twitch_status").addClass("label label-default").text("Offline");
+                    $("#twitch_status").append(" <span class='label label-default'>Offline</span>");
                 } else {
-                    $("#twitch_status").addClass("label label-danger").text("LIVE");
+                    $("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
                 }
             },
             error:function() {
@@ -88,7 +88,7 @@
 								<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
-                                <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch')); ?><span id="twitch_status"></span></li>
+                                <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
