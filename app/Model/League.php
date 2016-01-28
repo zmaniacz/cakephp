@@ -109,70 +109,71 @@ class League extends AppModel {
 			$standings[$id] = array('id' => $id, 'name' => $name, 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_played' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
 		}
 		
-		$this->log($rounds, 'debug');
 		
 		foreach($rounds['Round'] as $round) {
 			foreach($round['Match'] as $match) {
 				//Overall match points
-				$standings[$match['team_1_id']]['points'] += $match['team_1_points'];
-				$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
-				
-				//Matches Won
-				if(!is_null($match['team_1_points']) && !is_null($match['team_2_points'])) {
-					if($match['team_1_points'] + $match['team_2_points'] == 6) {
-						if($match['team_1_points'] > $match['team_2_points'])
-							$standings[$match['team_1_id']]['matches_won'] += 1;
-						elseif($match['team_1_points'] < $match['team_2_points'])
-							$standings[$match['team_2_id']]['matches_won'] += 1;
-					}
-				}
-				
-				if(!empty($match['Game_1'])) {
-					if($match['Game_1']['winner'] == 'Red') {
-						$standings[$match['team_1_id']]['won'] += 1;
-						$standings[$match['team_2_id']]['lost'] += 1;
-					} else {
-						$standings[$match['team_1_id']]['lost'] += 1;
-						$standings[$match['team_2_id']]['won'] += 1;
+				if(!is_null($match['team_1_id']) || !is_null($match['team_2_id'])) {
+					$standings[$match['team_1_id']]['points'] += $match['team_1_points'];
+					$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
+					
+					//Matches Won
+					if(!is_null($match['team_1_points']) && !is_null($match['team_2_points'])) {
+						if($match['team_1_points'] + $match['team_2_points'] == 6) {
+							if($match['team_1_points'] > $match['team_2_points'])
+								$standings[$match['team_1_id']]['matches_won'] += 1;
+							elseif($match['team_1_points'] < $match['team_2_points'])
+								$standings[$match['team_2_id']]['matches_won'] += 1;
+						}
 					}
 					
-					$standings[$match['team_1_id']]['for'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
-					$standings[$match['team_2_id']]['against'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
-					$standings[$match['team_2_id']]['for'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
-					$standings[$match['team_1_id']]['against'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
-					
-					$standings[$match['team_1_id']]['played'] += 1;
-					$standings[$match['team_2_id']]['played'] += 1;
-					
-					if($match['Game_1']['red_eliminated'])
-						$standings[$match['team_2_id']]['elims'] += 1;
-					
-					if($match['Game_1']['green_eliminated'])
-						$standings[$match['team_1_id']]['elims'] += 1;
-				}
-				
-				if(!empty($match['Game_2'])) {
-					if($match['Game_2']['winner'] == 'Red') {
-						$standings[$match['team_2_id']]['won'] += 1;
-						$standings[$match['team_1_id']]['lost'] += 1;
-					} else {
-						$standings[$match['team_2_id']]['lost'] += 1;
-						$standings[$match['team_1_id']]['won'] += 1;
+					if(!empty($match['Game_1'])) {
+						if($match['Game_1']['winner'] == 'Red') {
+							$standings[$match['team_1_id']]['won'] += 1;
+							$standings[$match['team_2_id']]['lost'] += 1;
+						} else {
+							$standings[$match['team_1_id']]['lost'] += 1;
+							$standings[$match['team_2_id']]['won'] += 1;
+						}
+						
+						$standings[$match['team_1_id']]['for'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
+						$standings[$match['team_2_id']]['against'] += $match['Game_1']['red_score'] + $match['Game_1']['red_adj'];
+						$standings[$match['team_2_id']]['for'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
+						$standings[$match['team_1_id']]['against'] += $match['Game_1']['green_score'] + $match['Game_1']['green_adj'];
+						
+						$standings[$match['team_1_id']]['played'] += 1;
+						$standings[$match['team_2_id']]['played'] += 1;
+						
+						if($match['Game_1']['red_eliminated'])
+							$standings[$match['team_2_id']]['elims'] += 1;
+						
+						if($match['Game_1']['green_eliminated'])
+							$standings[$match['team_1_id']]['elims'] += 1;
 					}
 					
-					$standings[$match['team_2_id']]['for'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
-					$standings[$match['team_1_id']]['against'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
-					$standings[$match['team_1_id']]['for'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
-					$standings[$match['team_2_id']]['against'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
-					
-					$standings[$match['team_1_id']]['played'] += 1;
-					$standings[$match['team_2_id']]['played'] += 1;
-					
-					if($match['Game_2']['red_eliminated'])
-						$standings[$match['team_1_id']]['elims'] += 1;
-					
-					if($match['Game_2']['green_eliminated'])
-						$standings[$match['team_2_id']]['elims'] += 1;
+					if(!empty($match['Game_2'])) {
+						if($match['Game_2']['winner'] == 'Red') {
+							$standings[$match['team_2_id']]['won'] += 1;
+							$standings[$match['team_1_id']]['lost'] += 1;
+						} else {
+							$standings[$match['team_2_id']]['lost'] += 1;
+							$standings[$match['team_1_id']]['won'] += 1;
+						}
+						
+						$standings[$match['team_2_id']]['for'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
+						$standings[$match['team_1_id']]['against'] += $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
+						$standings[$match['team_1_id']]['for'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
+						$standings[$match['team_2_id']]['against'] += $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
+						
+						$standings[$match['team_1_id']]['played'] += 1;
+						$standings[$match['team_2_id']]['played'] += 1;
+						
+						if($match['Game_2']['red_eliminated'])
+							$standings[$match['team_1_id']]['elims'] += 1;
+						
+						if($match['Game_2']['green_eliminated'])
+							$standings[$match['team_2_id']]['elims'] += 1;
+					}
 				}
 			}
 		}
