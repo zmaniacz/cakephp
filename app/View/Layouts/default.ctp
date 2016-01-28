@@ -24,8 +24,8 @@
 		echo $this->Html->charset();
 		echo $this->Html->script('//code.jquery.com/jquery-2.1.4.min.js');
 		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js');
-		echo $this->Html->script('//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js');
-		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js');
+		echo $this->Html->script('//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js');
+		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
 		echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/yeti/bootstrap.min.css', array('title' => 'main'));
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('laserforce');
