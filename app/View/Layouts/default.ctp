@@ -89,6 +89,7 @@
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
+                                <li><?= $this->Html->link('WCT3 Schedule', array('controller' => 'pages', 'action' => 'wct3Schedule')); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>

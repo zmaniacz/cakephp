@@ -1,4 +1,4 @@
-<div id="myExcelDiv" style="width: 1140px; height: 1200px"></div>
+<div id="myExcelDiv" style="width: 1140px; height: 1300px"></div>
 <script type="text/javascript" src="http://r.office.microsoft.com/r/rlidExcelWLJS?v=1&kip=1"></script>
 <script type="text/javascript">
 	/*
@@ -23,7 +23,8 @@
 			uiOptions: {
 				showDownloadButton: false,
 				showGridlines: false,
-				showParametersTaskPane: false
+				showParametersTaskPane: false,
+				showRowColumnHeaders: false,
 			},
 			interactivityOptions: {
 				allowTypingAndFormulaEntry: false,
