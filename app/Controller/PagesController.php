@@ -83,4 +83,8 @@ class PagesController extends AppController {
     public function twitch() {
         //
     }
+    
+    public function wct3Schedule() {
+       //
+    }
 }
