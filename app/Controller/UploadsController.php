@@ -105,7 +105,7 @@ class UploadsController extends AppController {
                 $this->Scorecard->set(array(
                     'player_name' => "$player[name]", 
                     'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
-                    'team' => $player['team'], 
+                    'team' => ucwords($player['team']), 
                     'position' => $player['position'], 
                     'score' => ($player['score']+(1000*$player['penalties'])),
                     'shots_hit' => $player['shotsHit'],
