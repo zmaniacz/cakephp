@@ -140,19 +140,62 @@ function displayWinLossPie(data) {
 	});
 }
 
-function displayPositionSpider(data) {
-	var mdn_mvp = [data['player_mdn_mvp']['ammo'],data['player_mdn_mvp']['commander'],data['player_mdn_mvp']['heavy'],data['player_mdn_mvp']['medic'],data['player_mdn_mvp']['scout']];
+function displayPositionScoreSpider(data) {
 	var mdn_score = [data['player_mdn_scores']['ammo'],data['player_mdn_scores']['commander'],data['player_mdn_scores']['heavy'],data['player_mdn_scores']['medic'],data['player_mdn_scores']['scout']];
-	var ctr_mdn_mvp = [data['center_mdn_mvp']['ammo'],data['center_mdn_mvp']['commander'],data['center_mdn_mvp']['heavy'],data['center_mdn_mvp']['medic'],data['center_mdn_mvp']['scout']];
 	var ctr_mdn_score = [data['center_mdn_scores']['ammo'],data['center_mdn_scores']['commander'],data['center_mdn_scores']['heavy'],data['center_mdn_scores']['medic'],data['center_mdn_scores']['scout']];
 	
-	$('#position_spider').highcharts({
+	$('#position_score_spider').highcharts({
 		chart: {
 			polar: true,
 			type: 'line'
 		},
 		title: {
-			text: 'Position Score vs MVP'
+			text: 'Position Score vs Median'
+		},
+		xAxis: {
+			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
+			tickmarkPlacement: 'on',
+			lineWidth: 0
+		},
+		yAxis: [{
+			min: 0,
+			max: 10000,
+			labels: {
+				enabled: false
+			}
+		}],
+		series: [ {
+			name: 'Median Score',
+			data: mdn_score,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			yAxis: 0
+		},{
+			name: 'Center Median Score',
+			data: ctr_mdn_score,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			dashStyle: 'dash',
+			yAxis: 0
+		}]
+	});
+}
+
+function displayPositionMVPSpider(data) {
+	var mdn_mvp = [data['player_mdn_mvp']['ammo'],data['player_mdn_mvp']['commander'],data['player_mdn_mvp']['heavy'],data['player_mdn_mvp']['medic'],data['player_mdn_mvp']['scout']];
+	var ctr_mdn_mvp = [data['center_mdn_mvp']['ammo'],data['center_mdn_mvp']['commander'],data['center_mdn_mvp']['heavy'],data['center_mdn_mvp']['medic'],data['center_mdn_mvp']['scout']];
+	
+	$('#position_mvp_spider').highcharts({
+		chart: {
+			polar: true,
+			type: 'line'
+		},
+		title: {
+			text: 'Position MVP vs Median'
 		},
 		xAxis: {
 			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
@@ -165,14 +208,9 @@ function displayPositionSpider(data) {
 			labels: {
 				enabled: false
 			}
-		}, {
-			min: 0,
-			max: 10000,
-			labels: {
-				enabled: false
-			}
 		}],
-		series: [{
+		series: [
+		{
 			name: 'Median MVP',
 			data: mdn_mvp,
 			marker: {
@@ -180,15 +218,8 @@ function displayPositionSpider(data) {
             },
 			pointPlacement: 'on',
 			yAxis: 0
-		}, {
-			name: 'Median Score',
-			data: mdn_score,
-			marker: {
-                symbol: 'square'
-            },
-			pointPlacement: 'on',
-			yAxis: 1
-		}, {
+		},
+		{
 			name: 'Center Median MVP',
 			data: ctr_mdn_mvp,
 			marker: {
@@ -197,15 +228,6 @@ function displayPositionSpider(data) {
 			pointPlacement: 'on',
 			dashStyle: 'dash',
 			yAxis: 0
-		}, {
-			name: 'Center Median Score',
-			data: ctr_mdn_score,
-			marker: {
-                symbol: 'square'
-            },
-			pointPlacement: 'on',
-			dashStyle: 'dash',
-			yAxis: 1
 		}]
 	});
 }
@@ -229,7 +251,8 @@ $(document).ready(function(){
 		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json'))); ?>',
 		dataType: 'json',
 		success: function(data) {
-			displayPositionSpider(data);
+			displayPositionScoreSpider(data);
+			displayPositionMVPSpider(data);
 		},
 		error: function() {
 			alert('spiderfail');
@@ -944,7 +967,8 @@ $(document).ready(function(){
 	</div>
 	<div role="tabpanel" class="tab-pane" id="overall_tab">
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
-		<div id="position_spider" style="height: 500px; width: 800px"></div>
+		<div id="position_score_spider" style="display: inline-block;height: 500px; width: 500px"></div>
+		<div id="position_mvp_spider" style="display: inline-block;height: 500px; width: 500px"></div>
 		<br />
 		<br />
 		<br />
