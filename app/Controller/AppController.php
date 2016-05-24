@@ -73,7 +73,7 @@ class AppController extends Controller {
 		if(!is_null($this->request->query('centerID'))) {
 			$this->Session->write('state.centerID', $this->request->query('centerID'));
 		} elseif(!$this->Session->check('state.centerID')) {
-			$this->Session->write('state.centerID', 1);
+			$this->Session->write('state.centerID', 14);
 		}
 		
 		if(!is_null($this->request->query('leagueID'))) {
