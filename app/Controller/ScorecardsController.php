@@ -80,7 +80,7 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallAverages() {
-		$this->request->allowMethod('ajax');
+		//$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 	
