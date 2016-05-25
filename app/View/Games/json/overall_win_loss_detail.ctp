@@ -55,5 +55,5 @@
 		$averages[] = array('position' => $line['Scorecard']['position'], 'avg_score' => $line[0]['avg_score'], 'avg_mvp' => $line[0]['avg_mvp']);
 	}
 	
-	echo json_encode(compact('winloss','winlossdetail','scoredetail','averages'));
+	echo json_encode(compact('winloss','winlossdetail','scoredetail','averages','overall_mvp'), JSON_NUMERIC_CHECK);
 ?>

@@ -15,6 +15,8 @@ function overallData(data) {
 		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
 	];
 	var mvp = data['overall_mvp'];
+	console.log(mvp);
+	var commander_max = mvp['commander_max'];
 	
 	$('#win_loss_pie').highcharts({
 		chart: {
@@ -95,6 +97,7 @@ function overallData(data) {
 			}
 		},
 		series: [{
+			name: 'Positions',
 			data: [
 				[mvp['commander_min'], mvp['commander_lower'], mvp['commander'], mvp['commander_upper'], mvp['commander_max']],
 				[mvp['heavy_min'], mvp['heavy_lower'], mvp['heavy'], mvp['heavy_upper'], mvp['heavy_max']],

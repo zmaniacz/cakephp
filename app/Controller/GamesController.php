@@ -16,6 +16,8 @@ class GamesController extends AppController {
  */
 	public $components = array('Paginator', 'Session');
 
+	public $uses = array('Game','Player');
+
 	public function beforeFilter() {
 		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList');
 		parent::beforeFilter();
@@ -154,6 +156,6 @@ class GamesController extends AppController {
 		$this->request->onlyAllow('ajax');
 		$this->set('overall', $this->Game->getOverallStats($this->Session->read('state')));
 		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($this->Session->read('state')));
-		$this->set('overall_mvp', $this->Game->Scorecard->getMedianMVPByPosition(null, $this->Session->read('state')));
+		$this->set('overall_mvp', $this->Player->getMedianMVPByPosition(null, $this->Session->read('state')));
 	}
 }
