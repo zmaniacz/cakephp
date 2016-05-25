@@ -43,36 +43,68 @@ class Scorecard extends AppModel {
 	
 	public function generateMVP() {
 		$counter = 0;
+		$games = $this->Game->find('all', array('recursive' => 1));
+		print_r($games);
+		/*foreach($games as $game) {
+			
+		}
 		$scores = $this->find('all', array('conditions' => array('Scorecard.mvp_points' => NULL), 'limit' => 1000));
 		foreach ($scores as $score) {
 			$mvp = 0;
 
-			//Position based point bonus
-			switch($score['Scorecard']['position']) {
-				case "Ammo Carrier":
-					$mvp += max(ceil(($score['Scorecard']['score']-3999)/1000),0);
+			//Rank based point bonus
+			//10 points per player assigned to each team and set proportionally based on rank
+			switch($score['Scorecard']['rank']) {
+				case 1:
+					$mvp += 30*.2;
 					break;
-				case "Commander":
-					$mvp += max(ceil(($score['Scorecard']['score']-10999)/1000),0);
+				case 2:
+					$mvp += 30*.18;
 					break;
-				case "Heavy Weapons":
-					$mvp += max(ceil(($score['Scorecard']['score']-7999)/1000),0);
+				case 3:
+					$mvp += 30*.17;
 					break;
-				case "Medic":
-					$mvp += max(ceil(($score['Scorecard']['score']-2999)/1000),0);
+				case 4:
+					$mvp += 30*.16;
 					break;
-				case "Scout":
-					$mvp += max(ceil(($score['Scorecard']['score']-6999)/1000),0);
+				case 5:
+					$mvp += 30*.15;
+					break;
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+					$mvp += 30*.14;
 					break;
 			}
+			
+			//bases for 2 points each
+			$mvp += $score['Scorecard']['bases_destroyed'] * 2;
+			
+			//get dat 5-chain
+			$mvp += $score['Scorecard']['nukes_detonated'];
+			
+			//push the little button
+			$mvp += $score['Scorecard']['scout_rapid'] * 1;
+			$mvp += $score['Scorecard']['life_boost'] * 3;
+			$mvp += $score['Scorecard']['ammo_boost'] * 3;
+			
+			//accuracy bonus
+			$mvp += round($score['Scorecard']['accuracy'] * 10,1);			
+			
+			//hit diff > 1 = bonus
+			if($score['Scorecard']['shot_opponent']/$score['Scorecard']['times_zapped'] >= 1)
+				$mvp += round($score['Scorecard']['shot_opponent']/$score['Scorecard']['times_zapped']),2)*3;
+				
+				
+				
 
 			//medic bonus point
 			if($score['Scorecard']['position'] == 'Medic' && $score['Scorecard']['score'] >= 3000) {
 				$mvp += 1;
 			}
 			
-			//accuracy bonus
-			$mvp += round($score['Scorecard']['accuracy'] * 10,1);
+
 			
 			//don't get missiled dummy
 			$mvp += $score['Scorecard']['times_missiled'] * -1;
@@ -87,8 +119,7 @@ class Scorecard extends AppModel {
 					break;
 			}
 			
-			//get dat 5-chain
-			$mvp += $score['Scorecard']['nukes_detonated'];
+
 			
 			//maybe hide better
 			if($score['Scorecard']['nukes_activated'] - $score['Scorecard']['nukes_detonated'] > 0) {
@@ -123,10 +154,7 @@ class Scorecard extends AppModel {
 			//dont be a venom
 			$mvp += $score['Scorecard']['own_medic_hits'] * -1;
 			
-			//push the little button
-			$mvp += $score['Scorecard']['scout_rapid'] * .5;
-			$mvp += $score['Scorecard']['life_boost'] * 2;
-			$mvp += $score['Scorecard']['ammo_boost'] * 3;
+
 			
 			//survival bonuses/penalties
 			if($score['Scorecard']['lives_left'] > 0 && $score['Scorecard']['position'] == "Medic")
@@ -168,7 +196,7 @@ class Scorecard extends AppModel {
 			} else {
 				debug($this->validationErrors); die();
 			}
-		}
+		}*/
 		return $counter;
 	}
 	
