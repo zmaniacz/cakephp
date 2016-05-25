@@ -154,5 +154,6 @@ class GamesController extends AppController {
 		$this->request->onlyAllow('ajax');
 		$this->set('overall', $this->Game->getOverallStats($this->Session->read('state')));
 		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($this->Session->read('state')));
+		$this->set('overall_mvp', $this->Game->Scorecard->getMedianMVPByPosition(null, $this->Session->read('state')));
 	}
 }

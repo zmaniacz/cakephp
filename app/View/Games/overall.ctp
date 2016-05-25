@@ -14,6 +14,7 @@ function overallData(data) {
 		['Elim Wins from Green', data['winlossdetail']['elim_wins_from_green']],
 		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
 	];
+	var mvp = data['overall_mvp'];
 	
 	$('#win_loss_pie').highcharts({
 		chart: {
@@ -58,6 +59,49 @@ function overallData(data) {
 					return this.y > 0 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
 				}
 			}
+		}]
+	});
+	
+	$('#mvp_box_plot').highcharts({
+		chart: {
+			type: 'boxplot'
+		},
+		title: {
+			text: ''
+		},
+		yAxis: {
+			title: {
+				text: 'MVP'
+			}
+		},
+		xAxis: {
+			categories: ['Commander', 'Heavy', 'Scout', 'Ammo', 'Medic'],
+			title: {
+				text: 'Position'
+			}	
+		},
+		plotOptions: {
+			boxplot: {
+                fillColor: '#F0F0E0',
+                lineWidth: 2,
+                medianColor: '#0C5DA5',
+                medianWidth: 3,
+                stemColor: '#A63400',
+                stemDashStyle: 'dot',
+                stemWidth: 1,
+                whiskerColor: '#3D9200',
+                whiskerLength: '20%',
+                whiskerWidth: 3
+			}
+		},
+		series: [{
+			data: [
+				[mvp['commander_min'], mvp['commander_lower'], mvp['commander'], mvp['commander_upper'], mvp['commander_max']],
+				[mvp['heavy_min'], mvp['heavy_lower'], mvp['heavy'], mvp['heavy_upper'], mvp['heavy_max']],
+				[mvp['scout_min'], mvp['scout_lower'], mvp['scout'], mvp['scout_upper'], mvp['scout_max']],
+				[mvp['ammo_min'], mvp['ammo_lower'], mvp['ammo'], mvp['ammo_upper'], mvp['ammo_max']],
+				[mvp['medic_min'], mvp['medic_lower'], mvp['medic'], mvp['medic_upper'], mvp['medic_max']]
+			]
 		}]
 	});
 
@@ -116,6 +160,18 @@ $(document).ready(function(){
 	<div id="collapse_winloss" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
 			<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
+		</div>
+	</div>
+</div>
+<div id="boxplot_panel" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#boxplot_panel" data-target="#collapse_boxplot" role="tab" id="boxplot_heading">
+		<h4 class="panel-title">
+			Median MVP
+		</h4>
+	</div>
+	<div id="collapse_boxplot" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<div id="mvp_box_plot" style="height: 500px; width: 800px"></div>
 		</div>
 	</div>
 </div>

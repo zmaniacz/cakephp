@@ -192,7 +192,6 @@ class Player extends AppModel {
 	public function getMedianScoreByPosition($id = null, $state = null) {
 		$fields = array('position','score');
 		$conditions = array();
-		$limit = null;
 		
 		if(!is_null($id)) {
 			$fields[] = 'player_id';
@@ -223,40 +222,62 @@ class Player extends AppModel {
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
 				case 'Commander':
-					if( (is_null($limit)) || (!is_null($limit) && count($commander) <= $limit)) {
-						$commander[] = $score['Scorecard']['score'];
-					}
+					$commander[] = $score['Scorecard']['score'];
 					break;
 				case 'Heavy Weapons':
-					if( (is_null($limit)) || (!is_null($limit) && count($heavy) <= $limit)) {
-						$heavy[] = $score['Scorecard']['score'];
-					}
+					$heavy[] = $score['Scorecard']['score'];
 					break;
 				case 'Scout':
-					if( (is_null($limit)) || (!is_null($limit) && count($scout) <= $limit)) {
-						$scout[] = $score['Scorecard']['score'];
-					}
+					$scout[] = $score['Scorecard']['score'];
 					break;
 				case 'Ammo Carrier':
-					if( (is_null($limit)) || (!is_null($limit) && count($ammo) <= $limit)) {
-						$ammo[] = $score['Scorecard']['score'];
-					}
+					$ammo[] = $score['Scorecard']['score'];
 					break;
 				case 'Medic':
-					if( (is_null($limit)) || (!is_null($limit) && count($medic) <= $limit)) {
-						$medic[] = $score['Scorecard']['score'];
-					}
+					$medic[] = $score['Scorecard']['score'];
 					break;
 			}
 		}
 		
-		$results = array(
-			'commander' => (count($commander) > 0 ? $commander[floor((count($commander)-1)/2)] : 0),
-			'heavy' => (count($heavy) > 0 ? $heavy[floor((count($heavy)-1)/2)] : 0),
-			'scout' => (count($scout) > 0 ? $scout[floor((count($scout)-1)/2)] : 0),
-			'ammo' => (count($ammo) > 0 ? $ammo[floor((count($ammo)-1)/2)] : 0),
-			'medic' => (count($medic) > 0 ? $medic[floor((count($medic)-1)/2)] : 0)
-		);
+		if(count($commander) > 0) {
+			$results['commander'] = $commander[floor((count($commander)-1) * .5)];
+			$results['commander_lower'] = $commander[floor((count($commander)-1) * .25)];
+			$results['commander_upper'] = $commander[floor((count($commander)-1) * .75)];
+			$results['commander_min'] = $commander[0];
+			$results['commander_max'] = $commander[(count($commander)-1)];
+		}
+			
+		if(count($heavy) > 0) {
+			$results['heavy'] = $heavy[floor((count($heavy)-1) * .5)];
+			$results['heavy_lower'] = $heavy[floor((count($heavy)-1) * .25)];
+			$results['heavy_upper'] = $heavy[floor((count($heavy)-1) * .75)];
+			$results['heavy_min'] = $heavy[0];
+			$results['heavy_max'] = $heavy[(count($heavy)-1)];
+		}
+		
+		if(count($scout) > 0) {
+			$results['scout'] = $scout[floor((count($scout)-1) * .5)];
+			$results['scout_lower'] = $scout[floor((count($scout)-1) * .25)];
+			$results['scout_upper'] = $scout[floor((count($scout)-1) * .75)];
+			$results['scout_min'] = $scout[0];
+			$results['scout_max'] = $scout[(count($scout)-1)];
+		}
+		
+		if(count($ammo) > 0) {
+			$results['ammo'] = $ammo[floor((count($ammo)-1) * .5)];
+			$results['ammo_lower'] = $ammo[floor((count($ammo)-1) * .25)];
+			$results['ammo_upper'] = $ammo[floor((count($ammo)-1) * .75)];
+			$results['ammo_min'] = $ammo[0];
+			$results['ammo_max'] = $ammo[(count($ammo)-1)];
+		}
+		
+		if(count($medic) > 0) {
+			$results['medic'] = $medic[floor((count($medic)-1) * .5)];
+			$results['medic_lower'] = $medic[floor((count($medic)-1) * .25)];
+			$results['medic_upper'] = $medic[floor((count($medic)-1) * .75)];
+			$results['medic_min'] = $medic[0];
+			$results['medic_max'] = $medic[(count($medic)-1)];
+		}
 		
 		return $results;
 	}
@@ -264,7 +285,6 @@ class Player extends AppModel {
 	public function getMedianMVPByPosition($id = null, $state = null) {
 		$fields = array('position','mvp_points');
 		$conditions = array();
-		$limit = null;
 		
 		if(!is_null($id)) {
 			$fields[] = 'player_id';
@@ -299,40 +319,62 @@ class Player extends AppModel {
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
 				case 'Commander':
-					if( (is_null($limit)) || (!is_null($limit) && count($commander) <= $limit)) {
-						$commander[] = $score['Scorecard']['mvp_points'];
-					}
+					$commander[] = $score['Scorecard']['mvp_points'];
 					break;
 				case 'Heavy Weapons':
-					if( (is_null($limit)) || (!is_null($limit) && count($heavy) <= $limit)) {
-						$heavy[] = $score['Scorecard']['mvp_points'];
-					}
+					$heavy[] = $score['Scorecard']['mvp_points'];
 					break;
 				case 'Scout':
-					if( (is_null($limit)) || (!is_null($limit) && count($scout) <= $limit)) {
-						$scout[] = $score['Scorecard']['mvp_points'];
-					}
+					$scout[] = $score['Scorecard']['mvp_points'];
 					break;
 				case 'Ammo Carrier':
-					if( (is_null($limit)) || (!is_null($limit) && count($ammo) <= $limit)) {
-						$ammo[] = $score['Scorecard']['mvp_points'];
-					}
+					$ammo[] = $score['Scorecard']['mvp_points'];
 					break;
 				case 'Medic':
-					if( (is_null($limit)) || (!is_null($limit) && count($medic) <= $limit)) {
-						$medic[] = $score['Scorecard']['mvp_points'];
-					}
+					$medic[] = $score['Scorecard']['mvp_points'];
 					break;
 			}
 		}
 		
-		$results = array(
-			'commander' => (count($commander) > 0 ? $commander[floor((count($commander)-1)/2)] : 0),
-			'heavy' => (count($heavy) > 0 ? $heavy[floor((count($heavy)-1)/2)] : 0),
-			'scout' => (count($scout) > 0 ? $scout[floor((count($scout)-1)/2)] : 0),
-			'ammo' => (count($ammo) > 0 ? $ammo[floor((count($ammo)-1)/2)] : 0),
-			'medic' => (count($medic) > 0 ? $medic[floor((count($medic)-1)/2)] : 0)
-		);
+		if(count($commander) > 0) {
+			$results['commander'] = $commander[floor((count($commander)-1) * .5)];
+			$results['commander_lower'] = $commander[floor((count($commander)-1) * .25)];
+			$results['commander_upper'] = $commander[floor((count($commander)-1) * .75)];
+			$results['commander_min'] = $commander[0];
+			$results['commander_max'] = $commander[(count($commander)-1)];
+		}
+			
+		if(count($heavy) > 0) {
+			$results['heavy'] = $heavy[floor((count($heavy)-1) * .5)];
+			$results['heavy_lower'] = $heavy[floor((count($heavy)-1) * .25)];
+			$results['heavy_upper'] = $heavy[floor((count($heavy)-1) * .75)];
+			$results['heavy_min'] = $heavy[0];
+			$results['heavy_max'] = $heavy[(count($heavy)-1)];
+		}
+		
+		if(count($scout) > 0) {
+			$results['scout'] = $scout[floor((count($scout)-1) * .5)];
+			$results['scout_lower'] = $scout[floor((count($scout)-1) * .25)];
+			$results['scout_upper'] = $scout[floor((count($scout)-1) * .75)];
+			$results['scout_min'] = $scout[0];
+			$results['scout_max'] = $scout[(count($scout)-1)];
+		}
+		
+		if(count($ammo) > 0) {
+			$results['ammo'] = $ammo[floor((count($ammo)-1) * .5)];
+			$results['ammo_lower'] = $ammo[floor((count($ammo)-1) * .25)];
+			$results['ammo_upper'] = $ammo[floor((count($ammo)-1) * .75)];
+			$results['ammo_min'] = $ammo[0];
+			$results['ammo_max'] = $ammo[(count($ammo)-1)];
+		}
+		
+		if(count($medic) > 0) {
+			$results['medic'] = $medic[floor((count($medic)-1) * .5)];
+			$results['medic_lower'] = $medic[floor((count($medic)-1) * .25)];
+			$results['medic_upper'] = $medic[floor((count($medic)-1) * .75)];
+			$results['medic_min'] = $medic[0];
+			$results['medic_max'] = $medic[(count($medic)-1)];
+		}
 		
 		return $results;
 	}
