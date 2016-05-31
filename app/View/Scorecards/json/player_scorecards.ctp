@@ -13,7 +13,7 @@
 		if($score['Game']['pdf_id'] == null) {
 			$pdf = "";
 		} else {
-			$pdf = "<a href=\"/pdf/".$score['Game']['pdf_id'].".pdf\" class=\"btn btn-info btn-block\" target=\"_blank\">PDF</a>";
+			$pdf = "<a href=\"http://scorecards.lfstats.com/".$score['Game']['pdf_id'].".pdf\" class=\"btn btn-info btn-block\" target=\"_blank\">PDF</a>";
 		}
 		
 		$data[] = array(
