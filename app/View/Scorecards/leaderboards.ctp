@@ -22,7 +22,7 @@
 <div id="positions" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
-			Games and Points
+			Positions
 		</h4>
 	</div>
 	<div id="collapse_positions" class="panel-collapse collapse in" role="tabpanel">
@@ -40,27 +40,87 @@
 							<?php foreach ($commander as $row): ?>
 							<tr>
 								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
-								<td><?php echo $row[0]['score']; ?></td>
-								<td><?php echo $row[0]['mvp']; ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['score'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['mvp_points'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
 							</tr>
 							<?php endforeach; ?>
 						</tbody>
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="score_total_total">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+						<caption>Heavy Weapons</caption>
 						<thead>
 							<th>Name</th>
-							<th>Total Score</th>
+							<th>Score</th>
+							<th>MVP</th>
 						</thead>
 						<tbody>
-							<?php foreach ($leaderboards as $row): ?>
-							<?php if ($row[0]['score_total'] > 0): ?>
+							<?php foreach ($heavy as $row): ?>
 							<tr>
 								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
-								<td><?php echo $row[0]['score_total']; ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['score'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['mvp_points'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
 							</tr>
-							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+						<caption>Scout</caption>
+						<thead>
+							<th>Name</th>
+							<th>Score</th>
+							<th>MVP</th>
+						</thead>
+						<tbody>
+							<?php foreach ($scout as $row): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['score'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['mvp_points'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-4">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+						<caption>Ammo Carrier</caption>
+						<thead>
+							<th>Name</th>
+							<th>Score</th>
+							<th>MVP</th>
+						</thead>
+						<tbody>
+							<?php foreach ($ammo as $row): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['score'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['mvp_points'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-4">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+						<caption>Medic</caption>
+						<thead>
+							<th>Name</th>
+							<th>Score</th>
+							<th>MVP</th>
+						</thead>
+						<tbody>
+							<?php foreach ($medic as $row): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['score'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+								<td><?php echo $this->Html->link($row['Scorecard']['mvp_points'], array('controller' => 'games', 'action' => 'view', $row['Scorecard']['game_id'])); ?></td>
+							</tr>
 							<?php endforeach; ?>
 						</tbody>
 					</table>

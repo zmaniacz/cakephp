@@ -140,11 +140,11 @@ class ScorecardsController extends AppController {
 
 	public function leaderboards() {
 		$this->set('leaderboards', $this->Scorecard->getLeaderboards($this->Session->read('state')));
-		$this->set('commander', $this->Scorecard->getLeaderboards($this->Session->read('Commander', 'state')));
-		$this->set('heavy', $this->Scorecard->getLeaderboards($this->Session->read('Heavy Weapons', 'state')));
-		$this->set('scout', $this->Scorecard->getLeaderboards($this->Session->read('Scout', 'state')));
-		$this->set('ammo', $this->Scorecard->getLeaderboards($this->Session->read('Ammo Carrier', 'state')));
-		$this->set('medic', $this->Scorecard->getLeaderboards($this->Session->read('Medic', 'state')));
+		$this->set('commander', $this->Scorecard->getPositionLeaderboards('Commander', $this->Session->read('state')));
+		$this->set('heavy', $this->Scorecard->getPositionLeaderboards('Heavy Weapons', $this->Session->read('state')));
+		$this->set('scout', $this->Scorecard->getPositionLeaderboards('Scout', $this->Session->read('state')));
+		$this->set('ammo', $this->Scorecard->getPositionLeaderboards('Ammo Carrier', $this->Session->read('state')));
+		$this->set('medic', $this->Scorecard->getPositionLeaderboards('Medic', $this->Session->read('state')));
 		$this->set('penalties', $this->Scorecard->getPenaltyCount($this->Session->read('state')));
 		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('state')));
 		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('state')));

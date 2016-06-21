@@ -976,10 +976,12 @@ class Scorecard extends AppModel {
 			'fields' => array(
 				'player_id',
 				'score',
-				'mvp'
+				'mvp_points',
+				'game_id'
 			),
 			'conditions' => $conditions,
 			'order' => 'score DESC',
+			'limit' => 500
 
 		));
 
