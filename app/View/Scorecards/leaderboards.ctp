@@ -19,8 +19,58 @@
 		</div>
 	</form>
 <?php endif; ?>
+<div id="positions" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#positions" data-target="#collapse_positions" role="tab" id="positions_heading">
+		<h4 class="panel-title">
+			Games and Points
+		</h4>
+	</div>
+	<div id="collapse_positions" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+						<caption>Commander</caption>
+						<thead>
+							<th>Name</th>
+							<th>Score</th>
+							<th>MVP</th>
+						</thead>
+						<tbody>
+							<?php foreach ($commander as $row): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $row[0]['score']; ?></td>
+								<td><?php echo $row[0]['mvp']; ?></td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="score_total_total">
+						<thead>
+							<th>Name</th>
+							<th>Total Score</th>
+						</thead>
+						<tbody>
+							<?php foreach ($leaderboards as $row): ?>
+							<?php if ($row[0]['score_total'] > 0): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $row[0]['score_total']; ?></td>
+							</tr>
+							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <div id="games_points" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#games_points" data-target="#collapse_games_points"" role="tab" id="games_points_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#games_points" data-target="#collapse_games_points" role="tab" id="games_points_heading">
 		<h4 class="panel-title">
 			Games and Points
 		</h4>
@@ -69,7 +119,7 @@
 	</div>
 </div>
 <div id="medic_tomfoolery" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#medic_tomfoolery" data-target="#collapse_medic_tomfoolery"" role="tab" id="medic_tomfoolery_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#medic_tomfoolery" data-target="#collapse_medic_tomfoolery" role="tab" id="medic_tomfoolery_heading">
 		<h4 class="panel-title">
 			Medic Tomfoolery
 		</h4>
@@ -118,7 +168,7 @@
 	</div>
 </div>
 <div id="missile_malarkey" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#missile_malarkey" data-target="#collapse_missile_malarkey"" role="tab" id="missile_malarkey_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#missile_malarkey" data-target="#collapse_missile_malarkey" role="tab" id="missile_malarkey_heading">
 		<h4 class="panel-title">
 			Missile Malarkey
 		</h4>
@@ -185,7 +235,7 @@
 	</div>
 </div>
 <div id="nuke_nonsense" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#nuke_nonsense" data-target="#collapse_nuke_nonsense"" role="tab" id="nuke_nonsense_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#nuke_nonsense" data-target="#collapse_nuke_nonsense" role="tab" id="nuke_nonsense_heading">
 		<h4 class="panel-title">
 			Nuke Nonsense
 		</h4>
@@ -252,7 +302,7 @@
 	</div>
 </div>
 <div id="elimination_frustration" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#elimination_frustration" data-target="#collapse_elimination_frustration"" role="tab" id="elimination_frustration_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#elimination_frustration" data-target="#collapse_elimination_frustration" role="tab" id="elimination_frustration_heading">
 		<h4 class="panel-title">
 			Elimination Frustration
 		</h4>
@@ -301,7 +351,7 @@
 	</div>
 </div>
 <div id="streaky" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#streaky" data-target="#collapse_streaky"" role="tab" id="streaky_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#streaky" data-target="#collapse_streaky" role="tab" id="streaky_heading">
 		<h4 class="panel-title">
 			Streaky
 		</h4>
@@ -346,7 +396,7 @@
 	</div>
 </div>
 <div id="misc_mischief" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#misc_mischief" data-target="#collapse_misc_mischief"" role="tab" id="misc_mischief_heading">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#misc_mischief" data-target="#collapse_misc_mischief" role="tab" id="misc_mischief_heading">
 		<h4 class="panel-title">
 			Miscellaneous Mischief
 		</h4>

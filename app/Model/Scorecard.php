@@ -931,6 +931,60 @@ class Scorecard extends AppModel {
 
 		return $leaderboards;
 	}
+
+	public function getPositionLeaderboards($position, $state) {
+		$conditions = array();
+		
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all') {
+			$conditions[] = array('type' => $state['gametype']);
+			
+			if($state['gametype'] == 'league') {
+				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
+					$conditions[] = array('is_sub >=' => 0);
+				else
+					$conditions[] = array('is_sub' => 0);
+					
+				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
+					$subQuery = new stdClass();
+					$subQuery->type = "expression";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+       		 		$conditions[] = $subQuery;
+				}
+			}
+		}
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
+
+		$conditions[] = array('position' => $position);
+
+
+		$leaderboards = $this->find('all', array(
+			'contain' => array(
+				'Player' => array(
+					'fields' => array(
+						'player_name'
+					)
+				)
+			),
+			'fields' => array(
+				'player_id',
+				'score',
+				'mvp'
+			),
+			'conditions' => $conditions,
+			'order' => 'score DESC',
+
+		));
+
+		return $leaderboards;
+	}
 	
 	public function getPenaltyCount($state) {
 		$conditions = array();
