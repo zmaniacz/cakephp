@@ -430,13 +430,13 @@ class Player extends AppModel {
 		);
         
       	$this->PlayerHits->updateAll(
-			array('Hit.player_id' => $master_id),
-			array('Hit.player_id' => $target_id)
+			array('player_id' => $master_id),
+			array('player_id' => $target_id)
 		);
         
         $this->HitPlayer->updateAll(
-			array('Hit.target_id' => $master_id),
-			array('Hit.target_id' => $target_id)
+			array('target_id' => $master_id),
+			array('target_id' => $target_id)
 		);  
 		//delete the old player record
 		$this->delete($target_id);
