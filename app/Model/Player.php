@@ -429,12 +429,12 @@ class Player extends AppModel {
 			array('Scorecard.player_id' => $target_id)
 		);
         
-      	$this->PlayerHits>updateAll(
+      	$this->PlayerHits->updateAll(
 			array('Hit.player_id' => $master_id),
 			array('Hit.player_id' => $target_id)
 		);
         
-        $this->HitPlayer>updateAll(
+        $this->HitPlayer->updateAll(
 			array('Hit.target_id' => $master_id),
 			array('Hit.target_id' => $target_id)
 		);  
