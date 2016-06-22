@@ -113,7 +113,7 @@ function displayWinLossPie(data) {
 		},
 		series: [{
 			data: winloss,
-			size: '40%',
+			size: '60%',
 			dataLabels: {
 				formatter: function() {
 					return this.point.name;
@@ -129,8 +129,8 @@ function displayWinLossPie(data) {
 				'#00FF00',
 				'#00CC00'
 			],
-			size: '60%',
-			innerSize: '40%',
+			size: '80%',
+			innerSize: '60%',
 			dataLabels: {
 				formatter: function() {
 					return '<b>'+ this.point.name +':</b> '+ this.y;
