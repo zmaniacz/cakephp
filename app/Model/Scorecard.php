@@ -1284,7 +1284,7 @@ class Scorecard extends AppModel {
 	
 	protected function _loadMatrix($state) {
 		$conditions = array();
-		$min_games = 15;
+		$min_games = 10;
 
 		if(isset($state['centerID']) && $state['centerID'] > 0)
 			$conditions[] = array('center_id' => $state['centerID']);
