@@ -54,7 +54,11 @@ class Player extends AppModel {
         'HitPlayer' => array(
             'className' => 'Hit',
             'foreignKey' => 'target_id',
-        )
+        ),
+		'GameResult' => array(
+			'className' => 'GameResult',
+			'foreignKey' => 'player_id'
+		)
 	);
 
 
@@ -119,8 +123,32 @@ class Player extends AppModel {
 		return $games;
 	}
 
-	public function getPlayerWinsLosses($id) {
+	public function getPlayerWinsLosses($id = null) {
+		$conditions = array();
 		
+		if(!is_null($id))
+			$conditions[] = array('player_id' => $id);
+			
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('league_id' => $state['leagueID']);
+
+		$record = $this->GameResult->find('all', array(
+			'fields' => array(
+				'player_id',
+				'SUM(won) AS games_won',
+				'count(game_id) AS games_played'
+			),
+			'conditions' => $conditions,
+			'group' => 'player_id'
+		));
+
+		return $record;
 	}
 	
 	public function getAverageScoreByPosition($id = null, $state = null) {

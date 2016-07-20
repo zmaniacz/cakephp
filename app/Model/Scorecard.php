@@ -12,6 +12,13 @@ class Scorecard extends AppModel {
 		)
 	);
 
+	public $hasOne = array(
+		'GameResult' => array(
+			'className' => 'GameResult',
+			'foreignKey' => 'scorecard_id'
+		)
+	);
+
 	public $hasMany = array(
 		'Penalty' => array(
 			'className' => 'Penalty',
@@ -400,24 +407,35 @@ class Scorecard extends AppModel {
 				'MIN(Scorecard.accuracy) as min_acc',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'MAX(Scorecard.accuracy) as max_acc',
-				'(SUM(nukes_detonated)/SUM(nukes_activated)) as nuke_ratio',
-				'(SUM(shot_opponent)/SUM(times_zapped)) as hit_diff',
-				'AVG(missiled_opponent) as avg_missiles',
-				'AVG(medic_hits) as avg_medic_hits',
-				'AVG(shot_3hit) as avg_3hit',
-				'AVG(ammo_boost) as avg_ammo_boost',
+				'(SUM(Scorecard.nukes_detonated)/SUM(Scorecard.nukes_activated)) as nuke_ratio',
+				'(SUM(Scorecard.shot_opponent)/SUM(Scorecard.times_zapped)) as hit_diff',
+				'AVG(Scorecard.missiled_opponent) as avg_missiles',
+				'AVG(Scorecard.medic_hits) as avg_medic_hits',
+				'AVG(Scorecard.shot_3hit) as avg_3hit',
+				'AVG(Scorecard.ammo_boost) as avg_ammo_boost',
 				'AVG(Scorecard.life_boost) as avg_life_boost',
-				'AVG(resupplies) as avg_resup',
+				'AVG(Scorecard.resupplies) as avg_resup',
 				'AVG(Scorecard.lives_left) as avg_lives',
-				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate'
+				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate',
+				'SUM(GameResult.won) as games_won'
 			),
 			'contain' => array(
 				'Player' => array(
 					'fields' => array('id', 'player_name')
 				)
 			),
+			'joins' => array(
+				array(
+					'table' => 'game_results',
+					'alias' => 'GameResult',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'GameResult.scorecard_id = Scorecard.id'
+					)
+				)
+			),
 			'conditions' => $conditions,
-			'group' => "player_id".(($min_games > 0) ? " HAVING games_played >= $min_games" : ""),
+			'group' => "Scorecard.player_id".(($min_games > 0) ? " HAVING Scorecard.games_played >= $min_games" : ""),
 			'order' => 'avg_mvp DESC'
 		));
 		
@@ -471,11 +489,22 @@ class Scorecard extends AppModel {
 
 		$players_position = $this->find('all', array(
 			'fields' => array(
-				'player_id',
-				'position',
-				'AVG(mvp_points) as avg_mvp',
-				'AVG(accuracy) as avg_acc',
-				'COUNT(game_datetime) as games_played' 
+				'Scorecard.player_id',
+				'Scorecard.position',
+				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'AVG(Scorecard.accuracy) as avg_acc',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'SUM(GameResult.won) as games_won'
+			),
+			'joins' => array(
+				array(
+					'table' => 'game_results',
+					'alias' => 'GameResult',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'GameResult.scorecard_id = Scorecard.id'
+					)
+				)
 			),
 			'conditions' => $conditions,
 			'group' => 'player_id, position'
@@ -483,10 +512,21 @@ class Scorecard extends AppModel {
 		
 		$players_overall = $this->find('all', array(
 			'fields' => array(
-				'player_id',
-				'AVG(mvp_points) as avg_mvp',
-				'AVG(accuracy) as avg_acc',
-				'COUNT(game_datetime) as games_played' 
+				'Scorecard.player_id',
+				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'AVG(Scorecard.accuracy) as avg_acc',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'SUM(GameResult.won) as games_won' 
+			),
+			'joins' => array(
+				array(
+					'table' => 'game_results',
+					'alias' => 'GameResult',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'GameResult.scorecard_id = Scorecard.id'
+					)
+				)
 			),
 			'conditions' => $conditions,
 			'group' => 'player_id'
@@ -503,27 +543,34 @@ class Scorecard extends AppModel {
 			
 			$results[$player['Scorecard']['player_id']]['avg_avg_mvp'] = $player[0]['avg_mvp'];
 			$results[$player['Scorecard']['player_id']]['avg_avg_acc'] = $player[0]['avg_acc'];
+			$results[$player['Scorecard']['player_id']]['total_games_won'] = $player[0]['games_won'];
 			$results[$player['Scorecard']['player_id']]['total_games'] = $player[0]['games_played'];
 			$results[$player['Scorecard']['player_id']]['Commander']['avg_mvp'] = 0;
 			$results[$player['Scorecard']['player_id']]['Commander']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Commander']['games_won'] = 0;
 			$results[$player['Scorecard']['player_id']]['Commander']['games_played'] = 0;
 			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['avg_mvp'] = 0;
 			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['games_won'] = 0;
 			$results[$player['Scorecard']['player_id']]['Heavy Weapons']['games_played'] = 0;
 			$results[$player['Scorecard']['player_id']]['Scout']['avg_mvp'] = 0;
 			$results[$player['Scorecard']['player_id']]['Scout']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Scout']['games_won'] = 0;
 			$results[$player['Scorecard']['player_id']]['Scout']['games_played'] = 0;
 			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['avg_mvp'] = 0;
 			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['games_won'] = 0;
 			$results[$player['Scorecard']['player_id']]['Ammo Carrier']['games_played'] = 0;
 			$results[$player['Scorecard']['player_id']]['Medic']['avg_mvp'] = 0;
 			$results[$player['Scorecard']['player_id']]['Medic']['avg_acc'] = 0;
+			$results[$player['Scorecard']['player_id']]['Medic']['games_won'] = 0;
 			$results[$player['Scorecard']['player_id']]['Medic']['games_played'] = 0;
 		}
 		
 		foreach($players_position as $player) {
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_mvp'] = $player[0]['avg_mvp'];
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['avg_acc'] = $player[0]['avg_acc'];
+			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_won'] = $player[0]['games_won'];
 			$results[$player['Scorecard']['player_id']][$player['Scorecard']['position']]['games_played'] = $player[0]['games_played'];
 		}
 		

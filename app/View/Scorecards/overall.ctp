@@ -10,22 +10,70 @@
 				{ "data" : "name", },
 				{ "data" : "avg_avg_mvp" },
 				{ "data" : "avg_avg_acc" },
-				{ "data" : "total_games" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.total_games_won/row.total_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.total_games_won+'/'+row.total_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "commander_avg_mvp" },
 				{ "data" : "commander_avg_acc" },
-				{ "data" : "commander_games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.commander_games_won/row.commander_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.commander_games_won+'/'+row.commander_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "heavy_avg_mvp" },
 				{ "data" : "heavy_avg_acc" },
-				{ "data" : "heavy_games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.heavy_games_won/row.heavy_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.heavy_games_won+'/'+row.heavy_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "scout_avg_mvp" },
 				{ "data" : "scout_avg_acc" },
-				{ "data" : "scout_games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.scout_games_won/row.scout_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.scout_games_won+'/'+row.scout_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "ammo_avg_mvp" },
 				{ "data" : "ammo_avg_acc" },
-				{ "data" : "ammo_games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.ammo_games_won/row.ammo_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.ammo_games_won+'/'+row.ammo_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "medic_avg_mvp" },
 				{ "data" : "medic_avg_acc" },
-				{ "data" : "medic_games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.medic_games_won/row.medic_games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.medic_games_won+'/'+row.medic_games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 			]
 		} );
 		
@@ -37,7 +85,15 @@
 			},
 			"columns" : [
 				{ "data" : "name" },
-				{ "data" : "games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -56,7 +112,15 @@
 			},
 			"columns" : [
 				{ "data" : "name" },
-				{ "data" : "games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -74,7 +138,15 @@
 			},
 			"columns" : [
 				{ "data" : "name" },
-				{ "data" : "games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -92,7 +164,15 @@
 			},
 			"columns" : [
 				{ "data" : "name" },
-				{ "data" : "games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -110,7 +190,15 @@
 			},
 			"columns" : [
 				{ "data" : "name" },
-				{ "data" : "games_played" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+						
+						return ratio;
+					}
+				},
 				{ "data" : "avg_score" },
 				{ "data" : "avg_mvp" },
 				{ "data" : "avg_acc" },
@@ -175,22 +263,22 @@
 						<tr>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>MVP</th>
 							<th>Accuracy</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 						</tr>
 					</thead>
 				</table>
@@ -211,7 +299,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -239,7 +327,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -266,7 +354,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -293,7 +381,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>
@@ -320,7 +408,7 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Games Played</th>
+							<th>Win Rate</th>
 							<th>Average Score</th>
 							<th>Average MVP Points</th>
 							<th class="accuracy">Average Accuracy</th>

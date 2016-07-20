@@ -1,6 +1,5 @@
 <?php
 	$data = array();
-	
 	foreach ($response as $score) {
 		$data[] = array(	
 			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
@@ -17,7 +16,8 @@
 			'avg_resup' => $score[0]['avg_resup'],
 			'avg_lives' => $score[0]['avg_lives'],
 			'elim_rate' => round($score[0]['elim_rate']*100,2),
-			'games_played' => $score[0]['games_played']
+			'games_played' => $score[0]['games_played'],
+			'games_won' => $score[0]['games_won']
 		);
 	}
 	

@@ -15,6 +15,10 @@ class Game extends AppModel {
 			'className' => 'Scorecard',
 			'foreignkey' => 'game_id',
 			'conditions' => array('Green_Scorecard.team' => 'green')
+		),
+		'GameResult' => array(
+			'className' => 'GameResult',
+			'foreignKey' => 'game_id'
 		)
 	);
 
