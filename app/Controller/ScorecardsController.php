@@ -25,7 +25,9 @@ class ScorecardsController extends AppController {
             'getHitBreakdown',
 			'filterSub',
 			'filterFinals',
-			'filterRounds'
+			'filterRounds',
+			'allstar',
+			'getAllStarStats'
 		);
 		parent::beforeFilter();
 	}
@@ -77,6 +79,11 @@ class ScorecardsController extends AppController {
 				$this->set('response', $this->Scorecard->getPositionStats('Medic',$this->Session->read('state')));
 				break;
 		}
+	}
+
+	public function getAllStarStats() {
+		$this->request->allowMethod('ajax');
+		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 	
 	public function getOverallAverages() {
@@ -136,6 +143,10 @@ class ScorecardsController extends AppController {
 	
 	public function allcenter() {
 		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('state')));
+	}
+
+	public function allstar() {
+
 	}
 
 	public function leaderboards() {

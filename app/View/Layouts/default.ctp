@@ -85,7 +85,13 @@
 								<li><?= $this->Html->link('Game List', array('controller' => 'games', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
 								<li><?= $this->Html->link('Center Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
-								<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
+								<li><?php
+									if($this->Session->read('state.gametype') == 'league') {
+										echo $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar'));
+									} else {
+										echo $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter'));
+									}
+								?></li>
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
