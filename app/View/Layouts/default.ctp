@@ -190,7 +190,9 @@
 							<?php
 								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
 									echo "<li class=\"dropdown-header\">Centers</li>";
-									foreach($centers as $key => $value) {
+									$sorted_centers = $centers;
+									asort($sorted_centers);
+									foreach($sorted_centers as $key => $value) {
 										echo "<li>".$this->Html->link($value, array(
 											'controller' => $this->request->params['controller'], 
 											'action' => $this->request->params['action'],
