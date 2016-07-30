@@ -232,6 +232,54 @@ function displayPositionMVPSpider(data) {
 	});
 }
 
+function displayPositionBoxPlot(data) {
+	var mvp = data['player_mdn_mvp'];
+
+	$('#mvp_box_plot').highcharts({
+		chart: {
+			type: 'boxplot'
+		},
+		title: {
+			text: ''
+		},
+		yAxis: {
+			title: {
+				text: 'MVP'
+			}
+		},
+		xAxis: {
+			categories: ['Commander', 'Heavy', 'Scout', 'Ammo', 'Medic'],
+			title: {
+				text: 'Position'
+			}	
+		},
+		plotOptions: {
+			boxplot: {
+                fillColor: '#F0F0E0',
+                lineWidth: 2,
+                medianColor: '#0C5DA5',
+                medianWidth: 3,
+                stemColor: '#A63400',
+                stemDashStyle: 'dot',
+                stemWidth: 1,
+                whiskerColor: '#3D9200',
+                whiskerLength: '20%',
+                whiskerWidth: 3
+			}
+		},
+		series: [{
+			name: 'Positions',
+			data: [
+				[mvp['commander_min'], mvp['commander_lower'], mvp['commander'], mvp['commander_upper'], mvp['commander_max']],
+				[mvp['heavy_min'], mvp['heavy_lower'], mvp['heavy'], mvp['heavy_upper'], mvp['heavy_max']],
+				[mvp['scout_min'], mvp['scout_lower'], mvp['scout'], mvp['scout_upper'], mvp['scout_max']],
+				[mvp['ammo_min'], mvp['ammo_lower'], mvp['ammo'], mvp['ammo_upper'], mvp['ammo_max']],
+				[mvp['medic_min'], mvp['medic_lower'], mvp['medic'], mvp['medic_upper'], mvp['medic_max']]
+			]
+		}]
+	});
+}
+
 
 $(document).ready(function(){
 	$.ajax({
@@ -253,6 +301,7 @@ $(document).ready(function(){
 		success: function(data) {
 			displayPositionScoreSpider(data);
 			displayPositionMVPSpider(data);
+			displayPositionBoxPlot(data);
 		},
 		error: function() {
 			alert('spiderfail');
@@ -969,6 +1018,18 @@ $(document).ready(function(){
 		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
 		<div id="position_score_spider" style="display: inline-block;height: 500px; width: 500px"></div>
 		<div id="position_mvp_spider" style="display: inline-block;height: 500px; width: 500px"></div>
+		<div id="boxplot_panel" class="panel panel-info">
+			<div class="panel-heading" data-toggle="collapse" data-parent="#boxplot_panel" data-target="#collapse_boxplot" role="tab" id="boxplot_heading">
+				<h4 class="panel-title">
+					Median MVP
+				</h4>
+			</div>
+			<div id="collapse_boxplot" class="panel-collapse collapse in" role="tabpanel">
+				<div class="panel-body">
+					<div id="mvp_box_plot" style="height: 500px; width: 800px"></div>
+				</div>
+			</div>
+		</div>
 		<br />
 		<br />
 		<br />
