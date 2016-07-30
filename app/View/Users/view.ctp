@@ -23,7 +23,7 @@
 		</dd>
 		<dt><?php echo __('Center'); ?></dt>
 		<dd>
-			<?php echo h($user['User']['role']); ?>
+			<?php echo h($user['User']['center']); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Created'); ?></dt>
