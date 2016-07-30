@@ -318,7 +318,7 @@ class Scorecard extends AppModel {
 
 		$game_dates = $this->find('all', array(
 			'fields' => array('DISTINCT DATE(Scorecard.game_datetime) as game_date'),
-			'order' => 'Scorecard.game_datetime DESC',
+			'order' => 'game_date DESC',
 			'conditions' => $conditions
 		));
 		$game_dates = Set::combine($game_dates, '{n}.0.game_date', '{n}.0.game_date');
@@ -706,7 +706,7 @@ class Scorecard extends AppModel {
 				'table' => $db->fullTableName($this),
 				'alias' => 'ScorecardNoResup',
 				'conditions' => $subQueryConditions,
-				'group' => 'player_id',
+				'group' => 'ScorecardNoResup.player_id',
 			),
 			$this
 		);
