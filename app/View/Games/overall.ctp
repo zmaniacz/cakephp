@@ -15,7 +15,6 @@ function overallData(data) {
 		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
 	];
 	var mvp = data['overall_mvp'];
-	console.log(mvp);
 	var commander_max = mvp['commander_max'];
 	
 	$('#win_loss_pie').highcharts({
