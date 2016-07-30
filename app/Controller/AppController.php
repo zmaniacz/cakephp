@@ -58,6 +58,8 @@ class AppController extends Controller {
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
 			return true;
+		} elseif (isset($user['role']) && $user['role'] === 'center_admin' && $user['center'] === $this->Session->read('state.centerID')) {
+			return true;
 		}
 		return false;
 	}

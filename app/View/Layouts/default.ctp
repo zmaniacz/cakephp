@@ -96,7 +96,7 @@
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
                                 <li><?= $this->Html->link('Nationals 2016', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 10, 'centerID' => 8))); ?></li>
-								<?php if(AuthComponent::user('role') === 'admin'): ?>
+								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin') && AuthComponent::user('center') == $this->Session->read('state.centerID')): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
 							</ul>
