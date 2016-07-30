@@ -21,6 +21,11 @@
 			<?php echo h($user['User']['role']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Center'); ?></dt>
+		<dd>
+			<?php echo h($user['User']['role']); ?>
+			&nbsp;
+		</dd>
 		<dt><?php echo __('Created'); ?></dt>
 		<dd>
 			<?php echo h($user['User']['created']); ?>
