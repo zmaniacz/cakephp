@@ -23,10 +23,10 @@
 	<?php
 		echo $this->Html->charset();
 		echo $this->Html->script('//code.jquery.com/jquery-2.1.4.min.js');
-		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js');
+		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
 		echo $this->Html->script('//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js');
 		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
-		echo $this->Html->css('//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/yeti/bootstrap.min.css', array('title' => 'main'));
+		echo $this->Html->css('bootstrap.min.css');
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('laserforce');
 	?>
@@ -107,13 +107,6 @@
 								<?php else: ?>
 									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
-								</li>
-								<li class="dropdown" id="theme-dropdown">
-									<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Theme <span class="caret"></span></button>
-									<ul class="dropdown-menu">
-										<li><a href="#" class="change-style-menu-item" rel="slate">Dark</a></li>
-										<li><a href="#" class="change-style-menu-item" rel="yeti">Light</a></li>
-									</ul>
 								</li>
 							</ul>
 						</div>
@@ -250,19 +243,6 @@
 						$(this).find(".modal-body").text("Loading...");
 						$(this).find(".modal-body").load(button.attr("target"));
 					});
-					
-					jQuery(function($) {
-					    $('body').on('click', '.change-style-menu-item', function() {
-					      var theme_name = $(this).attr('rel');
-					      var theme = "//netdna.bootstrapcdn.com/bootswatch/3.3.5/" + theme_name + "/bootstrap.min.css";
-					      set_theme(theme);
-					    });
-					});
-					
-					function set_theme(theme) {
-						$('link[title="main"]').attr('href', theme);
-						localStorage.theme = theme;
-					}
 				</script>
 			</div>
 			<div id="footer">
