@@ -101,19 +101,19 @@
 								<?php endif; ?>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
+								<li>
+								<?php if (AuthComponent::user('id')): ?>
+									<a class="btn btn-info btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+								<?php else: ?>
+									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
+								<?php endif; ?>
+								</li>
 								<li class="dropdown" id="theme-dropdown">
-									<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Theme<span class="caret"></span></button>
+									<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Theme <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<li><a href="#" class="change-style-menu-item" rel="slate">Dark</a></li>
 										<li><a href="#" class="change-style-menu-item" rel="yeti">Light</a></li>
 									</ul>
-								</li>
-								<li>
-								<?php if (AuthComponent::user('id')): ?>
-									<?= AuthComponent::user('username') ?> <a class="btn btn-info btn-sm" href="/users/logout" role="button">Logout</a>
-								<?php else: ?>
-									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
-								<?php endif; ?>
 								</li>
 							</ul>
 						</div>
