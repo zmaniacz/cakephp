@@ -118,7 +118,7 @@ class Scorecard extends AppModel {
 				);
 				
 				if($nukes[0][0]['all_nukes_canceled'] > 0)
-					$mvp += $nukes[0][0]['all_nukes_canceled'] * -3;
+					$mvp += (int)$nukes[0][0]['all_nukes_canceled'] * -3;
 			}
 			
 			//make commanders cry
