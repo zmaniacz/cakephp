@@ -423,6 +423,44 @@
 					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
+							<th>Current Win Streak</th>
+						</thead>
+						<tbody>
+							<?php foreach ($current_streaks as $row): ?>
+							<?php if($row['streakset']['gameresult'] == 'W'): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['players']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['streakset']['player_id'])); ?></td>
+								<td><?php echo $row[0]['maxstreak']; ?></td>
+							</tr>
+							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+						<thead>
+							<th>Name</th>
+							<th>Current Losing Streak</th>
+						</thead>
+						<tbody>
+							<?php foreach ($current_streaks as $row): ?>
+							<?php if($row['streakset']['gameresult'] == 'L'): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['players']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['streakset']['player_id'])); ?></td>
+								<td><?php echo $row[0]['maxstreak']; ?></td>
+							</tr>
+							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+						<thead>
+							<th>Name</th>
 							<th>Longest Win Streak</th>
 						</thead>
 						<tbody>

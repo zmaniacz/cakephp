@@ -1150,6 +1150,58 @@ class Scorecard extends AppModel {
 		return $leaderboards;
 	}
 
+	public function getCurrentStreaks($state) {
+		$where = "1";
+		
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$where .= " AND center_id = $state[centerID]";
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$where .= " AND type = '$state[gametype]'";
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$where .= " AND league_id = $state[leagueID]";
+
+		$streaks = $this->query("SELECT 
+									streakset.player_id,
+									players.player_name,
+									streakset.gameresult,
+									MAX(streakset.winlossstreak) AS maxstreak
+								FROM
+									(SELECT 
+										gr.game_datetime,
+										gr.player_id,
+										gr.result,
+										@curstatus:=gr.result AS gameresult,
+										@curplayer:=gr.player_id AS curplayer,
+										@winlossseq:=IF(@curplayer = @lastplayer, IF(@curstatus = @laststatus, @winlossseq + 1, 1), 1) AS winlossstreak,
+										@laststatus:=@curstatus AS carryOverForNextRecord,
+										@lastplayer:=@curplayer AS moreCarryOver
+									FROM
+										(SELECT 
+											*
+										FROM
+											game_results
+										WHERE $where
+										ORDER BY player_id , game_datetime) AS gr, 
+										(SELECT 
+											@CurStatus:='',
+											@curplayer:=0,
+											@LastStatus:='',
+											@lastplayer:=0,
+											@WinLossSeq:=0
+										) sqlvars) streakset
+										LEFT JOIN
+											players ON (streakset.player_id = players.id)
+								WHERE
+									game_datetime = (select max(game_datetime) from game_results where player_id=streakset.player_id)
+								GROUP BY streakset.player_id , streakset.gameresult
+								ORDER BY maxstreak DESC
+		");
+
+		return $streaks;
+	}
+
 	public function getWinStreaks($state) {
 		$where = "1";
 		
