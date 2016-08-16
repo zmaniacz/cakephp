@@ -59,6 +59,53 @@
 			"order": [[ 4, "desc" ]]
 		});
 
+				$("#overall thead th input").on( 'keyup change', function () {
+			overall
+				.column( $(this).parent().index()+':visible' )
+				.search( this.value )
+				.draw();
+		});
+
+		var summary_stats = $('#summary_stats').DataTable( {
+			"deferRender" : true,
+			"orderCellsTop" : true,
+			"dom": '<lr>t<ip>',
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
+			},
+			"columns" : [
+				{ "data" : "player_name" },
+				{ "data" : "min_score" },
+				{ "data" : "avg_score" },
+				{ "data" : "max_score" },
+				{ "data" : "min_mvp" },
+				{ "data" : "avg_mvp" },
+				{ "data" : "max_mvp" },
+				{ "data" : "avg_acc" },
+				{ "data" : "hit_diff" },
+				{ "data" : "medic_hits" },
+				{ "data" : function ( row, type, val, meta ) {
+						var rate = row.elim_rate;
+						if (type === 'display') {
+							return rate+'%';
+						}
+							
+						return rate;
+					}
+				},
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
+						if (type === 'display') {
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
+						}
+							
+						return ratio;
+					}
+				}
+			],
+			"order": [[ 5, "desc" ]]
+		});
+
 		$("#medic_hits thead tr th input").on( 'keyup change', function () {
 			medicHitsTable
 				.column( $(this).parent().index()+':visible' )
@@ -129,6 +176,35 @@
 							<th>Hit Diff</th>
 							<th>Medic Hits</th>
 							<th>Shot Team</th>
+						</thead>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_summary_stats" role="tab" id="#summary_stats_heading">
+			<h4 class="panel-title">
+				Summary Stats
+			</h4>
+		</div>
+		<div id="collapse_summary_stats" class="panel-collapse collapse" role="tabpanel">
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover table-condensed" id="summary_stats">
+						<thead>
+							<th><input type="text" class="form-control" placeholder="Name" /></th>
+							<th>Min Score</th>
+							<th>Avg Score</th>
+							<th>Max Score</th>
+							<th>Min MVP</th>
+							<th>Avg MVP</th>
+							<th>Max MVP</th>
+							<th>Avg Acc</th>
+							<th>Hit Diff</th>
+							<th>Medic Hits</th>
+							<th>Elim Rate</th>
+							<th>Won/Played</th>
 						</thead>
 					</table>
 				</div>

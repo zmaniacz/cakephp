@@ -349,6 +349,60 @@ class Scorecard extends AppModel {
 		
 		return $scorecards;
 	}
+
+	public function getNightlyStatsByDate($date, $state) {
+		$conditions = array();
+		
+		if(!is_null($date))
+			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
+		
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+
+		$stats = $this->find('all', array(
+			'fields' => array(
+				'player_id',
+				'MIN(Scorecard.score) as min_score',
+				'ROUND(AVG(Scorecard.score)) as avg_score',
+				'MAX(Scorecard.score) as max_score',
+				'MIN(Scorecard.mvp_points) as min_mvp',
+				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'MAX(Scorecard.mvp_points) as max_mvp',	
+				'AVG(Scorecard.accuracy) as avg_acc',
+				'(SUM(Scorecard.shot_opponent)/SUM(Scorecard.times_zapped)) as hit_diff',
+				'SUM(Scorecard.medic_hits) as medic_hits',
+				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'SUM(GameResult.won) as games_won'
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array('id', 'player_name')
+				)
+			),
+			'joins' => array(
+				array(
+					'table' => 'game_results',
+					'alias' => 'GameResult',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'GameResult.scorecard_id = Scorecard.id'
+					)
+				)
+			),
+			'conditions' => $conditions,
+			'group' => "Scorecard.player_id",
+			'order' => 'avg_mvp DESC'
+		));
+
+		return $stats;
+	}
 	
 	public function getPositionStats($role = null, $state = null) {
 		$conditions = array();

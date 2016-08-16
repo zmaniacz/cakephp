@@ -14,7 +14,7 @@ class ScorecardsController extends AppController {
 			'getOverallMedicHits',
 			'nightly',
 			'tournament',
-			'nightlyStats',
+			'nightlySummaryStats',
 			'nightlyScorecards',
 			'nightlyGames',
 			'nightlyMedicHits',
@@ -123,6 +123,11 @@ class ScorecardsController extends AppController {
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
+	}
+
+	public function nightlySummaryStats($date = null) {
+		//$this->request->onlyAllow('ajax');
+		$this->set('response', $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state')));
 	}
 
 	public function playerScorecards($id) {
