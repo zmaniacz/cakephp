@@ -64,7 +64,7 @@
 		} else {
 			echo $game['Game']['game_name'];
 		}
-		echo "</h3>";
+		echo " <small>".$game['Game']['game_datetime']."</small></h3>";
 	}
 ?>
 <h3 class="row">
