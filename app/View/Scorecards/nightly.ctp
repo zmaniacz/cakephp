@@ -59,8 +59,8 @@
 			"order": [[ 4, "desc" ]]
 		});
 
-				$("#overall thead th input").on( 'keyup change', function () {
-			overall
+		$("#summary_stats thead th input").on( 'keyup change', function () {
+			summary_stats
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )
 				.draw();
@@ -240,9 +240,11 @@
 $('#nightlySelectDate').change(function() {
 	var new_game_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
 	var new_overall_url = $('#overall').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
+	var new_summary_url = $('#summary_stats').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
 	var new_medic_url = $('#medic_hits').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
 	$('#game_list').DataTable().ajax.url(new_game_url).load();
 	$('#overall').DataTable().ajax.url(new_overall_url).load();
+	$('#summary_stats').DataTable().ajax.url(new_summary_url).load();
 	$('#medic_hits').DataTable().ajax.url(new_medic_url).load();
 });
 </script>
