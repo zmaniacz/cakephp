@@ -788,7 +788,7 @@ class Scorecard extends AppModel {
 				'ScorecardNoResup.games_played',
 			),
 			'conditions' => $conditions,
-			'group' => 'player_name',
+			'group' => 'player_id, player_name',
 			'order' => 'total_medic_hits DESC'
 		));
 		return $scores;
