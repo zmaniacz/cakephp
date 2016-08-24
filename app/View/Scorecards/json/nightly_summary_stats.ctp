@@ -1,7 +1,7 @@
 <?php
 	$data = array();
-	foreach ($response as $score) {
-		$data[] = array(	
+	foreach ($nightly as $score) {
+		$response[$score['Player']['id']] = array(	
 			'player_name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
             'min_score' => $score[0]['min_score'],
             'avg_score' => $score[0]['avg_score'],
@@ -17,6 +17,15 @@
 			'games_won' => $score[0]['games_won']
 		);
 	}
+
+	foreach ($overall as $key => $value) {
+		if(isset($response[$key])) {
+			$response[$key]['overall_avg_mvp'] = round($value['avg_avg_mvp'],2);
+			$response[$key]['overall_avg_acc'] = round($value['avg_avg_acc']*100,2);
+		}
+	}
+
+	$data = array_values($response);
 	
 	echo json_encode(compact('data'), JSON_NUMERIC_CHECK);
 ?>

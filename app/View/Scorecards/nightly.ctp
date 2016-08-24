@@ -79,9 +79,31 @@
 				{ "data" : "avg_score" },
 				{ "data" : "max_score" },
 				{ "data" : "min_mvp" },
-				{ "data" : "avg_mvp" },
+				{ "data" : function ( row, type, val, meta) {
+						if (type === 'display') {
+							if (row.overall_avg_mvp >= row.avg_mvp) {
+								return row.avg_mvp+'<span class="glyphicon glyphicon-arrow-down text-danger"></span>'
+							} else {
+								return row.avg_mvp+'<span class="glyphicon glyphicon-arrow-up text-success"></span>'
+							}
+						}
+
+						return row.avg_mvp;
+					}
+				},
 				{ "data" : "max_mvp" },
-				{ "data" : "avg_acc" },
+				{ "data" : function ( row, type, val, meta) {
+						if (type === 'display') {
+							if (row.overall_avg_acc >= row.avg_acc) {
+								return row.avg_acc+'<span class="glyphicon glyphicon-arrow-down text-danger"></span>'
+							} else {
+								return row.avg_acc+'<span class="glyphicon glyphicon-arrow-up text-success"></span>'
+							}
+						}
+
+						return row.avg_mvp;
+					}
+				},
 				{ "data" : "hit_diff" },
 				{ "data" : "medic_hits" },
 				{ "data" : function ( row, type, val, meta ) {

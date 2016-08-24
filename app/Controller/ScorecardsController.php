@@ -127,7 +127,8 @@ class ScorecardsController extends AppController {
 
 	public function nightlySummaryStats($date = null) {
 		//$this->request->onlyAllow('ajax');
-		$this->set('response', $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state')));
+		$this->set('nightly', $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state')));
+		$this->set('overall', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 
 	public function playerScorecards($id) {
