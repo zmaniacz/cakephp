@@ -101,7 +101,7 @@
 							}
 						}
 
-						return row.avg_mvp;
+						return row.avg_acc;
 					}
 				},
 				{ "data" : "hit_diff" },
