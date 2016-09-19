@@ -61,16 +61,7 @@ class GamesController extends AppController {
 		} else {
 			$this->loadModel('League');
 
-			$this->Game->contain(array(
-				'Scorecard' => array(
-					'Penalty',
-                    'Hit'
-				),
-				'Match' => array(
-					'Round'
-				)
-			));
-			$game = $this->Game->findById($id);
+			$game = $this->Game->getGameDetails($id);
 			$this->request->data = $game;
 			
 			foreach ($game['Scorecard'] as $key => $row) {
