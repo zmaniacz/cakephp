@@ -169,8 +169,8 @@ class UploadsController extends AppController {
             }
         }
 		
-		$this->Scorecard->generateMVP();
 		$this->Scorecard->generateGames();
+		$this->Scorecard->generateMVP();
 		
 		$this->Session->setFlash("Added $row scorecards");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
