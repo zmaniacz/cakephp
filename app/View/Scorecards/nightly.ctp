@@ -46,18 +46,31 @@
 				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
+				{
+					"defaultContent" : '',
+					"orderable": false
+				},
 				{ "data" : "player_name" },
 				{ "data" : "game_name" },
 				{ "data" : "position" },
-				{ "data" : "score" },
-				{ "data" : "mvp_points" },
-				{ "data" : "accuracy" },
-				{ "data" : "hit_diff" },
-				{ "data" : "medic_hits" },
-				{ "data" : "shot_team" },
+				{
+					"data" : "score",
+					"orderSequence": [ "desc", "asc"]
+				},
+				{ "data" : "mvp_points", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
 			],
-			"order": [[ 4, "desc" ]]
+			"order": [[ 5, "desc" ]]
 		});
+
+		overall.on( 'order.dt', function () {
+			overall.column(0, {order:'applied'}).nodes().each( function (cell, i) {
+				cell.innerHTML = i+1;
+			} );
+		} ).draw();
 
 		$("#summary_stats thead th input").on( 'keyup change', function () {
 			summary_stats
@@ -74,11 +87,15 @@
 				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
+				{
+					"defaultContent" : '',
+					"orderable": false
+				},
 				{ "data" : "player_name" },
-				{ "data" : "min_score" },
-				{ "data" : "avg_score" },
-				{ "data" : "max_score" },
-				{ "data" : "min_mvp" },
+				{ "data" : "min_score", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "avg_score", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "max_score", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "min_mvp", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
 							if (row.overall_avg_mvp >= row.avg_mvp) {
@@ -89,9 +106,9 @@
 						}
 
 						return row.avg_mvp;
-					}
+					}, "orderSequence": [ "desc", "asc"]
 				},
-				{ "data" : "max_mvp" },
+				{ "data" : "max_mvp", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
 							if (row.overall_avg_acc >= row.avg_acc) {
@@ -102,10 +119,10 @@
 						}
 
 						return row.avg_acc;
-					}
+					}, "orderSequence": [ "desc", "asc"]
 				},
-				{ "data" : "hit_diff" },
-				{ "data" : "medic_hits" },
+				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta ) {
 						var rate = row.elim_rate;
 						if (type === 'display') {
@@ -113,7 +130,7 @@
 						}
 							
 						return rate;
-					}
+					}, "orderSequence": [ "desc", "asc"]
 				},
 				{ "data" : function ( row, type, val, meta ) {
 						var ratio = Math.round((row.games_won/row.games_played) * 100);
@@ -122,11 +139,17 @@
 						}
 							
 						return ratio;
-					}
+					}, "orderSequence": [ "desc", "asc"]
 				}
 			],
-			"order": [[ 5, "desc" ]]
+			"order": [[ 6, "desc" ]]
 		});
+
+		summary_stats.on( 'order.dt', function () {
+			summary_stats.column(0, {order:'applied'}).nodes().each( function (cell, i) {
+				cell.innerHTML = i+1;
+			} );
+		} ).draw();
 
 		$("#medic_hits thead tr th input").on( 'keyup change', function () {
 			medicHitsTable
@@ -143,16 +166,26 @@
 				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
+				{
+					"defaultContent" : '',
+					"orderable": false
+				},
 				{ "data" : "player_name" },
-				{ "data" : "total_medic_hits" },
-				{ "data" : "medic_hits_per_game" },
-				{ "data" : "games_played" },
-				{ "data" : "non_resup_total_medic_hits" },
-				{ "data" : "non_resup_medic_hits_per_game" },
-				{ "data" : "non_resup_games_played" }
+				{ "data" : "total_medic_hits", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "medic_hits_per_game", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "games_played", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "non_resup_total_medic_hits", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "non_resup_medic_hits_per_game", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "non_resup_games_played", "orderSequence": [ "desc", "asc"] }
 			],
-			"order": [[ 1, "desc" ]]
+			"order": [[ 2, "desc" ]]
 		});
+
+		medicHitsTable.on( 'order.dt', function () {
+			medicHitsTable.column(0, {order:'applied'}).nodes().each( function (cell, i) {
+				cell.innerHTML = i+1;
+			} );
+		} ).draw();
 	} );
 </script>
 <div id="top_accordion" class="panel panel-info">
@@ -189,6 +222,7 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
 						<thead>
+							<th>#</th>
 							<th class="searchable"><input type="text" class="form-control" placeholder="Name" /></th>
 							<th class="searchable"><input type="text" class="form-control" placeholder="Game" /></th>
 							<th class="searchable"><input type="text" class="form-control" placeholder="Position" /></th>
@@ -215,6 +249,7 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-hover table-condensed" id="summary_stats">
 						<thead>
+							<th>#</th>
 							<th><input type="text" class="form-control" placeholder="Name" /></th>
 							<th>Min Score</th>
 							<th>Avg Score</th>
@@ -244,6 +279,7 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
 						<thead>
+							<th>#</th>
 							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Name" /></th>
 							<th class="col-xs-1">Total Medic Hits (All)</th>
 							<th class="col-xs-1">Average Medic Hits (All)</th>
