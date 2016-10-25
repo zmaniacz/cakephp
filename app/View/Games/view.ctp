@@ -215,8 +215,7 @@
 				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 				$score_line .= "<td>".$score['lives_left']."</td>";
 				$score_line .= "<td>".$score['shots_left']."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".$score['shot_opponent']."</button></td>";
-				$score_line .= "<td>".$score['times_zapped']."</td>";
+				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/$score['times_zapped'],2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
 				$score_line .= "<td>".$score['missiled_opponent']."</td>";
 				$score_line .= "<td>".$score['times_missiled']."</td>";
 				$score_line .= "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
@@ -261,8 +260,7 @@
 							<th>MVP Points</th>
 							<th>Lives Left</th>
 							<th>Shots Left</th>
-							<th>Shot Opponent</th>
-							<th>Got Shot</th>
+							<th>Hit Diff</th>
 							<th>Missiled</th>
 							<th>Got Missiled</th>
 							<th>Medic Hits</th>
@@ -304,8 +302,7 @@
 							<th>MVP Points</th>
 							<th>Lives Left</th>
 							<th>Shots Left</th>
-							<th>Shot Opponent</th>
-							<th>Got Shot</th>
+							<th>Hit Diff</th>
 							<th>Missiled</th>
 							<th>Got Missiled</th>
 							<th>Medic Hits</th>
