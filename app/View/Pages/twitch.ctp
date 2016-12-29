@@ -1,5 +1,5 @@
 <iframe 
-    src="http://player.twitch.tv/?channel=beanz2d2" 
+    src="http://player.twitch.tv/?channel=laserforcetournaments" 
     height="540" 
     width="768" 
     frameborder="0" 
@@ -9,7 +9,7 @@
 <iframe frameborder="0" 
         scrolling="no" 
         id="chat_embed" 
-        src="http://www.twitch.tv/beanz2d2/chat" 
+        src="http://www.twitch.tv/laserforcetournaments/chat" 
         height="540" 
         width="350">
 </iframe>

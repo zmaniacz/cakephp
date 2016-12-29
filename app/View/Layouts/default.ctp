@@ -43,7 +43,7 @@
 		}
         
         $.ajax({ 
-            url:'https://api.twitch.tv/kraken/streams/beanz2d2',
+            url:'https://api.twitch.tv/kraken/streams/laserforcetournaments',
             dataType:'jsonp',
             success:function(channel) { 
                 if(channel["stream"] == null) {
@@ -95,7 +95,7 @@
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('Nationals 2016', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 10, 'centerID' => 8))); ?></li>
+                                <li><?= $this->Html->link('WCT 4', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 12, 'centerID' => 14))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin') && AuthComponent::user('center') == $this->Session->read('state.centerID')): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
