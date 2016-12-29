@@ -23,6 +23,7 @@
 	Router::connect('/', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, null));
 	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'league', 6, 7));
 	Router::connect('/wct3', array('controller' => 'scorecards', 'action' => 'setState', 'league', 9, 13));
+	Router::connect('/wct4', array('controller' => 'scorecards', 'action' => 'setState', 'league', 12, 13));
 	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 8));
 	Router::connect('/ltc', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 14));
 	Router::connect('/geddon2014', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 3));
