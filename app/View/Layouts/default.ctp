@@ -43,7 +43,7 @@
 		}
         
         $.ajax({ 
-            url:'https://api.twitch.tv/kraken/streams/laserforcetournaments',
+            url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
             dataType:'jsonp',
             success:function(channel) { 
                 if(channel["stream"] == null) {
