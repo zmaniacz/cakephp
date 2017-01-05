@@ -87,4 +87,8 @@ class PagesController extends AppController {
     public function wct3Schedule() {
        //
     }
+
+	public function wct4Bracket() {
+		//
+	}
 }
