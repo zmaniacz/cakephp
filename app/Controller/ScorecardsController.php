@@ -166,6 +166,7 @@ class ScorecardsController extends AppController {
 		$this->set('winstreaks', $this->Scorecard->getWinStreaks($this->Session->read('state')));
 		$this->set('lossstreaks', $this->Scorecard->getLossStreaks($this->Session->read('state')));
 		$this->set('current_streaks', $this->Scorecard->getCurrentStreaks($this->Session->read('state')));
+		$this->set('medic_on_medic', $this->Scorecard->getMedicOnMedicHits($this->Session->read('state')));
 	}
 	
 	public function getMVPBreakdown($id) {

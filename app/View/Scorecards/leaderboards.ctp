@@ -187,7 +187,7 @@
 	<div id="collapse_medic_tomfoolery" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					<table class="display table table-striped table-bordered table-hover table-condensed" id="medic_hits_table">
 						<thead>
 							<th>Name</th>
@@ -205,7 +205,7 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					<table class="display table table-striped table-bordered table-hover table-condensed" id="own_medic_hits_table">
 						<thead>
 							<th>Name</th>
@@ -217,6 +217,24 @@
 							<tr>
 								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
 								<td><?php echo $row[0]['own_medic_hits_total']; ?></td>
+							</tr>
+							<?php endif; ?>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-4">
+					<table class="display table table-striped table-bordered table-hover table-condensed" id="medic_on_medic_hits_table">
+						<thead>
+							<th>Name</th>
+							<th>Medic On Medic Hits</th>
+						</thead>
+						<tbody>
+							<?php foreach ($medic_on_medic as $row): ?>
+							<?php if ($row[0]['medic_hits_total'] > 0): ?>
+							<tr>
+								<td><?php echo $this->Html->link($row['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $row['Player']['id'])); ?></td>
+								<td><?php echo $row[0]['medic_hits_total']; ?></td>
 							</tr>
 							<?php endif; ?>
 							<?php endforeach; ?>
