@@ -4,7 +4,7 @@
         $red_table = "";
         foreach($hits as $hit) {
             if($hit['id'] != $player_id) {
-                if($hit['team'] == 'Green') {
+                if($hit['team'] == 'green') {
                     $green_line = "<tr>";
                     
                     $green_line .= "<td>".$hit['name']."</td>";

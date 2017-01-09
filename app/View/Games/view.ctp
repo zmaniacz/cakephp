@@ -155,7 +155,7 @@
 		<br />
 		<div class="well well-sm">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
 		<?php 
-			if($game['Game']['winner'] == 'Green') {
+			if($game['Game']['winner'] == 'green') {
 				$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
 				$winner_panel = "panel panel-success";
 				$winner_score = ($game['Game']['green_score']+$game['Game']['green_adj']);

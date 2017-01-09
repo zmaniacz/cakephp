@@ -16,7 +16,7 @@
 		$red_team = ($game['Game']['red_team_id'] == null) ? "Red Team : $red_score" : $this->Html->link("{$game['Red_Team']['name']} : $red_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-block btn-danger'));
 		$green_team = ($game['Game']['green_team_id'] == null) ? "Green Team : $green_score" : $this->Html->link("{$game['Green_Team']['name']} : $green_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-block btn-success'));
 		
-		if($game['Game']['winner'] == 'Red') {
+		if($game['Game']['winner'] == 'red') {
 			$winner =  $red_team;
 			$loser = $green_team;
 			$options = array('class' => 'btn btn-danger btn-block');

@@ -106,17 +106,17 @@ class Match extends AppModel {
 		$team_2_points = 0;
 		
 		if(!empty($match['Game_1']['id'])) {
-			if($match['Game_1']['winner'] == 'Red') {
+			if($match['Game_1']['winner'] == 'red') {
 				$team_1_points += 2;
-			} elseif($match['Game_1']['winner'] == 'Green') {
+			} elseif($match['Game_1']['winner'] == 'green') {
 				$team_2_points += 2;
 			}
 		}
 
 		if(!empty($match['Game_2']['id'])) {
-			if($match['Game_2']['winner'] == 'Red') {
+			if($match['Game_2']['winner'] == 'red') {
 				$team_2_points += 2;
-			} elseif($match['Game_2']['winner'] == 'Green') {
+			} elseif($match['Game_2']['winner'] == 'green') {
 				$team_1_points += 2;
 			}
 		}

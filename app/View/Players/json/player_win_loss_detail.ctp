@@ -9,8 +9,8 @@
 	$green_losses_elim = 0;
 
 	foreach($games as $game) {
-		if($game['Scorecard']['team'] == 'Red') {
-			if($game['Game']['winner'] == 'Red') {
+		if($game['Scorecard']['team'] == 'red') {
+			if($game['Game']['winner'] == 'red') {
 				$wins++;
 				$red_wins++;
 				if($game['Game']['green_eliminated'] > 0) {
@@ -24,7 +24,7 @@
 				}
 			}
 		} else {
-			if($game['Game']['winner'] == 'Green') {
+			if($game['Game']['winner'] == 'green') {
 				$wins++;
 				if($game['Game']['red_eliminated'] > 0) {
 					$green_wins_elim++;

@@ -128,7 +128,7 @@ class League extends AppModel {
 					}
 					
 					if(!empty($match['Game_1'])) {
-						if($match['Game_1']['winner'] == 'Red') {
+						if($match['Game_1']['winner'] == 'red') {
 							$standings[$match['team_1_id']]['won'] += 1;
 							$standings[$match['team_2_id']]['lost'] += 1;
 						} else {
@@ -152,7 +152,7 @@ class League extends AppModel {
 					}
 					
 					if(!empty($match['Game_2'])) {
-						if($match['Game_2']['winner'] == 'Red') {
+						if($match['Game_2']['winner'] == 'red') {
 							$standings[$match['team_2_id']]['won'] += 1;
 							$standings[$match['team_1_id']]['lost'] += 1;
 						} else {

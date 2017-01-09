@@ -13,7 +13,7 @@
 	$green_loses_nonelim_avg_score = 0;
 
 	foreach($overall as $line) {
-		if($line['Game']['winner'] == 'Green') {
+		if($line['Game']['winner'] == 'green') {
 			if($line['Game']['red_eliminated'] == 1) {
 				$green_wins_elim += $line[0]['Total'];
 				$green_wins_elim_avg_score += $line[0]['green_avg_score'];

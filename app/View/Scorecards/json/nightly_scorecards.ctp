@@ -2,7 +2,7 @@
 	$data = array();
 	
 	foreach($scorecards as $score) {
-		if($score['Game']['winner'] == 'Red')
+		if($score['Game']['winner'] == 'red')
 			$options = array('class' => 'btn btn-danger btn-block');
 		else
 			$options = array('class' => 'btn btn-success btn-block');

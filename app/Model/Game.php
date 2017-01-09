@@ -198,7 +198,7 @@ class Game extends AppModel {
 		$green_bonus = 0;
 		$green_pens = 0;
 		$green_elim = 0;
-		$winner = 'Green';
+		$winner = 'green';
 		
 		//Apply the elim bonus if the ooposing team was eliminated...both teams can get the bonus
 		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['total_elim'] > 0) {
@@ -214,7 +214,7 @@ class Game extends AppModel {
 		foreach($penalties['Scorecard'] as $penalty) {
 			if(!empty($penalty['Penalty'])) {
 				foreach($penalty['Penalty'] as $single_penalty) {
-					if($penalty['team'] == 'Red') {
+					if($penalty['team'] == 'red') {
 						$red_pens += $single_penalty['value'];
 					} else {
 						$green_pens += $single_penalty['value'];
@@ -224,7 +224,7 @@ class Game extends AppModel {
 		}
 		
 		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'] + $red_bonus + $red_pens > $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'] + $green_bonus + $green_pens)
-			$winner = 'Red';
+			$winner = 'red';
 			
 		$data = array('id' => $id,
 			'green_score' => $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'],

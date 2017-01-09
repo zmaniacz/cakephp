@@ -103,10 +103,10 @@ class Scorecard extends AppModel {
 				
 				$conditions[] = array('game_id' => $score['Scorecard']['game_id']);
 				
-				if($score['Scorecard']['team'] == 'Red')
-					$conditions[] = array('team' => 'Green');
+				if($score['Scorecard']['team'] == 'red')
+					$conditions[] = array('team' => 'green');
 				else
-					$conditions[] = array('team' => 'Red');
+					$conditions[] = array('team' => 'red');
 				
 				$nukes = $this->find('all',
 					array(
@@ -188,13 +188,13 @@ class Scorecard extends AppModel {
 			FROM (
 				SELECT game_datetime, type, pdf_id, league_id, center_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
-				WHERE team = 'Green' AND game_id IS NULL
+				WHERE team = 'green' AND game_id IS NULL
 				GROUP BY game_datetime
 			) AS green,
 			(
 				SELECT game_datetime, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards
-				WHERE team = 'Red' AND game_id IS NULL
+				WHERE team = 'red' AND game_id IS NULL
 				GROUP BY game_datetime
 			) AS red
 			WHERE green.game_datetime = red.game_datetime 
