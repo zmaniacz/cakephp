@@ -668,6 +668,13 @@ class HttpSocket extends CakeSocket {
 			throw new SocketException(__d('cake_dev', 'The %s does not support proxy authentication.', $authClass));
 		}
 		call_user_func_array("$authClass::proxyAuthentication", array($this, &$this->_proxy));
+
+		if (!empty($this->request['header']['Proxy-Authorization'])) {
+			$this->config['proxyauth'] = $this->request['header']['Proxy-Authorization'];
+			if ($this->request['uri']['scheme'] === 'https') {
+				$this->request['header'] = Hash::remove($this->request['header'], 'Proxy-Authorization');
+			}
+		}
 	}
 
 /**
@@ -1016,7 +1023,7 @@ class HttpSocket extends CakeSocket {
 	}
 
 /**
- * Resets the state of this HttpSocket instance to it's initial state (before Object::__construct got executed) or does
+ * Resets the state of this HttpSocket instance to it's initial state (before CakeObject::__construct got executed) or does
  * the same thing partially for the request and the response property only.
  *
  * @param bool $full If set to false only HttpSocket::response and HttpSocket::request are reset

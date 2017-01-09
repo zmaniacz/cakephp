@@ -86,7 +86,7 @@ class TestAuthComponent extends AuthComponent {
  * Helper method to add/set an authenticate object instance
  *
  * @param int $index The index at which to add/set the object
- * @param object $object The object to add/set
+ * @param CakeObject $object The object to add/set
  * @return void
  */
 	public function setAuthenticateObject($index, $object) {
@@ -97,7 +97,7 @@ class TestAuthComponent extends AuthComponent {
  * Helper method to get an authenticate object instance
  *
  * @param int $index The index at which to get the object
- * @return object $object
+ * @return CakeObject $object
  */
 	public function getAuthenticateObject($index) {
 		$this->constructAuthenticate();
@@ -108,7 +108,7 @@ class TestAuthComponent extends AuthComponent {
  * Helper method to add/set an authorize object instance
  *
  * @param int $index The index at which to add/set the object
- * @param Object $object The object to add/set
+ * @param CakeObject $object The object to add/set
  * @return void
  */
 	public function setAuthorizeObject($index, $object) {
@@ -118,6 +118,7 @@ class TestAuthComponent extends AuthComponent {
 /**
  * stop method
  *
+ * @param int $status
  * @return void
  */
 	protected function _stop($status = 0) {
@@ -1621,8 +1622,6 @@ class AuthComponentTest extends CakeTestCase {
 /**
  * test that the returned URL doesn't contain the base URL.
  *
- * @see https://cakephp.lighthouseapp.com/projects/42648/tickets/3922-authcomponentredirecturl-prepends-appbaseurl
- *
  * @return void This test method doesn't return anything.
  */
 	public function testRedirectUrlWithBaseSet() {
@@ -1651,6 +1650,20 @@ class AuthComponentTest extends CakeTestCase {
 
 		Configure::write('App', $App);
 		Router::reload();
+	}
+
+/**
+ * Test that redirectUrl() returns '/' if loginRedirect is empty
+ * and Auth.redirect is the login page.
+ *
+ * @return void
+ */
+	public function testRedirectUrlWithoutLoginRedirect() {
+		$this->Auth->loginRedirect = null;
+		$this->Auth->Session->write('Auth.redirect', '/users/login');
+		$this->Auth->request->addParams(Router::parse('/users/login'));
+		$result = $this->Auth->redirectUrl();
+		$this->assertEquals('/', $result);
 	}
 
 /**
@@ -1721,6 +1734,27 @@ class AuthComponentTest extends CakeTestCase {
 		$this->Controller->request['action'] = 'admin_add';
 
 		$this->Auth->startup($this->Controller);
+	}
+
+/**
+ * testStatelessLoginSetUserNoSessionStart method
+ *
+ * @return void
+ */
+	public function testStatelessLoginSetUserNoSessionStart() {
+		$user = array(
+			'id' => 1,
+			'username' => 'mark'
+		);
+
+		AuthComponent::$sessionKey = false;
+		$result = $this->Auth->login($user);
+		$this->assertTrue($result);
+
+		$this->assertTrue($this->Auth->loggedIn());
+		$this->assertEquals($user, $this->Auth->user());
+
+		$this->assertFalse($this->Auth->Session->started());
 	}
 
 /**

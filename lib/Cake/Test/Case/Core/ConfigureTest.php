@@ -451,10 +451,16 @@ class ConfigureTest extends CakeTestCase {
  *
  * @expectedException PHPUnit_Framework_Error
  * @return void
+ * @throws PHPUnit_Framework_Error
  */
 	public function testReaderExceptionOnIncorrectClass() {
 		$reader = new StdClass();
-		Configure::config('test', $reader);
+
+		try {
+			Configure::config('test', $reader);
+		} catch (TypeError $e) {
+			throw new PHPUnit_Framework_Error('Raised an error', 100, __FILE__, __LINE__);
+		}
 	}
 
 /**

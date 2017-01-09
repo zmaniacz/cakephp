@@ -28,7 +28,7 @@ App::uses('Validation', 'Utility');
 class CakeSocket {
 
 /**
- * Object description
+ * CakeSocket description
  *
  * @var string
  */
@@ -192,6 +192,9 @@ class CakeSocket {
 					$this->config['request']['uri']['port'] . ' HTTP/1.1';
 				$req[] = 'Host: ' . $this->config['host'];
 				$req[] = 'User-Agent: php proxy';
+				if (!empty($this->config['proxyauth'])) {
+					$req[] = 'Proxy-Authorization: ' . $this->config['proxyauth'];
+				}
 
 				fwrite($this->connection, implode("\r\n", $req) . "\r\n\r\n");
 
@@ -407,7 +410,7 @@ class CakeSocket {
 	}
 
 /**
- * Resets the state of this Socket instance to it's initial state (before Object::__construct got executed)
+ * Resets the state of this Socket instance to it's initial state (before CakeObject::__construct got executed)
  *
  * @param array $state Array with key and values to reset
  * @return bool True on success

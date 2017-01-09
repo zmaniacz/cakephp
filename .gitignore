@@ -20,7 +20,9 @@
 #################################
 /nbproject
 .idea
-.settings
+/.project
+/.buildpath
+/.settings/
 
 # OS generated files #
 ######################
