@@ -186,7 +186,7 @@ $(document).ready(function() {
 	<ul>
 		<li>Rapid fire: 0.5 points for each time you activate rapid fire.</li>
 		<li>Hits vs. Commander/Heavy: 1 point (applied fractionally) for every 6 hits on an enemy Heavy or Commander.</li>
-		<li>Score bonus: 1 point for every full 1000 points over 7000.</li>
+		<li>Score bonus: 1 point for every full 1000 points over 6000.</li>
 	</ul>
 	<li>Ammo Carrier</li>
 	<ul>
