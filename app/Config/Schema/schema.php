@@ -203,6 +203,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary'),
 		'player_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'game_datetime' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'game_endtime' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'team' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'position' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'shots_hit' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
