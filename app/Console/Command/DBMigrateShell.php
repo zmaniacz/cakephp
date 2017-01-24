@@ -51,7 +51,7 @@ class DBMigrateShell extends AppShell {
                         PRIMARY KEY (`id`),
                         KEY `game_id_idx` (`game_id`),
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`)
-                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
         
         //create teams records based on existing game recorsds
@@ -61,6 +61,14 @@ class DBMigrateShell extends AppShell {
         //remove redundant game data - kill columns
 
         //create events table
+        $db->rawQuery("CREATE TABLE `events` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                        `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'social',
+                        `created` datetime NULL DEFAULT NULL,
+                        `updated` datetime NULL DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
         //create event linkages
     }
