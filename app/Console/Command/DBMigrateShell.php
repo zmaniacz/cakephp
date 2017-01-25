@@ -3,6 +3,8 @@
 App::uses('ConnectionManager', 'Model');
 
 class DBMigrateShell extends AppShell {
+    public $uses = array('Scorecard','Game');
+
     public function main() {
         $db = ConnectionManager::getDataSource('default');
 
@@ -54,7 +56,13 @@ class DBMigrateShell extends AppShell {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
         
-        //create teams records based on existing game recorsds
+        //create teams records based on existing game records
+
+        //select all the games with their red team data
+        //insert into teams with the game_id as red data
+        //dont use adj scores...add elim bonuses as appropriate
+        //have to go back after scorecards are tied out and re-apply penalties
+        //repeat for green
 
         //link scorecards to teams instead of games
 
