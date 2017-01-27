@@ -2,10 +2,12 @@
 
 App::uses('ConnectionManager', 'Model');
 
-class DBMigrateShell extends AppShell {
-    public $uses = array('Scorecard','Game');
-
+class MigrateShell extends AppShell {
     public function main() {
+        $this->out('choose a step');
+    }
+
+    public function step_1() {
         $db = ConnectionManager::getDataSource('default');
 
         //Rename teams table and foreign keys
@@ -55,6 +57,17 @@ class DBMigrateShell extends AppShell {
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
+        //create events table
+        $db->rawQuery("CREATE TABLE `events` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                        `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'social',
+                        `created` datetime NULL DEFAULT NULL,
+                        `updated` datetime NULL DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+        
+        
         
         //create teams records based on existing game records
 
@@ -68,15 +81,7 @@ class DBMigrateShell extends AppShell {
 
         //remove redundant game data - kill columns
 
-        //create events table
-        $db->rawQuery("CREATE TABLE `events` (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                        `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'social',
-                        `created` datetime NULL DEFAULT NULL,
-                        `updated` datetime NULL DEFAULT NULL,
-                        PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+        
 
         //create event linkages
     }
