@@ -52,7 +52,15 @@ class MigrateShell extends AppShell {
                         PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
         
-        
+        //add team fk to scorecards
+        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+                        ADD COLUMN `team_id` INT(11) NULL DEFAULT NULL AFTER `league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+                        ADD INDEX `team_id_fk_idx` (`team_id`)");
+        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+                        ADD CONSTRAINT `fk_scorecards_teams_team_id`
+                            FOREIGN KEY (`team_id`)
+                            REFERENCES `lfstats`.`teams` (`id`)");
         
         //create teams records based on existing game records
 
