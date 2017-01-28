@@ -39,7 +39,7 @@ class MigrateShell extends AppShell {
                         KEY `game_id_idx` (`game_id`),
                         KEY `league_team_id_idx` (`league_team_id`), 
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`),
-                        CONSTRAINT `fk_teams_league_teams_league_team_id` FOREIGN KEY (`league_team_id`) REFERENCES `league_teams` (`id`),
+                        CONSTRAINT `fk_teams_league_teams_league_team_id` FOREIGN KEY (`league_team_id`) REFERENCES `league_teams` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
         //create events table
