@@ -6,6 +6,10 @@ class Game extends AppModel {
 			'className' => 'Scorecard',
 			'foreignkey' => 'game_id'
 		),
+		'Team' => array(
+			'className' => 'Team',
+			'foreignkey' => 'game_id'
+		),
 		'Red_Scorecard' => array(
 			'className' => 'Scorecard',
 			'foreignkey' => 'game_id',
@@ -26,14 +30,6 @@ class Game extends AppModel {
 		'Center' => array(
 			'className' => 'Center',
 			'foreignKey' => 'center_id'
-		),
-		'Red_Team' => array(
-			'className' => 'Team',
-			'foreignKey' => 'red_team_id'
-		),
-		'Green_Team' => array(
-			'className' => 'Team',
-			'foreignKey' => 'green_team_id'
 		),
 		'Match' => array(
 			'className' => 'Match',

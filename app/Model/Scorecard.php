@@ -9,7 +9,11 @@ class Scorecard extends AppModel {
 		'Game' => array(
 			'className' => 'Game',
 			'foreignKey' => 'game_id'
-		)
+		),
+		'Team' => array(
+			'className' => 'Team',
+			'foreignKey' => 'team_id'
+		),
 	);
 
 	public $hasOne = array(
