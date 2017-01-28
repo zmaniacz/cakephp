@@ -32,7 +32,7 @@ class MigrateShell extends AppShell {
                         `eliminated` tinyint(1) NOT NULL DEFAULT '0',
                         `eliminated_opponent` tinyint(1) NOT NULL DEFAULT '0',
                         `game_id` int(11) NOT NULL,
-                        `league_team_id' int(11) DEFAULT NULL,
+                        `league_team_id` int(11) DEFAULT NULL,
                         `created` datetime NULL DEFAULT NULL,
                         `updated` datetime NULL DEFAULT NULL,
                         PRIMARY KEY (`id`),
