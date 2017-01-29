@@ -31,7 +31,7 @@
 			$green_team = "Green Team : $green_score";
 		}
 		
-		if($game['Red_Team']['winner']) {
+		if($game['Game']['winner'] == 'red') {
 			$winner =  $red_team;
 			$loser = $green_team;
 			$options = array('class' => 'btn btn-danger btn-block');

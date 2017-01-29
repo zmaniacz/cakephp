@@ -69,7 +69,6 @@ class MigrateShell extends AppShell {
                 array(
                     'color' => 'red',
                     'raw_score' => $game['Game']['red_score'],
-                    'winner' => ($game['Game']['winner'] == 'red' ? 1 : 0),
                     'eliminated' => $game['Game']['red_eliminated'],
                     'eliminated_opponent' => $game['Game']['green_eliminated'],
                     'game_id' => $game['Game']['id'],
@@ -78,7 +77,6 @@ class MigrateShell extends AppShell {
                 array(
                     'color' => 'green',
                     'raw_score' => $game['Game']['green_score'],
-                    'winner' => ($game['Game']['winner'] == 'green' ? 1 : 0),
                     'eliminated' => $game['Game']['green_eliminated'],
                     'eliminated_opponent' => $game['Game']['red_eliminated'],
                     'game_id' => $game['Game']['id'],
@@ -142,7 +140,6 @@ class MigrateShell extends AppShell {
         $db->rawQuery("ALTER TABLE `lfstats`.`games` 
                         DROP COLUMN `green_eliminated`,
                         DROP COLUMN `red_eliminated`,
-                        DROP COLUMN `winner`,
                         DROP COLUMN `green_adj`,
                         DROP COLUMN `red_adj`,
                         DROP COLUMN `green_score`,
@@ -166,30 +163,7 @@ class MigrateShell extends AppShell {
     }
 
     public function step_5() {
-        $db = ConnectionManager::getDataSource('default');
-        
-        $db->rawQuery("CREATE OR REPLACE 
-                        ALGORITHM = UNDEFINED 
-                        DEFINER = `dbo_redial`@`%` 
-                        SQL SECURITY DEFINER
-                    VIEW `game_results` AS
-                        SELECT 
-                            `scorecards`.`game_datetime` AS `game_datetime`,
-                            `scorecards`.`player_id` AS `player_id`,
-                            `scorecards`.`id` AS `scorecard_id`,
-                            `games`.`id` AS `game_id`,
-                            `games`.`type` AS `type`,
-                            `games`.`center_id` AS `center_id`,
-                            `games`.`league_id` AS `league_id`,
-                            (CASE `teams`.`winner`
-                                WHEN 1 THEN 'W'
-                                ELSE 'L'
-                            END) AS `result`,
-                            `teams`.`winner` AS `won`
-                        FROM
-                            ((`scorecards`
-                            JOIN `teams` ON ((`scorecards`.`team_id` = `teams`.`id`)))
-                            JOIN `games` ON ((`teams`.`game_id` = `games`.`id`)))");
+        //unused
     }
 
     public function step_6() {
