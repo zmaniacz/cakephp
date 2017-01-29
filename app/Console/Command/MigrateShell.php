@@ -30,7 +30,6 @@ class MigrateShell extends AppShell {
                         `raw_score` int(11) NOT NULL DEFAULT '0',
                         `bonus_score` int(11) NOT NULL DEFAULT '0',
                         `penalty_score` int(11) NOT NULL DEFAULT '0',
-                        `winner` tinyint(1) NOT NULL DEFAULT '0',
                         `eliminated` tinyint(1) NOT NULL DEFAULT '0',
                         `eliminated_opponent` tinyint(1) NOT NULL DEFAULT '0',
                         `game_id` int(11) NOT NULL,
