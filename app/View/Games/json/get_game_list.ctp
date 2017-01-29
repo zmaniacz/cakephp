@@ -10,13 +10,28 @@
 			$game_name = $game['Game']['game_name'];
 		}
 		
-		$red_score = $game['Game']['red_score']+$game['Game']['red_adj'];
-		$green_score = $game['Game']['green_score']+$game['Game']['green_adj'];
+		$red_score = $game['Red_Team']['raw_score']+$game['Red_Team']['bonus_score']+$game['Red_Team']['penalty_score'];
+		$green_score = $game['Green_Team']['raw_score']+$game['Green_Team']['bonus_score']+$game['Green_Team']['penalty_score'];
 		
-		$red_team = ($game['Game']['red_team_id'] == null) ? "Red Team : $red_score" : $this->Html->link("{$game['Red_Team']['name']} : $red_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-block btn-danger'));
-		$green_team = ($game['Game']['green_team_id'] == null) ? "Green Team : $green_score" : $this->Html->link("{$game['Green_Team']['name']} : $green_score", array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-block btn-success'));
+		if(!empty($game['Red_Team']['LeagueTeam'])) {
+			$red_team = $this->Html->link("{$game['Red_Team']['LeagueTeam']['name']} : $red_score", 
+							array('controller' => 'teams', 'action' => 'view', $game['Red_Team']['id']), 
+							array('class' => 'btn btn-block btn-danger')
+						);
+		} else {
+			$red_team = "Red Team : $red_score";
+		}
 		
-		if($game['Game']['winner'] == 'red') {
+		if(!empty($game['Green_Team']['LeagueTeam'])) {
+			$green_team = $this->Html->link("{$game['Green_Team']['LeagueTeam']['name']} : $green_score", 
+							array('controller' => 'teams', 'action' => 'view', $game['Green_Team']['id']), 
+							array('class' => 'btn btn-block btn-success')
+						);
+		} else {
+			$green_team = "Green Team : $green_score";
+		}
+		
+		if($game['Red_Team']['winner']) {
 			$winner =  $red_team;
 			$loser = $green_team;
 			$options = array('class' => 'btn btn-danger btn-block');
@@ -38,7 +53,6 @@
 			'game_datetime' => $game['Game']['game_datetime'],
 			'winner' => $winner,
 			'loser' => $loser,
-			'winner_color' => $game['Game']['winner'],
 			'pdf' => $pdf
 		);
 	}

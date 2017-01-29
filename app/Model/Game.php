@@ -26,6 +26,19 @@ class Game extends AppModel {
 		)
 	);
 
+	public $hasOne = array(
+			'Red_Team' => array(
+			'className' => 'Team',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Red_Team.color' => 'red')
+		),
+		'Green_Team' => array(
+			'className' => 'Team',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Green_Team.color' => 'green')
+		)
+	);
+
 	public $belongsTo = array(
 		'Center' => array(
 			'className' => 'Center',
@@ -137,8 +150,12 @@ class Game extends AppModel {
 
 		$games = $this->find('all', array(
 			'contain' => array(
-				'Red_Team',
-				'Green_Team',
+				'Red_Team' => array(
+					'LeagueTeam'
+				),
+				'Green_Team' => array(
+					'LeagueTeam'
+				),
 				'Match' => array(
 					'Round'
 				)
