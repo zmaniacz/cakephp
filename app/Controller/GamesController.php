@@ -16,7 +16,7 @@ class GamesController extends AppController {
  */
 	public $components = array('Paginator', 'Session');
 
-	public $uses = array('Game','Player');
+	public $uses = array('Game','Player', 'Team');
 
 	public function beforeFilter() {
 		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList');
@@ -73,6 +73,8 @@ class GamesController extends AppController {
 			}
 			
 			$this->set('game', $game);
+			$this->set('red_team_summary', $this->Team->getSummaryStats($game['Red_Team']['id']));
+			$this->set('green_team_summary', $this->Team->getSummaryStats($game['Green_Team']['id']));
 		}
 	}
 

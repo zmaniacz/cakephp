@@ -95,36 +95,7 @@ class Game extends AppModel {
 				),
 				'Match' => array(
 					'Round'
-				)/*,
-				//this should move to the teams model - team summary stats or some shit
-				'Red_Scorecard' => array(
-					'fields' => array(
-						'SUM(medic_hits) as medic_hits',
-						'SUM(missile_hits) as missile_hits',
-						'SUM(nukes_detonated) as nukes_detonated',
-						'SUM(lives_left) as lives_left',
-						'SUM(shots_left) as shots_left',
-						'( SUM(shot_opponent) / SUM(times_zapped) ) as hit_diff',
-						'SUM(resupplies) as resupplies',
-						'SUM(bases_destroyed) as bases_destroyed',
-						'AVG(accuracy) as accuracy',
-						'SUM(mvp_points) as mvp_points'
-					)
-				),
-				'Green_Scorecard' => array(
-					'fields' => array(
-						'SUM(medic_hits) as medic_hits',
-						'SUM(missile_hits) as missile_hits',
-						'SUM(nukes_detonated) as nukes_detonated',
-						'SUM(lives_left) as lives_left',
-						'SUM(shots_left) as shots_left',
-						'( SUM(shot_opponent) / SUM(times_zapped) ) as hit_diff',
-						'SUM(resupplies) as resupplies',
-						'SUM(bases_destroyed) as bases_destroyed',
-						'AVG(accuracy) as accuracy',
-						'SUM(mvp_points) as mvp_points'
-					)
-				)*/
+				)
 			),
 			'conditions' => $conditions
 		));
