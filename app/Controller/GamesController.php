@@ -63,16 +63,6 @@ class GamesController extends AppController {
 
 			$game = $this->Game->getGameDetails($id);
 			$this->request->data = $game;
-			
-			foreach ($game['Scorecard'] as $key => $row) {
-				$team[$key] = $row['team'];
-				$rank[$key] = $row['rank'];
-			}
-			
-			if($game['Game']['winner'] == 'red')
-				array_multisort($team, SORT_DESC, $rank, SORT_ASC, $game['Scorecard']);
-			else
-				array_multisort($team, SORT_ASC, $rank, SORT_ASC, $game['Scorecard']);
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 				$this->loadModel('LeagueGame');

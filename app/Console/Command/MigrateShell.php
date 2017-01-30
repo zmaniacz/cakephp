@@ -162,7 +162,14 @@ class MigrateShell extends AppShell {
     }
 
     public function step_5() {
-        //unused
+        //recalc all game winners
+        $games = $this->Game->find('all', array(
+            'fields' => array('id')
+        ));
+
+        foreach($games as $game) {
+            $this->Game->updateGameWinner($game['Game']['id']);
+        }
     }
 
     public function step_6() {

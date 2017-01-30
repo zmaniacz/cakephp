@@ -1,11 +1,11 @@
 <?= $this->Html->script('highcharts.js'); ?>
 <?= $this->Html->script('highcharts-more.js'); ?>
 <?php
-	$green_data = $game["Green_Scorecard"][0]["Green_Scorecard"][0];
+	/*$green_data = $game["Green_Scorecard"][0]["Green_Scorecard"][0];
 	$green_data_string = $game["Game"]["green_score"]+$game["Game"]["green_adj"].",$green_data[hit_diff],$green_data[accuracy],$green_data[mvp_points],$green_data[medic_hits],$green_data[lives_left],$green_data[shots_left],$green_data[missile_hits],$green_data[nukes_detonated],$green_data[resupplies],$green_data[bases_destroyed]";
 	
 	$red_data = $game["Red_Scorecard"][0]["Red_Scorecard"][0];
-	$red_data_string = $game["Game"]["red_score"]+$game["Game"]["red_adj"].",$red_data[hit_diff],$red_data[accuracy],$red_data[mvp_points],$red_data[medic_hits],$red_data[lives_left],$red_data[shots_left],$red_data[missile_hits],$red_data[nukes_detonated],$red_data[resupplies],$red_data[bases_destroyed]";
+	$red_data_string = $game["Game"]["red_score"]+$game["Game"]["red_adj"].",$red_data[hit_diff],$red_data[accuracy],$red_data[mvp_points],$red_data[medic_hits],$red_data[lives_left],$red_data[shots_left],$red_data[missile_hits],$red_data[nukes_detonated],$red_data[resupplies],$red_data[bases_destroyed]";*/
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -16,7 +16,7 @@
 			"ordering": false
 		} );
 
-		$('#breakdown_container').highcharts({
+		/*$('#breakdown_container').highcharts({
 			chart: {
 				type: 'bar',
 				height: 700
@@ -46,7 +46,7 @@
 				data: [<?= $red_data_string; ?>]
 			}
 			]
-		});
+		});*/
 	});
 
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -120,15 +120,15 @@
 	</span>
 	<span class="col-md-4 text-center">
 	<?php
-		if($game['Game']['red_team_id'] != null)
-			echo $this->Html->link($teams[$game['Game']['red_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-danger'));
+		if($game['Red_Team']['league_team_id'] != null)
+			echo $this->Html->link($teams[$game['Red_Team']['league_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Red_Team']['league_team_id']), array('class' => 'btn btn-danger'));
 		else
 			echo "Red Team";
 
 		echo " vs ";
 
-		if($game['Game']['green_team_id'] != null)
-			echo $this->Html->link($teams[$game['Game']['green_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-success'));
+		if($game['Green_Team']['league_team_id'] != null)
+			echo $this->Html->link($teams[$game['Green_Team']['league_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Green_Team']['league_team_id']), array('class' => 'btn btn-success'));
 		else
 			echo "Green Team";
 
@@ -156,39 +156,32 @@
 		<div class="well well-sm">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
 		<?php 
 			if($game['Game']['winner'] == 'green') {
-				$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+				$winner = (($game['Green_Team']['league_team_id'] != null) ? $teams[$game['Green_Team']['league_team_id']] : "Green Team");
 				$winner_panel = "panel panel-success";
-				$winner_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
-				$winner_adj = "";
-				if($game['Game']['green_adj'] != 0)
-					$winner_adj = " (".$game['Game']['green_adj'].")";
+				$winner_score = ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']);
+				$winner_adj = ($game['Green_Team']['bonus_score'] != 0 || $game['Green_Team']['penalty_score'] != 0) ? " (".($game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']).")" : "";
 					
-				$loser = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+				$loser = (($game['Red_Team']['league_team_id'] != null) ? $teams[$game['Red_Team']['league_team_id']] : "Red Team");
 				$loser_panel = "panel panel-danger";
-				$loser_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
-				$loser_adj = "";
-				if($game['Game']['red_adj'] != 0)
-					$loser_adj = " (".$game['Game']['red_adj'].")";
+				$loser_score = ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']);
+				$loser_adj = ($game['Red_Team']['bonus_score'] != 0 || $game['Red_Team']['penalty_score'] != 0) ? " (".($game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']).")" : "";
 			} else {
-				$winner = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+				$winner = (($game['Red_Team']['league_team_id'] != null) ? $teams[$game['Red_Team']['league_team_id']] : "Red Team");
 				$winner_panel = "panel panel-danger";
-				$winner_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
-				$winner_adj = "";
-				if($game['Game']['red_adj'] != 0)
-					$winner_adj = " (".$game['Game']['red_adj'].")";
+				$winner_score = ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']);
+				$winner_adj = ($game['Red_Team']['bonus_score'] != 0 || $game['Red_Team']['penalty_score'] != 0) ? " (".($game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']).")" : "";
 				
-				$loser = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+				$loser = (($game['Green_Team']['league_team_id'] != null) ? $teams[$game['Green_Team']['league_team_id']] : "Green Team");
 				$loser_panel = "panel panel-success";
-				$loser_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
-				$loser_adj = "";
-				if($game['Game']['green_adj'] != 0)
-					$loser_adj = " (".$game['Game']['green_adj'].")"; 
+				$loser_score = ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']);
+				$loser_adj = ($game['Green_Team']['bonus_score'] != 0 || $game['Green_Team']['penalty_score'] != 0) ? " (".($game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']).")" : ""; 
 			}
 			
 			$winner_table = "";
 			$loser_table = "";
 
-			foreach ($game['Scorecard'] as $score) {
+			$scorecards = array_merge($game['Red_Team']['Scorecard'], $game['Green_Team']['Scorecard']);
+			foreach ($scorecards as $score) {
 				$score_line = "";
 				$penalty_score = 0;
 				$penalty_string = "";
