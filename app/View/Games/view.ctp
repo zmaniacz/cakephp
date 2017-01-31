@@ -137,7 +137,7 @@
 <h3 class="row">
 	<span class="col-md-4">
 	<?php if(!empty($neighbors['prev'])): ?>
-		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
 	<?php endif; ?>
 	</span>
 	<span class="col-md-4 text-center">
@@ -164,7 +164,7 @@
 	</span>
 	<span class="col-md-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
 	<?php endif; ?>
 	</span>
 </h3>
@@ -344,48 +344,6 @@
 		</div>
 	</div>
 </div>
-<div class="modal fade" id="penaltyModal" tabindex="-1">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="penaltyModalLabel">Penalty Details</h4>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="hitModal" tabindex="-1">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="hitModalLabel">Hit Details</h4>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-	$('#penaltyModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget);
-		$(this).find(".modal-body").text("Loading...");
-		$(this).find(".modal-body").load(button.attr("target"));
-	});
-    $('#hitModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget);
-		$(this).find(".modal-body").text("Loading...");
-		$(this).find(".modal-body").load(button.attr("target"));
-	});
-
 	$('.switch_sub_cbox').change(function() {
 		$.ajax({
 			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"

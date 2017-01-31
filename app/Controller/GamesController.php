@@ -69,8 +69,9 @@ class GamesController extends AppController {
 				
 				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
 				$this->set('available_matches', $this->League->getAvailableMatches($game));
-				$this->set('neighbors', $this->LeagueGame->getPrevNextGame($game['Game']['id']));
 			}
+			
+			$this->set('neighbors', $this->Game->getPrevNextGame($game['Game']['id']));
 			
 			$this->set('game', $game);
 			$this->set('red_team_summary', $this->Team->getSummaryStats($game['Red_Team']['id']));

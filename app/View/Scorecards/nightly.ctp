@@ -58,9 +58,9 @@
 					"orderSequence": [ "desc", "asc"]
 				},
 				{ "data" : "mvp_points", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
 			],
 			"order": [[ 5, "desc" ]]
@@ -228,9 +228,9 @@
 							<th class="searchable"><input type="text" class="form-control" placeholder="Position" /></th>
 							<th>Score</th>
 							<th>MVP</th>
-							<th>Accuracy</th>
 							<th>Hit Diff</th>
 							<th>Medic Hits</th>
+							<th>Accuracy</th>
 							<th>Shot Team</th>
 						</thead>
 					</table>

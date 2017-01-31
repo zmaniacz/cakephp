@@ -14,7 +14,7 @@
 			'score' => $score['Scorecard']['score'],
 			'mvp_points' => "<button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['Scorecard']['id'], 'ext' => 'json'))."\">".$score['Scorecard']['mvp_points']."</button>",
 			'accuracy' => round($score['Scorecard']['accuracy']*100,2),
-			'hit_diff' => ($score['Scorecard']['times_zapped'] > 0) ? round($score['Scorecard']['shot_opponent']/$score['Scorecard']['times_zapped'],2) : $score['Scorecard']['shot_opponent'],
+			'hit_diff' => "<button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['Scorecard']['player_id'], $score['Scorecard']['game_id'], 'ext' => 'json'))."\">".round($score['Scorecard']['shot_opponent']/max($score['Scorecard']['times_zapped'],1),2)." (".$score['Scorecard']['shot_opponent']."/".$score['Scorecard']['times_zapped'].")</button>",
 			'medic_hits' => $score['Scorecard']['medic_hits'],
 			'shot_team' => $score['Scorecard']['shot_team']
 		);
