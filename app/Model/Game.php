@@ -238,4 +238,34 @@ class Game extends AppModel {
 		
 		$this->save($data);
 	}
+
+	public function getPrevNextGame($game_id) {
+		$game = $this->findById($game_id);
+
+		if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
+			App::import('Model', 'LeagueGame');
+			$leagueGame = new LeagueGame();
+			$results = $leagueGame->find('neighbors', array(
+				'field' => 'game_id',
+				'value' => $game_id,
+				'conditions' => array(
+					'league_id' => $game['Game']['league_id']
+				)
+			));
+
+			$results = array_map(function($position) {
+					if(isset($position['LeagueGame']))
+						return array(
+							'Game' => $position['LeagueGame']
+						);
+			}, $results);
+		} else {
+			$results = $this->find('neighbors', array(
+				'field' => 'id',
+				'value' => $game_id
+			));
+		}
+
+		return $results;
+	}
 }

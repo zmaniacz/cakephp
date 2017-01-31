@@ -115,7 +115,7 @@
 <h3 class="row">
 	<span class="col-md-4">
 	<?php if(!empty($neighbors['prev'])): ?>
-		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
 	<?php endif; ?>
 	</span>
 	<span class="col-md-4 text-center">
@@ -142,7 +142,7 @@
 	</span>
 	<span class="col-md-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['LeagueGame']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
 	<?php endif; ?>
 	</span>
 </h3>
