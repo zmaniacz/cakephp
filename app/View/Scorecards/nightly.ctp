@@ -50,7 +50,7 @@
 					"defaultContent" : '',
 					"orderable": false
 				},
-				{ "data" : "player_name" },
+				{ "data" : "player_name", "width" : "200px" },
 				{ "data" : "game_name" },
 				{ "data" : "position" },
 				{
@@ -223,15 +223,15 @@
 					<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
 						<thead>
 							<th>#</th>
-							<th class="searchable"><input type="text" class="form-control" placeholder="Name" /></th>
-							<th class="searchable"><input type="text" class="form-control" placeholder="Game" /></th>
-							<th class="searchable"><input type="text" class="form-control" placeholder="Position" /></th>
-							<th>Score</th>
-							<th>MVP</th>
-							<th>Hit Diff</th>
-							<th>Medic Hits</th>
-							<th>Accuracy</th>
-							<th>Shot Team</th>
+							<th class="searchable col-xs-2"><input type="text" placeholder="Name" /></th>
+							<th class="searchable col-xs-2"><input type="text" placeholder="Game" /></th>
+							<th class="searchable col-xs-2"><input type="text" placeholder="Position" /></th>
+							<th class="col-xs-1">Score</th>
+							<th class="col-xs-1">MVP</th>
+							<th class="col-xs-1">Hit Diff</th>
+							<th class="col-xs-1">Medic Hits</th>
+							<th class="col-xs-1">Accuracy</th>
+							<th class="col-xs-1">Shot Team</th>
 						</thead>
 					</table>
 				</div>
@@ -250,7 +250,7 @@
 					<table class="table table-striped table-bordered table-hover table-condensed" id="summary_stats">
 						<thead>
 							<th>#</th>
-							<th><input type="text" class="form-control" placeholder="Name" /></th>
+							<th><input type="text" placeholder="Name" /></th>
 							<th>Min Score</th>
 							<th>Avg Score</th>
 							<th>Max Score</th>
@@ -280,7 +280,7 @@
 					<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
 						<thead>
 							<th>#</th>
-							<th class="searchable col-xs-2"><input type="text" class="form-control" placeholder="Name" /></th>
+							<th class="searchable col-xs-2"><input type="text" placeholder="Name" /></th>
 							<th class="col-xs-1">Total Medic Hits (All)</th>
 							<th class="col-xs-1">Average Medic Hits (All)</th>
 							<th class="col-xs-1">Games Played (All)</th>
