@@ -254,16 +254,24 @@ class Game extends AppModel {
 			));
 
 			$results = array_map(function($position) {
-					if(isset($position['LeagueGame']))
-						return array(
-							'Game' => $position['LeagueGame']
-						);
+				if(isset($position['LeagueGame']))
+					return array(
+						'Game' => $position['LeagueGame']
+					);
 			}, $results);
 		} else {
 			$results = $this->find('neighbors', array(
 				'field' => 'id',
-				'value' => $game_id
+				'value' => $game_id,
+				'order' => 'game_datetime DESC'
 			));
+
+			$results = array_map(function($position) {
+				if(isset($position['Game'])) {
+					$position['Game']['game_id'] = $position['Game']['id'];
+					return $position;
+				}
+			}, $results);
 		}
 
 		return $results;
