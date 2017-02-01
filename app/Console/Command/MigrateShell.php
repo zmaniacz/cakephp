@@ -3,7 +3,7 @@
 App::uses('ConnectionManager', 'Model');
 
 class MigrateShell extends AppShell {
-    public $uses = array('Team','Game','Scorecard');
+    public $uses = array('Team','Game','Scorecard','Event');
 
     public function main() {
         $this->out('choose a step');
@@ -42,19 +42,20 @@ class MigrateShell extends AppShell {
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`),
                         CONSTRAINT `fk_teams_league_teams_league_team_id` FOREIGN KEY (`league_team_id`) REFERENCES `league_teams` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-
-        //create events table
-        $db->rawQuery("CREATE TABLE `events` (
+        
+         $db->rawQuery("CREATE TABLE `events` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                        `description` text NULL DEFAULT NULL,
                         `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'social',
+                        `is_comp` tinyint(1) NOT NULL DEFAULT '0',
+                        `center_id` int(11) NULL DEFAULT NULL,
                         `created` datetime NULL DEFAULT NULL,
                         `updated` datetime NULL DEFAULT NULL,
-                        PRIMARY KEY (`id`)
+                        PRIMARY KEY (`id`),
+                        KEY `center_id_idx` (`center_id`), 
+                        CONSTRAINT `fk_events_centers_center_id` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-        
-        //add fk from games to events
-        //create event linkages
     }
 
     public function step_2() {
@@ -135,7 +136,7 @@ class MigrateShell extends AppShell {
                         DROP FOREIGN KEY `fk_games_centers_center_id`,
                         DROP FOREIGN KEY `fk_games_teams_red_team_id`,
                         DROP FOREIGN KEY `fk_games_teams_green_team_id`");
-
+        
         $db->rawQuery("ALTER TABLE `lfstats`.`games` 
                         DROP COLUMN `green_eliminated`,
                         DROP COLUMN `red_eliminated`,
@@ -150,15 +151,22 @@ class MigrateShell extends AppShell {
                         CHANGE COLUMN `game_name` `game_name` VARCHAR(100) CHARACTER SET 'utf8' NULL DEFAULT NULL ,
                         CHANGE COLUMN `game_description` `game_description` TEXT CHARACTER SET 'utf8' NULL DEFAULT NULL ,
                         CHANGE COLUMN `center_id` `center_id` INT(11) NOT NULL ,
+                        ADD COLUMN `event_id` INT(11) NULL DEFAULT NULL AFTER `match_id`,
+                        ADD INDEX `fk_games_events_event_id_idx` (`event_id` ASC),
                         DROP INDEX `red_team_id` ,
                         DROP INDEX `green_team_id`");
-
+       
         $db->rawQuery("ALTER TABLE `lfstats`.`games` 
                         ADD CONSTRAINT `fk_games_centers_center_id`
-                        FOREIGN KEY (`center_id`)
-                        REFERENCES `lfstats`.`centers` (`id`)
-                        ON DELETE NO ACTION
-                        ON UPDATE NO ACTION");
+                            FOREIGN KEY (`center_id`)
+                            REFERENCES `lfstats`.`centers` (`id`)
+                            ON DELETE NO ACTION
+                            ON UPDATE NO ACTION,
+                        ADD CONSTRAINT `fk_games_events_event_id`
+                            FOREIGN KEY (`event_id`)
+                            REFERENCES `lfstats`.`events` (`id`)
+                            ON DELETE NO ACTION
+                            ON UPDATE NO ACTION");
     }
 
     public function step_5() {
@@ -173,6 +181,11 @@ class MigrateShell extends AppShell {
     }
 
     public function step_6() {
-        //create and link events
+        $db = ConnectionManager::getDataSource('default');
+
+
+
+        
+        
     }
 }
