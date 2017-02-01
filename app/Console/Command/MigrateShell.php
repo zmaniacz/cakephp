@@ -13,15 +13,64 @@ class MigrateShell extends AppShell {
         $db = ConnectionManager::getDataSource('default');
 
         //Rename teams table and foreign keys
-        $db->rawQuery("ALTER TABLE `lfstats`.`teams` RENAME TO  `lfstats`.`league_teams`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`league_teams` DROP FOREIGN KEY `fk_teams_leagues_league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`league_teams` 
-                        ADD CONSTRAINT `fk_league_teams_leagues_league_id`
-                            FOREIGN KEY (`league_id`)
-                            REFERENCES `lfstats`.`leagues` (`id`)");
+        $db->rawQuery("ALTER TABLE `lfstats`.`teams` RENAME TO  `lfstats`.`event_teams`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` DROP FOREIGN KEY `fk_teams_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` DROP INDEX `league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` CHANGE COLUMN `league_id` `event_id` INT(11) NOT NULL");
+
+        //rename leagues table to events
+        $db->rawQuery("ALTER TABLE `lfstats`.`leagues` DROP FOREIGN KEY `fk_leagues_centers_center_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`leagues` 
+                        ADD COLUMN `is_comp` TINYINT(1) NOT NULL DEFAULT 0 AFTER `type`, 
+                        RENAME TO  `lfstats`.`events`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`events` 
+                        ADD CONSTRAINT `fk_events_centers_center_id`
+                            FOREIGN KEY (`center_id`)
+                            REFERENCES `lfstats`.`centers` (`id`)");
+        
+        //fix event_teams foreign keys
+        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` 
+                        ADD CONSTRAINT `fk_event_teams_events_event_id`
+                            FOREIGN KEY (`event_id`)
+                            REFERENCES `lfstats`.`events` (`id`)");
         
         //drop player_teams table -- unused
         $db->rawQuery("DROP TABLE `lfstats`.`players_teams`;");
+
+        //gotta fix the Rounds table too
+        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` DROP FOREIGN KEY `fk_rounds_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` 
+                        CHANGE COLUMN `league_id` `event_id` INT(11) NULL DEFAULT NULL ,
+                        ADD INDEX `fk_rounds_events_event_id_idx` (`event_id` ASC),
+                        DROP INDEX `league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` 
+                        ADD CONSTRAINT `fk_rounds_events_event_id`
+                            FOREIGN KEY (`event_id`)
+                            REFERENCES `lfstats`.`events` (`id`)
+                            ON DELETE NO ACTION
+                            ON UPDATE NO ACTION");
+
+        ///////REGEN THE VIEW
+        $db->rawQuery("CREATE OR REPLACE
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                    VIEW `league_games` AS
+                        SELECT 
+                            `Event`.`id` AS `event_id`,
+                            `Round`.`id` AS `round_id`,
+                            `Round`.`round` AS `round_number`,
+                            `Round`.`is_finals` AS `is_finals`,
+                            `Match`.`id` AS `match_id`,
+                            `Match`.`match` AS `match_number`,
+                            `Game`.`id` AS `game_id`,
+                            `Game`.`league_game` AS `game_number`
+                        FROM
+                            (((`events` `Event`
+                            JOIN `rounds` `Round` ON ((`Round`.`event_id` = `Event`.`id`)))
+                            JOIN `matches` `Match` ON ((`Match`.`round_id` = `Round`.`id`)))
+                            JOIN `games` `Game` ON ((`Game`.`match_id` = `Match`.`id`)))
+                        ORDER BY `Event`.`id` , `Round`.`round` , `Match`.`match` , `Game`.`league_game`");
 
         //create the new teams table
         $db->rawQuery("CREATE TABLE `teams` (
@@ -33,28 +82,14 @@ class MigrateShell extends AppShell {
                         `eliminated` tinyint(1) NOT NULL DEFAULT '0',
                         `eliminated_opponent` tinyint(1) NOT NULL DEFAULT '0',
                         `game_id` int(11) NOT NULL,
-                        `league_team_id` int(11) DEFAULT NULL,
+                        `event_team_id` int(11) DEFAULT NULL,
                         `created` datetime NULL DEFAULT NULL,
                         `updated` datetime NULL DEFAULT NULL,
                         PRIMARY KEY (`id`),
                         KEY `game_id_idx` (`game_id`),
-                        KEY `league_team_id_idx` (`league_team_id`), 
+                        KEY `event_team_id_idx` (`event_team_id`), 
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`),
-                        CONSTRAINT `fk_teams_league_teams_league_team_id` FOREIGN KEY (`league_team_id`) REFERENCES `league_teams` (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-        
-         $db->rawQuery("CREATE TABLE `events` (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                        `description` text NULL DEFAULT NULL,
-                        `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'social',
-                        `is_comp` tinyint(1) NOT NULL DEFAULT '0',
-                        `center_id` int(11) NULL DEFAULT NULL,
-                        `created` datetime NULL DEFAULT NULL,
-                        `updated` datetime NULL DEFAULT NULL,
-                        PRIMARY KEY (`id`),
-                        KEY `center_id_idx` (`center_id`), 
-                        CONSTRAINT `fk_events_centers_center_id` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`)
+                        CONSTRAINT `fk_teams_event_teams_event_team_id` FOREIGN KEY (`event_team_id`) REFERENCES `event_teams` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
     }
 
@@ -72,7 +107,7 @@ class MigrateShell extends AppShell {
                     'eliminated' => $game['Game']['red_eliminated'],
                     'eliminated_opponent' => $game['Game']['green_eliminated'],
                     'game_id' => $game['Game']['id'],
-                    'league_team_id' => $game['Game']['red_team_id']
+                    'event_team_id' => $game['Game']['red_team_id']
                 ),
                 array(
                     'color' => 'green',
@@ -80,7 +115,7 @@ class MigrateShell extends AppShell {
                     'eliminated' => $game['Game']['green_eliminated'],
                     'eliminated_opponent' => $game['Game']['red_eliminated'],
                     'game_id' => $game['Game']['id'],
-                    'league_team_id' => $game['Game']['green_team_id']
+                    'event_team_id' => $game['Game']['green_team_id']
                 )
             );
 
@@ -181,11 +216,8 @@ class MigrateShell extends AppShell {
     }
 
     public function step_6() {
-        $db = ConnectionManager::getDataSource('default');
+        //create and populate events
+        //rip and repalce leageus table with events first
 
-
-
-        
-        
     }
 }
