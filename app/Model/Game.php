@@ -53,8 +53,8 @@ class Game extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Game.type' => $state['gametype']);
 		
-		if(isset($state['']) && $state[''] > 0)
-			$conditions[] = array('Game.event_id' => $state['']);
+		if(isset($state['eventID']) && $state['eventID'] > 0)
+			$conditions[] = array('Game.event_id' => $state['eventID']);
 	
 		$overall = $this->find('all', array(
 			'fields' => array(
