@@ -1216,7 +1216,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$where .= " AND event_id = $state[]";
+			$where .= " AND event_id = $state[eventID]";
 
 		$streaks = $this->query("SELECT 
 									streakset.player_id,
@@ -1268,7 +1268,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$where .= " AND event_id = $state[]";
+			$where .= " AND event_id = $state[eventID]";
 
 		$streaks = $this->query("SELECT 
     								streakset.player_id,
@@ -1316,7 +1316,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$where .= " AND event_id = $state[]";
+			$where .= " AND event_id = $state[eventID]";
 		
 		$streaks = $this->query("SELECT 
     								streakset.player_id,

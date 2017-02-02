@@ -103,17 +103,17 @@ class Game extends AppModel {
 		return $result;
 	}
 
-	public function getGameList($options) {
+	public function getGameList($state) {
 		$conditions = array();
 		
-		if(isset($options['centerID']) && $options['centerID'] > 0)
-			$conditions[] = array('Game.center_id' => $options['centerID']);
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Game.center_id' => $state['centerID']);
 		
-		if(isset($options['gametype']) && $options['gametype'] != 'all')
-			$conditions[] = array('Game.type' => $options['gametype']);
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Game.type' => $state['gametype']);
 		
-		if(isset($options['']) && $options[''] > 0)
-			$conditions[] = array('Game.event_id' => $options['']);
+		if(isset($state['eventID']) && $state['eventID'] > 0)
+			$conditions[] = array('Game.event_id' => $state['eventID']);
 
 		$games = $this->find('all', array(
 			'contain' => array(
