@@ -19,7 +19,7 @@ class TeamsController extends AppController {
 		}
 
 		$this->set('team', $this->Team->findById($id));
-		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
+		$this->set('teams',  $this->Event->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('event_id' => $this->Session->read('state.eventID')))));
 		$this->set('details', $this->Team->getTeamMatches($id, $this->Session->read('state')));
 	}
 }

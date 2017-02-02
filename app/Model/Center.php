@@ -13,6 +13,10 @@ class Center extends AppModel {
 		'Game' => array(
 			'className' => 'Game',
 			'foreignKey' => 'center_id'
+		),
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'center_id'
 		)
 	);
 	

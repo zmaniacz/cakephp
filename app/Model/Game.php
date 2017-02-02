@@ -38,9 +38,9 @@ class Game extends AppModel {
 			'className' => 'Match',
 			'foreignKey' => 'match_id'
 		),
-		'League' => array(
-			'className' => 'League',
-			'foreignKey' => 'league_id'
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id'
 		)
 	);
 	
@@ -53,8 +53,8 @@ class Game extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Game.type' => $state['gametype']);
 		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Game.league_id' => $state['leagueID']);
+		if(isset($state['']) && $state[''] > 0)
+			$conditions[] = array('Game.event_id' => $state['']);
 	
 		$overall = $this->find('all', array(
 			'fields' => array(
@@ -103,28 +103,25 @@ class Game extends AppModel {
 		return $result;
 	}
 
-	public function getGameList($date = null, $state) {
+	public function getGameList($options) {
 		$conditions = array();
 		
-		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('Game.center_id' => $state['centerID']);
+		if(isset($options['centerID']) && $options['centerID'] > 0)
+			$conditions[] = array('Game.center_id' => $options['centerID']);
 		
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('Game.type' => $state['gametype']);
+		if(isset($options['gametype']) && $options['gametype'] != 'all')
+			$conditions[] = array('Game.type' => $options['gametype']);
 		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Game.league_id' => $state['leagueID']);
-			
-		if(!is_null($date))
-			$conditions[] = array('DATE(Game.game_datetime)' => $date);
+		if(isset($options['']) && $options[''] > 0)
+			$conditions[] = array('Game.event_id' => $options['']);
 
 		$games = $this->find('all', array(
 			'contain' => array(
 				'Red_Team' => array(
-					'LeagueTeam'
+					'EventTeam'
 				),
 				'Green_Team' => array(
-					'LeagueTeam'
+					'EventTeam'
 				),
 				'Match' => array(
 					'Round'
@@ -217,16 +214,20 @@ class Game extends AppModel {
 	}
 
 	public function getPrevNextGame($game_id) {
-		$game = $this->findById($game_id);
+		$game = $this->findById($game_id, array(
+			'contain' => array(
+				'Event'
+			)
+		));
 
-		if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
+		if($game['Event']['is_comp']) {
 			App::import('Model', 'LeagueGame');
 			$leagueGame = new LeagueGame();
 			$results = $leagueGame->find('neighbors', array(
 				'field' => 'game_id',
 				'value' => $game_id,
 				'conditions' => array(
-					'league_id' => $game['Game']['league_id']
+					'event_id' => $game['Game']['event_id']
 				)
 			));
 

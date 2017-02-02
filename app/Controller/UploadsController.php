@@ -62,9 +62,9 @@ class UploadsController extends AppController {
 		$center_id = $this->Session->read('state.centerID');
 		$type = $this->Session->read('state.gametype');
 
-		$league_id = null;
+		$event_id = null;
 		if($type == 'league' || $type == 'tournament')
-			$league_id = $this->Session->read('state.leagueID');
+			$event_id = $this->Session->read('state.eventID');
 
 		//make sure we default to social
 		if($type == 'all')
@@ -143,7 +143,7 @@ class UploadsController extends AppController {
                     'player_id' => $player_id,
                     'center_id' => $center_id,
                     'type' => $type,
-                    'league_id' => $league_id
+                    'event_id' => $event_id
                 ));
 
                 if($this->Scorecard->save()) {

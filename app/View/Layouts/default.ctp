@@ -95,8 +95,8 @@
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('WCT 4', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 12, 'centerID' => 14))); ?></li>
-								<li><?= $this->Html->link('WCT 4 Finals', array('controller' => 'pages', 'action' => 'wct4Bracket', '?' => array('gametype' => 'league', 'leagueID' => 12, 'centerID' => 14))); ?></li>
+                                <li><?= $this->Html->link('WCT 4', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'eventID' => 12, 'centerID' => 14))); ?></li>
+								<li><?= $this->Html->link('WCT 4 Finals', array('controller' => 'pages', 'action' => 'wct4Bracket', '?' => array('gametype' => 'league', 'eventID' => 12, 'centerID' => 14))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin') && AuthComponent::user('center') == $this->Session->read('state.centerID')): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
@@ -126,7 +126,7 @@
 														'?' => array(
 															'gametype' => 'all',
 															'centerID' => 0,
-															'leagueID' => 0
+															'eventID' => 0
 														)
 								)); ?>
 							</li>
@@ -137,7 +137,7 @@
 														'?' => array(
 															'gametype' => 'social',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => 0
+															'eventID' => 0
 														)
 								)); ?>
 							</li>
@@ -148,7 +148,7 @@
 														'?' => array(
 															'gametype' => 'league',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => $this->Session->read('state.leagueID')
+															'eventID' => $this->Session->read('state.eventID')
 														)
 								)); ?>
 							</li>
@@ -157,8 +157,8 @@
 					<li class="dropdown">
 						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
 							<?php
-								if($this->Session->read('state.leagueID') > 0) {
-									echo $leagues[$this->Session->read('state.leagueID')];
+								if($this->Session->read('state.eventID') > 0) {
+									echo $leagues[$this->Session->read('state.eventID')];
 								} elseif($this->Session->read('state.centerID') > 0) {
 									echo $centers[$this->Session->read('state.centerID')];
 								} else {
@@ -175,7 +175,7 @@
 									'?' => array(
 										'gametype' => $this->Session->read('state.gametype'),
 										'centerID' => 0,
-										'leagueID' => 0
+										'eventID' => 0
 									)
 								));
 								?>
@@ -194,7 +194,7 @@
 											'?' => array(
 												'gametype' => $this->Session->read('state.gametype'),
 												'centerID' => $key,
-												'leagueID' => 0
+												'eventID' => 0
 											)
 										));
 									}
@@ -209,7 +209,7 @@
 											'?' => array(
 												'gametype' => 'league',
 												'centerID' => $league['League']['center_id'],
-												'leagueID' => $league['League']['id']
+												'eventID' => $league['League']['id']
 											)
 										));
 									}

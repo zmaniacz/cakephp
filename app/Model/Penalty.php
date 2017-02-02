@@ -37,13 +37,13 @@ class Penalty extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+		if(isset($state['eventID']) && $state['eventID'] > 0)
+			$conditions[] = array('Scorecard.event_id' => $state['eventID']);
 	
 		$penalties = $this->find('all', array(
 			'contain' => array(
 				'Scorecard' => array(
-					'fields' => array('type','center_id','league_id'),
+					'fields' => array('type','center_id','event_id'),
 					'Game' => array(
 						'fields' => array('id','game_name','game_description','game_datetime'),
 					),

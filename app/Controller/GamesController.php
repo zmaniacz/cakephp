@@ -67,8 +67,8 @@ class GamesController extends AppController {
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 				$this->loadModel('LeagueGame');
 				
-				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
-				$this->set('available_matches', $this->League->getAvailableMatches($game));
+				$this->set('teams', $this->Event->getTeams($game['Game']['event_id']));
+				$this->set('available_matches', $this->Event->getAvailableMatches($game));
 			}
 			
 			$this->set('neighbors', $this->Game->getPrevNextGame($game['Game']['id']));
@@ -103,7 +103,7 @@ class GamesController extends AppController {
 			$options = array('conditions' => array('Game.' . $this->Game->primaryKey => $id));
 			$this->request->data = $this->Game->find('first', $options);
 			if($this->request->data['Game']['type'] == 'league' || $this->request->data['Game']['type'] == 'tournament') {
-				$this->set('teams', $this->League->getTeams($this->request->data['Game']['league_id']));
+				$this->set('teams', $this->Event->getTeams($this->request->data['Game']['event_id']));
 			}
 		}
 	}

@@ -170,6 +170,7 @@ class MigrateShell extends AppShell {
         $db->rawQuery("ALTER TABLE `lfstats`.`games` 
                         DROP FOREIGN KEY `fk_games_centers_center_id`,
                         DROP FOREIGN KEY `fk_games_teams_red_team_id`,
+                        DROP FOREIGN KEY `fk_games_leagues_league_id`,
                         DROP FOREIGN KEY `fk_games_teams_green_team_id`");
         
         $db->rawQuery("ALTER TABLE `lfstats`.`games` 
@@ -186,7 +187,7 @@ class MigrateShell extends AppShell {
                         CHANGE COLUMN `game_name` `game_name` VARCHAR(100) CHARACTER SET 'utf8' NULL DEFAULT NULL ,
                         CHANGE COLUMN `game_description` `game_description` TEXT CHARACTER SET 'utf8' NULL DEFAULT NULL ,
                         CHANGE COLUMN `center_id` `center_id` INT(11) NOT NULL ,
-                        ADD COLUMN `event_id` INT(11) NULL DEFAULT NULL AFTER `match_id`,
+                        CHANGE COLUMN `league_id` `event_id` INT(11) NULL DEFAULT NULL,
                         ADD INDEX `fk_games_events_event_id_idx` (`event_id` ASC),
                         DROP INDEX `red_team_id` ,
                         DROP INDEX `green_team_id`");
@@ -202,6 +203,11 @@ class MigrateShell extends AppShell {
                             REFERENCES `lfstats`.`events` (`id`)
                             ON DELETE NO ACTION
                             ON UPDATE NO ACTION");
+
+        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` DROP FOREIGN KEY `fk_scorecards_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards`
+                        DROP COLUMN `league_id`, 
+                        DROP INDEX `league_id`");
     }
 
     public function step_5() {
@@ -217,7 +223,11 @@ class MigrateShell extends AppShell {
 
     public function step_6() {
         //create and populate events
-        //rip and repalce leageus table with events first
-
+        $events = $this->Event->find('all');
+        foreach($events as $event) {
+            $event['Event']['is_comp'] = ($event['Event']['type'] == 'league' || $event['Event']['type'] == 'tournament') ? 1 : 0;
+            $this->Event->save($event);
+            $this->Event->clear();
+        }
     }
 }

@@ -1,20 +1,58 @@
 <?php
 App::uses('AppModel', 'Model');
-
+/**
+ * LeagueGame Model
+ *
+ * @property Event $Event
+ * @property Round $Round
+ * @property Match $Match
+ * @property Game $Game
+ */
 class LeagueGame extends AppModel {
-	public function getPrevNextGame($game_id) {
-		$games = $this->find('all');
-		
-		$results['prev'] = array();
-		$results['next'] = array();
-		foreach($games as $key => $value) {
-			if($value['LeagueGame']['game_id'] == $game_id) {
-				$results['prev'] = (isset($games[$key-1])) ? $games[$key-1] : null;
-				$results['next'] = (isset($games[$key+1])) ? $games[$key+1] : null;
-				break;
-			}
-		}
-		
-		return $results;
-	}
+
+/**
+ * Primary key field
+ *
+ * @var string
+ */
+	public $primaryKey = 'game_id';
+
+
+	// The Associations below have been created with all possible keys, those that are not needed can be removed
+
+/**
+ * belongsTo associations
+ *
+ * @var array
+ */
+	public $belongsTo = array(
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Round' => array(
+			'className' => 'Round',
+			'foreignKey' => 'round_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Match' => array(
+			'className' => 'Match',
+			'foreignKey' => 'match_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Game' => array(
+			'className' => 'Game',
+			'foreignKey' => 'game_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		)
+	);
 }

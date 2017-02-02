@@ -33,16 +33,16 @@ class ScorecardsController extends AppController {
 	}
 
 	public function index() {
-		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly', '?' => array('gametype' => $this->Session->read('state.gametype'), 'centerID' => $this->Session->read('state.centerID'), 'leagueID' => $this->Session->read('state.leagueID'))));
+		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly', '?' => array('gametype' => $this->Session->read('state.gametype'), 'centerID' => $this->Session->read('state.centerID'), 'eventID' => $this->Session->read('state.eventID'))));
 	}
 	
-	public function setState($gametype, $league_id, $center_id) {
-		$this->Session->write('state', '');
+	public function setState($gametype, $event_id, $center_id) {
+		$this->Session->delete('state');
 		
 		$this->Session->write('state.gametype', $gametype);
 		
-		if(!is_null($league_id))
-			$this->Session->write('state.leagueID', $league_id);
+		if(!is_null($event_id))
+			$this->Session->write('state.eventID', $event_id);
 			
 		if(!is_null($center_id))
 			$this->Session->write('state.centerID', $center_id);
@@ -97,7 +97,7 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function nightly() {
-		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
+		if($this->Session->read('state.eventID') > 0)
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		
 		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
@@ -126,7 +126,7 @@ class ScorecardsController extends AppController {
 	}
 
 	public function nightlySummaryStats($date = null) {
-		//$this->request->onlyAllow('ajax');
+		$this->request->onlyAllow('ajax');
 		$this->set('nightly', $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state')));
 		$this->set('overall', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}

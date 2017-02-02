@@ -100,7 +100,7 @@
 			    'error' => array('attributes' => array('wrap' => 'span', 'class' => 'help-inline')),
 		)));
 		echo $this->Form->input('id');
-		if(isset($game['Game']['league_id'])) {
+		if(isset($game['Game']['event_id'])) {
 			$match_list = array();
 			foreach($available_matches['Round'] as $round) {
 				foreach($round['Match'] as $match) {
@@ -111,7 +111,7 @@
 						$match_list[$match['id']."|2"] = "R{$round['round']} M{$match['match']} G2 - {$match['Team_2']['name']} v {$match['Team_1']['name']}";
 				}
 			}
-			echo $this->Form->input('league_id', array('type' => 'hidden'));
+			echo $this->Form->input('event_id', array('type' => 'hidden'));
 			echo $this->Form->input('match', array(
 				'type' => 'select', 
 				'options' => array($match_list),
@@ -126,7 +126,7 @@
 		echo $this->Html->link("Delete Game", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
 	} else {
 		echo "<h3 class=\"text-center\">";
-		if(isset($game['Game']['league_id']) && !is_null($game['Match']['id'])) {
+		if(isset($game['Game']['event_id']) && !is_null($game['Match']['id'])) {
 			echo 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'];
 		} else {
 			echo $game['Game']['game_name'];

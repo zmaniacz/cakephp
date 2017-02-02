@@ -53,7 +53,7 @@ class AppController extends Controller {
     	)
 	);
 
-	public $uses = array('Center', 'League');
+	public $uses = array('Center', 'Event');
 
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
@@ -65,48 +65,32 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		//read state from the querystring; default to social games at LTC if no state passed
-		if(!is_null($this->request->query('gametype'))) {
-			$this->Session->write('state.gametype', $this->request->query('gametype'));
-		} elseif(!$this->Session->check('state.gametype')) {
-			$this->Session->write('state.gametype', 'social');
-		}
-		
-		if(!is_null($this->request->query('centerID'))) {
-			$this->Session->write('state.centerID', $this->request->query('centerID'));
-		} elseif(!$this->Session->check('state.centerID')) {
-			$this->Session->write('state.centerID', 14);
-		}
-		
-		if(!is_null($this->request->query('leagueID'))) {
-			$this->Session->write('state.leagueID', $this->request->query('leagueID'));
-		} elseif(!$this->Session->check('state.leagueID')) {
-			$this->Session->write('state.leagueID', 0);
+		//If an event is defined, then that's all we want to see
+		if(!is_null($this->request->query('eventID'))) {
+			$event = $this->Event->findById($this->request->query('eventID'));
+			$this->Session->write('state.eventID', $this->request->query('eventID'));
+			$this->Session->write('state.gametype', $event['Event']['type']);
+			$this->Session->write('state.centerID', $event['Event']['center_id']);
+
+			$this->set('selected_event', $event);
+			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+		} else {
+			if(!is_null($this->request->query('gametype')))
+				$this->Session->write('state.gametype', $this->request->query('gametype'));
+
+			if(!is_null($this->request->query('centerID'))) {
+				$this->Session->write('state.centerID', $this->request->query('centerID'));
+				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+			}
+				
 		}
 		
 		if(!$this->Session->check('state.show_rounds')) {
 			$this->Session->write('state.show_rounds', true);
 		}
 		
-		//get a center and league object for use throughout the app
-		if(($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->read('state.centerID') > 0) {
-			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
-		} elseif($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0) {
-			$league = $this->League->find('first', array(
-				'contain' => array(
-					'Center'
-				),
-				'conditions' => array(
-					'League.id' => $this->Session->read('state.leagueID')
-				)
-			));
-			$this->set('selected_league', $league);
-			$this->set('selected_center', $this->Center->findById($league['Center']['id']));
-			$this->Session->write('state.centerID', $league['Center']['id']);
-		}
-		
 		$this->set('centers', $this->Center->find('list'));
-		$this->set('leagues', $this->League->find('list'));
-		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
+		$this->set('events', $this->Event->find('list'));
+		$this->set('event_details', $this->Event->find('all', array('order' => 'id DESC')));
 	}
 }

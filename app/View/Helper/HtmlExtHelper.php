@@ -6,7 +6,7 @@
 		
 		public function link($title, $url = null, $options = array(), $confirmMessage = false) {
 			if(is_array($url) && empty($url['?'])) {
-				$querystring = array('?' => array('gametype' => $this->Session->read('state.gametype'), 'leagueID' => $this->Session->read('state.leagueID'), 'centerID' => $this->Session->read('state.centerID')));
+				$querystring = array('?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => $this->Session->read('state.eventID'), 'centerID' => $this->Session->read('state.centerID')));
 				$url = $url + $querystring;
 			}
 			
@@ -15,7 +15,7 @@
 		
 		public function url($url = null, $full = false) {
 			if(is_array($url) && empty($url['?'])) {
-				$querystring = array('?' => array('gametype' => $this->Session->read('state.gametype'), 'leagueID' => $this->Session->read('state.leagueID'), 'centerID' => $this->Session->read('state.centerID')));
+				$querystring = array('?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => $this->Session->read('state.eventID'), 'centerID' => $this->Session->read('state.centerID')));
 				$url = $url + $querystring;
 			}
 

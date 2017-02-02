@@ -1,12 +1,12 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * LeagueTeam Model
+ * EventTeam Model
  *
- * @property League $League
+ * @property Event $Event
  * @property Team $Team
  */
-class LeagueTeam extends AppModel {
+class EventTeam extends AppModel {
 
 /**
  * Display field
@@ -24,9 +24,9 @@ class LeagueTeam extends AppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'League' => array(
-			'className' => 'League',
-			'foreignKey' => 'league_id',
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -41,7 +41,7 @@ class LeagueTeam extends AppModel {
 	public $hasMany = array(
 		'Team' => array(
 			'className' => 'Team',
-			'foreignKey' => 'league_team_id',
+			'foreignKey' => 'event_team_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
@@ -53,11 +53,9 @@ class LeagueTeam extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-	
-	public function getTeamMatches($team_id, $state) {
-		$league_id = $state['leagueID'];
-		
-		$rounds = $this->League->find('first',array(
+
+	public function getTeamMatches($team_id, $event_id) {
+		$rounds = $this->Event->find('first',array(
 			'contain' => array(
 				'Round' => array(
 					'Match' => array(
@@ -73,10 +71,11 @@ class LeagueTeam extends AppModel {
 				)
 			),
 			'conditions' => array(
-				'League.id' => $league_id
+				'Event.id' => $event_id
 			)
 		));
 		
 		return $rounds;
 	}
+
 }
