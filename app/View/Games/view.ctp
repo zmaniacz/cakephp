@@ -329,6 +329,7 @@
 		</div>
 	</div>
 </div>
+<script>
 	$('.switch_sub_cbox').change(function() {
 		$.ajax({
 			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
