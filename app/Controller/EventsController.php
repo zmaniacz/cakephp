@@ -10,6 +10,7 @@ class EventsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(
 			'index',
+			'landing',
 			'eventList'
 		);
 		parent::beforeFilter();
@@ -28,7 +29,9 @@ class EventsController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->set('eventsfull', $this->Event->getEventList());
+	}
+
+	public function landing() {
 	}
 
 /**
