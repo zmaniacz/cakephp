@@ -3,7 +3,7 @@
 App::uses('ConnectionManager', 'Model');
 
 class MigrateShell extends AppShell {
-    public $uses = array('Team','Game','Scorecard','Event');
+    public $uses = array('Team','Game','Scorecard','Event','Center');
 
     public function main() {
         $this->out('choose a step');
@@ -229,5 +229,46 @@ class MigrateShell extends AppShell {
             $this->Event->save($event);
             $this->Event->clear();
         }
+    }
+
+    public function step_7() {
+        $centers = $this->Center->find('all');
+
+        foreach($centers as $center) {
+            $games = $this->Game->find('all', array(
+                'conditions' => array(
+                    'event_id' => null,
+                    'center_id' => $center['Center']['id']
+                ),
+                'order' => 'game_datetime ASC'
+            ));
+
+            $current_date = new DateTime('1975-01-01');
+            $current_event = null;
+
+            foreach($games as $game) {
+                $diff = date_diff($current_date, date_create($game['Game']['game_datetime']));
+
+                if ($diff->format('%a') > 0) {
+                    // new day, save off the previous event and start a new one
+                    $current_date = new DateTime($game['Game']['game_datetime']);
+
+                    $current_event = array(
+                        'name' => 'Socials '.$current_date->format('Y-m-d'),
+                        'type' => 'social',
+                        'is_comp' => 0,
+                        'center_id' => $center['Center']['id']
+                    );
+                    $this->Event->create($current_event);
+                    $this->Event->save();
+                }
+
+                $game['Game']['event_id'] = $this->Event->id;
+                $this->Game->save($game);
+                $this->Game->clear();
+            }
+
+        }
+        
     }
 }
