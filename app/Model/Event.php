@@ -54,6 +54,53 @@ class Event extends AppModel {
 		)
 	);
 
+	public function getEventList($type = null, $limit = null) {
+		$conditions[] = array();
+		
+		if(isset($type))
+			$conditions[] = array('Event.type' => $type);
+		
+		$this->virtualFields['last_gametime'] = 0;
+		$events = $this->find('all', array(
+			'fields' => array(
+				'Event.id',
+				'Event.name',
+				'Event.description',
+				'Event.type',
+				'Event.is_comp',
+				'Event.center_id',
+				'Center.id',
+				'Center.name',
+				'Center.short_name',
+				'MAX(Game.game_datetime) as Event__last_gametime'
+			),
+			'joins' => array(
+				array(
+					'table' => 'games',
+					'alias' => 'Game',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Event.id = Game.event_id'
+					)
+				),
+				array(
+					'table' => 'centers',
+					'alias' => 'Center',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Event.center_id = Center.id'
+					)
+				)
+			),
+			'conditions' => $conditions,
+			'group' => 'Event.id',
+			'order' => 'Event__last_gametime DESC',
+			'limit' => $limit
+		));
+
+		return $events;
+	}
+
 	/////NONE OF THE BELOW WORKS
 	public function getLeagues($state) {
 		$leagues = $this->find('all', array(

@@ -91,6 +91,6 @@ class AppController extends Controller {
 		
 		$this->set('centers', $this->Center->find('list'));
 		$this->set('events', $this->Event->find('list'));
-		$this->set('event_details', $this->Event->find('all', array('order' => 'id DESC')));
+		$this->set('event_details', $this->Event->getEventList());
 	}
 }
