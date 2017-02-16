@@ -20,7 +20,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-	Router::connect('/', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, null));
+	Router::connect('/', array('controller' => 'events', 'action' => 'landing'));
 	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'league', 6, 7));
 	Router::connect('/wct3', array('controller' => 'scorecards', 'action' => 'setState', 'league', 9, 13));
 	Router::connect('/wct4', array('controller' => 'scorecards', 'action' => 'setState', 'league', 12, 14));

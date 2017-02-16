@@ -11,6 +11,7 @@ class EventsController extends AppController {
 		$this->Auth->allow(
 			'index',
 			'landing',
+			'view',
 			'eventList'
 		);
 		parent::beforeFilter();

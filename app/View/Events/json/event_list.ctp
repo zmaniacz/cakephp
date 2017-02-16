@@ -3,7 +3,15 @@
 	foreach ($response as $event) {
 		$data[] = array(
             'id' => $event['Event']['id'],
-			'name' => $event['Event']['name'],
+			'name' => $this->Html->link($event['Event']['name'], array(
+				'controller' => 'Events', 
+				'action' => 'view', 
+				$event['Event']['id'], 
+				'?' => array(
+				'gametype' => $event['Event']['type'],
+				'centerID' => $event['Event']['center_id'],
+				'eventID' => $event['Event']['id']
+			)), array('class' => 'btn btn-block btn-info')),
 			'description' => $event['Event']['description'],
             'is_comp' => $event['Event']['is_comp'],
 			'type' => $event['Event']['type'],

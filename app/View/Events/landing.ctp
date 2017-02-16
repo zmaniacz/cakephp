@@ -8,7 +8,7 @@
             "searching" : false,
             "info" : false,
 			"columns" : [
-				{ "data" : "name" },
+                { "data" : "name" },
                 { "data" : function ( row, type, val, meta ) {
 						if (type === 'display') {
                             return row.center_short_name.toUpperCase();
@@ -41,9 +41,9 @@
     >
         <thead>
             <tr>
-                <th>Event</th>
-                <th>Center</th>
-                <th>Last Played</th>
+                <th class="col-xs-4">Event</th>
+                <th class="col-xs-4">Center</th>
+                <th class="col-xs-4">Last Played</th>
             </tr>
         </thead>
     </table>
@@ -59,9 +59,9 @@
     >
         <thead>
             <tr>
-                <th>Event</th>
-                <th>Center</th>
-                <th>Last Played</th>
+                <th class="col-xs-4">Event</th>
+                <th class="col-xs-4">Center</th>
+                <th class="col-xs-4">Last Played</th>
             </tr>
         </thead>
     </table>
@@ -77,9 +77,9 @@
     >
         <thead>
             <tr>
-                <th>Event</th>
-                <th>Center</th>
-                <th>Last Played</th>
+                <th class="col-xs-4">Event</th>
+                <th class="col-xs-4">Center</th>
+                <th class="col-xs-4">Last Played</th>
             </tr>
         </thead>
     </table>

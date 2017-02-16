@@ -158,7 +158,7 @@
 						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
 							<?php
 								if($this->Session->read('state.eventID') > 0) {
-									echo $leagues[$this->Session->read('state.eventID')];
+									echo $events[$this->Session->read('state.eventID')];
 								} elseif($this->Session->read('state.centerID') > 0) {
 									echo $centers[$this->Session->read('state.centerID')];
 								} else {

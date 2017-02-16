@@ -65,6 +65,8 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
+		$this->Session->write('state.gametype', 'all');
+
 		//If an event is defined, then that's all we want to see
 		if(!is_null($this->request->query('eventID'))) {
 			$event = $this->Event->findById($this->request->query('eventID'));
