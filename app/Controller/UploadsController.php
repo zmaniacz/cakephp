@@ -13,6 +13,7 @@ class UploadsController extends AppController {
 				'script_url' => FULL_BASE_URL.DS.'uploads/index/',
 				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
 				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
+				'delete_type' => 'POST',
 				'image_versions' => array()
 			);
 
