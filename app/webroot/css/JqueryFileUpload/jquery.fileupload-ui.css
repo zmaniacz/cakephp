@@ -1,13 +1,13 @@
 @charset "UTF-8";
 /*
- * jQuery File Upload UI Plugin CSS 9.0.0
+ * jQuery File Upload UI Plugin CSS
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2010, Sebastian Tschan
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  */
 
 .fileupload-buttonbar .btn,
@@ -16,7 +16,7 @@
 }
 .progress-animated .progress-bar,
 .progress-animated .bar {
-  background: url("/img/progressbar.gif") !important;
+  background: url("../img/progressbar.gif") !important;
   filter: none;
 }
 .fileupload-process {
@@ -28,7 +28,7 @@
   display: block;
   width: 32px;
   height: 32px;
-  background: url("/img/loading.gif") center no-repeat;
+  background: url("../img/loading.gif") center no-repeat;
   background-size: contain;
 }
 .files audio,

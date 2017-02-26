@@ -78,7 +78,6 @@
 {% } %}
 </script>
 <!-- The template to display files available for download -->
-<!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
@@ -121,9 +120,8 @@
     </tr>
 {% } %}
 </script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-<script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
 <?php
+    echo $this->Html->script('Javascript-Templates/tmpl.min.js');
     echo $this->Html->script('JqueryFileUpload/vendor/jquery.ui.widget.js');
     echo $this->Html->script('JqueryFileUpload/jquery.iframe-transport.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload.js');
