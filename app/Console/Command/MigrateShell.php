@@ -13,40 +13,40 @@ class MigrateShell extends AppShell {
         $db = ConnectionManager::getDataSource('default');
 
         //Rename teams table and foreign keys
-        $db->rawQuery("ALTER TABLE `lfstats`.`teams` RENAME TO  `lfstats`.`event_teams`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` DROP FOREIGN KEY `fk_teams_leagues_league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` DROP INDEX `league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` CHANGE COLUMN `league_id` `event_id` INT(11) NOT NULL");
+        $db->rawQuery("ALTER TABLE `teams` RENAME TO  `event_teams`");
+        $db->rawQuery("ALTER TABLE `event_teams` DROP FOREIGN KEY `fk_teams_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `event_teams` DROP INDEX `league_id`");
+        $db->rawQuery("ALTER TABLE `event_teams` CHANGE COLUMN `league_id` `event_id` INT(11) NOT NULL");
 
         //rename leagues table to events
-        $db->rawQuery("ALTER TABLE `lfstats`.`leagues` DROP FOREIGN KEY `fk_leagues_centers_center_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`leagues` 
+        $db->rawQuery("ALTER TABLE `leagues` DROP FOREIGN KEY `fk_leagues_centers_center_id`");
+        $db->rawQuery("ALTER TABLE `leagues` 
                         ADD COLUMN `is_comp` TINYINT(1) NOT NULL DEFAULT 0 AFTER `type`, 
-                        RENAME TO  `lfstats`.`events`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`events` 
+                        RENAME TO  `events`");
+        $db->rawQuery("ALTER TABLE `events` 
                         ADD CONSTRAINT `fk_events_centers_center_id`
                             FOREIGN KEY (`center_id`)
-                            REFERENCES `lfstats`.`centers` (`id`)");
+                            REFERENCES `centers` (`id`)");
         
         //fix event_teams foreign keys
-        $db->rawQuery("ALTER TABLE `lfstats`.`event_teams` 
+        $db->rawQuery("ALTER TABLE `event_teams` 
                         ADD CONSTRAINT `fk_event_teams_events_event_id`
                             FOREIGN KEY (`event_id`)
-                            REFERENCES `lfstats`.`events` (`id`)");
+                            REFERENCES `events` (`id`)");
         
         //drop player_teams table -- unused
-        $db->rawQuery("DROP TABLE `lfstats`.`players_teams`;");
+        $db->rawQuery("DROP TABLE `players_teams`;");
 
         //gotta fix the Rounds table too
-        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` DROP FOREIGN KEY `fk_rounds_leagues_league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` 
+        $db->rawQuery("ALTER TABLE `rounds` DROP FOREIGN KEY `fk_rounds_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `rounds` 
                         CHANGE COLUMN `league_id` `event_id` INT(11) NULL DEFAULT NULL ,
                         ADD INDEX `fk_rounds_events_event_id_idx` (`event_id` ASC),
                         DROP INDEX `league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`rounds` 
+        $db->rawQuery("ALTER TABLE `rounds` 
                         ADD CONSTRAINT `fk_rounds_events_event_id`
                             FOREIGN KEY (`event_id`)
-                            REFERENCES `lfstats`.`events` (`id`)
+                            REFERENCES `events` (`id`)
                             ON DELETE NO ACTION
                             ON UPDATE NO ACTION");
 
@@ -124,14 +124,14 @@ class MigrateShell extends AppShell {
         }
 
         //add team_id fk to scorecards
-        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+        $db->rawQuery("ALTER TABLE `scorecards` 
                         ADD COLUMN `team_id` INT(11) NULL DEFAULT NULL AFTER `league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+        $db->rawQuery("ALTER TABLE `scorecards` 
                         ADD INDEX `team_id_fk_idx` (`team_id`)");
-        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` 
+        $db->rawQuery("ALTER TABLE `scorecards` 
                         ADD CONSTRAINT `fk_scorecards_teams_team_id`
                             FOREIGN KEY (`team_id`)
-                            REFERENCES `lfstats`.`teams` (`id`)");
+                            REFERENCES `teams` (`id`)");
     }
 
     public function step_3() {
@@ -167,13 +167,13 @@ class MigrateShell extends AppShell {
         //remove redundant game data - kill columns
         $db = ConnectionManager::getDataSource('default');
 
-        $db->rawQuery("ALTER TABLE `lfstats`.`games` 
+        $db->rawQuery("ALTER TABLE `games` 
                         DROP FOREIGN KEY `fk_games_centers_center_id`,
                         DROP FOREIGN KEY `fk_games_teams_red_team_id`,
                         DROP FOREIGN KEY `fk_games_leagues_league_id`,
                         DROP FOREIGN KEY `fk_games_teams_green_team_id`");
         
-        $db->rawQuery("ALTER TABLE `lfstats`.`games` 
+        $db->rawQuery("ALTER TABLE `games` 
                         DROP COLUMN `green_eliminated`,
                         DROP COLUMN `red_eliminated`,
                         DROP COLUMN `green_adj`,
@@ -192,20 +192,20 @@ class MigrateShell extends AppShell {
                         DROP INDEX `red_team_id` ,
                         DROP INDEX `green_team_id`");
        
-        $db->rawQuery("ALTER TABLE `lfstats`.`games` 
+        $db->rawQuery("ALTER TABLE `games` 
                         ADD CONSTRAINT `fk_games_centers_center_id`
                             FOREIGN KEY (`center_id`)
-                            REFERENCES `lfstats`.`centers` (`id`)
+                            REFERENCES `centers` (`id`)
                             ON DELETE NO ACTION
                             ON UPDATE NO ACTION,
                         ADD CONSTRAINT `fk_games_events_event_id`
                             FOREIGN KEY (`event_id`)
-                            REFERENCES `lfstats`.`events` (`id`)
+                            REFERENCES `events` (`id`)
                             ON DELETE NO ACTION
                             ON UPDATE NO ACTION");
 
-        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards` DROP FOREIGN KEY `fk_scorecards_leagues_league_id`");
-        $db->rawQuery("ALTER TABLE `lfstats`.`scorecards`
+        $db->rawQuery("ALTER TABLE `scorecards` DROP FOREIGN KEY `fk_scorecards_leagues_league_id`");
+        $db->rawQuery("ALTER TABLE `scorecards`
                         DROP COLUMN `league_id`, 
                         DROP INDEX `league_id`");
     }
