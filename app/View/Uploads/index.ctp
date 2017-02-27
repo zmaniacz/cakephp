@@ -78,7 +78,6 @@
 {% } %}
 </script>
 <!-- The template to display files available for download -->
-<!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
@@ -121,14 +120,51 @@
     </tr>
 {% } %}
 </script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-<script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
 <?php
+    echo $this->Html->script('Javascript-Templates/tmpl.min.js');
     echo $this->Html->script('JqueryFileUpload/vendor/jquery.ui.widget.js');
     echo $this->Html->script('JqueryFileUpload/jquery.iframe-transport.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-process.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-validate.js');
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-ui.js');
-    echo $this->Html->script('JqueryFileUpload/main.js');
 ?>
+
+<script>
+    $(function () {
+        'use strict';
+
+        // Initialize the jQuery File Upload widget:
+        $('#fileupload').fileupload({
+            // Uncomment the following to send cross-domain cookies:
+            //xhrFields: {withCredentials: true},
+            url: '<?= html_entity_decode($this->Html->url(array('action' => 'handleUploads'))); ?>'
+        });
+
+        // Enable iframe cross-domain access via redirect option:
+        $('#fileupload').fileupload(
+            'option',
+            'redirect',
+            window.location.href.replace(
+                /\/[^\/]*$/,
+                '/cors/result.html?%s'
+            )
+        );
+
+        // Load existing files:
+        $('#fileupload').addClass('fileupload-processing');
+        $.ajax({
+            // Uncomment the following to send cross-domain cookies:
+            //xhrFields: {withCredentials: true},
+            url: $('#fileupload').fileupload('option', 'url'),
+            dataType: 'json',
+            context: $('#fileupload')[0]
+        }).always(function () {
+            $(this).removeClass('fileupload-processing');
+        }).done(function (result) {
+            $(this).fileupload('option', 'done')
+                .call(this, $.Event('done'), {result: result});
+        });
+
+    });
+</script>

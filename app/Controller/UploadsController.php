@@ -5,17 +5,21 @@ class UploadsController extends AppController {
 	public $uses = array('Scorecard');
 
 	public function index() {
-		if ($this->request->is('post')) {
+	}
+
+	public function handleUploads() {
 			App::import('Vendor','UploadHandler',array('file' => 'UploadHandler/UploadHandler.php'));
 
 			$options = array
 			(
-				'script_url' => FULL_BASE_URL.DS.'uploads/index/',
+				'script_url' => FULL_BASE_URL.DS.'uploads/handleUploads/',
 				'upload_dir' => APP.WEBROOT_DIR.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
 				'upload_url' => FULL_BASE_URL.DS.'parser'.DS.'incoming'.DS.$this->Session->read('state.centerID').DS,
+				'delete_type' => 'POST',
+				'print_response' => false,
 				'image_versions' => array()
 			);
-
+		if ($this->request->is('post')) {
 			$upload_handler = new UploadHandler($options, $initialize = false);
 			switch ($_SERVER['REQUEST_METHOD'])
 			{
@@ -32,7 +36,23 @@ class UploadsController extends AppController {
 				default:
 				header('HTTP/1.0 405 Method Not Allowed');
 			}
-			exit;
+		} else {
+			$upload_handler = new UploadHandler($options, $initialize = true);
+			switch ($_SERVER['REQUEST_METHOD'])
+			{
+				case 'HEAD':
+				case 'GET':
+				$upload_handler->get();
+				break;
+				case 'POST':
+				$upload_handler->post();
+				break;
+				case 'DELETE':
+				$upload_handler->delete();
+				break;
+				default:
+				header('HTTP/1.0 405 Method Not Allowed');
+			}
 		}
 		if (!$this->Session->check('state.centerID')) {
 			throw new NotFoundException(__('No center defined'));
