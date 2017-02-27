@@ -44,6 +44,13 @@ class Game extends AppModel {
 			'foreignKey' => 'league_id'
 		)
 	);
+
+	public $validate = array(
+		'game_datetime' => array(
+			'rule' => array('isUnique', array('game_datetime', 'center_id'), false),
+			'message' => "Non-Unique center/game combination"
+		)
+	);
 	
 	public function getOverallStats($state) {
 		$conditions = array();
