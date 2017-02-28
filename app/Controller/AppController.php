@@ -68,7 +68,7 @@ class AppController extends Controller {
 		$this->Session->write('state.gametype', 'all');
 
 		//If an event is defined, then that's all we want to see
-		if(!is_null($this->request->query('eventID'))) {
+		if(!is_null($this->request->query('eventID')) && $this->request->query('eventID') > 0) {
 			$event = $this->Event->findById($this->request->query('eventID'));
 			$this->Session->write('state.eventID', $this->request->query('eventID'));
 			$this->Session->write('state.gametype', $event['Event']['type']);
@@ -80,7 +80,7 @@ class AppController extends Controller {
 			if(!is_null($this->request->query('gametype')))
 				$this->Session->write('state.gametype', $this->request->query('gametype'));
 
-			if(!is_null($this->request->query('centerID'))) {
+			if(!is_null($this->request->query('centerID')) && $this->request->query('centerID') > 0) {
 				$this->Session->write('state.centerID', $this->request->query('centerID'));
 				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
 			}
