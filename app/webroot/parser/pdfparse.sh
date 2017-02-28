@@ -11,11 +11,11 @@ teamColorsKeyWords=green,red,blue" > LFScoreParser.properties
 	mkdir -p output/$1/
 	mkdir -p pending/$1/
 	java -Xmx100M -jar LFScoreParser.jar
-	s3cmd put -P output/$1/*.pdf s3://lfstatsscorecards/
+	s3cmd put -P output/$1/*.pdf s3://lfstatsscorecards/ --rexclude ".*" --rinclude "^[0-9]*.pdf$"
 	#mv output/$1/*.pdf ../pdf/
 	mv output/$1/*.xml pending/$1/
 	rm output/$1/*
-        rm input/$1/*
+	rm incoming/$1/*
 	exit 0
 else
 	exit 1
