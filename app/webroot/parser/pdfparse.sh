@@ -15,6 +15,7 @@ teamColorsKeyWords=green,red,blue" > LFScoreParser.properties
 	#mv output/$1/*.pdf ../pdf/
 	mv output/$1/*.xml pending/$1/
 	rm output/$1/*
+        rm input/$1/*
 	exit 0
 else
 	exit 1
