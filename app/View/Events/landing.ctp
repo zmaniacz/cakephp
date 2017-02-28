@@ -31,8 +31,20 @@
     });
 </script>
 <div id="recent_social" class="panel panel-primary">
-	<div class="panel-heading" id="recent_social_heading">
-			Recent Socials
+	<div class="panel-heading clearfix" id="recent_social_heading">
+        <h3 class="panel-title pull-left">Recent Socials</h3>
+        <?=$this->Html->link('See All <span class="glyphicon glyphicon-forward"></span>', 
+            array('controller' => 'Events', 
+                'action' => 'index', 
+                '?' => array(
+                    'gametype' => 'social'
+                )
+            ),
+            array(
+                'escape' => false,
+                'class' => 'btn btn-sm btn-info pull-right'
+            )
+        );?>
 	</div>
     <table 
         class="event_table table table-striped table-bordered table-hover" 
@@ -49,8 +61,20 @@
     </table>
 </div>
 <div id="recent_tournament" class="panel panel-primary">
-	<div class="panel-heading" id="recent_tournament_heading">
-			Recent Tournaments
+	<div class="panel-heading clearfix" id="recent_social_heading">
+        <h3 class="panel-title pull-left">Recent Tournaments</h3>
+        <?=$this->Html->link('See All <span class="glyphicon glyphicon-forward"></span>', 
+            array('controller' => 'Events', 
+                'action' => 'index', 
+                '?' => array(
+                    'gametype' => 'tournament'
+                )
+            ),
+            array(
+                'escape' => false,
+                'class' => 'btn btn-sm btn-info pull-right'
+            )
+        );?>
 	</div>
     <table 
         class="event_table table table-striped table-bordered table-hover" 
@@ -67,8 +91,20 @@
     </table>
 </div>
 <div id="recent_league" class="panel panel-primary">
-	<div class="panel-heading" id="recent_league_heading">
-			Recent Leagues
+	<div class="panel-heading clearfix" id="recent_social_heading">
+        <h3 class="panel-title pull-left">Recent Socials</h3>
+        <?=$this->Html->link('See All <span class="glyphicon glyphicon-forward"></span>', 
+            array('controller' => 'Events', 
+                'action' => 'index', 
+                '?' => array(
+                    'gametype' => 'league'
+                )
+            ),
+            array(
+                'escape' => false,
+                'class' => 'btn btn-sm btn-info pull-right'
+            )
+        );?>
 	</div>
     <table 
         class="event_table table table-striped table-bordered table-hover" 
