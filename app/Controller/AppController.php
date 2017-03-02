@@ -65,30 +65,46 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		$this->Session->write('state.gametype', 'all');
+		//gametype, centerID and eventID should be defined in the session state at all times
+		//values of all, 0 and 0 respectively indicate no filtering to occur on those items
+		//gametype can be all, social, league, or tournament
+		//default to all, 0, 0
 
-		//If an event is defined, then that's all we want to see
-		if(!is_null($this->request->query('eventID')) && $this->request->query('eventID') > 0) {
-			$event = $this->Event->findById($this->request->query('eventID'));
-			$this->Session->write('state.eventID', $this->request->query('eventID'));
-			$this->Session->write('state.gametype', $event['Event']['type']);
-			$this->Session->write('state.centerID', $event['Event']['center_id']);
+		if($this->Session->check('state')) {
+			$state = $this->Session->read('state');
+		} else {
+			$state = array(
+				'gametype' => 'all',
+				'centerID' => 0,
+				'eventID' => 0,
+				'show_rounds' => true
+			);
+		}
 
-			$this->set('selected_event', $event);
-			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+		//a specified event takes precedence over gametype and center
+		if(!is_null($this->request->query('eventID'))) {
+			$state['eventID'] = $this->request->query('eventID');
+
+			if($state['eventID'] > 0) {
+				$event = $this->Event->findById($state['eventID']);
+				$state['gametype'] = $event['Event']['type'];
+				$state['centerID'] = $event['Event']['center_id'];
+
+				$this->set('selected_event', $event);
+				$this->set('selected_center', $this->Center->findById($state['centerID']));
+			}
 		} else {
 			if(!is_null($this->request->query('gametype')))
-				$this->Session->write('state.gametype', $this->request->query('gametype'));
+				$state['gametype'] = $this->request->query('gametype');
 
-			if(!is_null($this->request->query('centerID')) && $this->request->query('centerID') > 0) {
-				$this->Session->write('state.centerID', $this->request->query('centerID'));
-				$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
+			if(!is_null($this->request->query('centerID'))) {
+				$state['centerID'] = $this->request->query('centerID');
+				
+				if($state['centerID'] > 0) {
+					$this->set('selected_center', $this->Center->findById($state['centerID']));
+				}
 			}
 				
-		}
-		
-		if(!$this->Session->check('state.show_rounds')) {
-			$this->Session->write('state.show_rounds', true);
 		}
 		
 		$this->set('centers', $this->Center->find('list'));
