@@ -81,7 +81,8 @@
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
 									<ul class="dropdown-menu">
-										<li><?= $this->Html->link('Summary - Event Name', array('controller' => 'leagues', 'action' => 'standings')); ?></li>
+										<?php if(isset($selected_event)): ?>
+										<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'leagues', 'action' => 'standings')); ?></li>
 										<li><?= $this->Html->link('Player Details', array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
 										<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
 										<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
@@ -89,6 +90,7 @@
 										<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
 										<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 										<li role="separator" class="divider"></li>
+										<?php endif; ?>
 										<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'landing')); ?></li>
 									</ul>
 								</li>

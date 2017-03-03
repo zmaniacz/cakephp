@@ -101,6 +101,42 @@ class Event extends AppModel {
 		return $events;
 	}
 
+	public function getGameList($event_id) {
+		$games = $this->find('first', array(
+			'contain' => array(
+				'Game' => array(
+					'Red_Team' => array(
+						'EventTeam'
+					),
+					'Green_Team' => array(
+						'EventTeam'
+					)
+				)
+			),
+			'conditions' => array('id' => $event_id)
+		));
+
+		return $games;
+	}
+
+	public function getScorecards($event_id) {
+		$scorecards = $this->find('first', array(
+			'contain' => array(
+				'Game' => array(
+					'Red_Team' => array(
+						'Scorecard'
+					),
+					'Green_Team' => array(
+						'Scorecard'
+					)
+				)
+			),
+			'conditions' => array('id' => $event_id)
+		));
+
+		return $scorecards;
+	}
+
 	/////NONE OF THE BELOW WORKS
 	public function getLeagues($state) {
 		$leagues = $this->find('all', array(

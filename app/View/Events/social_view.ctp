@@ -1,17 +1,3 @@
-<form class="form-inline" action="/scorecards/nightly" id="nightlyNightlyForm" method="post" accept-charset="utf-8">
-	<div style="display:none;">
-		<input type="hidden" name="_method" value="POST"/>
-	</div>
-	<div class="form-group">
-		<label for="nightlySelectDate">Select Date</label>
-		<select class="form-control" name="data[nightly][selectDate]" id="nightlySelectDate">
-			<?php foreach($game_dates as $game_date): ?>
-				<option value="<?= $game_date ?>"><?= $game_date ?></option>
-			<?php endforeach; ?>
-		</select>
-	</div>
-</form>
-</br>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#game_list').DataTable( {
@@ -20,14 +6,80 @@
 			"paging": false,
 			"ordering": false,
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'gameList', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
-				{ "data" : "game_name", },
+				{ "data" : function ( row, type, val, meta) {
+						if(row.winner === 'red') {
+							var btn_class = 'btn btn-danger btn-block';
+						} else {
+							var btn_class = 'btn btn-success btn-block';
+						}
+						
+						if (type === 'display') {
+							return '<a href="/games/view/'+row.id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
+						}
+
+						return row.name;
+					}
+				},
 				{ "data" : "game_datetime" },
-				{ "data" : "winner" },
-				{ "data" : "loser" },
-				{ "data" : "pdf" }
+				{ "data" : function ( row, type, val, meta) {
+						if(row.winner === 'red') {
+							var score = row.Red_Team.raw_score + row.Red_Team.bonus_score + row.Red_Team.penalty_score;
+							if(row.Red_Team.EventTeam.length > 0) {
+								var name = row.Red_Team.EventTeam.name;
+							} else {
+								var name = 'Red Team';
+							}
+						} else {
+							var score = row.Green_Team.raw_score + row.Green_Team.bonus_score + row.Green_Team.penalty_score;
+							if(row.Green_Team.EventTeam.length > 0) {
+								var name = row.Green_Team.EventTeam.name;
+							} else {
+								var name = 'Green Team';
+							}
+						}
+						
+						if (type === 'display') {
+							return name+' : '+score;
+						}
+
+						return score;
+					}
+				},
+				{ "data" : function ( row, type, val, meta) {
+						if(row.winner === 'red') {
+							var score = row.Green_Team.raw_score + row.Green_Team.bonus_score + row.Green_Team.penalty_score;
+							if(row.Green_Team.EventTeam.length > 0) {
+								var name = row.Green_Team.EventTeam.name;
+							} else {
+								var name = 'Green Team';
+							}
+						} else {
+							var score = row.Red_Team.raw_score + row.Red_Team.bonus_score + row.Red_Team.penalty_score;
+							if(row.Red_Team.EventTeam.length > 0) {
+								var name = row.Red_Team.EventTeam.name;
+							} else {
+								var name = 'Red Team';
+							}
+						}
+						
+						if (type === 'display') {
+							return name+' : '+score;
+						}
+
+						return score;
+					}
+				},
+				{ "data" : function ( row, type, val, meta) {
+						if (type === 'display') {
+							return '<a href="http://scorecards.lfstats.com/'+row.pdf_id+'.pdf" class="btn btn-info btn-block" target="_blank">PDF</a>';
+						}
+
+						return row.pdf_id;
+					}
+				}
 			]
 		});
 
@@ -43,24 +95,66 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
 					"defaultContent" : '',
 					"orderable": false
 				},
-				{ "data" : "player_name", "width" : "200px" },
-				{ "data" : "game_name" },
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/players/view/'+row.player_id+location.search+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+						}
+						return row.player_name;
+					},
+					"width" : "200px" 
+				},
+				{ "data" : function ( row, type, val, meta) {
+						if(row.winner === 'red') {
+							var btn_class = 'btn btn-danger btn-block';
+						} else {
+							var btn_class = 'btn btn-success btn-block';
+						}
+
+						if (type === 'display') {
+							return '<a href="/games/view/'+row.game_id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
+						}
+						return row.player_name;
+					}
+				},
 				{ "data" : "position" },
 				{
 					"data" : "score",
 					"orderSequence": [ "desc", "asc"]
 				},
-				{ "data" : "mvp_points", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
+				{ "data" : function ( row, type, val, meta) {
+						if (type === 'display') {
+							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/'+row.id+'.json">'+row.mvp_points+'</button>';
+						}
+						return row.mvp_points;
+					},
+					"orderSequence": [ "desc", "asc"]
+				},
+				{ "data" : function ( row, type, val, meta) {
+						var hit_diff = row.shot_opponent/row.times_zapped;
+						if (type === 'display') {
+							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/'+row.player_id+'/'+row.game_id+'.json">'+parseFloat(hit_diff).toFixed(2)+' ('+row.shot_opponent+'/'+row.times_zapped+')</button>';
+						}
+						return row.mvp_points;
+					},
+					"orderSequence": [ "desc", "asc"]
+				},
 				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
+				{ "data" : function ( row, type, val, meta) {
+						var acc = row.accuracy * 100;
+						if (type === 'display') {
+							return parseFloat(acc).toFixed(2);
+						}
+						return row.accuracy;
+					},
+					"orderSequence": [ "desc", "asc"]
+				},
 				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
 			],
 			"order": [[ 5, "desc" ]]
@@ -72,7 +166,7 @@
 			} );
 		} ).draw();
 
-		$("#summary_stats thead th input").on( 'keyup change', function () {
+		/*$("#summary_stats thead th input").on( 'keyup change', function () {
 			summary_stats
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )
@@ -185,7 +279,7 @@
 			medicHitsTable.column(0, {order:'applied'}).nodes().each( function (cell, i) {
 				cell.innerHTML = i+1;
 			} );
-		} ).draw();
+		} ).draw();*/
 	} );
 </script>
 <div id="top_accordion" class="panel panel-info">
@@ -294,15 +388,3 @@
 		</div>
 	</div>
 </div>
-<script>
-$('#nightlySelectDate').change(function() {
-	var new_game_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_overall_url = $('#overall').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_summary_url = $('#summary_stats').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_medic_url = $('#medic_hits').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	$('#game_list').DataTable().ajax.url(new_game_url).load();
-	$('#overall').DataTable().ajax.url(new_overall_url).load();
-	$('#summary_stats').DataTable().ajax.url(new_summary_url).load();
-	$('#medic_hits').DataTable().ajax.url(new_medic_url).load();
-});
-</script>

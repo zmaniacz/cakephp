@@ -9,14 +9,7 @@
             "info" : false,
 			"columns" : [
                 { "data" : "name" },
-                { "data" : function ( row, type, val, meta ) {
-						if (type === 'display') {
-                            return row.center_short_name.toUpperCase();
-						}
-						
-						return row.center_short_name;
-					}
-				},
+                { "data" : "center_name" },
                 { "data" : function ( row, type, val, meta ) {
 						if (type === 'display') {
 							let date = new Date(row.last_gametime);
@@ -91,8 +84,8 @@
     </table>
 </div>
 <div id="recent_league" class="panel panel-primary">
-	<div class="panel-heading clearfix" id="recent_social_heading">
-        <h3 class="panel-title pull-left">Recent Socials</h3>
+	<div class="panel-heading clearfix" id="recent_league_heading">
+        <h3 class="panel-title pull-left">Recent Leagues</h3>
         <?=$this->Html->link('See All <span class="glyphicon glyphicon-forward"></span>', 
             array('controller' => 'Events', 
                 'action' => 'index', 

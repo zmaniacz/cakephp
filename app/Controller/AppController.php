@@ -106,6 +106,8 @@ class AppController extends Controller {
 			}
 				
 		}
+
+		$this->Session->write('state', $state);
 		
 		$this->set('centers', $this->Center->find('list'));
 		$this->set('events', $this->Event->find('list'));

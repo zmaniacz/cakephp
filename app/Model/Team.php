@@ -25,9 +25,9 @@ class Team extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'LeagueTeam' => array(
-			'className' => 'LeagueTeam',
-			'foreignKey' => 'league_team_id',
+		'EventTeam' => array(
+			'className' => 'EventTeam',
+			'foreignKey' => 'event_team_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

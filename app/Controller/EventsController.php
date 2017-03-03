@@ -12,7 +12,9 @@ class EventsController extends AppController {
 			'index',
 			'landing',
 			'view',
-			'eventList'
+			'eventList',
+			'gameList',
+			'eventScorecards'
 		);
 		parent::beforeFilter();
 	}
@@ -46,8 +48,14 @@ class EventsController extends AppController {
 		if (!$this->Event->exists($id)) {
 			throw new NotFoundException(__('Invalid event'));
 		}
-		$options = array('conditions' => array('Event.' . $this->Event->primaryKey => $id));
-		$this->set('event', $this->Event->find('first', $options));
+		$event = $this->Event->findById($id);
+		$this->set('event', $this->Event->findById($id));
+
+		if($event['Event']['type'] == 'social') {
+			$this->render('social_view');
+		} else {
+			$this->render('competition_view');
+		}
 	}
 
 /**
@@ -118,7 +126,28 @@ class EventsController extends AppController {
 	
 	public function eventList($type = null) {
 		$this->request->allowMethod('ajax');
+
 		$limit = $this->request->query('limit');
 		$this->set('response', $this->Event->getEventList($type, $limit));
+	}
+
+	public function gameList($event_id = null) {
+		$this->request->allowMethod('ajax');
+
+		if (!$this->Event->exists($event_id)) {
+			throw new NotFoundException(__('Invalid event'));
+		}
+
+		$this->set('response', $this->Event->getGameList($event_id));
+	}
+
+	public function eventScorecards($event_id = null) {
+		//$this->request->allowMethod('ajax');
+
+		if (!$this->Event->exists($event_id)) {
+			throw new NotFoundException(__('Invalid event'));
+		}
+
+		$this->set('response', $this->Event->getScorecards($event_id));
 	}
 }
