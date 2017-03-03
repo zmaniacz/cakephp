@@ -272,6 +272,7 @@ class MigrateShell extends AppShell {
     }
 
     public function step_8() {
+        $db = ConnectionManager::getDataSource('default');
         //regen the game_results view
         $db->rawQuery("CREATE OR REPLACE 
                         ALGORITHM = UNDEFINED 
