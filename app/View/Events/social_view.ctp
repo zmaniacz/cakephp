@@ -166,7 +166,7 @@
 			} );
 		} ).draw();
 
-		/*$("#summary_stats thead th input").on( 'keyup change', function () {
+		$("#summary_stats thead th input").on( 'keyup change', function () {
 			summary_stats
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )
@@ -178,7 +178,7 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'eventSummaryStats', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
@@ -245,7 +245,7 @@
 			} );
 		} ).draw();
 
-		$("#medic_hits thead tr th input").on( 'keyup change', function () {
+		/*$("#medic_hits thead tr th input").on( 'keyup change', function () {
 			medicHitsTable
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )

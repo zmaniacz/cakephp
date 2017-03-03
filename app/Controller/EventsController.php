@@ -14,7 +14,8 @@ class EventsController extends AppController {
 			'view',
 			'eventList',
 			'gameList',
-			'eventScorecards'
+			'eventScorecards',
+			'summaryStats'
 		);
 		parent::beforeFilter();
 	}
@@ -142,12 +143,23 @@ class EventsController extends AppController {
 	}
 
 	public function eventScorecards($event_id = null) {
-		//$this->request->allowMethod('ajax');
+		$this->request->allowMethod('ajax');
 
 		if (!$this->Event->exists($event_id)) {
 			throw new NotFoundException(__('Invalid event'));
 		}
 
 		$this->set('response', $this->Event->getScorecards($event_id));
+	}
+
+	public function summaryStats($event_id = null) {
+		//$this->request->allowMethod('ajax');
+
+		if (!$this->Event->exists($event_id)) {
+			throw new NotFoundException(__('Invalid event'));
+		}
+
+		$this->set('summary', $this->Event->getSummaryStats($event_id));
+		//$this->set('overall', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 }

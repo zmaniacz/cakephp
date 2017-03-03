@@ -269,6 +269,34 @@ class MigrateShell extends AppShell {
             }
 
         }
-        
     }
+
+    public function step_8() {
+        //regen the game_results view
+        $db->rawQuery("CREATE OR REPLACE 
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                    VIEW `game_results` AS
+                    SELECT 
+                        `scorecards`.`game_datetime` AS `game_datetime`,
+                        `scorecards`.`player_id` AS `player_id`,
+                        `scorecards`.`id` AS `scorecard_id`,
+                        `games`.`id` AS `game_id`,
+                        `games`.`type` AS `type`,
+                        `games`.`center_id` AS `center_id`,
+                        `games`.`event_id` AS `event_id`,
+                        (CASE (`scorecards`.`team` = `games`.`winner`)
+                            WHEN 1 THEN 'W'
+                            ELSE 'L'
+                        END) AS `result`,
+                        (CASE (`scorecards`.`team` = `games`.`winner`)
+                            WHEN 1 THEN 1
+                            ELSE 0
+                        END) AS `won`
+                    FROM
+                        (`scorecards`
+                        JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
+                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
+                }
 }

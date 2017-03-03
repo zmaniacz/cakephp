@@ -137,6 +137,69 @@ class Event extends AppModel {
 		return $scorecards;
 	}
 
+	public function getSummaryStats($event_id) {
+		$scorecards = $this->find('first', array(
+			'fields' => array('id'),
+			'contain' => array(
+				'Game' => array(
+					'fields' => array('id'),
+					'Scorecard' => array(
+						'fields' => array('id')
+					)
+				)
+			),
+			'conditions' => array('id' => $event_id)
+		));
+
+		$scorecard_ids = array();
+
+		foreach($scorecards['Game'] as $game) {
+			foreach($game['Scorecard'] as $scorecard) {
+				$scorecard_ids[] = $scorecard['id'];
+			}
+		}
+
+		$scorecard = ClassRegistry::init('Scorecard');
+
+		$stats = $scorecard->find('all', array(
+			'fields' => array(
+				'player_id',
+				'MIN(Scorecard.score) as min_score',
+				'ROUND(AVG(Scorecard.score)) as avg_score',
+				'MAX(Scorecard.score) as max_score',
+				'MIN(Scorecard.mvp_points) as min_mvp',
+				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'MAX(Scorecard.mvp_points) as max_mvp',	
+				'AVG(Scorecard.accuracy) as avg_acc',
+				'(SUM(Scorecard.shot_opponent)/SUM(Scorecard.times_zapped)) as hit_diff',
+				'SUM(Scorecard.medic_hits) as medic_hits',
+				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate',
+				'COUNT(Scorecard.game_datetime) as games_played',
+				'SUM(GameResult.won) as games_won'
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array('id', 'player_name')
+				)
+			),
+			'joins' => array(
+				array(
+					'table' => 'game_results',
+					'alias' => 'GameResult',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'GameResult.scorecard_id = Scorecard.id'
+					)
+				)
+			),
+			'conditions' => array(
+				'Scorecard.id' => $scorecard_ids
+			),
+			'group' => "Scorecard.player_id",
+			'order' => 'avg_mvp DESC'
+		));
+	}
+
 	/////NONE OF THE BELOW WORKS
 	public function getLeagues($state) {
 		$leagues = $this->find('all', array(

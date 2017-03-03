@@ -95,30 +95,6 @@ class ScorecardsController extends AppController {
 		$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
-	
-	public function nightly() {
-		if($this->Session->read('state.eventID') > 0)
-			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
-		
-		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
-		$this->set('game_dates', $game_dates);
-		
-		if($this->request->isPost()) {
-			$date = $this->request->data['Scorecard']['date'];
-		} else {
-			$date = reset($game_dates);
-		}
-		
-		if(!$date)
-			$date = 0;
-
-		$this->set('current_date', $date);
-	}
-	
-	public function nightlyScorecards($date = null) {
-		$this->request->onlyAllow('ajax');
-		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
-	}
 
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
