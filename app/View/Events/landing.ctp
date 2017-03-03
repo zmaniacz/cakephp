@@ -8,7 +8,14 @@
             "searching" : false,
             "info" : false,
 			"columns" : [
-                { "data" : "name" },
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/events/view/'+row.id+'?gametype='+row.type+'&centerID='+row.center_id+'&eventID='+row.id+'" class="btn btn-info btn-block">'+row.name+'</a>';
+						}
+						return row.name;
+					},
+					"width" : "200px" 
+				},
                 { "data" : "center_name" },
                 { "data" : function ( row, type, val, meta ) {
 						if (type === 'display') {
