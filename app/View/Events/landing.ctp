@@ -42,7 +42,7 @@
     <table 
         class="event_table table table-striped table-bordered table-hover" 
         id="recent_social_table" 
-        data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventList', 'social', '?' => array('limit' => 5), 'ext' => 'json'))); ?>"
+        data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventList', 'social', '?' => array('limit' => 10), 'ext' => 'json'))); ?>"
     >
         <thead>
             <tr>
