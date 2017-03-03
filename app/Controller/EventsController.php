@@ -15,7 +15,8 @@ class EventsController extends AppController {
 			'eventList',
 			'gameList',
 			'eventScorecards',
-			'summaryStats'
+			'summaryStats',
+			'medicHits'
 		);
 		parent::beforeFilter();
 	}
@@ -159,7 +160,19 @@ class EventsController extends AppController {
 			throw new NotFoundException(__('Invalid event'));
 		}
 
+		$this->loadModel('Scorecard');
 		$this->set('summary', $this->Event->getSummaryStats($event_id));
-		//$this->set('overall', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
+		$this->set('overall', $this->Scorecard->getAllAvgMVP());
+	}
+
+	public function medicHits($event_id = null) {
+		//$this->request->allowMethod('ajax');
+
+		if (!$this->Event->exists($event_id)) {
+			throw new NotFoundException(__('Invalid event'));
+		}
+
+		$this->loadModel('Scorecard');
+		$this->set('response', $this->Event->getMedicHitStats($event_id));
 	}
 }

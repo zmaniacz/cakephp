@@ -138,26 +138,7 @@ class Event extends AppModel {
 	}
 
 	public function getSummaryStats($event_id) {
-		$scorecards = $this->find('first', array(
-			'fields' => array('id'),
-			'contain' => array(
-				'Game' => array(
-					'fields' => array('id'),
-					'Scorecard' => array(
-						'fields' => array('id')
-					)
-				)
-			),
-			'conditions' => array('id' => $event_id)
-		));
-
-		$scorecard_ids = array();
-
-		foreach($scorecards['Game'] as $game) {
-			foreach($game['Scorecard'] as $scorecard) {
-				$scorecard_ids[] = $scorecard['id'];
-			}
-		}
+		$scorecard_ids = $this->_getScorecardIds($event_id);
 
 		$scorecard = ClassRegistry::init('Scorecard');
 
@@ -198,7 +179,103 @@ class Event extends AppModel {
 			'group' => "Scorecard.player_id",
 			'order' => 'avg_mvp DESC'
 		));
+
+		return $stats;
 	}
+
+	public function getMedicHitStats($event_id) {
+		$conditions = array();
+	
+		$scorecard_ids = $this->_getScorecardIds($event_id);
+
+		$scorecard = ClassRegistry::init('Scorecard');
+		$scorecards = $scorecard->find('all', array(
+			'fields' => array(
+				'player_id',
+				'position',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'COUNT(Scorecard.game_datetime) as games_played',
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array('id', 'player_name')
+				)
+			),
+			'conditions' => array(
+				'Scorecard.id' => $scorecard_ids
+			),
+			'group' => 'Scorecard.player_id, Scorecard.position HAVING total_medic_hits > 0',
+			'order' => 'total_medic_hits DESC'
+		));
+
+		$response = array();
+
+		foreach($scorecards as $scorecard) {
+			if(!isset($response[$scorecard['Scorecard']['player_id']])) {
+				$response[$scorecard['Scorecard']['player_id']] = array(
+					'player_id' => $scorecard['Scorecard']['player_id'],
+					'player_name' => $scorecard['Player']['player_name'],
+					'total_medic_hits' => 0,
+					'total_games_played' => 0
+				);
+			}
+			$response[$scorecard['Scorecard']['player_id']][$scorecard['Scorecard']['position']] = array(
+				'medic_hits' => $scorecard[0]['total_medic_hits'],
+				'games_played' => $scorecard[0]['games_played']
+			);
+			$response[$scorecard['Scorecard']['player_id']]['total_medic_hits'] += $scorecard[0]['total_medic_hits'];
+			$response[$scorecard['Scorecard']['player_id']]['total_games_played'] += $scorecard[0]['games_played'];
+		}
+
+		return $response;
+	}
+
+	protected function _getGameIds($event_id, $show_rounds = true, $show_finals = true) {
+		$events = $this->find('first', array(
+			'fields' => array('id'),
+			'contain' => array(
+				'Game' => array(
+					'fields' => array('id')
+				)
+			),
+			'conditions' => array('id' => $event_id)
+		));
+
+		$game_ids = array();
+
+		foreach($events['Game'] as $game) {
+			$game_ids[] = $game['id'];
+		}
+
+		return $game_ids;
+	}
+
+	protected function _getScorecardIds($event_id, $show_rounds = true, $show_finals = true) {
+		$events = $this->find('first', array(
+			'fields' => array('id'),
+			'contain' => array(
+				'Game' => array(
+					'fields' => array('id'),
+					'Scorecard' => array(
+						'fields' => array('id')
+					)
+				)
+			),
+			'conditions' => array('id' => $event_id)
+		));
+
+		$scorecard_ids = array();
+
+		foreach($events['Game'] as $game) {
+			foreach($game['Scorecard'] as $scorecard) {
+				$scorecard_ids[] = $scorecard['id'];
+			}
+		}
+
+		return $scorecard_ids;
+	}
+
+
 
 	/////NONE OF THE BELOW WORKS
 	public function getLeagues($state) {

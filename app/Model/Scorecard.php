@@ -506,9 +506,6 @@ class Scorecard extends AppModel {
 		if(isset($state['centerID']) && $state['centerID'] > 0)
 			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
 		
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('Scorecard.type' => $state['gametype']);
-		
 		if(isset($state['gametype']) && $state['gametype'] != 'all') {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 			
@@ -635,6 +632,7 @@ class Scorecard extends AppModel {
 		return $results;
 	}
 	
+	//this should be altered to match better logic in the event version
 	public function getMedicHitStats($state = null) {
 		$conditions = array();
 		

@@ -120,7 +120,7 @@
 						if (type === 'display') {
 							return '<a href="/games/view/'+row.game_id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
 						}
-						return row.player_name;
+						return row.game_name;
 					}
 				},
 				{ "data" : "position" },
@@ -178,24 +178,32 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'eventSummaryStats', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'summaryStats', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
 					"defaultContent" : '',
 					"orderable": false
 				},
-				{ "data" : "player_name" },
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/players/view/'+row.player_id+location.search+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+						}
+						return row.player_name;
+					},
+					"width" : "200px" 
+				},
 				{ "data" : "min_score", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "avg_score", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "max_score", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "min_mvp", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
+							var avg_mvp = parseFloat(row.avg_mvp).toFixed(2);
 							if (row.overall_avg_mvp >= row.avg_mvp) {
-								return row.avg_mvp+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_mvp+'"></span>'
+								return avg_mvp+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_mvp+'"></span>'
 							} else {
-								return row.avg_mvp+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_mvp+'"></span>'
+								return avg_mvp+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_mvp+'"></span>'
 							}
 						}
 
@@ -205,10 +213,11 @@
 				{ "data" : "max_mvp", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
+							var avg_acc = parseFloat(row.avg_acc*100).toFixed(2);
 							if (row.overall_avg_acc >= row.avg_acc) {
-								return row.avg_acc+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_acc+'"></span>'
+								return avg_acc+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_acc+'"></span>'
 							} else {
-								return row.avg_acc+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_acc+'"></span>'
+								return avg_acc+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_acc+'"></span>'
 							}
 						}
 
@@ -218,7 +227,7 @@
 				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta ) {
-						var rate = row.elim_rate;
+						var rate = parseFloat(row.elim_rate*100).toFixed(2);
 						if (type === 'display') {
 							return rate+'%';
 						}
@@ -245,7 +254,7 @@
 			} );
 		} ).draw();
 
-		/*$("#medic_hits thead tr th input").on( 'keyup change', function () {
+		$("#medic_hits thead tr th input").on( 'keyup change', function () {
 			medicHitsTable
 				.column( $(this).parent().index()+':visible' )
 				.search( this.value )
@@ -257,20 +266,41 @@
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'medicHits', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
 					"defaultContent" : '',
 					"orderable": false
 				},
-				{ "data" : "player_name" },
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/players/view/'+row.player_id+location.search+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+						}
+						return row.player_name;
+					},
+					"width" : "200px" 
+				},
 				{ "data" : "total_medic_hits", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "medic_hits_per_game", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "games_played", "orderSequence": [ "desc", "asc"] },
+				{ "data" : function ( row, type, val, meta ) {
+						var medic_hits_per_game = row.total_medic_hits/row.total_games_played;
+						if (type === 'display') {
+							return parseFloat(medic_hits_per_game).toFixed(2);
+						}
+						return medic_hits_per_game;
+					}, "orderSequence": [ "desc", "asc"]
+				},
+				{ "data" : "total_games_played", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "non_resup_total_medic_hits", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "non_resup_medic_hits_per_game", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "non_resup_games_played", "orderSequence": [ "desc", "asc"] }
+				{ "data" : function ( row, type, val, meta ) {
+						var non_resup_medic_hits_per_game = row.non_resup_total_medic_hits/row.non_resup_total_games_played;
+						if (type === 'display') {
+							return parseFloat(non_resup_medic_hits_per_game).toFixed(2);
+						}
+						return non_resup_medic_hits_per_game;
+					}, "orderSequence": [ "desc", "asc"]
+				},
+				{ "data" : "non_resup_total_games_played", "orderSequence": [ "desc", "asc"] }
 			],
 			"order": [[ 2, "desc" ]]
 		});
@@ -279,7 +309,7 @@
 			medicHitsTable.column(0, {order:'applied'}).nodes().each( function (cell, i) {
 				cell.innerHTML = i+1;
 			} );
-		} ).draw();*/
+		} ).draw();
 	} );
 </script>
 <div id="top_accordion" class="panel panel-info">
