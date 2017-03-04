@@ -1800,4 +1800,15 @@ class Scorecard extends AppModel {
 		
 		return $M;
 	}
+
+	public function getDatabaseStats() {
+		$stats = $this->find('first', array(
+			'fields' => array(
+				'COUNT(id) as total_scorecards',
+				'SUM(shot_opponent) as total_hits'
+			)
+		));
+
+		return $stats;
+	}
 }

@@ -53,7 +53,7 @@ class AppController extends Controller {
     	)
 	);
 
-	public $uses = array('Center', 'Event');
+	public $uses = array('Center', 'Event', 'Scorecard', 'Game');
 
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
@@ -112,5 +112,7 @@ class AppController extends Controller {
 		$this->set('centers', $this->Center->find('list'));
 		$this->set('events', $this->Event->find('list'));
 		$this->set('event_details', $this->Event->getEventList());
+		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
+		$this->set('game_stats', $this->Game->getDatabaseStats());
 	}
 }
