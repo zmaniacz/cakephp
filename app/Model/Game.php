@@ -283,4 +283,14 @@ class Game extends AppModel {
 
 		return $results;
 	}
+
+	public function getDatabaseStats() {
+		$stats = $this->find('first', array(
+			'fields' => array(
+				'COUNT(id) as total_games'
+			)
+		));
+
+		return $stats;
+	}
 }
