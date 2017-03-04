@@ -192,6 +192,11 @@
 				</script>
 			</div>
 			<div id="footer">
+				<h6 class="text-center">
+					<small>
+						Players have shot each other <?=$scorecard_stats[0]['total_hits']; ?> times in <?=$game_stats[0]['total_games']; ?> games with <?=$scorecard_stats[0]['total_scorecards']; ?> individual scorecards.
+					</small>
+				</h6>
 			</div>
 		</div>
 	</div>

@@ -43,6 +43,13 @@ class Game extends AppModel {
 			'foreignKey' => 'event_id'
 		)
 	);
+
+	public $validate = array(
+		'game_datetime' => array(
+			'rule' => array('isUnique', array('game_datetime', 'center_id'), false),
+			'message' => "Non-Unique center/game combination"
+		)
+	);
 	
 	public function getOverallStats($state) {
 		$conditions = array();
@@ -253,5 +260,15 @@ class Game extends AppModel {
 		}
 
 		return $results;
+	}
+
+	public function getDatabaseStats() {
+		$stats = $this->find('first', array(
+			'fields' => array(
+				'COUNT(id) as total_games'
+			)
+		));
+
+		return $stats;
 	}
 }

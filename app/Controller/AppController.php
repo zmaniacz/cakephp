@@ -53,7 +53,7 @@ class AppController extends Controller {
     	)
 	);
 
-	public $uses = array('Center', 'Event');
+	public $uses = array('Center', 'League', 'Scorecard', 'Game');
 
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
@@ -110,7 +110,9 @@ class AppController extends Controller {
 		$this->Session->write('state', $state);
 		
 		$this->set('centers', $this->Center->find('list'));
-		$this->set('events', $this->Event->find('list'));
-		$this->set('event_details', $this->Event->getEventList());
+		$this->set('leagues', $this->League->find('list'));
+		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
+		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
+		$this->set('game_stats', $this->Game->getDatabaseStats());
 	}
 }
