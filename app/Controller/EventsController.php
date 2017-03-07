@@ -12,6 +12,7 @@ class EventsController extends AppController {
 			'index',
 			'landing',
 			'view',
+			'playerStats',
 			'eventList',
 			'gameList',
 			'eventScorecards',
@@ -125,7 +126,15 @@ class EventsController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+
+	public function playerStats($id = null) {
+		if (!$this->Event->exists($event_id)) {
+			throw new NotFoundException(__('Invalid event'));
+		}
+	}
 	
+
+	//API functions below
 	public function eventList($type = null) {
 		$this->request->allowMethod('ajax');
 
@@ -154,7 +163,7 @@ class EventsController extends AppController {
 	}
 
 	public function summaryStats($event_id = null) {
-		//$this->request->allowMethod('ajax');
+		$this->request->allowMethod('ajax');
 
 		if (!$this->Event->exists($event_id)) {
 			throw new NotFoundException(__('Invalid event'));
@@ -166,7 +175,7 @@ class EventsController extends AppController {
 	}
 
 	public function medicHits($event_id = null) {
-		//$this->request->allowMethod('ajax');
+		$this->request->allowMethod('ajax');
 
 		if (!$this->Event->exists($event_id)) {
 			throw new NotFoundException(__('Invalid event'));
