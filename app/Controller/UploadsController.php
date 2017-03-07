@@ -180,6 +180,7 @@ class UploadsController extends AppController {
 						'game_id' => $this->Game->id,
 						'type' => $type,
 						'event_id' => $event_id
+						'league_id' => $league_id
 					));
 
 					if($this->Scorecard->save()) {

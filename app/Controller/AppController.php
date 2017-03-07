@@ -110,8 +110,13 @@ class AppController extends Controller {
 		$this->Session->write('state', $state);
 		
 		$this->set('centers', $this->Center->find('list'));
+<<<<<<< HEAD
 		$this->set('events', $this->Event->find('list'));
 		$this->set('event_details', $this->Event->getEventList());
+=======
+		$this->set('leagues', $this->League->find('list'));
+		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
+>>>>>>> 9ce6c4dbf5a349c489b82dc24e99403dafa7d182
 		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
 		$this->set('game_stats', $this->Game->getDatabaseStats());
 	}
