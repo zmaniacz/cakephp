@@ -47,6 +47,41 @@
 			}
 			]
 		});
+
+		$('#matchups').DataTable( {
+			"deferRender" : true,
+            "ordering" : false,
+            "paging" : false,
+            "pageLength" : 5,
+            "searching" : false,
+            "info" : false,
+			"columns" : [
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/players/view/'+row.red_player_id+location.search+'" class="btn btn-danger btn-block">'+row.red_player_name+'</a>';
+						}
+						return row.red_player_name;
+					},
+					"width" : "200px" 
+				},
+                { "data" : function ( row, type, val, meta) {
+						var matchup = row.matchup * 100;
+						if (type === 'display') {
+							return parseFloat(matchup).toFixed(2)+'%';
+						}
+						return row.matchup;
+					}
+				},
+				{ "data" : function ( row, type, val, meta) {			
+						if (type === 'display') {
+							return '<a href="/players/view/'+row.green_player_id+location.search+'" class="btn btn-success btn-block">'+row.green_player_name+'</a>';
+						}
+						return row.green_player_name;
+					},
+					"width" : "200px" 
+				},
+			]
+		});
 	});
 
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -325,6 +360,19 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
+		<div class="table-responsive">
+			<table 
+			 class="table table-striped table-bordered table-hover table-condensed" 
+			 id="matchups" 
+			 data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameMatchups', $game['Game']['id'], 'ext' => 'json'))); ?>"
+			>
+				<thead>
+					<th>Red</th>
+					<th>Match Quality</th>
+					<th>Green</th>
+				</thead>
+			</table>
+		</div>
 		<div id="breakdown_container">
 		</div>
 	</div>

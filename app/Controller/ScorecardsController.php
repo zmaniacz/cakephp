@@ -27,7 +27,8 @@ class ScorecardsController extends AppController {
 			'filterFinals',
 			'filterRounds',
 			'allstar',
-			'getAllStarStats'
+			'getAllStarStats',
+			'getComparison'
 		);
 		parent::beforeFilter();
 	}
@@ -59,9 +60,31 @@ class ScorecardsController extends AppController {
 	
 	public function overall() {	
     }
+
+	public function getComparison($player1_id, $player2_id) {
+		App::import('Vendor','CosineSimilarity',array('file' => 'CosineSimilarity/CosineSimilarity.php'));
+		$compare = new CosineSimilarity();
+
+		$player1_stats = $this->Scorecard->getComparableMVP($player1_id);
+		$player2_stats = $this->Scorecard->getComparableMVP($player2_id);
+
+		$max = max(max($player1_stats), max($player2_stats));
+		$min = min(min($player1_stats), min($player2_stats));
+
+		foreach($player1_stats as &$stat) {
+			$stat = ($stat - $min) / ($max - $min);
+		}
+
+		foreach($player2_stats as &$stat) {
+			$stat = ($stat - $min) / ($max - $min);
+		}
+
+		$distance = $compare->similarity($player1_stats, $player2_stats);
+
+		$this->set('response', $distance);
+	}
 	
 	public function getOverallStats($position) {
-		$this->request->allowMethod('ajax');
 		switch ($position) {
 			case 'commander':
 				$this->set('response', $this->Scorecard->getPositionStats('Commander',$this->Session->read('state')));
@@ -87,7 +110,6 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallAverages() {
-		$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 	

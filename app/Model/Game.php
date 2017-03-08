@@ -131,6 +131,74 @@ class Game extends AppModel {
 		return $result;
 	}
 
+	public function getMatchups($id) {
+		$conditions[] = array('Game.id' => $id);
+
+		$red_team = $this->find('first', array(
+			'fields' => array('id'),
+			'contain' => array(
+				'Red_Scorecard' => array(
+					'fields' => array(
+						'player_id',
+						'player_name',
+						'position',
+						'mvp_points'
+					),
+					'order' => 'position ASC, mvp_points DESC'
+				)
+			),
+			'conditions' => $conditions
+		));
+		
+		$green_team = $this->find('first', array(
+			'fields' => array('id'),
+			'contain' => array(
+				'Green_Scorecard' => array(
+					'fields' => array(
+						'player_id',
+						'player_name',
+						'position',
+						'mvp_points'
+					),
+					'order' => 'position ASC, mvp_points DESC'
+				)
+			),
+			'conditions' => $conditions
+		));
+
+		$scout_counter = 1;
+		foreach($red_team['Red_Scorecard'] as &$score) {
+			if($score['position'] == 'Scout') {
+				$score['position'] = 'Scout'.$scout_counter;
+				$scout_counter++;
+			}
+		}
+
+		$scout_counter = 1;
+		foreach($green_team['Green_Scorecard'] as &$score) {
+			if($score['position'] == 'Scout') {
+				$score['position'] = 'Scout'.$scout_counter;
+				$scout_counter++;
+			}
+		}
+		$data = array();
+		foreach($red_team['Red_Scorecard'] as $red_score) {
+			foreach($green_team['Green_Scorecard'] as $green_score) {
+				if($red_score['position'] == $green_score['position']) {
+					$data[] = array(
+						'position' => $red_score['position'],
+						'red_player_id' => $red_score['player_id'],
+						'red_player_name' => $red_score['player_name'],
+						'green_player_id' => $green_score['player_id'],
+						'green_player_name' => $green_score['player_name'],
+						'matchup' => $this->Scorecard->getComparison($red_score['player_id'], $green_score['player_id'])
+					);
+				}
+			}
+		}
+		return $data;
+	}
+
 	public function getGameList($date = null, $state) {
 		$conditions = array();
 		

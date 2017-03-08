@@ -19,7 +19,7 @@ class GamesController extends AppController {
 	public $uses = array('Game','Player');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList');
+		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList','getGameMatchups');
 		parent::beforeFilter();
 	}
 
@@ -85,6 +85,10 @@ class GamesController extends AppController {
 			
 			$this->set('game', $game);
 		}
+	}
+
+	public function getGameMatchups($game_id) {
+		$this->set('data', $this->Game->getMatchups($game_id));
 	}
 
 /**
