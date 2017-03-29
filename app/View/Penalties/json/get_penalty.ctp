@@ -21,7 +21,7 @@
 		<?php echo $this->Html->link(h($penalty['Scorecard']['Game']['game_name'])." ".h($penalty['Scorecard']['Game']['game_datetime']), array('controller' => 'Games', 'action' => 'view', $penalty['Scorecard']['Game']['id'])); ?>
 	</dd>
 </dl>
-<?php if(AuthComponent::user('role') === 'admin'): ?>
+<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $penalty['Scorecard']['Game']['center_id'])): ?>
 <a href=<?= $this->Html->url(array('controller' => 'penalties', 'action' => 'edit', $penalty['Penalty']['id'])); ?> class="btn btn-warning" role="button">Edit Penalty</a>
 <?= $this->Html->link("Delete Penalty", array('controller' => 'penalties', 'action' => 'delete', $penalty['Penalty']['id']), array('class' => 'btn btn-danger')); ?>
 <?php endif; ?>

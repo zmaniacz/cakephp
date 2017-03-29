@@ -187,7 +187,10 @@ class PenaltiesController extends AppController {
 		}
 		
 		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
-		$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
+		if(isset($scorecard['Game']['Match']['id'])) {
+			$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
+		}
+
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 	}
 	
@@ -198,7 +201,7 @@ class PenaltiesController extends AppController {
 			'Scorecard' => array(
 				'fields' => array(),
 				'Game' => array(
-					'fields' => array('id','game_name','game_description','game_datetime')	
+					'fields' => array('id','game_name','game_description','game_datetime','center_id')	
 				),
 				'Player' => array(
 					'fields' => array('id','player_name')
