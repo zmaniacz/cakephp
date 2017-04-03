@@ -152,7 +152,7 @@ class Scorecard extends AppModel {
 				
 				foreach($penalties as $penalty) {
 					if($penalty['Penalty']['type'] != 'Penalty Removed')
-						$mvp += -5;
+						$mvp += $penalty['Penalty']['mvp_value'];
 				}
 			}
 			

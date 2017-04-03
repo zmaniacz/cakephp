@@ -21,9 +21,14 @@
 				<?php echo h($penalty['Penalty']['description']); ?>
 				&nbsp;
 			</dd>
-			<dt><?php echo __('Value'); ?></dt>
+			<dt><?php echo __('Score Value'); ?></dt>
 			<dd>
 				<?php echo h($penalty['Penalty']['value']); ?>
+				&nbsp;
+			</dd>
+			<dt><?php echo __('MVP Value'); ?></dt>
+			<dd>
+				<?php echo h($penalty['Penalty']['mvp_value']); ?>
 				&nbsp;
 			</dd>
 			<dt><?php echo __('Game'); ?></dt>

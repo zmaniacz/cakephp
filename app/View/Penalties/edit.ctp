@@ -26,7 +26,8 @@
 					'Chasing' => 'Chasing',
 					'Shoulder Tilting' => 'Shoulder Tilting',
 					'Unsportsmanlike Conduct' => 'Unsportsmanlike Conduct',
-					'Penalty Removed' => 'Penalty Removed'
+					'Penalty Removed' => 'Penalty Removed',
+					'Unknown' => 'Unknown'
 				),
 				'class' => 'form-control',
 				'div' => array('class' => 'form-group')
@@ -34,6 +35,7 @@
 		?>
 		<?= $this->Form->input('description', array('class' => 'form-control','div' => array('class' => 'form-group'))); ?>
 		<?= $this->Form->input('value', array('class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
+		<?= $this->Form->input('mvp_value', array('class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
 		<?= $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning')); ?>
 		<br />
 		<?= $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Penalty.id')), array('class' => 'btn btn-danger'), __('Are you sure you want to delete # %s?', $this->Form->value('Penalty.id'))); ?></li>
