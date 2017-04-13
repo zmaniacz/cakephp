@@ -40,11 +40,11 @@ class Team extends AppModel {
 	public $hasMany = array(
 		'Red_Game' => array(
 			'className' => 'Game',
-			'foreignkey' => 'red_team_id'
+			'foreignKey' => 'red_team_id'
 		),
 		'Green_Game' => array(
 			'className' => 'Game',
-			'foreignkey' => 'green_team_id'
+			'foreignKey' => 'green_team_id'
 		),
 		'Match_Team1' => array(
 			'className' => 'Match',
