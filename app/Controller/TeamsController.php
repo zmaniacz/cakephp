@@ -18,7 +18,21 @@ class TeamsController extends AppController {
 			throw new NotFoundException(__('Invalid team'));
 		}
 
-		$this->set('team', $this->Team->findById($id));
+		$team = $this->Team->find('first', array(
+			'contain' => array(
+				'Red_Game' => array(
+					'Red_Scorecard'
+				),
+				'Green_Game'=> array(
+					'Green_Scorecard'
+				)
+			),
+			'conditions' => array(
+				'Team.id' => $id
+			)
+		));
+
+		$this->set('team', $team);
 		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
 		$this->set('details', $this->Team->getTeamMatches($id, $this->Session->read('state')));
 	}

@@ -1,8 +1,81 @@
+<?php
+	$scorecards = array();
+
+	foreach($team['Red_Game'] as $game) {
+		foreach($game['Red_Scorecard'] as $scorecard) {
+			$scorecards[] = $scorecard;
+		}
+	}
+
+	foreach($team['Green_Game'] as $game) {
+		foreach($game['Green_Scorecard'] as $scorecard) {
+			$scorecards[] = $scorecard;
+		}
+	}
+	
+	$player_positions = array();
+	foreach($scorecards as $scorecard) {
+		if(!$scorecard['is_sub']) {
+			if(isset($player_positions[$scorecard['player_name']])) {
+				$player_positions[$scorecard['player_name']][$scorecard['position']] += 1;
+			} else {
+				$player_positions[$scorecard['player_name']] = array(
+					'Commander' => 0,
+					'Heavy Weapons' => 0,
+					'Scout' => 0,
+					'Ammo Carrier' => 0,
+					'Medic' =>0
+				);
+
+				$player_positions[$scorecard['player_name']][$scorecard['position']] += 1;
+			}
+		}
+	}
+?>
 <h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
+<div id="positions_panel" class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#positions_panel" data-target="#collapse_positions" role="tab" id="positions_heading">
+		<h4 class="panel-title">
+			Positions Detail
+		</h4>
+	</div>
+	<div id="collapse_positions" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<table class="table table-striped table-bordered table-hover table-condensed" id="positions_table">
+				<thead>
+					<tr>
+						<th></th>
+						<th colspan="5" class="text-center">Games Played</th>
+					</tr>
+					<tr>
+						<th class="col-xs-2">Player</th>
+						<th class="col-xs-2">Commander</th>
+						<th class="col-xs-2">Heavy Weapons</th>
+						<th class="col-xs-2">Scout</th>
+						<th class="col-xs-2">Ammo Carrier</th>
+						<th class="col-xs-2">Medic</th>
+					</tr>
+				</thead>
+				<tbody class="text-center">
+					<?php foreach($player_positions as $player => $position): ?>
+						<tr>
+							<td><?= $player; ?></td>
+							<td><?= $position['Commander']; ?></td>
+							<td><?= $position['Heavy Weapons']; ?></td>
+							<td><?= $position['Scout']; ?></td>
+							<td><?= $position['Ammo Carrier']; ?></td>
+							<td><?= $position['Medic']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 <div id="accordion" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_rounds" role="tab" id="rounds_heading">
 		<h4 class="panel-title">
-			Rounds
+			Match Detail
 		</h4>
 	</div>
 	<div id="collapse_rounds" class="panel-collapse collapse in" role="tabpanel">
