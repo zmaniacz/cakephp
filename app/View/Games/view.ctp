@@ -88,7 +88,7 @@
 		$('#breakdown_container').highcharts().reflow();
 	});
 </script>
-<?php if(AuthComponent::user('role') === 'admin'): ?>
+<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 <div class="well well-lg">
 	<h3 class="text-danger">IMPORTANT</h3>
 	<p class="lead">
@@ -99,7 +99,7 @@
 </div>
 <?php endif; ?>
 <?php
-	if(AuthComponent::user('role') === 'admin') {
+	if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
 		echo $this->Form->create('Game', array(
 			'class' => 'form-horizontal', 
 			'role' => 'form',
