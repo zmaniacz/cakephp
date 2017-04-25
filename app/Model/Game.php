@@ -361,4 +361,22 @@ class Game extends AppModel {
 
 		return $stats;
 	}
+
+	public function fixSocialGameNames($date, $center_id) {
+		//christ
+		$games = $this->find('all', array(
+			'conditions' => array(
+				'center_id' => $center_id,
+				'DATE(game_datetime)' => $date
+			),
+			'order' => 'game_datetime ASC'
+		));
+
+		$game_counter=1;
+		foreach($games as $game) {
+			$game['Game']['game_name'] = "G{$game_counter}";
+			$this->save($game);
+			$game_counter++;
+		}
+	}
 }
