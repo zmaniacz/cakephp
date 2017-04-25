@@ -5,6 +5,7 @@ class ScorecardsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(
 			'index',
+			'landing',
 			'setState',
 			'pickCenter',
 			'pickLeague',
@@ -35,6 +36,40 @@ class ScorecardsController extends AppController {
 
 	public function index() {
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly', '?' => array('gametype' => $this->Session->read('state.gametype'), 'centerID' => $this->Session->read('state.centerID'), 'leagueID' => $this->Session->read('state.leagueID'))));
+	}
+
+	public function landing() {
+		$this->layout = 'landing';
+
+		$events = $this->Game->find('all', array(
+			'fields' => array(
+				'COUNT(Game.id) as games_played',
+				'Game.center_id',
+				'Game.league_id',
+				'DATE(Game.game_datetime) as games_date',
+				'Game.type'
+			),
+			'group' => array(
+				'center_id',
+				'league_id',
+				'games_date',
+				'type'
+			),
+			'order' => array(
+				'games_date DESC'
+			),
+			'limit' => 10,
+			'contain' => array(
+				'Center' => array(
+					'fields' => array(
+						'name',
+						'short_name'
+					)
+				)
+			)
+		));
+
+		$this->set('events', $events);
 	}
 	
 	public function setState($gametype, $league_id, $center_id) {
@@ -118,7 +153,7 @@ class ScorecardsController extends AppController {
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 	
-	public function nightly() {
+	public function nightly($date = null) {
 		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		
@@ -127,12 +162,10 @@ class ScorecardsController extends AppController {
 		
 		if($this->request->isPost()) {
 			$date = $this->request->data['Scorecard']['date'];
-		} else {
-			$date = reset($game_dates);
 		}
 		
 		if(!$date)
-			$date = 0;
+			$date = reset($game_dates);
 
 		$this->set('current_date', $date);
 	}

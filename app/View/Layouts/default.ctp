@@ -70,7 +70,7 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-      						<a class="navbar-brand" href="#"><img src="/img/LF-logo1-shadow-small.png"></a>
+      						<a class="navbar-brand" href="/scorecards/landing"><img src="/img/LF-logo1-shadow-small.png"></a>
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
@@ -196,7 +196,7 @@
 												'centerID' => $key,
 												'leagueID' => 0
 											)
-										));
+										))."</li>";
 									}
 								}
 								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
@@ -211,7 +211,7 @@
 												'centerID' => $league['League']['center_id'],
 												'leagueID' => $league['League']['id']
 											)
-										));
+										))."</li>";
 									}
 								}
 							?>
