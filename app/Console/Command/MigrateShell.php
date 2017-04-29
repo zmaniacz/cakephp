@@ -299,5 +299,80 @@ class MigrateShell extends AppShell {
                         (`scorecards`
                         JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
                         JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
-                }
+    }
+
+    public function step_9() {
+        //create the vGames view
+        $db->rawQuery("CREATE OR REPLACE
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                    VIEW `vGames` AS
+                    SELECT 
+                        `games`.`id` AS `id`,
+                        `games`.`game_name` AS `game_name`,
+                        `games`.`game_description` AS `game_description`,
+                        `games`.`game_datetime` AS `game_datetime`,
+                        `green_team`.`id` AS `green_team_id`,
+                        `green_team`.`name` AS `green_team_name`,
+                        `green_team`.`raw_score` AS `green_score`,
+                        (`green_team`.`bonus_score` + `green_team`.`penalty_score`) AS `green_adj`,
+                        `green_team`.`eliminated` AS `green_eliminated`,
+                        `red_team`.`id` AS `red_team_id`,
+                        `red_team`.`name` AS `red_team_name`,
+                        `red_team`.`raw_score` AS `red_score`,
+                        (`red_team`.`bonus_score` + `red_team`.`penalty_score`) AS `red_adj`,
+                        `red_team`.`eliminated` AS `red_eliminated`,
+                        `games`.`winner` AS `winner`,
+                        `games`.`type` AS `type`,
+                        `games`.`league_round` AS `league_round`,
+                        `games`.`league_match` AS `league_match`,
+                        `games`.`league_game` AS `league_game`,
+                        `games`.`pdf_id` AS `pdf_id`,
+                        `games`.`center_id` AS `center_id`,
+                        `games`.`event_id` AS `league_id`,
+                        `games`.`match_id` AS `match_id`,
+                        `games`.`created` AS `created`,
+                        `games`.`modified` AS `modified`
+                    FROM
+                        ((`games`
+                        LEFT JOIN (SELECT 
+                            `teams`.`id` AS `id`,
+                                `teams`.`color` AS `color`,
+                                `teams`.`raw_score` AS `raw_score`,
+                                `teams`.`bonus_score` AS `bonus_score`,
+                                `teams`.`penalty_score` AS `penalty_score`,
+                                `teams`.`eliminated` AS `eliminated`,
+                                `teams`.`eliminated_opponent` AS `eliminated_opponent`,
+                                `teams`.`game_id` AS `game_id`,
+                                `teams`.`event_team_id` AS `event_team_id`,
+                                `event_teams`.`name` AS `name`,
+                                `teams`.`created` AS `created`,
+                                `teams`.`updated` AS `updated`
+                        FROM
+                            (`teams`
+                        LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
+                        WHERE
+                            (`teams`.`color` = 'green')) `green_team` ON ((`games`.`id` = `green_team`.`game_id`)))
+                        LEFT JOIN (SELECT 
+                            `teams`.`id` AS `id`,
+                                `teams`.`color` AS `color`,
+                                `teams`.`raw_score` AS `raw_score`,
+                                `teams`.`bonus_score` AS `bonus_score`,
+                                `teams`.`penalty_score` AS `penalty_score`,
+                                `teams`.`eliminated` AS `eliminated`,
+                                `teams`.`eliminated_opponent` AS `eliminated_opponent`,
+                                `teams`.`game_id` AS `game_id`,
+                                `teams`.`event_team_id` AS `event_team_id`,
+                                `event_teams`.`name` AS `name`,
+                                `teams`.`created` AS `created`,
+                                `teams`.`updated` AS `updated`
+                        FROM
+                            (`teams`
+                        LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
+                        WHERE
+                            (`teams`.`color` = 'red')) `red_team` ON ((`games`.`id` = `red_team`.`game_id`)))");
+
+    }
+
 }
