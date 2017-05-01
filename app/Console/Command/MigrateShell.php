@@ -1,6 +1,6 @@
 <?php
 
-App::uses('ConnectionManager', 'Model');
+App::uses('ConnectionManager', 'Model', 'Cache');
 
 class MigrateShell extends AppShell {
     public $uses = array('Team','Game','Scorecard','Event','Center');
@@ -267,7 +267,6 @@ class MigrateShell extends AppShell {
                 $this->Game->save($game);
                 $this->Game->clear();
             }
-
         }
     }
 
@@ -303,11 +302,12 @@ class MigrateShell extends AppShell {
 
     public function step_9() {
         //create the vGames view
+        $db = ConnectionManager::getDataSource('default');
         $db->rawQuery("CREATE OR REPLACE
                         ALGORITHM = UNDEFINED 
                         DEFINER = `dbo_redial`@`%` 
                         SQL SECURITY DEFINER
-                    VIEW `vGames` AS
+                    VIEW `v_games` AS
                     SELECT 
                         `games`.`id` AS `id`,
                         `games`.`game_name` AS `game_name`,
@@ -372,7 +372,5 @@ class MigrateShell extends AppShell {
                         LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
                         WHERE
                             (`teams`.`color` = 'red')) `red_team` ON ((`games`.`id` = `red_team`.`game_id`)))");
-
     }
-
 }
