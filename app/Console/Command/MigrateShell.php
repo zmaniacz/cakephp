@@ -1,6 +1,6 @@
 <?php
 
-App::uses('ConnectionManager', 'Model', 'Cache');
+App::uses('ConnectionManager', 'Model');
 
 class MigrateShell extends AppShell {
     public $uses = array('Team','Game','Scorecard','Event','Center');
