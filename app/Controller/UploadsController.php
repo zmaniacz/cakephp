@@ -135,12 +135,17 @@ class UploadsController extends AppController {
 				
 				foreach($game['player'] as $player) {
 					$player_id = $this->Scorecard->generatePlayer($player['name']);
+
+					//blue or yellow team gets autoconverted to green
+					$team = strtolower($player['team']);
+					if($team == 'yellow' || $team == 'blue')
+						$team = 'green';
 					
 					$this->Scorecard->create();
 					$this->Scorecard->set(array(
 						'player_name' => "$player[name]", 
 						'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
-						'team' => strtolower($player['team']), 
+						'team' => $team, 
 						'position' => $player['position'], 
 						'score' => ($player['score']+(1000*$player['penalties'])),
 						'shots_hit' => $player['shotsHit'],

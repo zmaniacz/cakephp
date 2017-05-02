@@ -6,8 +6,8 @@ if [ $# = 1 ]; then
 	echo "InputDirectory=$DIR/incoming/$1/
 OutputDirectory=$DIR/output/$1/
 baseKeyWords=Target,Base,Generator,Team,Mech,Reactor
-teamSectionKeyWords=team,army,marines,green,red,blue,base
-teamColorsKeyWords=green,red,blue" > LFScoreParser.properties
+teamSectionKeyWords=team,army,marines,green,red,blue,base,yellow
+teamColorsKeyWords=green,red,blue,yellow" > LFScoreParser.properties
 	mkdir -p output/$1/
 	mkdir -p pending/$1/
 	java -Xmx100M -jar LFScoreParser.jar
