@@ -81,6 +81,7 @@ class MigrateShell extends AppShell {
                         `penalty_score` int(11) NOT NULL DEFAULT '0',
                         `eliminated` tinyint(1) NOT NULL DEFAULT '0',
                         `eliminated_opponent` tinyint(1) NOT NULL DEFAULT '0',
+                        `winner` tinyint(1) NOT NULL DEFAULT '0',
                         `game_id` int(11) NOT NULL,
                         `event_team_id` int(11) DEFAULT NULL,
                         `created` datetime NULL DEFAULT NULL,
@@ -100,26 +101,30 @@ class MigrateShell extends AppShell {
         //select all the games with their red team data
         $games = $this->Game->find('all');
         foreach($games as $game) {
-            $teams = array(
-                array(
+            $red_team = array(
                     'color' => 'red',
                     'raw_score' => $game['Game']['red_score'],
                     'eliminated' => $game['Game']['red_eliminated'],
                     'eliminated_opponent' => $game['Game']['green_eliminated'],
                     'game_id' => $game['Game']['id'],
                     'event_team_id' => $game['Game']['red_team_id']
-                ),
-                array(
+            );
+            $green_team = array(
                     'color' => 'green',
                     'raw_score' => $game['Game']['green_score'],
                     'eliminated' => $game['Game']['green_eliminated'],
                     'eliminated_opponent' => $game['Game']['red_eliminated'],
                     'game_id' => $game['Game']['id'],
                     'event_team_id' => $game['Game']['green_team_id']
-                )
             );
 
-            $this->Team->saveMany($teams);
+            if($game['Game']['winner'] == 'red') {
+                $red_team['winner'] = 1;
+            } else {
+                $green_team['winner'] = 1;
+            }
+
+            $this->Team->saveMany(array($red_team,$green_team));
             $this->Team->clear();
         }
 
@@ -301,6 +306,14 @@ class MigrateShell extends AppShell {
     }
 
     public function step_9() {
+        $db = ConnectionManager::getDataSource('default');
+
+        $db->rawQuery("ALTER TABLE `scorecards`
+                        CHANGE COLUMN `team` `color` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL
+                    ");
+    }
+
+    public function vGames() {
         //create the vGames view
         $db = ConnectionManager::getDataSource('default');
         $db->rawQuery("CREATE OR REPLACE
