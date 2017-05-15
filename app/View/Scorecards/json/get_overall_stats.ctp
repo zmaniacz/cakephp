@@ -3,6 +3,8 @@
 	foreach ($response as $score) {
 		$data[] = array(	
 			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
+			'player_id' => $score['Player']['id'],
+			'player_name' => $score['Player']['player_name'],
 			'avg_score' => $score[0]['avg_score'],
 			'avg_mvp' =>  round($score[0]['avg_mvp'],2),
 			'avg_acc' => round($score[0]['avg_acc']*100,2),
