@@ -19,7 +19,21 @@ class Game extends AppModel {
 		'GameResult' => array(
 			'className' => 'GameResult',
 			'foreignKey' => 'game_id'
-		)
+		),
+		'TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignKey' => 'game_id'
+		),
+		'Red_TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Red_TeamPenalties.team_color' => 'red')
+		),
+		'Green_TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Green_TeamPenalties.team_color' => 'green')
+		),
 	);
 
 	public $belongsTo = array(
@@ -245,7 +259,8 @@ class Game extends AppModel {
 						'SUM(Green_Scorecard.score) as team_score',
 						'SUM(Green_Scorecard.team_elim) as total_elim'
 					)
-				)
+				),
+				'Match'
 			),
 			'conditions' => array(
 				'Game.id' => $id
@@ -312,6 +327,10 @@ class Game extends AppModel {
 		);
 		
 		$this->save($data);
+
+		if(isset($scores['Game']['Match']['id'])) {
+			$this->Game->Match->updatePoints($scores['Game']['Match']['id']);
+		}
 	}
 
 	public function getPrevNextGame($game_id) {

@@ -35,16 +35,17 @@
 					stacking: 'percent'
 				}
 			},
-			series: [{
-				name: 'Green Team',
-				color: 'green',
-				data: [<?= $green_data_string; ?>]
-			},
-			{
-				name: 'Red Team',
-				color: 'red',
-				data: [<?= $red_data_string; ?>]
-			}
+			series: [
+				{
+					name: 'Green Team',
+					color: 'green',
+					data: [<?= $green_data_string; ?>]
+				},
+				{
+					name: 'Red Team',
+					color: 'red',
+					data: [<?= $red_data_string; ?>]
+				}
 			]
 		});
 
@@ -83,7 +84,7 @@
 			]
 		});
 	});
-
+	
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
 		$('#breakdown_container').highcharts().reflow();
 	});
@@ -282,7 +283,16 @@
 			</div>
 			<div id="collapse_winner_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info"><?= "Score: ".$winner_score.$winner_adj; ?></h3>
+					<h3 class="text-info">
+						<?= "Score: ".$winner_score.$winner_adj; ?>
+						<span class="pull-right">
+						<?php
+							if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
+								echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], $game['Game']['winner']), array('class' => 'btn btn-warning'));
+							}
+						?>
+						</span>
+					</h3>
 				</div>
 				<div class="table-responsive">
 					<table class="gamelist table table-striped table-bordered table-hover table-condensed">
