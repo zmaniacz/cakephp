@@ -352,7 +352,7 @@
 						<span class="pull-right">
 							<?php
 								if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
-									echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], (($game['Game']['winner'] == 'red') ? 'red' : 'green')), array('class' => 'btn btn-warning'));
+									echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], (($game['Game']['winner'] == 'red') ? 'green' : 'red')), array('class' => 'btn btn-warning'));
 								}
 								if($game['Game']['winner'] == 'green') {
 									if(isset($game['Red_TeamPenalties'])) {
