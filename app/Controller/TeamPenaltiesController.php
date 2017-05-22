@@ -132,7 +132,7 @@ class TeamPenaltiesController extends AppController {
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $penalty['TeamPenalty']['game_id']));
 	}
 	
-	public function getPenalty($id) {
+	public function getTeamPenalty($id) {
 		$this->request->allowMethod('ajax');
 		$options = array('conditions' => array('TeamPenalty.' . $this->TeamPenalty->primaryKey => $id));
 		$this->TeamPenalty->contain(array('Game'));
