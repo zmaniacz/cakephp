@@ -262,7 +262,9 @@ class Game extends AppModel {
 						'SUM(Green_Scorecard.team_elim) as total_elim'
 					)
 				),
-				'Match'
+				'Match',
+				'Red_TeamPenalties',
+				'Green_TeamPenalties'
 			),
 			'conditions' => array(
 				'Game.id' => $id
@@ -286,9 +288,11 @@ class Game extends AppModel {
 		$elim_bonus = 10000;
 		$red_bonus = 0;
 		$red_pens = 0;
+		$red_team_pens = 0;
 		$red_elim = 0;
 		$green_bonus = 0;
 		$green_pens = 0;
+		$green_team_pens = 0;
 		$green_elim = 0;
 		$winner = 'green';
 		
@@ -303,6 +307,7 @@ class Game extends AppModel {
 			$green_elim = 1;
 		}
 		
+		//load personal penalties in
 		foreach($penalties['Scorecard'] as $penalty) {
 			if(!empty($penalty['Penalty'])) {
 				foreach($penalty['Penalty'] as $single_penalty) {
@@ -314,15 +319,33 @@ class Game extends AppModel {
 				}
 			}
 		}
+
+		//load team penalties in
+		foreach($scores['Red_TeamPenalties'] as $team_penalty) {
+			$red_team_pens += $team_penalty['value'];
+		}
+
+		foreach($scores['Green_TeamPenalties'] as $team_penalty) {
+			$green_team_pens += $team_penalty['value'];
+		}
 		
-		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'] + $red_bonus + $red_pens > $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'] + $green_bonus + $green_pens)
+		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'] + $red_bonus + $red_pens + $red_team_pens > $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'] + $green_bonus + $green_pens + $green_team_pens)
 			$winner = 'red';
+
+		//force an elim to equal a win
+		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['total_elim'] > 0) {
+			$winner = 'green';
+		}
+		
+		if($scores['Green_Scorecard'][0]['Green_Scorecard'][0]['total_elim'] > 0) {
+			$winner = 'red';
+		}
 			
 		$data = array('id' => $id,
 			'green_score' => $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'],
 			'red_score' => $scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'],
-			'red_adj' => $red_bonus + $red_pens,
-			'green_adj' => $green_bonus + $green_pens,
+			'red_adj' => $red_bonus + $red_pens + $red_team_pens,
+			'green_adj' => $green_bonus + $green_pens + $green_team_pens,
 			'red_eliminated' => $red_elim,
 			'green_eliminated' => $green_elim,
 			'winner' => $winner
