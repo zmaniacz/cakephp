@@ -101,7 +101,7 @@ class Match extends AppModel {
 				'Match.id' => $match_id
 			)
 		));
-		
+
 		$team_1_points = 0;
 		$team_2_points = 0;
 		
@@ -120,7 +120,7 @@ class Match extends AppModel {
 				$team_1_points += 2;
 			}
 		}
-			
+
 		//both games are logged
 		if(!empty($match['Game_1']['id']) && !empty($match['Game_2']['id'])) {
 			if($team_1_points == $team_2_points) {

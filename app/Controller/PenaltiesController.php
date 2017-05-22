@@ -87,10 +87,6 @@ class PenaltiesController extends AppController {
 				$this->Penalty->Scorecard->generateMVP();
 
 				$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
-
-				if(isset($scorecard['Game']['Match']['id'])) {
-					$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
-				}
 				
 				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 			} else {
@@ -132,10 +128,6 @@ class PenaltiesController extends AppController {
 				$this->Penalty->Scorecard->generateMVP();
 				
 				$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
-
-				if(isset($scorecard['Game']['Match']['id'])) {
-					$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
-				}
 				
 				$this->Session->setFlash(__('The penalty has been saved.'));
 				return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
@@ -190,9 +182,6 @@ class PenaltiesController extends AppController {
 		}
 		
 		$this->Penalty->Scorecard->Game->updateGameWinner($scorecard['Scorecard']['game_id']);
-		if(isset($scorecard['Game']['Match']['id'])) {
-			$this->Penalty->Scorecard->Game->Match->updatePoints($scorecard['Game']['Match']['id']);
-		}
 
 		return $this->redirect(array('controller' => 'Games', 'action' => 'view', $scorecard['Scorecard']['game_id']));
 	}

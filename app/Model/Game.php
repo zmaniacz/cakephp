@@ -352,9 +352,9 @@ class Game extends AppModel {
 		);
 		
 		$this->save($data);
-
-		if(isset($scores['Game']['Match']['id'])) {
-			$this->Game->Match->updatePoints($scores['Game']['Match']['id']);
+		
+		if(isset($scores['Match']['id'])) {
+			$this->Match->updatePoints($scores['Match']['id']);
 		}
 	}
 
