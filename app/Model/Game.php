@@ -137,7 +137,9 @@ class Game extends AppModel {
 						'AVG(accuracy) as accuracy',
 						'SUM(mvp_points) as mvp_points'
 					)
-				)
+				),
+				'Red_TeamPenalties',
+				'Green_TeamPenalties'
 			),
 			'conditions' => $conditions
 		));

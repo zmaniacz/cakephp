@@ -1,5 +1,6 @@
 <?= $this->Html->script('highcharts.js'); ?>
 <?= $this->Html->script('highcharts-more.js'); ?>
+<?php debug($game); ?>
 <?php
 	$green_data = $game["Green_Scorecard"][0]["Green_Scorecard"][0];
 	$green_data_string = $game["Game"]["green_score"]+$game["Game"]["green_adj"].",$green_data[hit_diff],$green_data[accuracy],$green_data[mvp_points],$green_data[medic_hits],$green_data[lives_left],$green_data[shots_left],$green_data[missile_hits],$green_data[nukes_detonated],$green_data[resupplies],$green_data[bases_destroyed]";
@@ -289,6 +290,19 @@
 						<?php
 							if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
 								echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], $game['Game']['winner']), array('class' => 'btn btn-warning'));
+							}
+							if($game['Game']['winner'] == 'green') {
+								if(isset($game['Green_TeamPenalties'])) {
+									foreach($game['Green_TeamPenalties'] as $team_penalty) {
+										echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+									}
+								}
+							} elseif($game['Game']['winner'] == 'red') {
+								if(isset($game['Red_TeamPenalties'])) {
+									foreach($game['Red_TeamPenalties'] as $team_penalty) {
+										echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+									}
+								}
 							}
 						?>
 						</span>
