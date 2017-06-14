@@ -248,11 +248,16 @@ class ScorecardsController extends AppController {
 	
 	public function ajax_switchSub($id) {
 		$this->request->onlyAllow('ajax');
-		$this->render(false);
-		
+
 		$scorecard = $this->Scorecard->read(null, $id);
-		$this->Scorecard->set('is_sub', (($scorecard['Scorecard']['is_sub']) ? 0 : 1) );
-		$this->Scorecard->save();
+
+		$is_sub = ($scorecard['Scorecard']['is_sub']) ? 0 : 1;
+		
+		$this->Scorecard->set('is_sub', $is_sub);
+		
+		if($this->Scorecard->save()) {
+			return new CakeResponse(array('body' => json_encode(array('id' => $id, 'is_sub' => $is_sub))));
+		}
 	}
 	
 	public function filterSub($showSubs = false) {
