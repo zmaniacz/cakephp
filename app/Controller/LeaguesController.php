@@ -46,6 +46,21 @@ class LeaguesController extends AppController {
 		$this->set('standings', $this->League->getTeamStandings($this->Session->read('state')));
 	}
 
+	public function ajax_assignTeam($match_id, $team_number, $team_id) {
+		$this->request->onlyAllow('ajax');
+
+		$match = $this->League->Round->Match->read(null, $match_id);
+		
+		if($team_number == 1)
+			$this->League->Round->Match->set('team_1_id', $team_id);
+		else
+			$this->League->Round->Match->set('team_2_id', $team_id);
+		
+		if($this->League->Round->Match->save()) {
+			return new CakeResponse(array('body' => json_encode(array('match_id' => $match_id, 'team_number' => $team_number, 'team_id' => $team_id))));
+		}
+	}
+
 /**
  * add method
  *

@@ -113,7 +113,7 @@ class League extends AppModel {
 		foreach($rounds['Round'] as $round) {
 			foreach($round['Match'] as $match) {
 				//Overall match points
-				if(!is_null($match['team_1_id']) || !is_null($match['team_2_id'])) {
+				if(isset($match['team_1_id']) && isset($match['team_2_id'])) {
 					$standings[$match['team_1_id']]['points'] += $match['team_1_points'];
 					$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
 					

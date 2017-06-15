@@ -77,15 +77,8 @@
 									</h4>
 								</div>
 								<div class="panel-body">
-									<?php
-										if(AuthComponent::user('role') === 'admin') {
-											echo $this->Form->create('Match', array('url' => array('controller' => 'leagues', 'action' => 'editMatch', $match['id'])));
-											echo $this->Form->hidden('Match.id', array('value' => $match['id']));
-											echo $this->Form->hidden('Match.round_id', array('value' => $match['round_id']));
-										}
-									?>
 								</div>
-																	<div class="table-responsive">
+									<div class="table-responsive">
 										<table class="table table-striped table-bordered table-hover table-condensed" id="match<?= $match['id']; ?>">
 											<thead>
 												<th class="col-xs-4">Team</th>
@@ -99,7 +92,21 @@
 													<td>
 													<?php
 														if(AuthComponent::user('role') === 'admin') {
-															echo $this->Form->input('team_1_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $match['team_1_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+															echo "<select id=\"Match{$match['match']}Team1\" 
+																	class=\"match-select form-control\" 
+																	data-match-id={$match['id']}
+																	data-match-number={$match['match']}
+																	data-round-id={$match['round_id']}
+																	data-team=1
+																	>";
+															echo "<option value=\"\">Select a team</option>";
+															foreach($teams as $key => $value) {
+																if($key == $match['team_1_id'])
+																	echo "<option value=\"$key\" selected>$value</option>";
+																else
+																	echo "<option value=\"$key\">$value</option>";
+															}
+															echo "</select>";
 														} else {
 															echo (is_null($match['team_1_id'])) ? "TBD" : $this->Html->link($teams[$match['team_1_id']], array('controller' => 'teams', 'action' => 'view', $match['team_1_id']), array('class' => 'btn btn-block btn-info'));
 														}
@@ -114,7 +121,21 @@
 													<td>
 													<?php
 														if(AuthComponent::user('role') === 'admin') {
-															echo $this->Form->input('team_2_id', array('type' => 'select', 'options' => $teams, 'empty' => 'Select a team', 'selected' => $match['team_2_id'], 'class' => 'form-control', 'div' => array('class' => 'form-group')));
+															echo "<select id=\"Match{$match['match']}Team2\" 
+																	class=\"match-select form-control\" 
+																	data-match-id={$match['id']}
+																	data-match-number={$match['match']}
+																	data-round-id={$match['round_id']}
+																	data-team=2
+																	>";
+															echo "<option value=\"\">Select a team</option>";
+															foreach($teams as $key => $value) {
+																if($key == $match['team_2_id'])
+																	echo "<option value=\"$key\" selected>$value</option>";
+																else
+																	echo "<option value=\"$key\">$value</option>";
+															}
+															echo "</select>";
 														} else {
 															echo (is_null($match['team_2_id'])) ? "TBD" : $this->Html->link($teams[$match['team_2_id']], array('controller' => 'teams', 'action' => 'view', $match['team_2_id']), array('class' => 'btn btn-block btn-info'));
 														}
@@ -128,11 +149,6 @@
 											</tbody>
 										</table>
 									</div>
-									<?php
-										if(AuthComponent::user('role') === 'admin') {
-											echo $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-warning'));
-										}
-									?>
 							</div>
 						<?php } ?>
 					</div>
@@ -142,5 +158,33 @@
 	</div>
 </div>
 <script>
+	$('.match-select').change(function() {
+		toastr.options = {
+			"closeButton": false,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-top-full-width",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "3000",
+			"extendedTimeOut": "1000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "slideDown",
+			"hideMethod": "slideUp"
+		}
+		$.ajax({
+			url: "/leagues/ajax_assignTeam/"+$(this).data('matchId')+"/"+$(this).data('team')+"/"+$(this).val()+".json",
+			success: function(data) {
+				toastr.success('Assigned Team')
+			},
+			error: function(data) {
+				toastr.error('Assignment Failed')
+			}
+		});
+	});
 	$('#round_tabs a:first').tab('show')
 </script>
