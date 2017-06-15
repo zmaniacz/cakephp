@@ -97,7 +97,7 @@
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('ECT 6', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 13, 'centerID' => 8))); ?></li>
+                                <li><?= $this->Html->link('Internat 2017', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 16, 'centerID' => 14))); ?></li>
 								<!--<li><?= $this->Html->link('WCT 4 Finals', array('controller' => 'pages', 'action' => 'wct4Bracket', '?' => array('gametype' => 'league', 'leagueID' => 12, 'centerID' => 14))); ?></li>-->
 								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>

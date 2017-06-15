@@ -33,6 +33,7 @@
 	Router::connect('/internationals-2014', array('controller' => 'scorecards', 'action' => 'setState', 'league', 7, 5));
 	Router::connect('/internationals-2015', array('controller' => 'scorecards', 'action' => 'setState', 'league', 8, 10));
 	Router::connect('/nats2016', array('controller' => 'scorecards', 'action' => 'setState', 'league', 10, 8));
+	Router::connect('/internats2017', array('controller' => 'scorecards', 'action' => 'setState', 'league', 16, 14));
 	Router::parseExtensions();
 
 /**
