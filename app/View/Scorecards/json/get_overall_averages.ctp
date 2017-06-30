@@ -7,6 +7,7 @@
 			'player_id' => $key,
 			'player_name' => $value['player_name'],
 			'avg_avg_mvp' => round($value['avg_avg_mvp'],2),
+			'total_mvp' => round($value['total_mvp'],2),
 			'avg_avg_acc' => round($value['avg_avg_acc']*100,2),
 			'total_games_won' => round($value['total_games_won'],2),
 			'total_games_played' => round($value['total_games'],2),

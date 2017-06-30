@@ -615,6 +615,7 @@ class Scorecard extends AppModel {
 			'fields' => array(
 				'Scorecard.player_id',
 				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'SUM(Scorecard.mvp_points) as total_mvp',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'COUNT(Scorecard.game_datetime) as games_played',
 				'SUM(GameResult.won) as games_won' 
@@ -643,6 +644,7 @@ class Scorecard extends AppModel {
 			}
 			
 			$results[$player['Scorecard']['player_id']]['avg_avg_mvp'] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']]['total_mvp'] = $player[0]['total_mvp'];
 			$results[$player['Scorecard']['player_id']]['avg_avg_acc'] = $player[0]['avg_acc'];
 			$results[$player['Scorecard']['player_id']]['total_games_won'] = $player[0]['games_won'];
 			$results[$player['Scorecard']['player_id']]['total_games'] = $player[0]['games_played'];
