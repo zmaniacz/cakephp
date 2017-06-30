@@ -7,7 +7,7 @@
 	<div id="collapse_standings" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
 			<?php 
-				if(AuthComponent::user('role') === 'admin')
+				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
 					echo $this->Html->link('New Team', array('controller' => 'leagues', 'action' => 'addTeam'), array('class' => 'btn btn-success'));
 			?>
 		</div>
@@ -59,14 +59,14 @@
 	<div id="collapse_rounds" class="panel-collapse collapse in" role="tabpanel">
 		<div class="panel-body">
 			<?php 
-				if(AuthComponent::user('role') === 'admin')
+				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
 					echo $this->Html->link('Add Round', array('controller' => 'leagues', 'action' => 'addRound'), array('class' => 'btn btn-success'));
 			?>
 			<div class="tab-content">
 				<?php foreach($details['Round'] as $round) { ?>
 					<div class="tab-pane" id="round<?= $round['id']; ?>">
 						<?php 
-							if(AuthComponent::user('role') === 'admin')
+							if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
 								echo $this->Html->link('Add Match', array('controller' => 'leagues', 'action' => 'addMatch', $details['League']['id'], $round['id']), array('class' => 'btn btn-success'));
 						?>
 						<?php foreach($round['Match'] as $match) { ?>
@@ -91,7 +91,7 @@
 												<tr>
 													<td>
 													<?php
-														if(AuthComponent::user('role') === 'admin') {
+														if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
 															echo "<select id=\"Match{$match['match']}Team1\" 
 																	class=\"match-select form-control\" 
 																	data-match-id={$match['id']}
@@ -120,7 +120,7 @@
 												<tr>
 													<td>
 													<?php
-														if(AuthComponent::user('role') === 'admin') {
+														if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
 															echo "<select id=\"Match{$match['match']}Team2\" 
 																	class=\"match-select form-control\" 
 																	data-match-id={$match['id']}
