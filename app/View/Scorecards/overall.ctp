@@ -77,9 +77,9 @@
 			]
 		} );
 		
-		$('#commander_overall_table').DataTable( {
+		var commander_overall_table = $('#commander_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[3, "desc"]],
+			"order": [[4, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'commander', 'ext' => 'json'))); ?>"
 			},
@@ -95,7 +95,9 @@
 					}
 				},
 				{ "data" : "avg_score" },
+				{ "data" : "total_score" },
 				{ "data" : "avg_mvp" },
+				{ "data" : "total_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "nuke_ratio" },
 				{ "data" : "hit_diff" },
@@ -104,9 +106,9 @@
 			]
 		});
 		
-		$('#heavy_overall_table').DataTable( {
+		var heavy_overall_table = $('#heavy_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[3, "desc"]],
+			"order": [[4, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'heavy', 'ext' => 'json'))); ?>"
 			},
@@ -122,7 +124,9 @@
 					}
 				},
 				{ "data" : "avg_score" },
+				{ "data" : "total_score" },
 				{ "data" : "avg_mvp" },
+				{ "data" : "total_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_missiles" },
@@ -130,9 +134,9 @@
 			]
 		});
 		
-		$('#scout_overall_table').DataTable( {
+		var scout_overall_table = $('#scout_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[3, "desc"]],
+			"order": [[4, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'scout', 'ext' => 'json'))); ?>"
 			},
@@ -148,7 +152,9 @@
 					}
 				},
 				{ "data" : "avg_score" },
+				{ "data" : "total_score" },
 				{ "data" : "avg_mvp" },
+				{ "data" : "total_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_3hit" },
@@ -156,9 +162,9 @@
 			]
 		});
 		
-		$('#ammo_overall_table').DataTable( {
+		var ammo_overall_table = $('#ammo_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[3, "desc"]],
+			"order": [[4, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ammo', 'ext' => 'json'))); ?>"
 			},
@@ -174,7 +180,9 @@
 					}
 				},
 				{ "data" : "avg_score" },
+				{ "data" : "total_score" },
 				{ "data" : "avg_mvp" },
+				{ "data" : "total_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_ammo_boost" },
@@ -182,9 +190,9 @@
 			]
 		});
 		
-		$('#medic_overall_table').DataTable( {
+		var medic_overall_table = $('#medic_overall_table').DataTable( {
 			"deferRender" : true,
-			"order": [[3, "desc"]],
+			"order": [[4, "desc"]],
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'medic', 'ext' => 'json'))); ?>"
 			},
@@ -200,7 +208,9 @@
 					}
 				},
 				{ "data" : "avg_score" },
+				{ "data" : "total_score" },
 				{ "data" : "avg_mvp" },
+				{ "data" : "total_mvp" },
 				{ "data" : "avg_acc" },
 				{ "data" : "hit_diff" },
 				{ "data" : "avg_life_boost" },
@@ -225,6 +235,17 @@
 				{ "data" : "non_resup_medic_hits_per_game" },
 				{ "data" : "non_resup_games_played" }
 			]
+		});
+
+		$('.btn-toggle').click(function() {
+    		$(this).find('.btn').toggleClass('active');  
+    
+			if ($(this).find('.btn-primary').size()>0) {
+				$(this).find('.btn').toggleClass('btn-primary');
+			}
+			
+			$(this).find('.btn').toggleClass('btn-default');
+       
 		});
 	} );
 </script>
@@ -293,6 +314,14 @@
 		</h4>
 	</div>
 	<div id="collapse_commander" class="panel-collapse collapse in" role="tabpanel">
+		<ul class="list-inline">
+			<li>
+				<div class="btn-group btn-toggle"> 
+					<button class="btn btn-xs btn-primary active">Average</button>
+					<button class="btn btn-xs btn-default">Total</button>
+				</div>
+			</li>
+		</ul>
 		<div class="panel-body">
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-hover" id="commander_overall_table">
@@ -301,7 +330,9 @@
 							<th>Name</th>
 							<th>Win Rate</th>
 							<th>Average Score</th>
-							<th>Average MVP Points</th>
+							<th>Total Score</th>
+							<th>Average MVP</th>
+							<th>Total MVP</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Nuke Success Ratio</th>
 							<th>Hit Differential</th>
@@ -329,7 +360,9 @@
 							<th>Name</th>
 							<th>Win Rate</th>
 							<th>Average Score</th>
-							<th>Average MVP Points</th>
+							<th>Total Score</th>
+							<th>Average MVP</th>
+							<th>Total MVP</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average Missiles</th>
@@ -356,7 +389,9 @@
 							<th>Name</th>
 							<th>Win Rate</th>
 							<th>Average Score</th>
-							<th>Average MVP Points</th>
+							<th>Total Score</th>
+							<th>Average MVP</th>
+							<th>Total MVP</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average 3Hit Hits</th>
@@ -383,7 +418,9 @@
 							<th>Name</th>
 							<th>Win Rate</th>
 							<th>Average Score</th>
-							<th>Average MVP Points</th>
+							<th>Total Score</th>
+							<th>Average MVP</th>
+							<th>Total MVP</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average Boosts</th>
@@ -410,7 +447,9 @@
 							<th>Name</th>
 							<th>Win Rate</th>
 							<th>Average Score</th>
-							<th>Average MVP Points</th>
+							<th>Total Score</th>
+							<th>Average MVP</th>
+							<th>Total MVP</th>
 							<th class="accuracy">Average Accuracy</th>
 							<th>Hit Differential</th>
 							<th>Average Boosts</th>
