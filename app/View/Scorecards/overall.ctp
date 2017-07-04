@@ -286,7 +286,7 @@
 			noUiSlider.create(slider, {
 				start: 50,
 				connect: [true, false],
-				step: 10,
+				step: 1,
 				range: {
 					'min': 0,
 					'max': 100
