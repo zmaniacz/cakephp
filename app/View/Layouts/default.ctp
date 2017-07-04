@@ -27,9 +27,11 @@
 		echo $this->Html->script('//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js');
 		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
 		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js');
+		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.js');
 		echo $this->Html->css('bootstrap.min.css');
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
+		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.css');
 		echo $this->Html->css('laserforce');
 	?>
 	<meta name="viewport" content="width=device-width, initial-scale=1">

@@ -1,20 +1,20 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#overall_averages_table').DataTable( {
+		var min = 0
+
+		var overall_data
+		var overall_table = $('#overall_averages_table').DataTable( {
 			"deferRender" : true,
 			"order": [[1, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallAverages', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name", },
 				{ "data" : "avg_avg_mvp" },
 				{ "data" : "total_mvp" },
 				{ "data" : "avg_avg_acc" },
 				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.total_games_won/row.total_games_played) * 100);
+						var ratio = Math.round((row.games_won/row.games_played) * 100);
 						if (type === 'display') {
-							return ratio+'% ('+row.total_games_won+'/'+row.total_games_played+')';
+							return ratio+'% ('+row.games_won+'/'+row.games_played+')';
 						}
 						
 						return ratio;
@@ -78,12 +78,10 @@
 			]
 		} );
 		
+		var commander_overall_data
 		var commander_overall_table = $('#commander_overall_table').DataTable( {
 			"deferRender" : true,
 			"order": [[4, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'commander', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name" },
 				{ "data" : function ( row, type, val, meta ) {
@@ -107,12 +105,10 @@
 			]
 		});
 		
+		var heavy_overall_data
 		var heavy_overall_table = $('#heavy_overall_table').DataTable( {
 			"deferRender" : true,
 			"order": [[4, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'heavy', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name" },
 				{ "data" : function ( row, type, val, meta ) {
@@ -135,12 +131,10 @@
 			]
 		});
 		
+		var scout_overall_data
 		var scout_overall_table = $('#scout_overall_table').DataTable( {
 			"deferRender" : true,
 			"order": [[4, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'scout', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name" },
 				{ "data" : function ( row, type, val, meta ) {
@@ -163,12 +157,10 @@
 			]
 		});
 		
+		var ammo_overall_data
 		var ammo_overall_table = $('#ammo_overall_table').DataTable( {
 			"deferRender" : true,
 			"order": [[4, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ammo', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name" },
 				{ "data" : function ( row, type, val, meta ) {
@@ -191,12 +183,10 @@
 			]
 		});
 		
+		var medic_overall_data
 		var medic_overall_table = $('#medic_overall_table').DataTable( {
 			"deferRender" : true,
 			"order": [[4, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'medic', 'ext' => 'json'))); ?>"
-			},
 			"columns" : [
 				{ "data" : "name" },
 				{ "data" : function ( row, type, val, meta ) {
@@ -221,7 +211,8 @@
 			]
 		});
 		
-		$('#overall_medic_hits_table').DataTable( {
+		var overall_medic_hits_data
+		var overall_medic_hits_table = $('#overall_medic_hits_table').DataTable( {
 			"deferRender" : true,
 			"order": [[1, "desc"]],
 			"ajax" : {
@@ -238,6 +229,87 @@
 			]
 		});
 
+		function update_table(table, filter, data) {
+			table.clear()
+			table.rows.add(data.filter(function(row) {
+				return row.games_played >= filter
+			})).draw()
+		}
+
+		//AJAX calls to fetch raw datasets for the datatables
+		$.ajax({
+			"url": "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallAverages', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			overall_data = response.data
+			update_table(overall_table, min, overall_data)
+		})
+
+		$.ajax({
+			"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'commander', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			commander_overall_data = response.data
+			update_table(commander_overall_table, min, commander_overall_data)
+		})
+
+		$.ajax({
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'heavy', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			heavy_overall_data = response.data
+			update_table(heavy_overall_table, min, heavy_overall_data)
+		})
+
+		$.ajax({
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'scout', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			scout_overall_data = response.data
+			update_table(scout_overall_table, min, scout_overall_data)
+		})
+
+		$.ajax({
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ammo', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			ammo_overall_data = response.data
+			update_table(ammo_overall_table, min, ammo_overall_data)
+		})
+
+		$.ajax({
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'medic', 'ext' => 'json'))); ?>"
+		}).done(function(response) {
+			medic_overall_data = response.data
+			update_table(medic_overall_table, min, medic_overall_data)
+		})
+
+		//Init the slider to set the terms for the ajax filtering
+		if($("#min_games_slider").length) {
+			var slider = document.getElementById("min_games_slider")
+
+			noUiSlider.create(slider, {
+				start: 50,
+				connect: [true, false],
+				step: 10,
+				range: {
+					'min': 0,
+					'max': 100
+				}
+			});
+
+			slider.noUiSlider.on('update', function(values, handle, unencoded) {
+				min = unencoded
+				$("#min_games_slider_value").text(min)
+			})
+
+			slider.noUiSlider.on('end', function(values, handle, unencoded) {
+				update_table(overall_table, min, overall_data)
+				update_table(commander_overall_table, min, commander_overall_data)
+				update_table(heavy_overall_table, min, heavy_overall_data)
+				update_table(scout_overall_table, min, scout_overall_data)
+				update_table(ammo_overall_table, min, ammo_overall_data)
+				update_table(medic_overall_table, min, medic_overall_data)
+			})
+
+						
+		}
+
 		$('.btn-toggle').click(function() {
     		$(this).find('.btn').toggleClass('active');  
     
@@ -250,18 +322,27 @@
 		});
 	} );
 </script>
-<?php if($this->Session->read('state.gametype') == 'league'): ?>
-	<form class="form-inline">
-		<div class="checkbox">
-			<label for="rounds_cbox">Show Rounds</label>
-			<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>
-			<label for="finals_cbox">Show Finals</label>
-			<input type="checkbox" id="finals_cbox" <?= (($this->Session->read('state.show_finals') == 'true') ? "checked" : "")?>>
-			<label for="sub_cbox">Show Subs</label>
-			<input type="checkbox" id="sub_cbox" <?= (($this->Session->read('state.show_subs') == 'true') ? "checked" : "")?>>
+<div class="row" style="position: sticky; top: 45px; z-index: 500">
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<?php if($this->Session->read('state.gametype') == 'league'): ?>
+				<form class="form-inline">
+					<div class="checkbox">
+						<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>
+						<label for="rounds_cbox">Show Rounds</label>
+						<input type="checkbox" id="finals_cbox" <?= (($this->Session->read('state.show_finals') == 'true') ? "checked" : "")?>>
+						<label for="finals_cbox">Show Finals</label>
+						<input type="checkbox" id="sub_cbox" <?= (($this->Session->read('state.show_subs') == 'true') ? "checked" : "")?>>
+						<label for="sub_cbox">Show Subs</label>
+					</div>
+				</form>
+			<?php else: ?>
+				<p>Min Games: <span id="min_games_slider_value"></span></p>
+				<div id="min_games_slider" class="col-xs-4"></div>
+			<?php endif; ?>
 		</div>
-	</form>
-<?php endif; ?>
+	</div>
+</div>
 <div id="overall" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#overall" data-target="#collapse_overall" role="tab" id="overall_heading">
 		<h4 class="panel-title">
@@ -316,14 +397,14 @@
 		</h4>
 	</div>
 	<div id="collapse_commander" class="panel-collapse collapse in" role="tabpanel">
-		<ul class="list-inline">
+		<!--<ul class="list-inline">
 			<li>
 				<div class="btn-group btn-toggle"> 
 					<button class="btn btn-xs btn-primary active">Average</button>
 					<button class="btn btn-xs btn-default">Total</button>
 				</div>
 			</li>
-		</ul>
+		</ul>-->
 		<div class="panel-body">
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-hover" id="commander_overall_table">
