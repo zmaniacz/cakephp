@@ -309,22 +309,11 @@
 
 						
 		}
-
-		$('.btn-toggle').click(function() {
-    		$(this).find('.btn').toggleClass('active');  
-    
-			if ($(this).find('.btn-primary').size()>0) {
-				$(this).find('.btn').toggleClass('btn-primary');
-			}
-			
-			$(this).find('.btn').toggleClass('btn-default');
-       
-		});
 	} );
 </script>
-<div class="row" style="position: sticky; top: 45px; z-index: 500">
+<div style="position: sticky; top: 45px; z-index: 1">
 	<div class="panel panel-info">
-		<div class="panel-body">
+		<div class="panel-body bg-info">
 			<?php if($this->Session->read('state.gametype') == 'league'): ?>
 				<form class="form-inline">
 					<div class="checkbox">
@@ -338,7 +327,7 @@
 				</form>
 			<?php else: ?>
 				<p>Min Games: <span id="min_games_slider_value"></span></p>
-				<div id="min_games_slider" class="col-xs-4"></div>
+				<div class="col-xs-4"><div id="min_games_slider"></div></div>
 			<?php endif; ?>
 		</div>
 	</div>
