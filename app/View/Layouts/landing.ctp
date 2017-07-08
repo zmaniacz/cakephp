@@ -86,6 +86,8 @@
 					</div>
 				</nav>
 			<div id="content">
+				<div class="row"><div class="col-xs-4 col-xs-offset-4"><?= $this->Html->link('Internats 2017', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 16, 'centerID' => 14)), array('class' => 'btn btn-block btn-primary')); ?></div></div>
+				<br />
 				<?php echo $this->Session->flash(); ?>
 				<?php echo $this->fetch('content'); ?>
 			</div>
