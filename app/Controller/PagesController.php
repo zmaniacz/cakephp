@@ -97,4 +97,8 @@ class PagesController extends AppController {
 	public function wct4Bracket() {
 		//
 	}
+
+	public function internats2017Bracket() {
+		//
+	}
 }
