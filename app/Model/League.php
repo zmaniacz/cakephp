@@ -101,12 +101,12 @@ class League extends AppModel {
 			'conditions' => array('id' => $state['leagueID'])
 		));
 		
-		$teams = $this->Team->find('list', array('conditions' => array('Team.league_id' => $state['leagueID'])));
+		$teams = $this->Team->find('all', array('conditions' => array('Team.league_id' => $state['leagueID'])));
 		
 		$standings = array();
 		
-		foreach($teams as $id => $name) {
-			$standings[$id] = array('id' => $id, 'name' => $name, 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_played' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
+		foreach($teams as $team) {
+			$standings[$team['Team']['id']] = array('id' => $team['Team']['id'], 'name' => $team['Team']['name'], 'country_code' => $team['Team']['country_code'], 'points' => 0, 'played' => 0, 'won' => 0, 'lost' => 0, 'matches_played' => 0, 'matches_won' => 0, 'elims' => 0, 'for' => 0, 'against' => 0, 'ratio' => 0);
 		}
 		
 		
