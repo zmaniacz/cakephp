@@ -32,8 +32,7 @@
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
 		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.css');
-		echo $this->Html->css('flag-icon.min.css');
-		echo $this->Html->css('laserforce.css');
+		echo $this->Html->css('laserforce');
 	?>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>

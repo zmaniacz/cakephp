@@ -1,8 +1,7 @@
-
 <div id="top_accordion" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#top_accordion" data-target="#collapse_standings" role="tab" id="standings_heading">
 		<h4 class="panel-title">
-			Team Standings<span class="f32 flag us"></span>
+			Team Standings
 		</h4>
 	</div>
 	<div id="collapse_standings" class="panel-collapse collapse in" role="tabpanel">
@@ -26,15 +25,8 @@
 				</thead>
 				<tbody>
 					<?php foreach($standings as $team): ?>
-					<?php
-						$display_class = "btn btn-block btn-info";
-						if(isset($team['country_code']))
-							$display_class .= ' flag-icon-background flag-icon-'.$team['country_code'];
-					?>
 					<tr>
-						<td>
-							<?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => $display_class)); ?>
-						</td>
+						<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
 						<td><?= $team['points']; ?></td>
 						<td><?= $team['matches_won']; ?> / <?= $team['matches_played']; ?></td>
 						<td><?= $team['won']; ?> / <?= $team['played']; ?></td>
