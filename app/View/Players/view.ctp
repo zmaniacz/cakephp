@@ -943,6 +943,23 @@ $(document).ready(function(){
 		],
 		"order": [[ 1, "desc" ]]
 	});
+
+	var headToHeadTable = $('#head_to_head').DataTable( {
+		"deferRender" : true,
+		"ajax" : {
+			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'getPlayerHitBreakdown', $id, 'ext' => 'json'))); ?>"
+		},
+		"columns" : [
+			{ "data" : "name" },
+			{ "data" : "hits" },
+			{ "data" : "hit_by" },
+			{ "data" : "hit_ratio" },
+			{ "data" : "missiles" },
+			{ "data" : "missile_by" },
+			{ "data" : "missile_ratio" }
+		],
+		"order": [[ 1, "desc" ]]
+	});
 });
 </script>
 <h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
@@ -966,6 +983,7 @@ $(document).ready(function(){
 <ul class="nav nav-tabs" role="tablist" id="myTab">
 	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
 	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
+	<li role="presentation"><a href="#head_to_head_tab" role="tab" data-toggle="tab">Head To Head</a></li>
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
@@ -1042,5 +1060,22 @@ $(document).ready(function(){
 		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
 		<br />
 		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
+		<div class="table-responsive">
+			<table id="head_to_head" class="table table-striped table-hover table-border table-condensed">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Shot</th>
+						<th>Shot By</th>
+						<th>Shot Ratio</th>
+						<th>Missiles</th>
+						<th>Missiled By</th>
+						<th>Missile Ratio</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</div>
 </div>
