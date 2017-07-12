@@ -9,7 +9,7 @@ class LeaguesController extends AppController {
 	public $uses = array('League','Scorecard','Game');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails');
 		parent::beforeFilter();
 	}
 
@@ -59,6 +59,10 @@ class LeaguesController extends AppController {
 		if($this->League->Round->Match->save()) {
 			return new CakeResponse(array('body' => json_encode(array('match_id' => $match_id, 'team_number' => $team_number, 'team_id' => $team_id))));
 		}
+	}
+
+	public function ajax_getMatchDetails($match_id) {
+		$this->set('match', $this->League->Round->Match->findById($match_id));
 	}
 
 /**

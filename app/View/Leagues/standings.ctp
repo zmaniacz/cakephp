@@ -16,30 +16,154 @@
 				<thead>
 					<th class="col-xs-2">Team</th>
 					<th class="col-xs-1">Points</th>
-					<th class="col-xs-1">Matches Won/Played</th>
-					<th class="col-xs-1">Games Won/Played</th>
+					<th class="col-xs-1">Matches Won-Lost</th>
+					<th class="col-xs-1">Games Won-Lost</th>
 					<th class="col-xs-1">Eliminations</th>
-					<th class="col-xs-1">For</th>
-					<th class="col-xs-1">Against</th>
-					<th class="col-xs-1">Ratio</th>
+					<th class="col-xs-1">Score Ratio</th>
 				</thead>
 				<tbody>
 					<?php foreach($standings as $team): ?>
 					<tr>
 						<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
-						<td><?= $team['points']; ?></td>
-						<td><?= $team['matches_won']; ?> / <?= $team['matches_played']; ?></td>
-						<td><?= $team['won']; ?> / <?= $team['played']; ?></td>
-						<td><?= $team['elims']; ?></td>
-						<td><?= $team['for']; ?></td>
-						<td><?= $team['against']; ?></td>
-						<td><?= round($team['ratio'], 2); ?></td>
+						<td class="text-center"><?= $team['points']; ?></td>
+						<td class="text-center"><?= $team['matches_won']; ?> - <?= $team['matches_played']-$team['matches_won']; ?></td>
+						<td class="text-center"><?= $team['won']; ?> - <?= $team['played']-$team['won']; ?></td>
+						<td class="text-center"><?= $team['elims']; ?></td>
+						<td class="text-center"><?= round($team['ratio'], 2); ?> (<?= number_format($team['for']); ?>/<?= number_format($team['against']); ?>)</td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
 	</div>
+</div>
+<div>
+	<?php foreach($details['Round'] as $round): ?>
+		<div class="page-header">
+			<h3><?= (($round['is_finals']) ? "Finals" : "Round ".$round['round']); ?></h3>
+		</div>
+		<div class="row">
+		<?php foreach($round['Match'] as $match): ?>
+			<div class="col-md-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#matchModal" target="<?= $this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getMatchDetails', $match['id'], 'ext' => 'json')); ?>">>>></button>
+						<h5><?= (($round['is_finals']) ? "Finals" : "R".$round['round'])." M".$match['match']; ?></h5>
+					</div>
+					<div class="panel-body">
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th>Team</th>
+									<th>Game 1</th>
+									<th>Game 2</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<?php
+											if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
+												echo "<select id=\"Match{$match['match']}Team1\" 
+														class=\"match-select form-control\" 
+														data-match-id={$match['id']}
+														data-match-number={$match['match']}
+														data-round-id={$match['round_id']}
+														data-team=1
+														>";
+												echo "<option value=\"\">Select a team</option>";
+												foreach($teams as $key => $value) {
+													if($key == $match['team_1_id'])
+														echo "<option value=\"$key\" selected>$value</option>";
+													else
+														echo "<option value=\"$key\">$value</option>";
+												}
+												echo "</select>";
+											} else {
+												echo (is_null($match['team_1_id'])) ? "TBD" : $this->Html->link($teams[$match['team_1_id']], array('controller' => 'teams', 'action' => 'view', $match['team_1_id']));
+											}
+
+											if(!empty($match['Game_1']) && !empty($match['Game_2']) && $match['team_1_points'] > $match['team_2_points'])
+												echo " <span class=\"glyphicon glyphicon-star text-warning\"></span>";
+										?>
+									</td>
+									<td class="text-center">
+										<?php 
+											if(!empty($match['Game_1'])) {
+												if( ($match['Game_1']['winner'] == 'red' && $match['team_1_id'] == $match['Game_1']['red_team_id']) || ($match['Game_1']['winner'] == 'green' && $match['team_1_id'] == $match['Game_1']['green_team_id']))
+													echo "<span class=\"glyphicon glyphicon-ok text-success\"></span>";
+												else
+													echo "<span class=\"glyphicon glyphicon-remove text-danger\"></span>";
+											}
+										?>
+									</td>
+									<td class="text-center">
+										<?php 
+											if(!empty($match['Game_2'])) {
+												if( ($match['Game_2']['winner'] == 'red' && $match['team_1_id'] == $match['Game_2']['red_team_id']) || ($match['Game_2']['winner'] == 'green' && $match['team_1_id'] == $match['Game_2']['green_team_id']))
+													echo "<span class=\"glyphicon glyphicon-ok text-success\"></span>";
+												else
+													echo "<span class=\"glyphicon glyphicon-remove text-danger\"></span>";
+											}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<?php
+											if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
+												echo "<select id=\"Match{$match['match']}Team2\" 
+														class=\"match-select form-control\" 
+														data-match-id={$match['id']}
+														data-match-number={$match['match']}
+														data-round-id={$match['round_id']}
+														data-team=2
+														>";
+												echo "<option value=\"\">Select a team</option>";
+												foreach($teams as $key => $value) {
+													if($key == $match['team_2_id'])
+														echo "<option value=\"$key\" selected>$value</option>";
+													else
+														echo "<option value=\"$key\">$value</option>";
+												}
+												echo "</select>";
+											} else {
+												echo (is_null($match['team_2_id'])) ? "TBD" : $this->Html->link($teams[$match['team_2_id']], array('controller' => 'teams', 'action' => 'view', $match['team_2_id']));
+											}
+
+											if(!empty($match['Game_1']) && !empty($match['Game_2']) && $match['team_2_points'] > $match['team_1_points'])
+												echo " <span class=\"glyphicon glyphicon-star text-warning\"></span>";
+										?>
+									</td>
+									<td class="text-center">
+										<?php 
+											if(!empty($match['Game_1'])) {
+												if( ($match['Game_1']['winner'] == 'red' && $match['team_2_id'] == $match['Game_1']['red_team_id']) || ($match['Game_1']['winner'] == 'green' && $match['team_2_id'] == $match['Game_1']['green_team_id']))
+													echo "<span class=\"glyphicon glyphicon-ok text-success\"></span>";
+												else
+													echo "<span class=\"glyphicon glyphicon-remove text-danger\"></span>";
+											}
+										?>
+									</td>
+									<td class="text-center">
+										<?php 
+											if(!empty($match['Game_1'])) {
+												if( ($match['Game_2']['winner'] == 'red' && $match['team_2_id'] == $match['Game_2']['red_team_id']) || ($match['Game_2']['winner'] == 'green' && $match['team_2_id'] == $match['Game_2']['green_team_id']))
+													echo "<span class=\"glyphicon glyphicon-ok text-success\"></span>";
+												else
+													echo "<span class=\"glyphicon glyphicon-remove text-danger\"></span>";
+											}
+										?>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<?php endforeach; ?>
+		</div>
+	<?php endforeach; ?>
 </div>
 <ul class="nav nav-tabs" id="round_tabs">
 	<?php foreach($details['Round'] as $round): ?>
