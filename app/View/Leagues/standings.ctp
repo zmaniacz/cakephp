@@ -38,13 +38,14 @@
 	</div>
 </div>
 <div>
+	<input class="pull-right" type="text" id="search-criteria" placeholder="Search Matches..." />
 	<?php foreach($details['Round'] as $round): ?>
 		<div class="page-header">
 			<h3><?= (($round['is_finals']) ? "Finals" : "Round ".$round['round']); ?></h3>
 		</div>
 		<div class="row">
 		<?php foreach($round['Match'] as $match): ?>
-			<div class="col-md-4">
+			<div class="col-md-4 match-panel">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#matchModal" target="<?= $this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getMatchDetails', $match['id'], 'ext' => 'json')); ?>">>>></button>
@@ -192,6 +193,16 @@
 			error: function(data) {
 				toastr.error('Assignment Failed')
 			}
+		});
+	});
+
+	$('#search-criteria').keyup(function(){
+		$('.match-panel').hide();
+		var txt = $('#search-criteria').val();
+		$('.match-panel').each(function(){
+		if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
+			$(this).show();
+		}
 		});
 	});
 </script>
