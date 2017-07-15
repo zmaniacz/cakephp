@@ -62,7 +62,18 @@ class LeaguesController extends AppController {
 	}
 
 	public function ajax_getMatchDetails($match_id) {
-		$this->set('match', $this->League->Round->Match->findById($match_id));
+		$this->set('match', $this->League->Round->Match->find('first', array(
+			'contain' => array(
+				'Game_1',
+				'Game_2',
+				'Team_1',
+				'Team_2',
+				'Round'
+			),
+			'conditions' => array(
+				'Match.id' => $match_id
+			)
+		)));
 	}
 
 /**
