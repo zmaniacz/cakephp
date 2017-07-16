@@ -319,7 +319,6 @@
 				{name: 'Green Loss - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_losses_from_green']}
 			]}
 		];
-		console.log(winlossdetail);
 		
 		Highcharts.chart('win_loss_pie', {
 			chart: {
