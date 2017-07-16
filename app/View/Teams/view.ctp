@@ -94,7 +94,8 @@
 	}
 ?>
 <h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
-<div id="win_loss_pie" style="height: 400px; width: 400px"></div>
+<div class="row">
+	<div id="win_loss_pie" style="height: 400px; width: 400px"></div>
 <div id="positions_panel" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions_panel" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
@@ -312,10 +313,10 @@
 				{name: 'Green Win - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_wins_from_green']}
 			]},
 			{name:'Losses', id:'losses', data: [
-				['Elim Losses from Red', data['winlossdetail']['elim_losses_from_red']],
-				['Non-Elim Losses from Red', data['winlossdetail']['non_elim_losses_from_red']],
-				['Elim Losses from Green', data['winlossdetail']['elim_losses_from_green']],
-				['Non-Elim Losses from Green', data['winlossdetail']['non_elim_losses_from_green']]
+				{name: 'Red Loss - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_losses_from_red']},
+				{name: 'Red Loss - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_losses_from_red']},
+				{name: 'Green Loss - Elim', color: "#00FF00", y: data['winlossdetail']['elim_losses_from_green']},
+				{name: 'Green Loss - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_losses_from_green']}
 			]}
 		];
 		console.log(winlossdetail);
