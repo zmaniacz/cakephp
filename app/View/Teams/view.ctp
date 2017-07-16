@@ -1,6 +1,10 @@
 <?php
+	echo $this->Html->script('https://code.highcharts.com/highcharts.js');
+	echo $this->Html->script('https://code.highcharts.com/highcharts-more.js');
+
 	$scorecards = array();
 
+	//Gather alll the scorecards into a single array
 	foreach($team['Red_Game'] as $game) {
 		foreach($game['Red_Scorecard'] as $scorecard) {
 			$scorecards[] = $scorecard;
@@ -13,21 +17,26 @@
 		}
 	}
 	
+	//populate plyer positions
 	$player_positions = array();
 	foreach($scorecards as $scorecard) {
 		if(!$scorecard['is_sub']) {
 			if(isset($player_positions[$scorecard['player_name']])) {
-				$player_positions[$scorecard['player_name']][$scorecard['position']] += 1;
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['games_played'] += 1;
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_mvp'] += $scorecard['mvp_points'];
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_score'] += $scorecard['score'];
 			} else {
 				$player_positions[$scorecard['player_name']] = array(
-					'Commander' => 0,
-					'Heavy Weapons' => 0,
-					'Scout' => 0,
-					'Ammo Carrier' => 0,
-					'Medic' =>0
+					'Commander' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
+					'Heavy Weapons' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
+					'Scout' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
+					'Ammo Carrier' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
+					'Medic' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0)
 				);
 
-				$player_positions[$scorecard['player_name']][$scorecard['position']] += 1;
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['games_played'] += 1;
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_mvp'] += $scorecard['mvp_points'];
+				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_score'] += $scorecard['score'];
 			}
 		}
 	}
@@ -44,27 +53,51 @@
 			<table class="table table-striped table-bordered table-hover table-condensed" id="positions_table">
 				<thead>
 					<tr>
-						<th></th>
-						<th colspan="5" class="text-center">Games Played</th>
+						<th class="col-xs-2">Player</th>
+						<th colspan="3" class="col-xs-2">Commander</th>
+						<th colspan="3" class="col-xs-2">Heavy Weapons</th>
+						<th colspan="3" class="col-xs-2">Scout</th>
+						<th colspan="3" class="col-xs-2">Ammo Carrier</th>
+						<th colspan="3" class="col-xs-2">Medic</th>
 					</tr>
 					<tr>
-						<th class="col-xs-2">Player</th>
-						<th class="col-xs-2">Commander</th>
-						<th class="col-xs-2">Heavy Weapons</th>
-						<th class="col-xs-2">Scout</th>
-						<th class="col-xs-2">Ammo Carrier</th>
-						<th class="col-xs-2">Medic</th>
+						<th></th>
+						<th>Games</th>
+						<th>Avg. MVP</th>
+						<th>Avg. Score</th>
+						<th>Games</th>
+						<th>Avg. MVP</th>
+						<th>Avg. Score</th>
+						<th>Games</th>
+						<th>Avg. MVP</th>
+						<th>Avg. Score</th>
+						<th>Games</th>
+						<th>Avg. MVP</th>
+						<th>Avg. Score</th>
+						<th>Games</th>
+						<th>Avg. MVP</th>
+						<th>Avg. Score</th>
 					</tr>
 				</thead>
 				<tbody class="text-center">
 					<?php foreach($player_positions as $player => $position): ?>
 						<tr>
 							<td><?= $player; ?></td>
-							<td><?= $position['Commander']; ?></td>
-							<td><?= $position['Heavy Weapons']; ?></td>
-							<td><?= $position['Scout']; ?></td>
-							<td><?= $position['Ammo Carrier']; ?></td>
-							<td><?= $position['Medic']; ?></td>
+							<td><?= $position['Commander']['games_played']; ?></td>
+							<td><?= round($position['Commander']['total_mvp']/max($position['Commander']['games_played'],1),2); ?></td>
+							<td><?= round($position['Commander']['total_score']/max($position['Commander']['games_played'],1),0); ?></td>
+							<td><?= $position['Heavy Weapons']['games_played']; ?></td>
+							<td><?= round($position['Heavy Weapons']['total_mvp']/max($position['Heavy Weapons']['games_played'],1),2); ?></td>
+							<td><?= round($position['Heavy Weapons']['total_score']/max($position['Heavy Weapons']['games_played'],1),0); ?></td>
+							<td><?= $position['Scout']['games_played']; ?></td>
+							<td><?= round($position['Scout']['total_mvp']/max($position['Scout']['games_played'],1),2); ?></td>
+							<td><?= round($position['Scout']['total_score']/max($position['Scout']['games_played'],1),0); ?></td>
+							<td><?= $position['Ammo Carrier']['games_played']; ?></td>
+							<td><?= round($position['Ammo Carrier']['total_mvp']/max($position['Ammo Carrier']['games_played'],1),2); ?></td>
+							<td><?= round($position['Ammo Carrier']['total_score']/max($position['Ammo Carrier']['games_played'],1),0); ?></td>
+							<td><?= $position['Medic']['games_played']; ?></td>
+							<td><?= round($position['Medic']['total_mvp']/max($position['Medic']['games_played'],1),2); ?></td>
+							<td><?= round($position['Medic']['total_score']/max($position['Medic']['games_played'],1),0); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
