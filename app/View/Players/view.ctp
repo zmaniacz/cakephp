@@ -977,7 +977,7 @@ $(document).ready(function(){
 <?php endif; ?>
 <div>
 	<?php if (AuthComponent::user('role') === 'admin'): ?>
-		<a href=<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?> class="btn btn-success" role="button">Link</a>
+		<a href="<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?>" class="btn btn-success" role="button">Link</a>
 	<?php endif; ?>
 </div>
 <ul class="nav nav-tabs" role="tablist" id="myTab">
