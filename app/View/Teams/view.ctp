@@ -1,13 +1,37 @@
 <?php
 	echo $this->Html->script('https://code.highcharts.com/highcharts.js');
 	echo $this->Html->script('https://code.highcharts.com/highcharts-more.js');
+	echo $this->Html->script('https://code.highcharts.com/modules/drilldown.js');
 
 	$scorecards = array();
+
+	$wins = 0;
+	$losses = 0;
+	$red_wins = 0;
+	$red_losses = 0;
+	$red_wins_elim = 0;
+	$green_wins_elim = 0;
+	$red_losses_elim = 0;
+	$green_losses_elim = 0;
 
 	//Gather alll the scorecards into a single array
 	foreach($team['Red_Game'] as $game) {
 		foreach($game['Red_Scorecard'] as $scorecard) {
 			$scorecards[] = $scorecard;
+		}
+
+		if($game['winner'] == 'red') {
+			$wins++;
+			$red_wins++;
+			if($game['green_eliminated'] > 0) {
+				$red_wins_elim++;
+			}
+		} else {
+			$losses++;
+			$red_losses++;
+			if($game['red_eliminated'] > 0) {
+				$red_losses_elim++;
+			}
 		}
 	}
 
@@ -15,7 +39,35 @@
 		foreach($game['Green_Scorecard'] as $scorecard) {
 			$scorecards[] = $scorecard;
 		}
+
+		if($game['winner'] == 'green') {
+			$wins++;
+			if($game['red_eliminated'] > 0) {
+				$green_wins_elim++;
+			}
+		} else {
+			$losses++;
+			if($game['green_eliminated'] > 0) {
+				$green_losses_elim++;
+			}
+		}
 	}
+
+	$winloss = array(
+		'wins' => $wins,
+		'losses' => $losses
+	);
+
+	$winlossdetail = array(
+		'elim_wins_from_red' => $red_wins_elim,
+		'non_elim_wins_from_red' => ($red_wins - $red_wins_elim),
+		'elim_wins_from_green' => $green_wins_elim,
+		'non_elim_wins_from_green' => ($wins - $red_wins - $green_wins_elim),
+		'elim_losses_from_red' => $red_losses_elim,
+		'non_elim_losses_from_red' => ($red_losses - $red_losses_elim),
+		'elim_losses_from_green' => $green_losses_elim,
+		'non_elim_losses_from_green' => ($losses - $red_losses - $green_losses_elim)
+	);
 	
 	//populate plyer positions
 	$player_positions = array();
@@ -42,13 +94,14 @@
 	}
 ?>
 <h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
+<div id="win_loss_pie" style="height: 400px; width: 400px"></div>
 <div id="positions_panel" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions_panel" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
 			Positions Detail
 		</h4>
 	</div>
-	<div id="collapse_positions" class="panel-collapse collapse in" role="tabpanel">
+	<div id="collapse_positions" class="panel-collapse collapse" role="tabpanel">
 		<div class="panel-body">
 			<table class="table table-striped table-bordered table-hover table-condensed" id="positions_table">
 				<thead>
@@ -243,5 +296,79 @@
 			$(this).show();
 		}
 		});
+	});
+
+
+	function displayWinLossPie(data) {
+		var winloss = [
+			{ name:'Wins', y: data['winloss']['wins'], drilldown:'wins'},
+			{ name:'Losses', y: data['winloss']['losses'], drilldown:'losses'},
+		];
+		var winlossdetail = [
+			{name:'Wins', id:'wins', data: [
+				{name: 'Red Win - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_wins_from_red']},
+				{name: 'Red Win - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_wins_from_red']},
+				{name: 'Green Win - Elim', color: "#00FF00", y: data['winlossdetail']['elim_wins_from_green']},
+				{name: 'Green Win - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_wins_from_green']}
+			]},
+			{name:'Losses', id:'losses', data: [
+				['Elim Losses from Red', data['winlossdetail']['elim_losses_from_red']],
+				['Non-Elim Losses from Red', data['winlossdetail']['non_elim_losses_from_red']],
+				['Elim Losses from Green', data['winlossdetail']['elim_losses_from_green']],
+				['Non-Elim Losses from Green', data['winlossdetail']['non_elim_losses_from_green']]
+			]}
+		];
+		console.log(winlossdetail);
+		
+		Highcharts.chart('win_loss_pie', {
+			chart: {
+				type: 'pie'
+			},
+			title: {
+				text: 'Wins & Losses'
+			},
+			subtitle: {
+        		text: 'Click the slices for details'
+			},
+			legend: {
+				enabled: true,
+				borderWidth: 1,
+				borderColor: 'gray',
+				align: 'left',
+				verticalAlign: 'top',
+				layout: 'vertical',
+				x: 0, y: 50
+			},
+			yAxis: {
+				title: {
+					text: 'Wins'
+				}
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: { enabled: false },
+					showInLegend: true
+           	 	}
+    		},			
+			series: [{
+				name: 'Wins & Losses',
+				data: winloss
+			}],
+			drilldown: {
+				drillUpButton: {
+            		relativeTo: 'plotBox',
+            		position: {
+                		verticalAlign: 'top'
+            		}
+				},	
+				series: winlossdetail
+			}
+		});
+	}
+
+	$(document).ready(function(){
+		displayWinLossPie(<?= json_encode(compact('winloss','winlossdetail')); ?>);
 	});
 </script>
