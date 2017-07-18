@@ -14,6 +14,13 @@
 	$red_losses_elim = 0;
 	$green_losses_elim = 0;
 
+
+	$team_mvp = 0;
+	$team_shots_fired = 0;
+	$team_shots_hit = 0;
+	$team_games = 0;
+	$team_medic_hits = 0;
+
 	//Gather alll the scorecards into a single array
 	foreach($team['Red_Game'] as $game) {
 		foreach($game['Red_Scorecard'] as $scorecard) {
@@ -33,6 +40,8 @@
 				$red_losses_elim++;
 			}
 		}
+
+		$team_games++;
 	}
 
 	foreach($team['Green_Game'] as $game) {
@@ -51,6 +60,8 @@
 				$green_losses_elim++;
 			}
 		}
+
+		$team_games++;
 	}
 
 	$winloss = array(
@@ -73,11 +84,7 @@
 	$player_positions = array();
 	foreach($scorecards as $scorecard) {
 		if(!$scorecard['is_sub']) {
-			if(isset($player_positions[$scorecard['player_name']])) {
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['games_played'] += 1;
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_mvp'] += $scorecard['mvp_points'];
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_score'] += $scorecard['score'];
-			} else {
+			if(!isset($player_positions[$scorecard['player_name']])) {
 				$player_positions[$scorecard['player_name']] = array(
 					'Commander' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
 					'Heavy Weapons' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
@@ -85,17 +92,47 @@
 					'Ammo Carrier' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0),
 					'Medic' => array('games_played' => 0, 'total_mvp' => 0, 'total_score' => 0)
 				);
-
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['games_played'] += 1;
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_mvp'] += $scorecard['mvp_points'];
-				$player_positions[$scorecard['player_name']][$scorecard['position']]['total_score'] += $scorecard['score'];
 			}
+
+			$player_positions[$scorecard['player_name']][$scorecard['position']]['games_played'] += 1;
+			$player_positions[$scorecard['player_name']][$scorecard['position']]['total_mvp'] += $scorecard['mvp_points'];
+			$player_positions[$scorecard['player_name']][$scorecard['position']]['total_score'] += $scorecard['score'];
+
+			$team_mvp += $scorecard['mvp_points'];
+			$team_shots_fired += $scorecard['shots_fired'];
+			$team_shots_fired += $scorecard['shots_hit'];
+			$team_medic_hits += $scorecard['medic_hits'];;
 		}
 	}
 ?>
 <h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
-<div class="row">
-	<div id="win_loss_pie" style="height: 400px; width: 400px"></div>
+<div class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#win_loss_panel" data-target="#collapse_win_loss" role="tab" id="positions_heading">
+		<h4 class="panel-title">
+			Wins/Losses
+		</h4>
+	</div>
+	<div id="collapse_win_loss" class="panel-collapse collapse" role="tabpanel">
+		<div class="panel-body">
+			<div id="win_loss_pie" style="height: 400px; width: 400px"></div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-info">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#team_detail_panel" data-target="#collapse_team_detail" role="tab" id="positions_heading">
+		<h4 class="panel-title">
+			Team Detail
+		</h4>
+	</div>
+	<div id="collapse_team_detail" class="panel-collapse collapse" role="tabpanel">
+		<div class="panel-body">
+			<dl class="dl-horizontal">
+				<dt>Games Played</dt>
+				<dd><?= $team_games; ?></dd>
+			</dl>
+		</div>
+	</div>
+</div>
 <div id="positions_panel" class="panel panel-info">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions_panel" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
