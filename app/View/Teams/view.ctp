@@ -242,7 +242,7 @@
 											} else {
 												echo (is_null($match['team_1_id'])) ? "TBD" : $this->Html->link($teams[$match['team_1_id']], array('controller' => 'teams', 'action' => 'view', $match['team_1_id']));
 											}
-
+											echo " <strong>{$match['team_1_points']}</strong>";
 											if(!empty($match['Game_1']) && !empty($match['Game_2']) && $match['team_1_points'] > $match['team_2_points'])
 												echo " <span class=\"glyphicon glyphicon-star text-warning\"></span>";
 										?>
@@ -290,7 +290,7 @@
 											} else {
 												echo (is_null($match['team_2_id'])) ? "TBD" : $this->Html->link($teams[$match['team_2_id']], array('controller' => 'teams', 'action' => 'view', $match['team_2_id']));
 											}
-
+											echo " <strong>{$match['team_2_points']}</strong>";
 											if(!empty($match['Game_1']) && !empty($match['Game_2']) && $match['team_2_points'] > $match['team_1_points'])
 												echo " <span class=\"glyphicon glyphicon-star text-warning\"></span>";
 										?>
