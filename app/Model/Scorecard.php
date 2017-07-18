@@ -726,55 +726,51 @@ class Scorecard extends AppModel {
 
 		$subQueryConditions[] = array('position NOT IN ("Medic", "Ammo Carrier")');
 
-		$db = $this->getDataSource();
-		$subQuery = $db->buildStatement(
-			array(
-				'fields' => array(
-					'ScorecardNoResup.player_id',
-					'SUM(ScorecardNoResup.medic_hits) as total_medic_hits',
-					'(SUM(ScorecardNoResup.medic_hits)/COUNT(ScorecardNoResup.game_datetime)) as medic_hits_per_game',
-					'COUNT(ScorecardNoResup.game_datetime) as games_played'
-				),
-				'table' => $db->fullTableName($this),
-				'alias' => 'ScorecardNoResup',
-				'conditions' => $subQueryConditions,
-				'group' => 'player_id',
-			),
-			$this
-		);
-
-		$subQuery = '('.$subQuery.')';
-
-		$scores = $this->find('all', array(
-			'joins' => array(
-				array(
-					'alias' => 'ScorecardNoResup',
-					'table' => $subQuery,
-					'conditions' =>array(
-						'Scorecard.player_id = ScorecardNoResup.player_id'
-					)
-				)
-			),
+		$non_resup_scores = $this->find('all', array(
 			'fields' => array(
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
 				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
-				'COUNT(Scorecard.game_datetime) as games_played',
-				'ScorecardNoResup.total_medic_hits',
-				'ScorecardNoResup.medic_hits_per_game',
-				'ScorecardNoResup.games_played',
+				'COUNT(Scorecard.game_datetime) as games_played'
+			),
+			'conditions' => $subQueryConditions,
+			'group' => 'player_id HAVING total_medic_hits > 0',
+			'order' => 'player_id DESC'
+		));
+
+		$scores = $this->find('all', array(
+			'fields' => array(
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'COUNT(Scorecard.game_datetime) as games_played'
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array(
+						'id',
+						'player_name'
+					)
+				)
 			),
 			'conditions' => $conditions,
 			'group' => 'player_id HAVING total_medic_hits > 0',
-			'order' => 'total_medic_hits DESC'
+			'order' => 'player_id DESC'
 		));
 
-		//add in the player_name to the results
 		foreach($scores as &$score) {
-			$player = $this->Player->findById($score['Scorecard']['player_id']);
-			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
+			foreach($non_resup_scores as $non_resup_score) {
+					$score[0]['non_resup_total_medic_hits'] = 0;
+					$score[0]['non_resup_medic_hits_per_game'] = 0;
+					$score[0]['non_resup_games_played'] = 0;
+				if($score['Scorecard']['player_id'] == $non_resup_score['Scorecard']['player_id']) {
+					$score[0]['non_resup_total_medic_hits'] = $non_resup_score[0]['total_medic_hits'];
+					$score[0]['non_resup_medic_hits_per_game'] = $non_resup_score[0]['medic_hits_per_game'];
+					$score[0]['non_resup_games_played'] = $non_resup_score[0]['games_played'];
+					break;
+				}
+			}
 		}
-
 		return $scores;
 	}
 

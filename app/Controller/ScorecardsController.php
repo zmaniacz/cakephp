@@ -150,7 +150,7 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallMedicHits() {
-		$this->request->allowMethod('ajax');
+		//$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 	
