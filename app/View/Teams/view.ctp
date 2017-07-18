@@ -307,7 +307,7 @@
 									</td>
 									<td class="text-center">
 										<?php 
-											if(!empty($match['Game_1'])) {
+											if(!empty($match['Game_2'])) {
 												if( ($match['Game_2']['winner'] == 'red' && $match['team_2_id'] == $match['Game_2']['red_team_id']) || ($match['Game_2']['winner'] == 'green' && $match['team_2_id'] == $match['Game_2']['green_team_id']))
 													echo "<span class=\"glyphicon glyphicon-ok text-success\"></span>";
 												else
