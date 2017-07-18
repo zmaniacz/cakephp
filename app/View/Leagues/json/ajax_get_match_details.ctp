@@ -23,6 +23,21 @@
 
 	$game_2_red_score = $match['Game_2']['red_score']+$match['Game_2']['red_adj'];
 	$game_2_green_score = $match['Game_2']['green_score']+$match['Game_2']['green_adj'];
+
+	$team_1_diff = ($game_1_red_score + $game_2_green_score) - ($game_1_green_score + $game_2_red_score);
+	$team_2_diff = ($game_1_green_score + $game_2_red_score) - ($game_1_red_score + $game_2_green_score);
+
+	if($team_1_diff > 0) {
+		$team_1 .= "<br /><span class=\"text-success\">$team_1_diff</span>";
+	} else {
+		$team_1 .= "<br /><span class=\"text-danger\">$team_1_diff</span>";
+	}
+
+	if($team_2_diff > 0) {
+		$team_2 .= "<br /><span class=\"text-success\">$team_2_diff</span>";
+	} else {
+		$team_2 .= "<br /><span class=\"text-danger\">$team_2_diff</span>";
+	}
 ?>
 <div class="row">
 	<div class="col-xs-4 col-xs-offset-2">
