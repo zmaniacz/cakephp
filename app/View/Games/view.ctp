@@ -49,7 +49,7 @@
 			]
 		});
 
-		$('#matchups').DataTable( {
+		/*$('#matchups').DataTable( {
 			"deferRender" : true,
             "ordering" : false,
             "paging" : false,
@@ -82,7 +82,7 @@
 					"width" : "200px" 
 				},
 			]
-		});
+		});*/
 	});
 	
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -405,7 +405,7 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
-		<div class="table-responsive">
+		<!--<div class="table-responsive">
 			<table 
 			 class="table table-striped table-bordered table-hover table-condensed" 
 			 id="matchups" 
@@ -417,7 +417,7 @@
 					<th>Green</th>
 				</thead>
 			</table>
-		</div>
+		</div>-->
 		<div id="breakdown_container">
 		</div>
 	</div>
