@@ -83,10 +83,16 @@ class League extends AppModel {
 		return $leagues;
 	}
 
-	public function getTeamStandings($state) {
+	public function getTeamStandings($state, $round = null) {
 		$conditions = array();
+		$round_conditions = array();
 		
 		$conditions[] = array('Team.league_id' => $state['leagueID']);
+		$round_conditions[] = array('Round.is_finals' => '0');
+
+		if(isset($round)) {
+			$round_conditions[] = array('Round.round' => $round);
+		}
 		
 		$rounds = $this->find('first', array(
 			'contain' => array(
@@ -95,10 +101,11 @@ class League extends AppModel {
 						'Game_1',
 						'Game_2'
 					),
-					'conditions' => array('Round.is_finals' => '0')
+					'conditions' => $round_conditions
 				)
 			),
-			'conditions' => array('id' => $state['leagueID'])
+			'conditions' => array('id' => $state['leagueID']),
+			'orderby' => 'Round.round ASC'
 		));
 		
 		$teams = $this->Team->find('list', array('conditions' => array('Team.league_id' => $state['leagueID'])));

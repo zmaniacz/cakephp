@@ -11,6 +11,19 @@
 					echo $this->Html->link('New Team', array('controller' => 'leagues', 'action' => 'addTeam'), array('class' => 'btn btn-success'));
 			?>
 		</div>
+		<div id="round_radio" class="btn-group" data-toggle="buttons">
+			<label class="btn btn-primary active">
+				<input type="radio" name="rounds" id="round_all" value="0" autocomplete="off" checked> All
+			</label>
+			<?php foreach($details['Round'] as $round): ?>
+				<?php if(!$round['is_finals']): ?>
+					<label class="btn btn-primary">
+						<input type="radio" name="rounds" id="round_<?= $round['round']; ?>" value="<?= $round['round']; ?>" autocomplete="off"> Round <?= $round['round']; ?>
+					</label>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</div>
+		<hr>
 		<div class="table-responsive">
 			<table class="table table-striped table-bordered table-hover table-condensed" id="team_standings">
 				<thead>
@@ -21,18 +34,6 @@
 					<th class="col-xs-1">Eliminations</th>
 					<th class="col-xs-1">Score Ratio</th>
 				</thead>
-				<tbody>
-					<?php foreach($standings as $team): ?>
-					<tr>
-						<td><?= $this->Html->link($team['name'], array('controller' => 'teams', 'action' => 'view', $team['id']), array('class' => 'btn btn-block btn-info')); ?></td>
-						<td class="text-center"><?= $team['points']; ?></td>
-						<td class="text-center"><?= $team['matches_won']; ?> - <?= $team['matches_played']-$team['matches_won']; ?></td>
-						<td class="text-center"><?= $team['won']; ?> - <?= $team['played']-$team['won']; ?></td>
-						<td class="text-center"><?= $team['elims']; ?></td>
-						<td class="text-center"><?= round($team['ratio'], 2); ?> (<?= number_format($team['for']); ?>/<?= number_format($team['against']); ?>)</td>
-					</tr>
-					<?php endforeach; ?>
-				</tbody>
 			</table>
 		</div>
 	</div>
@@ -173,6 +174,20 @@
 	<?php endforeach; ?>
 </div>
 <script>
+	var standings_data
+	var standings_table = $('#team_standings').DataTable( {
+		"deferRender" : true,
+		"order": [[1, "desc"]],
+		"columns" : [
+			{ "data" : "name", },
+			{ "data" : "points" },
+			{ "data" : "match_win_lose" },
+			{ "data" : "game_win_lose" },
+			{ "data" : "elims" },
+			{ "data" : "score_ratio" },
+		]
+	});
+
 	$('.match-select').change(function() {
 		toastr.options = {
 			"closeButton": false,
@@ -210,5 +225,28 @@
 			$(this).show();
 		}
 		});
+	});
+
+	function update_standings(table, round) {
+		var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getTeamStandings', 'ext' => 'json'))); ?>"
+		
+		if(round > 0) {
+			url = url.replace(".json", "/"+round+".json")
+		}
+		
+		$.ajax({
+			"url" : url
+		}).done(function(response) {
+			table.clear()
+			table.rows.add(response.data).draw()
+		})
+	}
+
+	$("#round_radio :input").change(function() {
+		update_standings(standings_table,this.value)
+	});
+
+	$(document).ready(function() {
+		update_standings(standings_table,0)
 	});
 </script>
