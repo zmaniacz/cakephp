@@ -655,7 +655,7 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_mvp_data.length/10),10),
 			xAxis: 0
@@ -664,7 +664,7 @@ $(document).ready(function(){
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_mvp_data.length/10),10),
 			xAxis: 1
@@ -673,7 +673,7 @@ $(document).ready(function(){
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_mvp_data.length/10),10),
 			xAxis: 2
@@ -682,7 +682,7 @@ $(document).ready(function(){
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_mvp_data.length/10),10),
 			xAxis: 3
@@ -691,7 +691,7 @@ $(document).ready(function(){
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_mvp_data.length/10),10),
 			xAxis: 4
@@ -700,7 +700,7 @@ $(document).ready(function(){
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'linear',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_mvp_data.length/10),10),
 			xAxis: 5
