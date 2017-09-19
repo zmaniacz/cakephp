@@ -242,7 +242,6 @@ class ScorecardsController extends AppController {
 	}
     
     public function getHitBreakdown($player_id, $game_id) {
-        $this->request->allowMethod('ajax');
         $this->set('hits', $this->Scorecard->getHitDetails($player_id, $game_id));
         $this->set('player_id', $player_id);
     }
