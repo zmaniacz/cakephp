@@ -1,6 +1,6 @@
 <?php
 
-App::uses('ConnectionManager', 'Model');
+App::uses('ConnectionManager', 'Model', 'Folder');
 
 class MigrateShell extends AppShell {
     public $uses = array('Team','Game','Scorecard','Event','Center');
@@ -9,16 +9,16 @@ class MigrateShell extends AppShell {
         $this->out('choose a step');
     }
 
-    public function step_1() {
+    public function do() {
         $db = ConnectionManager::getDataSource('default');
 
-        //Rename teams table and foreign keys
+        $this->out('Rename teams table and foreign keys');
         $db->rawQuery("ALTER TABLE `teams` RENAME TO  `event_teams`");
         $db->rawQuery("ALTER TABLE `event_teams` DROP FOREIGN KEY `fk_teams_leagues_league_id`");
         $db->rawQuery("ALTER TABLE `event_teams` DROP INDEX `league_id`");
         $db->rawQuery("ALTER TABLE `event_teams` CHANGE COLUMN `league_id` `event_id` INT(11) NOT NULL");
 
-        //rename leagues table to events
+        $this->out('rename leagues table to events');
         $db->rawQuery("ALTER TABLE `leagues` DROP FOREIGN KEY `fk_leagues_centers_center_id`");
         $db->rawQuery("ALTER TABLE `leagues` 
                         ADD COLUMN `is_comp` TINYINT(1) NOT NULL DEFAULT 0 AFTER `type`, 
@@ -28,16 +28,16 @@ class MigrateShell extends AppShell {
                             FOREIGN KEY (`center_id`)
                             REFERENCES `centers` (`id`)");
         
-        //fix event_teams foreign keys
+        $this->out('fix event_teams foreign keys');
         $db->rawQuery("ALTER TABLE `event_teams` 
                         ADD CONSTRAINT `fk_event_teams_events_event_id`
                             FOREIGN KEY (`event_id`)
                             REFERENCES `events` (`id`)");
         
-        //drop player_teams table -- unused
+        $this->out('drop player_teams table -- unused');
         $db->rawQuery("DROP TABLE `players_teams`;");
 
-        //gotta fix the Rounds table too
+        $this->out('gotta fix the Rounds table too');
         $db->rawQuery("ALTER TABLE `rounds` DROP FOREIGN KEY `fk_rounds_leagues_league_id`");
         $db->rawQuery("ALTER TABLE `rounds` 
                         CHANGE COLUMN `league_id` `event_id` INT(11) NULL DEFAULT NULL ,
@@ -50,7 +50,7 @@ class MigrateShell extends AppShell {
                             ON DELETE NO ACTION
                             ON UPDATE NO ACTION");
 
-        ///////REGEN THE VIEW
+        $this->out('REGEN THE VIEW');
         $db->rawQuery("CREATE OR REPLACE
                         ALGORITHM = UNDEFINED 
                         DEFINER = `dbo_redial`@`%` 
@@ -72,7 +72,7 @@ class MigrateShell extends AppShell {
                             JOIN `games` `Game` ON ((`Game`.`match_id` = `Match`.`id`)))
                         ORDER BY `Event`.`id` , `Round`.`round` , `Match`.`match` , `Game`.`league_game`");
 
-        //create the new teams table
+        $this->out('create the new teams table');
         $db->rawQuery("CREATE TABLE `teams` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `color` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -92,13 +92,10 @@ class MigrateShell extends AppShell {
                         CONSTRAINT `fk_teams_games_game_id` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`),
                         CONSTRAINT `fk_teams_event_teams_event_team_id` FOREIGN KEY (`event_team_id`) REFERENCES `event_teams` (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-    }
 
-    public function step_2() {
-        $db = ConnectionManager::getDataSource('default');
 
-        //create teams records based on existing game records
-        //select all the games with their red team data
+        $this->out('create teams records based on existing game records');
+        $this->out('select all the games with their red team data');
         $games = $this->Game->find('all');
         foreach($games as $game) {
             $red_team = array(
@@ -128,7 +125,7 @@ class MigrateShell extends AppShell {
             $this->Team->clear();
         }
 
-        //add team_id fk to scorecards
+        $this->out('add team_id fk to scorecards');
         $db->rawQuery("ALTER TABLE `scorecards` 
                         ADD COLUMN `team_id` INT(11) NULL DEFAULT NULL AFTER `league_id`");
         $db->rawQuery("ALTER TABLE `scorecards` 
@@ -137,10 +134,8 @@ class MigrateShell extends AppShell {
                         ADD CONSTRAINT `fk_scorecards_teams_team_id`
                             FOREIGN KEY (`team_id`)
                             REFERENCES `teams` (`id`)");
-    }
 
-    public function step_3() {
-        //link scorecards to teams instead of games
+        $this->out('link scorecards to teams instead of games');
         $scorecards = $this->Scorecard->find('all', array('fields' => array('id', 'team', 'game_id', 'team_id')));
         $games = $this->Game->find('all', array(
             'fields' => array('Game.id'),
@@ -166,12 +161,10 @@ class MigrateShell extends AppShell {
             $this->Scorecard->save($scorecard);
             $this->Scorecard->clear();
         }
-    }
 
-    public function step_4() {
-        //remove redundant game data - kill columns
+        $this->out('remove redundant game data - kill columns');
         $db = ConnectionManager::getDataSource('default');
-
+        
         $db->rawQuery("ALTER TABLE `games` 
                         DROP FOREIGN KEY `fk_games_centers_center_id`,
                         DROP FOREIGN KEY `fk_games_teams_red_team_id`,
@@ -196,7 +189,7 @@ class MigrateShell extends AppShell {
                         ADD INDEX `fk_games_events_event_id_idx` (`event_id` ASC),
                         DROP INDEX `red_team_id` ,
                         DROP INDEX `green_team_id`");
-       
+        
         $db->rawQuery("ALTER TABLE `games` 
                         ADD CONSTRAINT `fk_games_centers_center_id`
                             FOREIGN KEY (`center_id`)
@@ -215,8 +208,10 @@ class MigrateShell extends AppShell {
                         DROP INDEX `league_id`");
     }
 
-    public function step_5() {
-        //recalc all game winners
+    function do2() {
+        $db = ConnectionManager::getDataSource('default');
+        
+        $this->out('recalc all game winners');
         $games = $this->Game->find('all', array(
             'fields' => array('id')
         ));
@@ -224,21 +219,17 @@ class MigrateShell extends AppShell {
         foreach($games as $game) {
             $this->Game->updateGameWinner($game['Game']['id']);
         }
-    }
 
-    public function step_6() {
-        //create and populate events
+        $this->out('create and populate events');
         $events = $this->Event->find('all');
         foreach($events as $event) {
             $event['Event']['is_comp'] = ($event['Event']['type'] == 'league' || $event['Event']['type'] == 'tournament') ? 1 : 0;
             $this->Event->save($event);
             $this->Event->clear();
         }
-    }
 
-    public function step_7() {
         $centers = $this->Center->find('all');
-
+        
         foreach($centers as $center) {
             $games = $this->Game->find('all', array(
                 'conditions' => array(
@@ -273,44 +264,36 @@ class MigrateShell extends AppShell {
                 $this->Game->clear();
             }
         }
-    }
 
-    public function step_8() {
-        $db = ConnectionManager::getDataSource('default');
-        //regen the game_results view
         $db->rawQuery("CREATE OR REPLACE 
-                        ALGORITHM = UNDEFINED 
-                        DEFINER = `dbo_redial`@`%` 
-                        SQL SECURITY DEFINER
-                    VIEW `game_results` AS
-                    SELECT 
-                        `scorecards`.`game_datetime` AS `game_datetime`,
-                        `scorecards`.`player_id` AS `player_id`,
-                        `scorecards`.`id` AS `scorecard_id`,
-                        `games`.`id` AS `game_id`,
-                        `games`.`type` AS `type`,
-                        `games`.`center_id` AS `center_id`,
-                        `games`.`event_id` AS `event_id`,
-                        (CASE (`scorecards`.`team` = `games`.`winner`)
-                            WHEN 1 THEN 'W'
-                            ELSE 'L'
-                        END) AS `result`,
-                        (CASE (`scorecards`.`team` = `games`.`winner`)
-                            WHEN 1 THEN 1
-                            ELSE 0
-                        END) AS `won`
-                    FROM
-                        (`scorecards`
-                        JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
-                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
-    }
-
-    public function step_9() {
-        $db = ConnectionManager::getDataSource('default');
+        ALGORITHM = UNDEFINED 
+        DEFINER = `dbo_redial`@`%` 
+        SQL SECURITY DEFINER
+    VIEW `game_results` AS
+    SELECT 
+        `scorecards`.`game_datetime` AS `game_datetime`,
+        `scorecards`.`player_id` AS `player_id`,
+        `scorecards`.`id` AS `scorecard_id`,
+        `games`.`id` AS `game_id`,
+        `games`.`type` AS `type`,
+        `games`.`center_id` AS `center_id`,
+        `games`.`event_id` AS `event_id`,
+        (CASE (`scorecards`.`team` = `games`.`winner`)
+            WHEN 1 THEN 'W'
+            ELSE 'L'
+        END) AS `result`,
+        (CASE (`scorecards`.`team` = `games`.`winner`)
+            WHEN 1 THEN 1
+            ELSE 0
+        END) AS `won`
+    FROM
+        (`scorecards`
+        JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
+        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
 
         $db->rawQuery("ALTER TABLE `scorecards`
-                        CHANGE COLUMN `team` `color` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL
-                    ");
+            CHANGE COLUMN `team` `color` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL
+            ");
     }
 
     public function vGames() {
