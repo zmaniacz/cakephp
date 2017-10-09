@@ -19,7 +19,7 @@ class GamesController extends AppController {
 	public $uses = array('Game','Player', 'Team');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList');
+		$this->Auth->allow('index','view','overall','overallWinLossDetail','getGameList','getGameMatchups');
 		parent::beforeFilter();
 	}
 
@@ -77,6 +77,10 @@ class GamesController extends AppController {
 			$this->set('red_team_summary', $this->Team->getSummaryStats($game['Red_Team']['id']));
 			$this->set('green_team_summary', $this->Team->getSummaryStats($game['Green_Team']['id']));
 		}
+	}
+
+	public function getGameMatchups($game_id) {
+		$this->set('data', $this->Game->getMatchups($game_id));
 	}
 
 /**

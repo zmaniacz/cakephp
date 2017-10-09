@@ -407,6 +407,51 @@ class Scorecard extends AppModel {
 
 		return $stats;
 	}
+
+	public function getComparableMVP($player_id) {
+		$results = $this->find('all', array(
+			'fields' => array(
+				'player_id',
+				'position',
+				'AVG(mvp_points) as avg_mvp'
+			),
+			'conditions' => array(
+				'player_id' => $player_id
+			),
+			'group' => 'player_id, position',
+			'order' => 'position ASC'
+		));
+
+		$data = array();
+		foreach($results as $result) {
+			$data[] = (float) $result[0]['avg_mvp'];
+		}
+		
+		return $data;
+	}
+
+	public function getComparison($player1_id, $player2_id) {
+		App::import('Vendor','CosineSimilarity',array('file' => 'CosineSimilarity/CosineSimilarity.php'));
+		$compare = new CosineSimilarity();
+
+		$player1_stats = $this->getComparableMVP($player1_id);
+		$player2_stats = $this->getComparableMVP($player2_id);
+
+		$max = max(max($player1_stats), max($player2_stats));
+		$min = min(min($player1_stats), min($player2_stats));
+
+		foreach($player1_stats as &$stat) {
+			$stat = ($stat - $min) / ($max - $min);
+		}
+
+		foreach($player2_stats as &$stat) {
+			$stat = ($stat - $min) / ($max - $min);
+		}
+
+		$distance = $compare->similarity($player1_stats, $player2_stats);
+
+		return $distance;
+	}
 	
 	public function getPositionStats($role = null, $state = null) {
 		$conditions = array();
