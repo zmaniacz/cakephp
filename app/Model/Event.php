@@ -61,7 +61,9 @@ class Event extends AppModel {
 			$conditions[] = array('Event.type' => $type);
 		
 		$this->virtualFields['last_gametime'] = 0;
-		$events = $this->find('all', array(
+		$this->virtualFields['games_played'] = 0;
+
+		$options = array(
 			'fields' => array(
 				'Event.id',
 				'Event.name',
@@ -72,7 +74,8 @@ class Event extends AppModel {
 				'Center.id',
 				'Center.name',
 				'Center.short_name',
-				'MAX(Game.game_datetime) as Event__last_gametime'
+				'MAX(Game.game_datetime) as Event__last_gametime',
+				'COUNT(Game.game_datetime) as Event__games_played'
 			),
 			'joins' => array(
 				array(
@@ -94,9 +97,13 @@ class Event extends AppModel {
 			),
 			'conditions' => $conditions,
 			'group' => 'Event.id',
-			'order' => 'Event__last_gametime DESC',
-			'limit' => $limit
-		));
+			'order' => 'Event__last_gametime DESC'
+		);
+
+		if(isset($limit))
+			$options['limit'] = $limit;
+
+		$events = $this->find('all', $options);
 
 		return $events;
 	}

@@ -8,6 +8,7 @@
             'is_comp' => $event['Event']['is_comp'],
 			'type' => $event['Event']['type'],
 			'last_gametime' => $event['Event']['last_gametime'],
+			'games_played' => $event['Event']['games_played'],
 			'center_id' => $event['Center']['id'],
             'center_short_name' => $event['Center']['short_name'],
 			'center_name' => $event['Center']['name'],

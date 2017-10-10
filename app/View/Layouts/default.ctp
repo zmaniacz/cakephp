@@ -37,11 +37,6 @@
 </head>
 <script>
 	$(document).ready(function() {
-		var theme = localStorage.theme;
-		if (theme) {
-			set_theme(theme);
-		}
-        
         $.ajax({ 
             url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
             dataType:'jsonp',
@@ -72,42 +67,42 @@
 							</button>
 							<?= $this->Html->image('/img/LF-logo1-shadow-small.png', array(
 								'alt' => 'Lfstats Home',
-								'url' => array('controller' => 'events', 'action' => 'landing')
+								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'leagueID' => 0, 'centerID' => 0))
 								)
 							); ?>
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
-								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
-									<ul class="dropdown-menu">
-										<?php if(isset($selected_event)): ?>
-										<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'events', 'action' => 'view', $selected_event['Event']['id'])); ?></li>
-										<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
-										<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
-										<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
-										<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
-										<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
-										<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
-										<li role="separator" class="divider"></li>
-										<?php endif; ?>
-										<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'landing')); ?></li>
-									</ul>
-								</li>
-								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Overall Stats<span class="caret"></span></a>
-									<ul class="dropdown-menu">
-										<li><?= $this->Html->link('Player Details', array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
-										<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
-										<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
-										<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
-										<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
-									</ul>
-								</li>
-								<li><?= $this->Html->link('Player Stats', array('controller' => 'players', 'action' => 'index')); ?></li>
+								<?php if(isset($selected_event)): ?>
+									<li class="dropdown">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
+										<ul class="dropdown-menu">
+											<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'events', 'action' => 'view', $selected_event['Event']['id'])); ?></li>
+											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
+											<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
+											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
+											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
+											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
+											<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
+											<li role="separator" class="divider"></li>
+											<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'leagueID' => 0, 'centerID' => 0))); ?></li>
+										</ul>
+									</li>
+									<li class="dropdown">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Overall Stats<span class="caret"></span></a>
+										<ul class="dropdown-menu">
+											<li><?= $this->Html->link('Player Details', array('controller' => 'scorecards', 'action' => 'overall')); ?></li>
+											<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
+											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
+											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
+											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
+										</ul>
+									</li>
+									<li><?= $this->Html->link('Player Stats', array('controller' => 'players', 'action' => 'index')); ?></li>
+								<?php endif; ?>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('ECT 6', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 13, 'centerID' => 8))); ?></li>
+                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 16, 'centerID' => 14))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || AuthComponent::user('role') === 'center_admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
