@@ -57,9 +57,6 @@ class ScorecardsController extends AppController {
 	
 	public function phpview() {
 	}
-	
-	public function overall() {	
-    }
 
 	public function getComparison($player1_id, $player2_id) {
 		App::import('Vendor','CosineSimilarity',array('file' => 'CosineSimilarity/CosineSimilarity.php'));

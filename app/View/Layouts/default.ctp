@@ -78,12 +78,14 @@
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
 										<ul class="dropdown-menu">
 											<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'events', 'action' => 'view', $selected_event['Event']['id'])); ?></li>
+											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
+											<?php if($selected_event['Event']['type'] != 'social'): ?>
 											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
 											<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
-											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
 											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
 											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
 											<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
+											<?php endif; ?>
 											<li role="separator" class="divider"></li>
 											<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'index')); ?></li>
 										</ul>

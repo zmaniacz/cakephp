@@ -128,7 +128,7 @@ class EventsController extends AppController {
 	}
 
 	public function playerStats($id = null) {
-		if (!$this->Event->exists($event_id)) {
+		if (!$this->Event->exists($id)) {
 			throw new NotFoundException(__('Invalid event'));
 		}
 	}
