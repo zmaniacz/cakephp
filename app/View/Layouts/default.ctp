@@ -20,14 +20,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/fc-3.2.3/fh-3.1.3/r-2.2.0/datatables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css"/>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/fc-3.2.3/fh-3.1.3/r-2.2.0/datatables.min.js"></script>
+
 	<?php
 		echo $this->Html->charset();
-		echo $this->Html->script('//code.jquery.com/jquery-2.1.4.min.js');
-		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
-		echo $this->Html->script('//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js');
-		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
-		echo $this->Html->css('bootstrap.min.css');
-		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('laserforce');
 	?>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -112,9 +110,9 @@
 							<ul class="nav navbar-nav navbar-right">
 								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<a class="btn btn-info btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+									<a href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
 								<?php else: ?>
-									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
+									<a href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 								</li>
 							</ul>
