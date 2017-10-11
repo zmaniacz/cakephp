@@ -594,15 +594,15 @@ class Scorecard extends AppModel {
 				'AVG(Scorecard.mvp_points) as avg_mvp',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'COUNT(Scorecard.game_datetime) as games_played',
-				'SUM(GameResult.won) as games_won'
+				'SUM(Team.winner) as games_won'
 			),
 			'joins' => array(
 				array(
-					'table' => 'game_results',
-					'alias' => 'GameResult',
+					'table' => 'teams',
+					'alias' => 'Team',
 					'type' => 'LEFT',
 					'conditions' => array(
-						'GameResult.scorecard_id = Scorecard.id'
+						'Scorecard.team_id = Team.id'
 					)
 				)
 			),
@@ -616,15 +616,15 @@ class Scorecard extends AppModel {
 				'AVG(Scorecard.mvp_points) as avg_mvp',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'COUNT(Scorecard.game_datetime) as games_played',
-				'SUM(GameResult.won) as games_won' 
+				'SUM(Team.winner) as games_won'
 			),
 			'joins' => array(
 				array(
-					'table' => 'game_results',
-					'alias' => 'GameResult',
+					'table' => 'teams',
+					'alias' => 'Team',
 					'type' => 'LEFT',
 					'conditions' => array(
-						'GameResult.scorecard_id = Scorecard.id'
+						'Scorecard.team_id = Team.id'
 					)
 				)
 			),

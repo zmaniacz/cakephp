@@ -3,20 +3,18 @@
 		$('.event_table').DataTable( {
 			"deferRender" : true,
             "ordering" : false,
-            "paging" : false,
-            "pageLength" : 5,
+            "paging" : true,
+            "pageLength" : 10,
             "searching" : false,
             "info" : false,
 			"columns" : [
-                { "data" : "name" },
-                { "data" : "type" },
-                { "data" : function ( row, type, val, meta ) {
+				{ "data" : function ( row, type, val, meta) {			
 						if (type === 'display') {
-                            return row.center_short_name.toUpperCase();
+							return '<a href="/events/view/'+row.id+'?gametype='+row.type+'&centerID='+row.center_id+'&eventID='+row.id+'" class="btn btn-info btn-block">'+row.center_name+" - "+row.name+'</a>';
 						}
-						
-						return row.center_short_name;
-					}
+						return row.name;
+					},
+					"width" : "200px" 
 				},
                 { "data" : function ( row, type, val, meta ) {
 						if (type === 'display') {
@@ -26,27 +24,26 @@
 						
 						return row.last_gametime;
 					}
-				}
+				},
+                { "data" : "games_played" }
 			]
 		});
     });
 </script>
-<div id="event_list" class="panel panel-primary">
-	<div class="panel-heading clearfix" id="event_list_heading">
-        <h3 class="panel-title pull-left">Events</h3>
-	</div>
-    <table 
-        class="event_table table table-striped table-bordered table-hover" 
-        id="event_list_table" 
-        data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventList', 'social', 'ext' => 'json'))); ?>"
-    >
-        <thead>
-            <tr>
-                <th class="col-xs-3">Event</th>
-                <th class="col-xs-3">Type</th>
-                <th class="col-xs-3">Center</th>
-                <th class="col-xs-3">Last Played</th>
-            </tr>
-        </thead>
-    </table>
+<div class="row">
+    <div class= "col-xs-8 col-xs-offset-2">
+        <table 
+            class="event_table table table-striped table-bordered table-hover" 
+            id="event_list_table" 
+            data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventList', 'ext' => 'json'))); ?>"
+        >
+            <thead>
+                <tr>
+                    <th class="col-xs-3">Event</th>
+                    <th class="col-xs-3">Date</th>
+                    <th class="col-xs-3">Games Played</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>

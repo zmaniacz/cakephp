@@ -54,11 +54,14 @@ class Event extends AppModel {
 		)
 	);
 
-	public function getEventList($type = null, $limit = null) {
+	public function getEventList($type = null, $limit = null, $center_id = null) {
 		$conditions[] = array();
 		
 		if(isset($type))
 			$conditions[] = array('Event.type' => $type);
+
+		if(isset($center_id))
+			$conditions[] = array('Event.center_id' => $center_id);
 		
 		$this->virtualFields['last_gametime'] = 0;
 		$this->virtualFields['games_played'] = 0;
@@ -163,7 +166,7 @@ class Event extends AppModel {
 				'SUM(Scorecard.medic_hits) as medic_hits',
 				'(SUM(Scorecard.team_elim)/COUNT(Scorecard.game_datetime)) as elim_rate',
 				'COUNT(Scorecard.game_datetime) as games_played',
-				'SUM(GameResult.won) as games_won'
+				'SUM(Team.winner) as games_won'
 			),
 			'contain' => array(
 				'Player' => array(
@@ -172,11 +175,11 @@ class Event extends AppModel {
 			),
 			'joins' => array(
 				array(
-					'table' => 'game_results',
-					'alias' => 'GameResult',
+					'table' => 'teams',
+					'alias' => 'Team',
 					'type' => 'LEFT',
 					'conditions' => array(
-						'GameResult.scorecard_id = Scorecard.id'
+						'Scorecard.team_id = Team.id'
 					)
 				)
 			),

@@ -135,11 +135,13 @@ class EventsController extends AppController {
 	
 
 	//API functions below
-	public function eventList($type = null) {
+	public function eventList() {
 		$this->request->allowMethod('ajax');
 
 		$limit = $this->request->query('limit');
-		$this->set('response', $this->Event->getEventList($type, $limit));
+		$type = $this->request->query('gametype');
+		$center_id = $this->request->query('centerID');
+		$this->set('response', $this->Event->getEventList($type, $limit, $center_id));
 	}
 
 	public function gameList($event_id = null) {
@@ -163,8 +165,6 @@ class EventsController extends AppController {
 	}
 
 	public function summaryStats($event_id = null) {
-		$this->request->allowMethod('ajax');
-
 		if (!$this->Event->exists($event_id)) {
 			throw new NotFoundException(__('Invalid event'));
 		}

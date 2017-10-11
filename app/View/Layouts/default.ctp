@@ -85,7 +85,7 @@
 											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
 											<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 											<li role="separator" class="divider"></li>
-											<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'leagueID' => 0, 'centerID' => 0))); ?></li>
+											<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'index')); ?></li>
 										</ul>
 									</li>
 									<li class="dropdown">
