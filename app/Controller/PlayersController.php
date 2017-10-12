@@ -18,15 +18,18 @@ class PlayersController extends AppController {
 		} else {
 			$this->set('id', $id);
 			$this->set('aliases', $this->Player->PlayersName->findAllByPlayerId($id));
-			$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('state')));
+			/*$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('state')));
 			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander', $this->Session->read('state')));
 			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons', $this->Session->read('state')));
 			$this->set('scout', $this->Player->getPlayerStats($id, 'Scout', $this->Session->read('state')));
 			$this->set('ammo', $this->Player->getPlayerStats($id, 'Ammo Carrier', $this->Session->read('state')));
-			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic', $this->Session->read('state')));
-			//$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
+			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic', $this->Session->read('state')));*/
 			//$this->set('teammates',$this->Player->getMyTeammates($id, $this->Session->read('state')));
 		}
+	}
+
+	public function playerScorecards($id) {
+		$this->set('scorecards', $this->Player->getPlayerScorecards($id));
 	}
 
 	public function link($id) {

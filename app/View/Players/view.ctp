@@ -6,14 +6,64 @@
 	$overall_acc_plot = array();
 	$overall_score_plot = array();
 	$overall_mvp_plot = array();
+	$commander_acc_plot = array();
+	$commander_score_plot = array();
+	$commander_mvp_plot = array();
+	$heavy_acc_plot = array();
+	$heavy_score_plot = array();
+	$heavy_mvp_plot = array();
+	$scout_acc_plot = array();
+	$scout_score_plot = array();
+	$scout_mvp_plot = array();
+	$ammo_acc_plot = array();
+	$ammo_score_plot = array();
+	$ammo_mvp_plot = array();
+	$medic_acc_plot = array();
+	$medic_score_plot = array();
+	$medic_mvp_plot = array();
 	foreach($overall[0]['Scorecard'] as $key => $val) {
 		$overall_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$overall_score_plot[] = (float)$val['score'];
 		$overall_mvp_plot[] = (float)$val['mvp_points'];
+
+		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
+		$commander_score_plot[] = (float)$val['score'];
+		$commander_mvp_plot[] = (float)$val['mvp_points'];
+
+		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
+		$heavy_score_plot[] = (float)$val['score'];
+		$heavy_mvp_plot[] = (float)$val['mvp_points'];
+
+		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
+		$scout_score_plot[] = (float)$val['score'];
+		$scout_mvp_plot[] = (float)$val['mvp_points'];
+
+		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
+		$ammo_score_plot[] = (float)$val['score'];
+		$ammo_mvp_plot[] = (float)$val['mvp_points'];
+
+		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
+		$medic_score_plot[] = (float)$val['score'];
+		$medic_mvp_plot[] = (float)$val['mvp_points'];
 	}
 	$overall_acc_json = json_encode($overall_acc_plot);
 	$overall_score_json = json_encode($overall_score_plot);
 	$overall_mvp_json = json_encode($overall_mvp_plot);
+	$commander_acc_json = json_encode($commander_acc_plot);
+	$commander_score_json = json_encode($commander_score_plot);
+	$commander_mvp_json = json_encode($commander_mvp_plot);
+	$heavy_acc_json = json_encode($heavy_acc_plot);
+	$heavy_score_json = json_encode($heavy_score_plot);
+	$heavy_mvp_json = json_encode($heavy_mvp_plot);
+	$scout_acc_json = json_encode($scout_acc_plot);
+	$scout_score_json = json_encode($scout_score_plot);
+	$scout_mvp_json = json_encode($scout_mvp_plot);
+	$ammo_acc_json = json_encode($ammo_acc_plot);
+	$ammo_score_json = json_encode($ammo_score_plot);
+	$ammo_mvp_json = json_encode($ammo_mvp_plot);
+	$medic_acc_json = json_encode($medic_acc_plot);
+	$medic_score_json = json_encode($medic_score_plot);
+	$medic_mvp_json = json_encode($medic_mvp_plot);
 
 	$commander_acc_plot = array();
 	$commander_score_plot = array();
@@ -283,6 +333,20 @@ function displayPositionBoxPlot(data) {
 
 $(document).ready(function(){
 	$.ajax({
+		type: 'get',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>',
+		dataType: 'json',
+		success: function(data) {
+			displayPositionScoreSpider(data);
+			displayPositionMVPSpider(data);
+			displayPositionBoxPlot(data);
+		},
+		error: function() {
+			alert('Failed to retrieve scorecards');
+		}
+	});
+
+	/*$.ajax({
 		type: 'get',
 		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json'))); ?>',
 		dataType: 'json',
@@ -889,7 +953,7 @@ $(document).ready(function(){
 			xAxis: 5
 		}
 		]
-	});
+	});*/
 
 	$('#game_list thead tr th.searchable').each( function () {
 		var title = $('#game_list thead th').eq( $(this).index() ).text();

@@ -148,7 +148,7 @@ class Event extends AppModel {
 	}
 
 	public function getSummaryStats($event_id) {
-		$scorecard_ids = $this->_getScorecardIds($event_id);
+		$scorecard_ids = $this->getScorecardIds($event_id);
 
 		$scorecard = ClassRegistry::init('Scorecard');
 
@@ -196,7 +196,7 @@ class Event extends AppModel {
 	public function getMedicHitStats($event_id) {
 		$conditions = array();
 	
-		$scorecard_ids = $this->_getScorecardIds($event_id);
+		$scorecard_ids = $this->getScorecardIds($event_id);
 
 		$scorecard = ClassRegistry::init('Scorecard');
 		$scorecards = $scorecard->find('all', array(
@@ -260,14 +260,19 @@ class Event extends AppModel {
 		return $game_ids;
 	}
 
-	protected function _getScorecardIds($event_id, $show_rounds = true, $show_finals = true) {
+	function getScorecardIds($event_id, $player_id = null, $show_rounds = true, $show_finals = true) {
+		$scorecard_conditions = array();
+		if(!is_null($player_id))
+			$scorecard_conditions[] = array('player_id' => $player_id);
+		
 		$events = $this->find('first', array(
 			'fields' => array('id'),
 			'contain' => array(
 				'Game' => array(
 					'fields' => array('id'),
 					'Scorecard' => array(
-						'fields' => array('id')
+						'fields' => array('id'),
+						'conditions' => $scorecard_conditions
 					)
 				)
 			),

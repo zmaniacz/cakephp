@@ -83,19 +83,25 @@ class Player extends AppModel {
 		)
 	);
 
-	public function getPlayerStats($id, $role = null, $state = null) {
+	public function getPlayerScorecards($id, $role = null, $state = null) {
 		$conditions = array();
 		if(!is_null($role))
-			$conditions[] = array('position' => $role);
+			$conditions[] = array('Scorecard.position' => $role);
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('center_id' => $state['centerID']);
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
 		
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('type' => $state['gametype']);
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
-		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('event_id' => $state['eventID']);
+		if(isset($state['eventID']) && $state['eventID'] > 0) {
+			$event = ClassRegistry::init('Event');
+			$selected_event = $event->findById($state['eventID']);
+			if($selected_event['Event']['is_comp']) {
+				$scorecard_ids = $event->getScorecardIds($state['eventID'], $id);
+				$conditions[] = array('Scorecard.id' => $scorecard_ids);
+			}
+		}
 
 		return $this->find('all', array(
 			'conditions' => array('id' => $id),
