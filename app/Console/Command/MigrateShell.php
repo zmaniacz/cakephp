@@ -293,8 +293,8 @@ class MigrateShell extends AppShell {
                     FROM
                         (`scorecards`
                         JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
-                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
-    }*/
+                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");*/
+    }
 
     public function vGames() {
         //create the vGames view
