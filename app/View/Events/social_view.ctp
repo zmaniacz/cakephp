@@ -141,7 +141,7 @@
 						if (type === 'display') {
 							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/'+row.player_id+'/'+row.game_id+'.json">'+parseFloat(hit_diff).toFixed(2)+' ('+row.shot_opponent+'/'+row.times_zapped+')</button>';
 						}
-						return row.mvp_points;
+						return hit_diff;
 					},
 					"orderSequence": [ "desc", "asc"]
 				},
