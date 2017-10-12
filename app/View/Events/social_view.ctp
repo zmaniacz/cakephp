@@ -11,13 +11,13 @@
 			"columns" : [
 				{ "data" : function ( row, type, val, meta) {
 						if(row.winner === 'red') {
-							var btn_class = 'btn btn-danger';
+							var btn_class = 'btn btn-danger btn-block';
 						} else {
-							var btn_class = 'btn btn-success';
+							var btn_class = 'btn btn-success btn-block';
 						}
 						
 						if (type === 'display') {
-							return '<a href="/games/view/'+row.id+location.search+'" class="'+btn_class+'">'+row.game_name+' - '+row.game_datetime+'</a>';
+							return '<a href="/games/view/'+row.id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
 						}
 
 						return row.name;
