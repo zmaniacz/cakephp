@@ -13,7 +13,21 @@ class Game extends AppModel {
 		'GameResult' => array(
 			'className' => 'GameResult',
 			'foreignKey' => 'game_id'
-		)
+		),
+		'TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignKey' => 'game_id'
+		),
+		'Red_TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Red_TeamPenalties.team_color' => 'red')
+		),
+		'Green_TeamPenalties' => array(
+			'className' => 'TeamPenalties',
+			'foreignkey' => 'game_id',
+			'conditions' => array('Green_TeamPenalties.team_color' => 'green')
+		),
 	);
 
 	public $hasOne = array(
@@ -101,7 +115,9 @@ class Game extends AppModel {
 				'Match' => array(
 					'Round'
 				),
-				'Event'
+				'Event',
+				'Red_TeamPenalties',
+				'Green_TeamPenalties'
 			),
 			'conditions' => array('Game.id' => $id)
 		));
@@ -220,6 +236,9 @@ class Game extends AppModel {
 						'Penalty'
 					)
 				),
+				'Match',
+				'Red_TeamPenalties',
+				'Green_TeamPenalties'
 			),
 			'conditions' => array(
 				'Game.id' => $id
@@ -239,7 +258,7 @@ class Game extends AppModel {
 		foreach($game['Red_Team']['Scorecard'] as $scorecard) {
 			if(!empty($scorecard['Penalty'])) {
 				foreach($scorecard['Penalty'] as $penalty) {
-						$game['Red_Team']['penalty_score'] += $penalty['value'];
+					$game['Red_Team']['penalty_score'] += $penalty['value'];
 				}
 			}
 		}
@@ -247,9 +266,18 @@ class Game extends AppModel {
 		foreach($game['Green_Team']['Scorecard'] as $scorecard) {
 			if(!empty($scorecard['Penalty'])) {
 				foreach($scorecard['Penalty'] as $penalty) {
-						$game['Green_Team']['penalty_score'] += $penalty['value'];
+					$game['Green_Team']['penalty_score'] += $penalty['value'];
 				}
 			}
+		}
+
+		//load team penalties in
+		foreach($game['Red_TeamPenalties'] as $team_penalty) {
+			$game['Red_Team']['penalty_score'] += $team_penalty['value'];
+		}
+
+		foreach($game['Green_TeamPenalties'] as $team_penalty) {
+			$game['Green_Team']['penalty_score'] += $team_penalty['value'];
 		}
 		
 		//Apply the elim bonus if the ooposing team was eliminated...both teams can get the bonus
@@ -283,6 +311,10 @@ class Game extends AppModel {
 		}
 		
 		$this->saveAll($game);
+		
+		if(isset($game['Match']['id'])) {
+			$this->Match->updatePoints($game['Match']['id']);
+		}
 	}
 
 	public function getPrevNextGame($game_id) {
@@ -341,5 +373,23 @@ class Game extends AppModel {
 		));
 
 		return $stats;
+	}
+
+	public function fixSocialGameNames($date, $center_id) {
+		//christ
+		$games = $this->find('all', array(
+			'conditions' => array(
+				'center_id' => $center_id,
+				'DATE(game_datetime)' => $date
+			),
+			'order' => 'game_datetime ASC'
+		));
+
+		$game_counter=1;
+		foreach($games as $game) {
+			$game['Game']['game_name'] = "G{$game_counter}";
+			$this->save($game);
+			$game_counter++;
+		}
 	}
 }

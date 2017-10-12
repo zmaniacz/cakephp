@@ -6,7 +6,7 @@
 		<label for="nightlySelectDate">Select Date</label>
 		<select class="form-control" name="data[nightly][selectDate]" id="nightlySelectDate">
 			<?php foreach($game_dates as $game_date): ?>
-				<option value="<?= $game_date ?>"><?= $game_date ?></option>
+				<option value="<?= $game_date ?>" <?= ($game_date == $current_date) ? "selected" : ""; ?>><?= $game_date ?></option>
 			<?php endforeach; ?>
 		</select>
 	</div>

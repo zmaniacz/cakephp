@@ -57,25 +57,26 @@
 					stacking: 'percent'
 				}
 			},
-			series: [{
-				name: 'Green Team',
-				color: 'green',
-				data: [<?= $green_data_string; ?>]
-			},
-			{
-				name: 'Red Team',
-				color: 'red',
-				data: [<?= $red_data_string; ?>]
-			}
+			series: [
+				{
+					name: 'Green Team',
+					color: 'green',
+					data: [<?= $green_data_string; ?>]
+				},
+				{
+					name: 'Red Team',
+					color: 'red',
+					data: [<?= $red_data_string; ?>]
+				}
 			]
 		});
 	});
-
+	
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
 		$('#breakdown_container').highcharts().reflow();
 	});
 </script>
-<?php if(AuthComponent::user('role') === 'admin'): ?>
+<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 <div class="well well-lg">
 	<h3 class="text-danger">IMPORTANT</h3>
 	<p class="lead">
@@ -86,7 +87,7 @@
 </div>
 <?php endif; ?>
 <?php
-	if(AuthComponent::user('role') === 'admin') {
+	if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))) {
 		echo $this->Form->create('Game', array(
 			'class' => 'form-horizontal', 
 			'role' => 'form',
@@ -217,7 +218,7 @@
 				
 				$score_line .= "<tr class=\"text-center\">";
 				
-				if(AuthComponent::user('role') === 'admin') {
+				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
 					$score_line .= "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
 				} else {
 					$score_line .= (($score['is_sub']) ? "<td class=\"text-warning\"><span class=\"glyphicon glyphicon-asterisk\"></span></td>" : "<td></td>");
@@ -243,7 +244,7 @@
 				$score_line .= "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
 				$score_line .= "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
 				$score_line .= "<td>$penalty_string";
-				if(AuthComponent::user('role') === 'admin') {
+				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
 					$score_line.= $this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']), array('class' => 'btn btn-warning'));
 				}
 				$score_line .= "</td></tr>";
@@ -262,7 +263,29 @@
 			</div>
 			<div id="collapse_winner_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info"><?= "Score: ".$winner_score.$winner_adj; ?></h3>
+					<h3 class="text-info">
+						<?= "Score: ".$winner_score.$winner_adj; ?>
+						<span class="pull-right">
+						<?php
+							if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
+								echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], $game['Game']['winner']), array('class' => 'btn btn-warning'));
+							}
+							if($game['Game']['winner'] == 'green') {
+								if(isset($game['Green_TeamPenalties'])) {
+									foreach($game['Green_TeamPenalties'] as $team_penalty) {
+										echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getTeamPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+									}
+								}
+							} elseif($game['Game']['winner'] == 'red') {
+								if(isset($game['Red_TeamPenalties'])) {
+									foreach($game['Red_TeamPenalties'] as $team_penalty) {
+										echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getTeamPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+									}
+								}
+							}
+						?>
+						</span>
+					</h3>
 				</div>
 				<div class="table-responsive">
 					<table class="gamelist table table-striped table-bordered table-hover table-condensed">
@@ -304,7 +327,29 @@
 			</div>
 			<div id="collapse_loser_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info"><?= "Score: ".$loser_score.$loser_adj; ?></h3>
+					<h3 class="text-info">
+						<?= "Score: ".$loser_score.$loser_adj; ?>
+						<span class="pull-right">
+							<?php
+								if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
+									echo $this->Html->link("Add Team Penalty", array('controller' => 'TeamPenalties', 'action' => 'add', $game['Game']['id'], (($game['Game']['winner'] == 'red') ? 'green' : 'red')), array('class' => 'btn btn-warning'));
+								}
+								if($game['Game']['winner'] == 'green') {
+									if(isset($game['Red_TeamPenalties'])) {
+										foreach($game['Red_TeamPenalties'] as $team_penalty) {
+											echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getTeamPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+										}
+									}
+								} elseif($game['Game']['winner'] == 'red') {
+									if(isset($game['Green_TeamPenalties'])) {
+										foreach($game['Green_TeamPenalties'] as $team_penalty) {
+											echo "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#teamPenaltyModal\" target=\"".$this->Html->url(array('controller' => 'TeamPenalties', 'action' => 'getTeamPenalty', $team_penalty['id'], 'ext' => 'json'))."\">".$team_penalty['type']." (".$team_penalty["value"].")</button>";
+										}
+									}
+								}
+							?>
+						</span>
+					</h3>
 				</div>
 				<div class="table-responsive">
 					<table class="gamelist table table-striped table-bordered table-hover table-condensed">
@@ -347,7 +392,10 @@
 <script>
 	$('.switch_sub_cbox').change(function() {
 		$.ajax({
-			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json"
+			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json",
+			success: function(data) {
+				toastr.success('Set Merc Status')
+			}
 		});
 	});
 </script>

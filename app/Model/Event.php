@@ -304,10 +304,16 @@ class Event extends AppModel {
 		return $leagues;
 	}
 
-	public function getTeamStandings($state) {
+	public function getTeamStandings($state, $round = null) {
 		$conditions = array();
+		$round_conditions = array();
 		
-		$conditions[] = array('Team.event_id' => $state['eventID']);
+		$conditions[] = array('Team.league_id' => $state['leagueID']);
+		$round_conditions[] = array('Round.is_finals' => '0');
+
+		if(isset($round)) {
+			$round_conditions[] = array('Round.round' => $round);
+		}
 		
 		$rounds = $this->find('first', array(
 			'contain' => array(
@@ -316,10 +322,11 @@ class Event extends AppModel {
 						'Game_1',
 						'Game_2'
 					),
-					'conditions' => array('Round.is_finals' => '0')
+					'conditions' => $round_conditions
 				)
 			),
-			'conditions' => array('id' => $state['eventID'])
+			'conditions' => array('id' => $state['leagueID']),
+			'orderby' => 'Round.round ASC'
 		));
 		
 		$teams = $this->Team->find('list', array('conditions' => array('Team.event_id' => $state['eventID'])));
@@ -334,7 +341,7 @@ class Event extends AppModel {
 		foreach($rounds['Round'] as $round) {
 			foreach($round['Match'] as $match) {
 				//Overall match points
-				if(!is_null($match['team_1_id']) || !is_null($match['team_2_id'])) {
+				if(isset($match['team_1_id']) && isset($match['team_2_id'])) {
 					$standings[$match['team_1_id']]['points'] += $match['team_1_points'];
 					$standings[$match['team_2_id']]['points'] += $match['team_2_points'];
 					

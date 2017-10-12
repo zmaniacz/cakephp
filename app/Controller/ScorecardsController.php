@@ -5,6 +5,7 @@ class ScorecardsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(
 			'index',
+			'landing',
 			'setState',
 			'pickCenter',
 			'pickLeague',
@@ -28,13 +29,48 @@ class ScorecardsController extends AppController {
 			'filterRounds',
 			'allstar',
 			'getAllStarStats',
-			'getComparison'
+			'getComparison',
+			'getPlayerHitBreakdown'
 		);
 		parent::beforeFilter();
 	}
 
 	public function index() {
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly', '?' => array('gametype' => $this->Session->read('state.gametype'), 'centerID' => $this->Session->read('state.centerID'), 'eventID' => $this->Session->read('state.eventID'))));
+	}
+
+	public function landing() {
+		$this->layout = 'landing';
+
+		$events = $this->Game->find('all', array(
+			'fields' => array(
+				'COUNT(Game.id) as games_played',
+				'Game.center_id',
+				'Game.league_id',
+				'DATE(Game.game_datetime) as games_date',
+				'Game.type'
+			),
+			'group' => array(
+				'center_id',
+				'league_id',
+				'games_date',
+				'type'
+			),
+			'order' => array(
+				'games_date DESC'
+			),
+			'limit' => 10,
+			'contain' => array(
+				'Center' => array(
+					'fields' => array(
+						'name',
+						'short_name'
+					)
+				)
+			)
+		));
+
+		$this->set('events', $events);
 	}
 	
 	public function setState($gametype, $event_id, $center_id) {
@@ -111,9 +147,34 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallMedicHits() {
-		$this->request->allowMethod('ajax');
+		//$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
+<<<<<<< HEAD
+=======
+	
+	public function nightly($date = null) {
+		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
+		
+		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
+		$this->set('game_dates', $game_dates);
+		
+		if($this->request->isPost()) {
+			$date = $this->request->data['Scorecard']['date'];
+		}
+		
+		if(!$date)
+			$date = reset($game_dates);
+
+		$this->set('current_date', $date);
+	}
+	
+	public function nightlyScorecards($date = null) {
+		$this->request->onlyAllow('ajax');
+		$this->set('scorecards', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
+	}
+>>>>>>> origin/master
 
 	public function nightlyMedicHits($date = null) {
 		$this->request->onlyAllow('ajax');
@@ -175,18 +236,27 @@ class ScorecardsController extends AppController {
 	}
     
     public function getHitBreakdown($player_id, $game_id) {
-        $this->request->allowMethod('ajax');
         $this->set('hits', $this->Scorecard->getHitDetails($player_id, $game_id));
         $this->set('player_id', $player_id);
+    }
+
+	public function getPlayerHitBreakdown($player_id) {
+        $this->set('data', $this->Scorecard->getPlayerHitDetails($player_id, $this->Session->read('state')));
+		$this->set('players', $this->Scorecard->Player->find('list'));
     }
 	
 	public function ajax_switchSub($id) {
 		$this->request->onlyAllow('ajax');
-		$this->render(false);
-		
+
 		$scorecard = $this->Scorecard->read(null, $id);
-		$this->Scorecard->set('is_sub', (($scorecard['Scorecard']['is_sub']) ? 0 : 1) );
-		$this->Scorecard->save();
+
+		$is_sub = ($scorecard['Scorecard']['is_sub']) ? 0 : 1;
+		
+		$this->Scorecard->set('is_sub', $is_sub);
+		
+		if($this->Scorecard->save()) {
+			return new CakeResponse(array('body' => json_encode(array('id' => $id, 'is_sub' => $is_sub))));
+		}
 	}
 	
 	public function filterSub($showSubs = false) {

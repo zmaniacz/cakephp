@@ -9,7 +9,7 @@ class LeaguesController extends AppController {
 	public $uses = array('League','Scorecard','Game');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails','ajax_getTeamStandings');
 		parent::beforeFilter();
 	}
 
@@ -31,6 +31,10 @@ class LeaguesController extends AppController {
 		$this->set('details', $this->Event->getLeagueDetails($this->Session->read('state')));
 	}
 
+	public function ajax_getTeamStandings($round = null) {
+		$this->set('data', $this->League->getTeamStandings($this->Session->read('state'), $round));
+	}
+
 	public function ajax_getLeagues() {
 		$this->request->onlyAllow('ajax');
 		$this->set('leagues', $this->Event->getLeagues());
@@ -44,6 +48,36 @@ class LeaguesController extends AppController {
 	public function ajax_getStandings() {
 		$this->request->onlyAllow('ajax');
 		$this->set('standings', $this->Event->getTeamStandings($this->Session->read('state')));
+	}
+
+	public function ajax_assignTeam($match_id, $team_number, $team_id) {
+		$this->request->onlyAllow('ajax');
+
+		$match = $this->League->Round->Match->read(null, $match_id);
+		
+		if($team_number == 1)
+			$this->League->Round->Match->set('team_1_id', $team_id);
+		else
+			$this->League->Round->Match->set('team_2_id', $team_id);
+		
+		if($this->League->Round->Match->save()) {
+			return new CakeResponse(array('body' => json_encode(array('match_id' => $match_id, 'team_number' => $team_number, 'team_id' => $team_id))));
+		}
+	}
+
+	public function ajax_getMatchDetails($match_id) {
+		$this->set('match', $this->League->Round->Match->find('first', array(
+			'contain' => array(
+				'Game_1',
+				'Game_2',
+				'Team_1',
+				'Team_2',
+				'Round'
+			),
+			'conditions' => array(
+				'Match.id' => $match_id
+			)
+		)));
 	}
 
 /**

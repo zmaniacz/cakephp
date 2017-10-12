@@ -42,7 +42,7 @@
 	if($score['Scorecard']['type'] == 'league' || $score['Scorecard']['type'] == 'tournament') {
 		foreach($score['Penalty'] as $penalty) {
 			if($penalty['type'] != 'Penalty Removed') {
-				$mvp['Penalties'] += -5;
+				$mvp['Penalties'] += $penalty['mvp_value'];
 			}
 		}
 	}

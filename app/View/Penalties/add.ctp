@@ -25,13 +25,15 @@
 				'Chasing' => 'Chasing',
 				'Shoulder Tilting' => 'Shoulder Tilting',
 				'Unsportsmanlike Conduct' => 'Unsportsmanlike Conduct',
-				'Penalty Removed' => 'Penalty Removed'
+				'Penalty Removed' => 'Penalty Removed',
+				'Unknown' => 'Unknown'
 			),
 			'class' => 'form-control',
 			'div' => array('class' => 'form-group')
 		)); ?>
 		<?= $this->Form->input('description', array('class' => 'form-control','div' => array('class' => 'form-group'))); ?>
 		<?= $this->Form->input('value', array('default' => '-1000', 'class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
+		<?= $this->Form->input('mvp_value', array('default' => '-5', 'class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
 		<?= $this->Form->input('scorecard_id', array('class' => 'form-control', 'div' => array('class' => 'form-group'))); ?>
 		<?= $this->Form->end(array('value' => 'Submit', 'class' => 'btn btn-success')); ?>
 	</div>

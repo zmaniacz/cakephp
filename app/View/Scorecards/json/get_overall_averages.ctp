@@ -4,10 +4,13 @@
 	foreach ($response as $key => $value) {
 		$data[] = array(
 			'name' => $this->Html->link($value['player_name'], array('controller' => 'Players', 'action' => 'view', $key), array('class' => 'btn btn-block btn-info')),
+			'player_id' => $key,
+			'player_name' => $value['player_name'],
 			'avg_avg_mvp' => round($value['avg_avg_mvp'],2),
+			'total_mvp' => round($value['total_mvp'],2),
 			'avg_avg_acc' => round($value['avg_avg_acc']*100,2),
-			'total_games_won' => round($value['total_games_won'],2),
-			'total_games_played' => round($value['total_games'],2),
+			'games_won' => round($value['total_games_won'],2),
+			'games_played' => round($value['total_games'],2),
 			'commander_avg_mvp' => round($value['Commander']['avg_mvp'],2),
 			'commander_avg_acc' => round($value['Commander']['avg_acc']*100,2),
 			'commander_games_won' => round($value['Commander']['games_won'],2),

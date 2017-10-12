@@ -113,10 +113,10 @@ class UploadsController extends AppController {
         $xml['games']['game'] = isset($xml['games']['game'][0]) ? $xml['games']['game'] : array($xml['games']['game']);
         
         $game_counter = 1;
+		$datetime = null;
 		foreach($xml['games']['game'] as $game) {
             //Start Syracuse hack
             //format sample:  9:03pm Jul-5-2015
-            $datetime = null;
             $datetime = preg_replace('/(\d{1,2}:\d{2}(am|pm))\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{1})-(\d{4})/', '$1 $3-0$4-$5', $game['date']);
 			
 			$this->Game->create();
@@ -135,12 +135,17 @@ class UploadsController extends AppController {
 				
 				foreach($game['player'] as $player) {
 					$player_id = $this->Scorecard->generatePlayer($player['name']);
+
+					//blue or yellow team gets autoconverted to green
+					$team = strtolower($player['team']);
+					if($team == 'yellow' || $team == 'blue')
+						$team = 'green';
 					
 					$this->Scorecard->create();
 					$this->Scorecard->set(array(
 						'player_name' => "$player[name]", 
 						'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)), 
-						'team' => strtolower($player['team']), 
+						'team' => $team, 
 						'position' => $player['position'], 
 						'score' => ($player['score']+(1000*$player['penalties'])),
 						'shots_hit' => $player['shotsHit'],
@@ -209,6 +214,10 @@ class UploadsController extends AppController {
 
 		
 		$this->Scorecard->generateMVP();
+
+		if($type == "social") {
+			$this->Game->fixSocialGameNames(date("Y-m-d", strtotime($datetime)), $center_id);
+		}
 		
 		$this->Session->setFlash("Added $row scorecards");
 		$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));

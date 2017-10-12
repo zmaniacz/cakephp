@@ -719,7 +719,7 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_mvp_data.length/10),10),
 			xAxis: 0
@@ -728,7 +728,7 @@ $(document).ready(function(){
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_mvp_data.length/10),10),
 			xAxis: 1
@@ -737,7 +737,7 @@ $(document).ready(function(){
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_mvp_data.length/10),10),
 			xAxis: 2
@@ -746,7 +746,7 @@ $(document).ready(function(){
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_mvp_data.length/10),10),
 			xAxis: 3
@@ -755,7 +755,7 @@ $(document).ready(function(){
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_mvp_data.length/10),10),
 			xAxis: 4
@@ -764,7 +764,7 @@ $(document).ready(function(){
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'SMA',
+			algorithm: 'EMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_mvp_data.length/10),10),
 			xAxis: 5
@@ -1007,6 +1007,23 @@ $(document).ready(function(){
 		],
 		"order": [[ 1, "desc" ]]
 	});
+
+	var headToHeadTable = $('#head_to_head').DataTable( {
+		"deferRender" : true,
+		"ajax" : {
+			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'getPlayerHitBreakdown', $id, 'ext' => 'json'))); ?>"
+		},
+		"columns" : [
+			{ "data" : "name" },
+			{ "data" : "hits" },
+			{ "data" : "hit_by" },
+			{ "data" : "hit_ratio" },
+			{ "data" : "missiles" },
+			{ "data" : "missile_by" },
+			{ "data" : "missile_ratio" }
+		],
+		"order": [[ 1, "desc" ]]
+	});
 });
 </script>
 <h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
@@ -1024,12 +1041,13 @@ $(document).ready(function(){
 <?php endif; ?>
 <div>
 	<?php if (AuthComponent::user('role') === 'admin'): ?>
-		<a href=<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?> class="btn btn-success" role="button">Link</a>
+		<a href="<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?>" class="btn btn-success" role="button">Link</a>
 	<?php endif; ?>
 </div>
 <ul class="nav nav-tabs" role="tablist" id="myTab">
 	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
 	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
+	<li role="presentation"><a href="#head_to_head_tab" role="tab" data-toggle="tab">Head To Head</a></li>
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
@@ -1106,5 +1124,22 @@ $(document).ready(function(){
 		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
 		<br />
 		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
+		<div class="table-responsive">
+			<table id="head_to_head" class="table table-striped table-hover table-border table-condensed">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Shot</th>
+						<th>Shot By</th>
+						<th>Shot Ratio</th>
+						<th>Missiles</th>
+						<th>Missiled By</th>
+						<th>Missile Ratio</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</div>
 </div>

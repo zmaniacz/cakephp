@@ -19,6 +19,7 @@
 					<th>Player</th>
 					<th>Type</th>
 					<th>Value</th>
+					<th>MVP Value</th>
 					<th>Actions</th>
 				</thead>
 				<?php foreach ($penalties as $penalty): ?>
@@ -30,6 +31,7 @@
 						</td>	
 						<td><?php echo h($penalty['Penalty']['type']); ?>&nbsp;</td>
 						<td><?php echo h($penalty['Penalty']['value']); ?>&nbsp;</td>
+						<td><?php echo h($penalty['Penalty']['mvp_value']); ?>&nbsp;</td>
 						<td class="actions">
 							<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id']), array('class' => 'btn btn-info')); ?>
 							<?php 

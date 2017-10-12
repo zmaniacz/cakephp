@@ -156,7 +156,7 @@ class Scorecard extends AppModel {
 				
 				foreach($penalties as $penalty) {
 					if($penalty['Penalty']['type'] != 'Penalty Removed')
-						$mvp += -5;
+						$mvp += $penalty['Penalty']['mvp_value'];
 				}
 			}
 			
@@ -505,7 +505,9 @@ class Scorecard extends AppModel {
 				'MIN(Scorecard.score) as min_score',
 				'ROUND(AVG(Scorecard.score)) as avg_score',
 				'MAX(Scorecard.score) as max_score',
+				'SUM(Scorecard.score) as total_score',
 				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'SUM(Scorecard.mvp_points) as total_mvp',
 				'COUNT(Scorecard.game_datetime) as games_played',
 				'MIN(Scorecard.accuracy) as min_acc',
 				'AVG(Scorecard.accuracy) as avg_acc',
@@ -614,6 +616,7 @@ class Scorecard extends AppModel {
 			'fields' => array(
 				'Scorecard.player_id',
 				'AVG(Scorecard.mvp_points) as avg_mvp',
+				'SUM(Scorecard.mvp_points) as total_mvp',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'COUNT(Scorecard.game_datetime) as games_played',
 				'SUM(Team.winner) as games_won'
@@ -642,6 +645,7 @@ class Scorecard extends AppModel {
 			}
 			
 			$results[$player['Scorecard']['player_id']]['avg_avg_mvp'] = $player[0]['avg_mvp'];
+			$results[$player['Scorecard']['player_id']]['total_mvp'] = $player[0]['total_mvp'];
 			$results[$player['Scorecard']['player_id']]['avg_avg_acc'] = $player[0]['avg_acc'];
 			$results[$player['Scorecard']['player_id']]['total_games_won'] = $player[0]['games_won'];
 			$results[$player['Scorecard']['player_id']]['total_games'] = $player[0]['games_played'];
@@ -724,55 +728,51 @@ class Scorecard extends AppModel {
 
 		$subQueryConditions[] = array('position NOT IN ("Medic", "Ammo Carrier")');
 
-		$db = $this->getDataSource();
-		$subQuery = $db->buildStatement(
-			array(
-				'fields' => array(
-					'ScorecardNoResup.player_id',
-					'SUM(ScorecardNoResup.medic_hits) as total_medic_hits',
-					'(SUM(ScorecardNoResup.medic_hits)/COUNT(ScorecardNoResup.game_datetime)) as medic_hits_per_game',
-					'COUNT(ScorecardNoResup.game_datetime) as games_played'
-				),
-				'table' => $db->fullTableName($this),
-				'alias' => 'ScorecardNoResup',
-				'conditions' => $subQueryConditions,
-				'group' => 'player_id',
-			),
-			$this
-		);
-
-		$subQuery = '('.$subQuery.')';
-
-		$scores = $this->find('all', array(
-			'joins' => array(
-				array(
-					'alias' => 'ScorecardNoResup',
-					'table' => $subQuery,
-					'conditions' =>array(
-						'Scorecard.player_id = ScorecardNoResup.player_id'
-					)
-				)
-			),
+		$non_resup_scores = $this->find('all', array(
 			'fields' => array(
 				'player_id',
 				'SUM(Scorecard.medic_hits) as total_medic_hits',
 				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
-				'COUNT(Scorecard.game_datetime) as games_played',
-				'ScorecardNoResup.total_medic_hits',
-				'ScorecardNoResup.medic_hits_per_game',
-				'ScorecardNoResup.games_played',
+				'COUNT(Scorecard.game_datetime) as games_played'
+			),
+			'conditions' => $subQueryConditions,
+			'group' => 'player_id HAVING total_medic_hits > 0',
+			'order' => 'player_id DESC'
+		));
+
+		$scores = $this->find('all', array(
+			'fields' => array(
+				'player_id',
+				'SUM(Scorecard.medic_hits) as total_medic_hits',
+				'(SUM(Scorecard.medic_hits)/COUNT(Scorecard.game_datetime)) as medic_hits_per_game',
+				'COUNT(Scorecard.game_datetime) as games_played'
+			),
+			'contain' => array(
+				'Player' => array(
+					'fields' => array(
+						'id',
+						'player_name'
+					)
+				)
 			),
 			'conditions' => $conditions,
 			'group' => 'player_id HAVING total_medic_hits > 0',
-			'order' => 'total_medic_hits DESC'
+			'order' => 'player_id DESC'
 		));
 
-		//add in the player_name to the results
 		foreach($scores as &$score) {
-			$player = $this->Player->findById($score['Scorecard']['player_id']);
-			$score['Scorecard']['player_name'] = $player['Player']['player_name'];
+			foreach($non_resup_scores as $non_resup_score) {
+					$score[0]['non_resup_total_medic_hits'] = 0;
+					$score[0]['non_resup_medic_hits_per_game'] = 0;
+					$score[0]['non_resup_games_played'] = 0;
+				if($score['Scorecard']['player_id'] == $non_resup_score['Scorecard']['player_id']) {
+					$score[0]['non_resup_total_medic_hits'] = $non_resup_score[0]['total_medic_hits'];
+					$score[0]['non_resup_medic_hits_per_game'] = $non_resup_score[0]['medic_hits_per_game'];
+					$score[0]['non_resup_games_played'] = $non_resup_score[0]['games_played'];
+					break;
+				}
+			}
 		}
-
 		return $scores;
 	}
 
@@ -1015,6 +1015,76 @@ class Scorecard extends AppModel {
 		array_multisort($team, SORT_ASC, $rank, SORT_ASC, $results);
         
         return $results;
+    }
+
+	public function getPlayerHitDetails($player_id, $state) {
+		$conditions = array();
+
+		$conditions[] = array('Scorecard.player_id' => $player_id);
+		
+		if(isset($state['centerID']) && $state['centerID'] > 0)
+			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		
+		if(isset($state['gametype']) && $state['gametype'] != 'all')
+			$conditions[] = array('Scorecard.type' => $state['gametype']);
+		
+		if(isset($state['leagueID']) && $state['leagueID'] > 0)
+			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+
+        $scorecards = $this->find('list', array(
+			'fields' => array('game_id'),
+            'conditions' => $conditions
+        ));
+		
+
+		$games_ids = implode(",",$scorecards);
+
+		$db = $this->getDataSource();
+		$results = $db->fetchAll("
+			SELECT 
+				player_hits.player_id,
+				player_hits.target_id,
+				SUM(player_hits.hits) AS hits,
+				SUM(player_hits.missiles) AS missiles,
+				targets.hit_by,
+				targets.missile_by
+			FROM
+				(SELECT 
+					hits.*, scorecards.game_id
+				FROM
+					hits
+				LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
+					LEFT JOIN
+				(SELECT 
+					player_hits.player_id,
+						SUM(player_hits.hits) AS hit_by,
+						SUM(player_hits.missiles) AS missile_by
+				FROM
+					(SELECT 
+					hits.*, scorecards.game_id
+				FROM
+					hits
+				LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
+				WHERE
+					player_hits.target_id = $player_id AND player_hits.game_id IN ($games_ids)
+				GROUP BY player_hits.player_id) AS targets ON player_hits.target_id = targets.player_id
+			WHERE
+				player_hits.player_id = $player_id
+					AND player_hits.game_id IN ($games_ids)
+			GROUP BY player_hits.player_id , player_hits.target_id");
+        
+		$hits = array();
+		foreach($results as $result) {
+			$hits[] = array(
+				'opponent_id' => $result['player_hits']['target_id'],
+				'hits' => $result[0]['hits'],
+				'missiles' => $result[0]['missiles'],
+				'hit_by' => $result['targets']['hit_by'],
+				'missile_by' => $result['targets']['missile_by'],
+			);
+		}
+
+        return $hits;
     }
 
 	public function getLeaderboards($state) {
