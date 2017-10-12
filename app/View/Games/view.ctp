@@ -69,41 +69,6 @@
 			}
 			]
 		});
-
-		$('#matchups').DataTable( {
-			"deferRender" : true,
-            "ordering" : false,
-            "paging" : false,
-            "pageLength" : 5,
-            "searching" : false,
-            "info" : false,
-			"columns" : [
-				{ "data" : function ( row, type, val, meta) {			
-						if (type === 'display') {
-							return '<a href="/players/view/'+row.red_player_id+location.search+'" class="btn btn-danger btn-block">'+row.red_player_name+'</a>';
-						}
-						return row.red_player_name;
-					},
-					"width" : "200px" 
-				},
-                { "data" : function ( row, type, val, meta) {
-						var matchup = row.matchup * 100;
-						if (type === 'display') {
-							return parseFloat(matchup).toFixed(2)+'%';
-						}
-						return row.matchup;
-					}
-				},
-				{ "data" : function ( row, type, val, meta) {			
-						if (type === 'display') {
-							return '<a href="/players/view/'+row.green_player_id+location.search+'" class="btn btn-success btn-block">'+row.green_player_name+'</a>';
-						}
-						return row.green_player_name;
-					},
-					"width" : "200px" 
-				},
-			]
-		});
 	});
 
 	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -135,7 +100,7 @@
 			    'error' => array('attributes' => array('wrap' => 'span', 'class' => 'help-inline')),
 		)));
 		echo $this->Form->input('id');
-		if(isset($game['Game']['event_id'])) {
+		if($game['Event']['is_comp']) {
 			$match_list = array();
 			foreach($available_matches['Round'] as $round) {
 				foreach($round['Match'] as $match) {
@@ -161,7 +126,7 @@
 		echo $this->Html->link("Delete Game", array('controller' => 'Games', 'action' => 'delete', $game['Game']['id']), array('class' => 'btn btn-danger'), __('ARE YOU VERY SURE YOU WANT TO DELETE # %s?  THIS WILL DELETE ALL ASSOCIATED SCORECARDS!!!', $game['Game']['id']));
 	} else {
 		echo "<h3 class=\"text-center\">";
-		if(isset($game['Game']['event_id']) && !is_null($game['Match']['id'])) {
+		if($game['Event']['is_comp'] && !is_null($game['Match']['id'])) {
 			echo 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'];
 		} else {
 			echo $game['Game']['game_name'];
@@ -177,15 +142,15 @@
 	</span>
 	<span class="col-md-4 text-center">
 	<?php
-		if($game['Red_Team']['league_team_id'] != null)
-			echo $this->Html->link($teams[$game['Red_Team']['league_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Red_Team']['league_team_id']), array('class' => 'btn btn-danger'));
+		if($game['Red_Team']['event_team_id'] != null)
+			echo $this->Html->link($teams[$game['Red_Team']['event_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Red_Team']['event_team_id']), array('class' => 'btn btn-danger'));
 		else
 			echo "Red Team";
 
 		echo " vs ";
 
-		if($game['Green_Team']['league_team_id'] != null)
-			echo $this->Html->link($teams[$game['Green_Team']['league_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Green_Team']['league_team_id']), array('class' => 'btn btn-success'));
+		if($game['Green_Team']['event_team_id'] != null)
+			echo $this->Html->link($teams[$game['Green_Team']['event_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Green_Team']['event_team_id']), array('class' => 'btn btn-success'));
 		else
 			echo "Green Team";
 
@@ -213,22 +178,22 @@
 		<div class="well well-sm">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
 		<?php 
 			if($game['Game']['winner'] == 'green') {
-				$winner = (($game['Green_Team']['league_team_id'] != null) ? $teams[$game['Green_Team']['league_team_id']] : "Green Team");
+				$winner = (($game['Green_Team']['event_team_id'] != null) ? $teams[$game['Green_Team']['event_team_id']] : "Green Team");
 				$winner_panel = "panel panel-success";
 				$winner_score = ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']);
 				$winner_adj = ($game['Green_Team']['bonus_score'] != 0 || $game['Green_Team']['penalty_score'] != 0) ? " (".($game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']).")" : "";
 					
-				$loser = (($game['Red_Team']['league_team_id'] != null) ? $teams[$game['Red_Team']['league_team_id']] : "Red Team");
+				$loser = (($game['Red_Team']['event_team_id'] != null) ? $teams[$game['Red_Team']['event_team_id']] : "Red Team");
 				$loser_panel = "panel panel-danger";
 				$loser_score = ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']);
 				$loser_adj = ($game['Red_Team']['bonus_score'] != 0 || $game['Red_Team']['penalty_score'] != 0) ? " (".($game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']).")" : "";
 			} else {
-				$winner = (($game['Red_Team']['league_team_id'] != null) ? $teams[$game['Red_Team']['league_team_id']] : "Red Team");
+				$winner = (($game['Red_Team']['event_team_id'] != null) ? $teams[$game['Red_Team']['event_team_id']] : "Red Team");
 				$winner_panel = "panel panel-danger";
 				$winner_score = ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']);
 				$winner_adj = ($game['Red_Team']['bonus_score'] != 0 || $game['Red_Team']['penalty_score'] != 0) ? " (".($game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']).")" : "";
 				
-				$loser = (($game['Green_Team']['league_team_id'] != null) ? $teams[$game['Green_Team']['league_team_id']] : "Green Team");
+				$loser = (($game['Green_Team']['event_team_id'] != null) ? $teams[$game['Green_Team']['event_team_id']] : "Green Team");
 				$loser_panel = "panel panel-success";
 				$loser_score = ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']);
 				$loser_adj = ($game['Green_Team']['bonus_score'] != 0 || $game['Green_Team']['penalty_score'] != 0) ? " (".($game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']).")" : ""; 
@@ -283,7 +248,7 @@
 				}
 				$score_line .= "</td></tr>";
 				
-				if($score['team'] == $game['Game']['winner'])
+				if($score['color'] == $game['Game']['winner'])
 					$winner_table .= $score_line;
 				else
 					$loser_table .= $score_line;
@@ -375,19 +340,6 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
-		<div class="table-responsive">
-			<table 
-			 class="table table-striped table-bordered table-hover table-condensed" 
-			 id="matchups" 
-			 data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameMatchups', $game['Game']['id'], 'ext' => 'json'))); ?>"
-			>
-				<thead>
-					<th>Red</th>
-					<th>Match Quality</th>
-					<th>Green</th>
-				</thead>
-			</table>
-		</div>
 		<div id="breakdown_container">
 		</div>
 	</div>

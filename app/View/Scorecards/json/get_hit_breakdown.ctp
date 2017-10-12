@@ -4,7 +4,7 @@
         $red_table = "";
         foreach($hits as $hit) {
             if($hit['id'] != $player_id) {
-                if($hit['team'] == 'green') {
+                if($hit['color'] == 'green') {
                     $green_line = "<tr>";
                     
                     $green_line .= "<td>".$hit['name']."</td>";
@@ -32,7 +32,11 @@
                     $red_table .= $red_line;
                 }
             } else {
-                $title_line = "<h3>".$hit['name']." - <span class=\"text-success\">".$hit['team']." ".$hit['position']."</span></h3>";
+                if($hit['color'] == 'green') {
+                    $title_line = "<h3>".$hit['name']." - <span class=\"text-success\">Green ".$hit['position']."</span></h3>";
+                } else {
+                    $title_line = "<h3>".$hit['name']." - <span class=\"text-danger\">Red ".$hit['position']."</span></h3>";
+                }
             }
         }
 ?>

@@ -958,7 +958,7 @@ class Scorecard extends AppModel {
             'fields' => array(
                 'id',
                 'player_name',
-                'team',
+                'color',
                 'position',
                 'rank',
                 'player_id',
@@ -993,7 +993,7 @@ class Scorecard extends AppModel {
                     $results[$record['Player']['id']]['name'] = $record['Player']['player_name'];
                     $results[$record['Player']['id']]['position'] = $hit['Scorecard']['position'];
                     $results[$record['Player']['id']]['rank'] = $hit['Scorecard']['rank'];
-                    $results[$record['Player']['id']]['team'] = $hit['Scorecard']['team'];
+                    $results[$record['Player']['id']]['color'] = $hit['Scorecard']['color'];
                     $results[$record['Player']['id']]['hitBy'] = $record['hits'];
                     $results[$record['Player']['id']]['missileBy'] = $record['missiles'];
                 }
@@ -1003,13 +1003,13 @@ class Scorecard extends AppModel {
                 $results[$player_id]['id'] = $hit['Scorecard']['player_id'];
                 $results[$player_id]['name'] = $hit['Scorecard']['player_name'];
                 $results[$player_id]['position'] = $hit['Scorecard']['position'];
-                $results[$player_id]['team'] = $hit['Scorecard']['team'];
+                $results[$player_id]['color'] = $hit['Scorecard']['color'];
                 $results[$player_id]['rank'] = $hit['Scorecard']['rank'];
             }
         }
 
         foreach ($results as $key => $row) {
-            $team[$key] = $row['team'];
+            $team[$key] = $row['color'];
             $rank[$key] = $row['rank'];
         }
 		array_multisort($team, SORT_ASC, $rank, SORT_ASC, $results);

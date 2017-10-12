@@ -71,9 +71,8 @@ class GamesController extends AppController {
 				$this->set('available_matches', $this->Event->getAvailableMatches($game));
 			}
 			
-			$this->set('neighbors', $this->Game->getPrevNextGame($game['Game']['id']));
-			
 			$this->set('game', $game);
+			$this->set('neighbors', $this->Game->getPrevNextGame($game['Game']['id']));
 			$this->set('red_team_summary', $this->Team->getSummaryStats($game['Red_Team']['id']));
 			$this->set('green_team_summary', $this->Team->getSummaryStats($game['Green_Team']['id']));
 		}

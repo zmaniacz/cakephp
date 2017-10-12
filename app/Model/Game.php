@@ -84,9 +84,7 @@ class Game extends AppModel {
 	}
 
 	public function getGameDetails($id) {
-		$conditions[] = array('Game.id' => $id);
-
-		$result = $this->find('first', array(
+		return $this->find('first', array(
 			'contain' => array(
 				'Red_Team' => array(
 					'Scorecard' => array(
@@ -102,12 +100,11 @@ class Game extends AppModel {
 				),
 				'Match' => array(
 					'Round'
-				)
+				),
+				'Event'
 			),
-			'conditions' => $conditions
+			'conditions' => array('Game.id' => $id)
 		));
-
-		return $result;
 	}
 
 	public function getMatchups($id) {
@@ -289,9 +286,12 @@ class Game extends AppModel {
 	}
 
 	public function getPrevNextGame($game_id) {
-		$game = $this->findById($game_id, array(
+		$game = $this->find('first', array(
 			'contain' => array(
 				'Event'
+			),
+			'conditions' => array(
+				'Game.id' => $game_id
 			)
 		));
 
@@ -316,6 +316,9 @@ class Game extends AppModel {
 			$results = $this->find('neighbors', array(
 				'field' => 'id',
 				'value' => $game_id,
+				'conditions' => array(
+					'Game.event_id' => $game['Event']['id']
+				),
 				'order' => 'game_datetime DESC'
 			));
 
