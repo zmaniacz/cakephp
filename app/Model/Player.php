@@ -84,7 +84,7 @@ class Player extends AppModel {
 	);
 
 	public function getPlayerScorecards($id, $role = null, $state = null) {
-		$conditions = array();
+		$conditions = array('Scorecard.player_id' => $id);
 		if(!is_null($role))
 			$conditions[] = array('Scorecard.position' => $role);
 		
@@ -102,13 +102,32 @@ class Player extends AppModel {
 				$conditions[] = array('Scorecard.id' => $scorecard_ids);
 			}
 		}
-
-		return $this->find('all', array(
-			'conditions' => array('id' => $id),
-			'contain' => array(
-				'Scorecard' => array(
-					'conditions' => $conditions,
-					'order' => 'Scorecard.game_datetime'
+		
+		$scorecard = ClassRegistry::init('Scorecard');
+		return $scorecard->find('all', array(
+			'fields' => array(
+				'Scorecard.*',
+				'Team.*',
+				'Game.*'
+			),
+			'conditions' => $conditions,
+			'order' => 'Scorecard.game_datetime',
+			'joins' => array(
+				array(
+					'table' => 'teams',
+					'alias' => 'Team',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Team.id = Scorecard.team_id'
+					)
+				),
+				array(
+					'table' => 'games',
+					'alias' => 'Game',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Game.id = Team.game_id'
+					)
 				)
 			)
 		));
