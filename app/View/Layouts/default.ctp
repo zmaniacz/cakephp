@@ -37,6 +37,28 @@
 </head>
 <script>
 	$(document).ready(function() {
+		//Set a global error handler for datatables
+		$.fn.dataTable.ext.errMode = function(settings, techNote, message) {
+			toastr.options = {
+				"closeButton": true,
+				"debug": false,
+				"newestOnTop": true,
+				"progressBar": false,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "0",
+				"extendedTimeOut": "0",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			}
+			toastr.error(message);
+		}
+
         $.ajax({ 
             url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
             dataType:'jsonp',
