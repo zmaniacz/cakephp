@@ -103,8 +103,7 @@ class Player extends AppModel {
 			}
 		}
 		
-		$scorecard = ClassRegistry::init('Scorecard');
-		return $scorecard->find('all', array(
+		$results = $this->Scorecard->find('all', array(
 			'fields' => array(
 				'Scorecard.*',
 				'Team.*',
@@ -131,6 +130,8 @@ class Player extends AppModel {
 				)
 			)
 		));
+
+		return $results;
 	}
 	
 	public function getPlayerGames($id) {
@@ -257,8 +258,14 @@ class Player extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
-		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('Scorecard.event_id' => $state['eventID']);
+		if(isset($state['eventID']) && $state['eventID'] > 0) {
+			$event = ClassRegistry::init('Event');
+			$selected_event = $event->findById($state['eventID']);
+			if($selected_event['Event']['is_comp']) {
+				$scorecard_ids = $event->getScorecardIds($state['eventID'], $id);
+				$conditions[] = array('Scorecard.id' => $scorecard_ids);
+			}
+		}
 
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
@@ -271,6 +278,7 @@ class Player extends AppModel {
 		$scout = array();
 		$ammo = array();
 		$medic = array();
+		$results = array();
 		
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
@@ -350,12 +358,14 @@ class Player extends AppModel {
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
-		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('Scorecard.event_id' => $state['eventID']);
-			
-		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('Scorecard.event_id' => $state['eventID']);
-
+		if(isset($state['eventID']) && $state['eventID'] > 0) {
+			$event = ClassRegistry::init('Event');
+			$selected_event = $event->findById($state['eventID']);
+			if($selected_event['Event']['is_comp']) {
+				$scorecard_ids = $event->getScorecardIds($state['eventID'], $id);
+				$conditions[] = array('Scorecard.id' => $scorecard_ids);
+			}
+		}
 		
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
@@ -368,6 +378,7 @@ class Player extends AppModel {
 		$scout = array();
 		$ammo = array();
 		$medic = array();
+		$results = array();
 		
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {

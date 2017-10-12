@@ -2,145 +2,69 @@
 	echo $this->Html->script('highcharts.js');
 	echo $this->Html->script('highcharts-more.js');
 	echo $this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js');
-	
-	$overall_acc_plot = array();
-	$overall_score_plot = array();
-	$overall_mvp_plot = array();
-	$commander_acc_plot = array();
-	$commander_score_plot = array();
-	$commander_mvp_plot = array();
-	$heavy_acc_plot = array();
-	$heavy_score_plot = array();
-	$heavy_mvp_plot = array();
-	$scout_acc_plot = array();
-	$scout_score_plot = array();
-	$scout_mvp_plot = array();
-	$ammo_acc_plot = array();
-	$ammo_score_plot = array();
-	$ammo_mvp_plot = array();
-	$medic_acc_plot = array();
-	$medic_score_plot = array();
-	$medic_mvp_plot = array();
-	foreach($overall[0]['Scorecard'] as $key => $val) {
-		$overall_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$overall_score_plot[] = (float)$val['score'];
-		$overall_mvp_plot[] = (float)$val['mvp_points'];
-
-		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$commander_score_plot[] = (float)$val['score'];
-		$commander_mvp_plot[] = (float)$val['mvp_points'];
-
-		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$heavy_score_plot[] = (float)$val['score'];
-		$heavy_mvp_plot[] = (float)$val['mvp_points'];
-
-		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$scout_score_plot[] = (float)$val['score'];
-		$scout_mvp_plot[] = (float)$val['mvp_points'];
-
-		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$ammo_score_plot[] = (float)$val['score'];
-		$ammo_mvp_plot[] = (float)$val['mvp_points'];
-
-		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$medic_score_plot[] = (float)$val['score'];
-		$medic_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$overall_acc_json = json_encode($overall_acc_plot);
-	$overall_score_json = json_encode($overall_score_plot);
-	$overall_mvp_json = json_encode($overall_mvp_plot);
-	$commander_acc_json = json_encode($commander_acc_plot);
-	$commander_score_json = json_encode($commander_score_plot);
-	$commander_mvp_json = json_encode($commander_mvp_plot);
-	$heavy_acc_json = json_encode($heavy_acc_plot);
-	$heavy_score_json = json_encode($heavy_score_plot);
-	$heavy_mvp_json = json_encode($heavy_mvp_plot);
-	$scout_acc_json = json_encode($scout_acc_plot);
-	$scout_score_json = json_encode($scout_score_plot);
-	$scout_mvp_json = json_encode($scout_mvp_plot);
-	$ammo_acc_json = json_encode($ammo_acc_plot);
-	$ammo_score_json = json_encode($ammo_score_plot);
-	$ammo_mvp_json = json_encode($ammo_mvp_plot);
-	$medic_acc_json = json_encode($medic_acc_plot);
-	$medic_score_json = json_encode($medic_score_plot);
-	$medic_mvp_json = json_encode($medic_mvp_plot);
-
-	$commander_acc_plot = array();
-	$commander_score_plot = array();
-	$commander_mvp_plot = array();
-	foreach($commander[0]['Scorecard'] as $key => $val) {
-		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$commander_score_plot[] = (float)$val['score'];
-		$commander_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$commander_acc_json = json_encode($commander_acc_plot);
-	$commander_score_json = json_encode($commander_score_plot);
-	$commander_mvp_json = json_encode($commander_mvp_plot);
-
-	$heavy_acc_plot = array();
-	$heavy_score_plot = array();
-	$heavy_mvp_plot = array();
-	foreach($heavy[0]['Scorecard'] as $key => $val) {
-		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$heavy_score_plot[] = (float)$val['score'];
-		$heavy_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$heavy_acc_json = json_encode($heavy_acc_plot);
-	$heavy_score_json = json_encode($heavy_score_plot);
-	$heavy_mvp_json = json_encode($heavy_mvp_plot);
-
-	$scout_acc_plot = array();
-	$scout_score_plot = array();
-	$scout_mvp_plot = array();
-	foreach($scout[0]['Scorecard'] as $key => $val) {
-		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$scout_score_plot[] = (float)$val['score'];
-		$scout_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$scout_acc_json = json_encode($scout_acc_plot);
-	$scout_score_json = json_encode($scout_score_plot);
-	$scout_mvp_json = json_encode($scout_mvp_plot);
-
-	$ammo_acc_plot = array();
-	$ammo_score_plot = array();
-	$ammo_mvp_plot = array();
-	foreach($ammo[0]['Scorecard'] as $key => $val) {
-		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$ammo_score_plot[] = (float)$val['score'];
-		$ammo_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$ammo_acc_json = json_encode($ammo_acc_plot);
-	$ammo_score_json = json_encode($ammo_score_plot);
-	$ammo_mvp_json = json_encode($ammo_mvp_plot);
-
-	$medic_acc_plot = array();
-	$medic_score_plot = array();
-	$medic_mvp_plot = array();
-	foreach($medic[0]['Scorecard'] as $key => $val) {
-		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
-		$medic_score_plot[] = (float)$val['score'];
-		$medic_mvp_plot[] = (float)$val['mvp_points'];
-	}
-	$medic_acc_json = json_encode($medic_acc_plot);
-	$medic_score_json = json_encode($medic_score_plot);
-	$medic_mvp_json = json_encode($medic_mvp_plot);
 ?>
-
 <script class="code" type="text/javascript">
 function displayWinLossPie(data) {
+	var wins = 0;
+	var losses = 0;
+	var elim_wins_from_red = 0;
+	var non_elim_wins_from_red = 0;
+	var elim_wins_from_green = 0;
+	var non_elim_wins_from_green = 0;
+	var elim_losses_from_red = 0;
+	var non_elim_losses_from_red = 0;
+	var elim_losses_from_green = 0;
+	var non_elim_losses_from_green = 0;
+
+	data.scorecards.forEach(function(scorecard) {
+		if(scorecard.Team.color == 'red') {
+			if(scorecard.Team.winner) {
+				wins++;
+				if(scorecard.Team.eliminated_opponent) {
+					elim_wins_from_red++;
+				} else {
+					non_elim_wins_from_red++;
+				}
+			} else {
+				losses++;
+				if(scorecard.Team.eliminated) {
+					elim_losses_from_red++;
+				} else {
+					non_elim_losses_from_red++;
+				}
+			}
+		} else {
+			if(scorecard.Team.winner) {
+				wins++;
+				if(scorecard.Team.eliminated_opponent) {
+					elim_wins_from_green++;
+				} else {
+					non_elim_wins_from_green++;
+				}
+			} else {
+				losses++;
+				if(scorecard.Team.eliminated) {
+					elim_losses_from_green++;
+				} else {
+					non_elim_losses_from_green++;
+				}
+			}
+		}
+	});
+
 	var winloss = [
-		['Wins', data['winloss']['wins']],
-		['Losses', data['winloss']['losses']]
+		['Wins', wins],
+		['Losses', losses]
 	];
 	var winlossdetail = [
-		['Elim Wins from Red', data['winlossdetail']['elim_wins_from_red']],
-		['Non-Elim Wins from Red', data['winlossdetail']['non_elim_wins_from_red']],
-		['Elim Wins from Green', data['winlossdetail']['elim_wins_from_green']],
-		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
-		['Elim Losses from Red', data['winlossdetail']['elim_losses_from_red']],
-		['Non-Elim Losses from Red', data['winlossdetail']['non_elim_losses_from_red']],
-		['Elim Losses from Green', data['winlossdetail']['elim_losses_from_green']],
-		['Non-Elim Losses from Green', data['winlossdetail']['non_elim_losses_from_green']]
+		['Elim Wins from Red', elim_wins_from_red],
+		['Non-Elim Wins from Red', non_elim_wins_from_red],
+		['Elim Wins from Green', elim_wins_from_green],
+		['Non-Elim Wins from Green', non_elim_wins_from_green],
+		['Elim Losses from Red', elim_losses_from_red],
+		['Non-Elim Losses from Red', non_elim_losses_from_red],
+		['Elim Losses from Green', elim_losses_from_green],
+		['Non-Elim Losses from Green', non_elim_losses_from_green]
 	];
 	
 	$('#win_loss_pie').highcharts({
@@ -330,81 +254,222 @@ function displayPositionBoxPlot(data) {
 	});
 }
 
-
-$(document).ready(function(){
-	$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			displayPositionScoreSpider(data);
-			displayPositionMVPSpider(data);
-			displayPositionBoxPlot(data);
-		},
-		error: function() {
-			alert('Failed to retrieve scorecards');
-		}
+function displayGameList(data) {
+	$('#game_list thead tr th.searchable').each( function () {
+		var title = $('#game_list thead th').eq( $(this).index() ).text();
+		$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 	});
 
-	/*$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			displayWinLossPie(data);
-		},
-		error: function() {
-			alert('winlossfail');
-		}
+	$("#game_list thead tr th input").on( 'keyup change', function () {
+		gameListTable
+			.column( $(this).parent().index()+':visible' )
+			.search( this.value )
+			.draw();
 	});
-	
-	$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			displayPositionScoreSpider(data);
-			displayPositionMVPSpider(data);
-			displayPositionBoxPlot(data);
-		},
-		error: function() {
-			alert('spiderfail');
-		}
-	});
-	
-	var overall_mvp_data = <?php echo $overall_mvp_json; ?>;
-	var commander_mvp_data = <?php echo $commander_mvp_json; ?>;
-	var heavy_mvp_data = <?php echo $heavy_mvp_json; ?>;
-	var scout_mvp_data = <?php echo $scout_mvp_json; ?>;
-	var ammo_mvp_data = <?php echo $ammo_mvp_json; ?>;
-	var medic_mvp_data = <?php echo $medic_mvp_json; ?>;
-	
-	var overall_score_data = <?php echo $overall_score_json; ?>;
-	var commander_score_data = <?php echo $commander_score_json; ?>;
-	var heavy_score_data = <?php echo $heavy_score_json; ?>;
-	var scout_score_data = <?php echo $scout_score_json; ?>;
-	var ammo_score_data = <?php echo $ammo_score_json; ?>;
-	var medic_score_data = <?php echo $medic_score_json; ?>;
 
-	var overall_acc_data = <?php echo $overall_acc_json; ?>;
-	var commander_acc_data = <?php echo $commander_acc_json; ?>;
-	var heavy_acc_data = <?php echo $heavy_acc_json; ?>;
-	var scout_acc_data = <?php echo $scout_acc_json; ?>;
-	var ammo_acc_data = <?php echo $ammo_acc_json; ?>;
-	var medic_acc_data = <?php echo $medic_acc_json; ?>;
+	var gameListTable = $('#game_list').DataTable( {
+		"deferRender" : true,
+		"orderCellsTop" : true,
+		"dom": '<"H"lr>t<"F"ip>',
+		"data" : data.scorecards,
+		"columns" : [
+			{ 
+				"data" : function ( row, type, val, meta) {
+					if (type === 'display') {
+						return '<a href="/games/view/'+row.Game.id+location.search+'" class="btn btn-info btn-block">'+row.Game.game_name+'</a>';
+					}
+					return row.Game.game_name;
+				}
+			},
+			{ "data" : "Game.game_datetime" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Team.winner) ? "W" : "L";
+					}
+					return row.Team.winner;
+				}
+			},
+			{ "data" : "Scorecard.color" },
+			{ "data" : "Scorecard.position" },
+			{ "data" : "Scorecard.score" },
+			{ 
+				"data" : function ( row, type, val, meta) {
+					if (type === 'display') {
+						return parseFloat(row.Scorecard.accuracy*100).toFixed(2)+"%";
+					}
+					return row.Scorecard.accuracy;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta) {
+					if (type === 'display') {
+						return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/'+row.Scorecard.id+'.json">'+row.Scorecard.mvp_points+'</button>';
+					}
+					return row.Scorecard.mvp_points;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta) {
+					var hit_diff = (row.Scorecard.times_zapped) ? parseFloat(row.Scorecard.shot_opponent/row.Scorecard.times_zapped) : row.Scorecard.shot_opponent; 
+					if (type === 'display') {
+						return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/'+row.Scorecard.player_id+'/'+row.Game.id+'.json">'+parseFloat(hit_diff).toFixed(2)+' ('+row.Scorecard.shot_opponent+'/'+row.Scorecard.times_zapped+')</button>';
+					}
+					return hit_diff;
+				}
+			},
+			{ "data" : "Scorecard.lives_left" },
+			{ "data" : "Scorecard.shots_left" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Commander' || row.Scorecard.position == 'Heavy Weapons') ? row.Scorecard.missile_hits : '-';
+					}
+					return row.Scorecard.missile_hits;
+				}
+			},
+			{ "data" : "Scorecard.times_missiled" },
+			{ "data" : "Scorecard.medic_hits" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Commander') ? row.Scorecard.medic_nukes : '-';
+					}
+					return row.Scorecard.medic_nukes;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Scout') ? row.Scorecard.shot_3hit : '-';
+					}
+					return row.Scorecard.shot_3hit;
+				}
+			},
+			{ "data" : "Scorecard.shot_team" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Commander' || row.Scorecard.position == 'Heavy Weapons') ? row.Scorecard.missiled_team : '-';
+					}
+					return row.Scorecard.missiled_team;
+				}
+			},
+			{ "data" : "Scorecard.own_medic_hits" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Commander') ? row.Scorecard.nukes_activated+'/'+row.Scorecard.nukes_detonated : '-';
+					}
+					return row.Scorecard.nukes_activated;
+				}
+			},
+			{ "data" : "Scorecard.nukes_canceled" },
+			{ "data" : "Scorecard.own_nuke_cancels" },
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Scout') ? row.Scorecard.scout_rapid : '-';
+					}
+					return row.Scorecard.scout_rapid;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					var boost = 0;
+					if(row.Scorecard.position == 'Ammo Carrier') {
+						boost = row.Scorecard.ammo_boost;
+					} else if(row.Scorecard.position == 'Medic') {
+						boost = row.Scorecard.life_boost;
+					}
+
+					if (type === 'display') {
+						return (boost) ? boost : '-';
+					}
+
+					return boost;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta ) {
+					if (type === 'display') {
+						return (row.Scorecard.position == 'Ammo Carrier' || row.Scorecard.position == 'Medic') ? row.Scorecard.resupplies : '-';
+					}
+					return row.Scorecard.resupplies;
+				}
+			},
+			{ 
+				"data" : function ( row, type, val, meta) {
+					if (type === 'display') {
+						if(row.Game.pdf_id !== null) {
+							return '<a href="http://scorecards.lfstats.com/'+row.Game.pdf_id+'.pdf" class="btn btn-info btn-block" target="_blank">PDF</a>';
+						}
+					}
+					return row.Game.pdf_id;
+				}
+			},
+		],
+		"order": [[ 1, "desc" ]]
+	});
+}
+
+function displayPlots(data) {
+	var overall_mvp_data = [];
+	var commander_mvp_data = [];
+	var heavy_mvp_data = [];
+	var scout_mvp_data = [];
+	var ammo_mvp_data = [];
+	var medic_mvp_data = [];
 	
-	(overall_mvp_data.length < 1) ? line1 = [null] : "";
-	(commander_mvp_data.length < 1) ? line2 = [null] : "";
-	(heavy_mvp_data.length < 1) ? line3 = [null] : "";
-	(scout_mvp_data.length < 1) ? line4 = [null] : "";
-	(ammo_mvp_data.length < 1) ? line5 = [null] : "";
-	(medic_mvp_data.length < 1) ? line6 = [null] : "";
-	(overall_score_data.length < 1) ? line7 = [null] : "";
-	(commander_score_data.length < 1) ? line8 = [null] : "";
-	(heavy_score_data.length < 1) ? line9 = [null] : "";
-	(scout_score_data.length < 1) ? line10 = [null] : "";
-	(ammo_score_data.length < 1) ? line11 = [null] : "";
-	(medic_score_data.length < 1) ? line12 = [null] : "";
+	var overall_score_data = [];
+	var commander_score_data = [];
+	var heavy_score_data = [];
+	var scout_score_data = [];
+	var ammo_score_data = [];
+	var medic_score_data = [];
+
+	var overall_acc_data = [];
+	var commander_acc_data = [];
+	var heavy_acc_data = [];
+	var scout_acc_data = [];
+	var ammo_acc_data = [];
+	var medic_acc_data = [];
+
+	data.scorecards.forEach(function(scorecard) {
+		overall_mvp_data.push(scorecard.Scorecard.mvp_points);
+		overall_score_data.push(scorecard.Scorecard.score);
+		overall_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+
+		if(scorecard.Scorecard.position == 'Commander') {
+			commander_mvp_data.push(scorecard.Scorecard.mvp_points);
+			commander_score_data.push(scorecard.Scorecard.score);
+			commander_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+		}
+
+		if(scorecard.Scorecard.position == 'Heavy Weapons') {
+			heavy_mvp_data.push(scorecard.Scorecard.mvp_points);
+			heavy_score_data.push(scorecard.Scorecard.score);
+			heavy_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+		}
+
+		if(scorecard.Scorecard.position == 'Scout') {
+			scout_mvp_data.push(scorecard.Scorecard.mvp_points);
+			scout_score_data.push(scorecard.Scorecard.score);
+			scout_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+		}
+
+		if(scorecard.Scorecard.position == 'Ammo Carrier') {
+			ammo_mvp_data.push(scorecard.Scorecard.mvp_points);
+			ammo_score_data.push(scorecard.Scorecard.score);
+			ammo_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+		}
+
+		if(scorecard.Scorecard.position == 'Medic') {
+			medic_mvp_data.push(scorecard.Scorecard.mvp_points);
+			medic_score_data.push(scorecard.Scorecard.score);
+			medic_acc_data.push(parseFloat(scorecard.Scorecard.accuracy*100));
+		}
+	});
 	
 	$('#acc_plot').highcharts({
 		chart: {
@@ -489,7 +554,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_acc_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -672,7 +737,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_mvp_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -855,7 +920,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_score_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -953,65 +1018,42 @@ $(document).ready(function(){
 			xAxis: 5
 		}
 		]
-	});*/
-
-	$('#game_list thead tr th.searchable').each( function () {
-		var title = $('#game_list thead th').eq( $(this).index() ).text();
-		$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 	});
+}
 
-	$("#game_list thead tr th input").on( 'keyup change', function () {
-		gameListTable
-			.column( $(this).parent().index()+':visible' )
-			.search( this.value )
-			.draw();
-	});
-
-	var gameListTable = $('#game_list').DataTable( {
-		"deferRender" : true,
-		"orderCellsTop" : true,
-		"dom": '<"H"lr>t<"F"ip>',
-		"ajax" : {
-			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>"
+$(document).ready(function(){
+	$.ajax({
+		type: 'get',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerScorecards', $player['Player']['id'], 'ext' => 'json'))); ?>',
+		dataType: 'json',
+		success: function(data) {
+			displayGameList(data);
+			displayPlots(data);
+			displayWinLossPie(data);
 		},
-		"columns" : [
-			{ "data" : "game_name" },
-			{ "data" : "game_datetime" },
-			{ "data" : "winloss" },
-			{ "data" : "team" },
-			{ "data" : "position" },
-			{ "data" : "score" },
-			{ "data" : "accuracy" },
-			{ "data" : "mvp_points" },
-			{ "data" : "lives_left" },
-			{ "data" : "shots_left" },
-			{ "data" : "shot_opponent" },
-			{ "data" : "times_zapped" },
-			{ "data" : "hit_diff" },
-			{ "data" : "missile_hits" },
-			{ "data" : "times_missiled" },
-			{ "data" : "medic_hits" },
-			{ "data" : "medic_nukes" },
-			{ "data" : "shot_3hit" },
-			{ "data" : "shot_team" },
-			{ "data" : "missiled_team" },
-			{ "data" : "own_medic_hits" },
-			{ "data" : "nukes_activated" },
-			{ "data" : "nukes_detonated" },
-			{ "data" : "nukes_canceled" },
-			{ "data" : "own_nuke_cancels" },
-			{ "data" : "scout_rapid" },
-			{ "data" : "boost" },
-			{ "data" : "resupplies" },
-			{ "data" : "pdf" }
-		],
-		"order": [[ 1, "desc" ]]
+		error: function() {
+			toastr.error('Failed to retrieve scorecards');
+		}
 	});
-
+	
+	$.ajax({
+		type: 'get',
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerPositionSpider', $player['Player']['id'], 'ext' => 'json'))); ?>',
+		dataType: 'json',
+		success: function(data) {
+			displayPositionScoreSpider(data);
+			displayPositionMVPSpider(data);
+			displayPositionBoxPlot(data);
+		},
+		error: function() {
+			toastr.error('Failed to retrieve position details');
+		}
+	});
+	
 	var headToHeadTable = $('#head_to_head').DataTable( {
 		"deferRender" : true,
 		"ajax" : {
-			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'getPlayerHitBreakdown', $id, 'ext' => 'json'))); ?>"
+			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'getPlayerHitBreakdown', $player['Player']['id'], 'ext' => 'json'))); ?>"
 		},
 		"columns" : [
 			{ "data" : "name" },
@@ -1026,7 +1068,7 @@ $(document).ready(function(){
 	});
 });
 </script>
-<h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
+<h1 class="text-info"><?= $player['Player']['player_name']; ?></h1>
 <?php if(sizeof($aliases) > 1): ?>
 <p>
 	Aliases:
@@ -1063,11 +1105,9 @@ $(document).ready(function(){
 						<th rowspan="2">Score</th>
 						<th rowspan="2">Accuracy</th>
 						<th rowspan="2">MVP Points</th>
+						<th rowspan="2">Hit Diff</th>
 						<th rowspan="2">Lives Left</th>
 						<th rowspan="2">Shots Left</th>
-						<th rowspan="2">Shot Opponent</th>
-						<th rowspan="2">Got Shot</th>
-						<th rowspan="2">Hit Diff</th>
 						<th rowspan="2">Missiled</th>
 						<th rowspan="2">Got Missiled</th>
 						<th rowspan="2">Medic Hits</th>
@@ -1076,8 +1116,7 @@ $(document).ready(function(){
 						<th rowspan="2">Shot Team</th>
 						<th rowspan="2">Missiled Team</th>
 						<th rowspan="2">Shot Own Medic</th>
-						<th rowspan="2">Nukes Activated</th>
-						<th rowspan="2">Nukes Detonated</th>
+						<th rowspan="2">Nukes Activated/Detonated</th>
 						<th rowspan="2">Nuke Cancels</th>
 						<th rowspan="2">Own Nuke Cancels</th>
 						<th rowspan="2">Rapid Fires</th>

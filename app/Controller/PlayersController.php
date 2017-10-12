@@ -16,20 +16,13 @@ class PlayersController extends AppController {
 		if($id == null || $id <= 0) {
 			$this->redirect(array('controller' => 'Players', 'action' => 'index'));
 		} else {
-			$this->set('id', $id);
+			$this->set('player', $this->Player->findById($id));
 			$this->set('aliases', $this->Player->PlayersName->findAllByPlayerId($id));
-			/*$this->set('overall', $this->Player->getPlayerStats($id, null, $this->Session->read('state')));
-			$this->set('commander', $this->Player->getPlayerStats($id, 'Commander', $this->Session->read('state')));
-			$this->set('heavy', $this->Player->getPlayerStats($id, 'Heavy Weapons', $this->Session->read('state')));
-			$this->set('scout', $this->Player->getPlayerStats($id, 'Scout', $this->Session->read('state')));
-			$this->set('ammo', $this->Player->getPlayerStats($id, 'Ammo Carrier', $this->Session->read('state')));
-			$this->set('medic', $this->Player->getPlayerStats($id, 'Medic', $this->Session->read('state')));*/
-			//$this->set('teammates',$this->Player->getMyTeammates($id, $this->Session->read('state')));
 		}
 	}
 
 	public function playerScorecards($id) {
-		$this->set('scorecards', $this->Player->getPlayerScorecards($id));
+		$this->set('scorecards', $this->Player->getPlayerScorecards($id, null, $this->Session->read('state')));
 	}
 
 	public function link($id) {
@@ -47,13 +40,7 @@ class PlayersController extends AppController {
 		}
 	}
 	
-	public function playerWinLossDetail($id) {
-		$this->request->onlyAllow('ajax');
-		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
-	}
-	
 	public function playerPositionSpider($id) {
-		$this->request->onlyAllow('ajax');
 		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $this->Session->read('state')));
 		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $this->Session->read('state')));
 		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $this->Session->read('state')));
