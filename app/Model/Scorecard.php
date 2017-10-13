@@ -1027,61 +1027,70 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
-		
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
 
-        $scorecards = $this->find('list', array(
+					
+		if(isset($state['eventID']) && $state['eventID'] > 0) {
+			$event = ClassRegistry::init('Event');
+			$selected_event = $event->findById($state['eventID']);
+			if($selected_event['Event']['is_comp']) {
+				$scorecard_ids = $event->getScorecardIds($state['eventID'], $id);
+				$conditions[] = array('Scorecard.id' => $scorecard_ids);
+			}
+		}
+		
+		$scorecards = $this->find('list', array(
 			'fields' => array('game_id'),
             'conditions' => $conditions
         ));
 		
+		$hits = array();
 
-		$games_ids = implode(",",$scorecards);
-
-		$db = $this->getDataSource();
-		$results = $db->fetchAll("
-			SELECT 
-				player_hits.player_id,
-				player_hits.target_id,
-				SUM(player_hits.hits) AS hits,
-				SUM(player_hits.missiles) AS missiles,
-				targets.hit_by,
-				targets.missile_by
-			FROM
-				(SELECT 
-					hits.*, scorecards.game_id
-				FROM
-					hits
-				LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
-					LEFT JOIN
-				(SELECT 
+		if(!empty($scorecards)) {
+			$games_ids = implode(",",$scorecards);
+			
+			$db = $this->getDataSource();
+			$results = $db->fetchAll("
+				SELECT 
 					player_hits.player_id,
-						SUM(player_hits.hits) AS hit_by,
-						SUM(player_hits.missiles) AS missile_by
+					player_hits.target_id,
+					SUM(player_hits.hits) AS hits,
+					SUM(player_hits.missiles) AS missiles,
+					targets.hit_by,
+					targets.missile_by
 				FROM
 					(SELECT 
-					hits.*, scorecards.game_id
-				FROM
-					hits
-				LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
+						hits.*, scorecards.game_id
+					FROM
+						hits
+					LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
+						LEFT JOIN
+					(SELECT 
+						player_hits.player_id,
+							SUM(player_hits.hits) AS hit_by,
+							SUM(player_hits.missiles) AS missile_by
+					FROM
+						(SELECT 
+						hits.*, scorecards.game_id
+					FROM
+						hits
+					LEFT JOIN scorecards ON hits.scorecard_id = scorecards.id) AS player_hits
+					WHERE
+						player_hits.target_id = $player_id AND player_hits.game_id IN ($games_ids)
+					GROUP BY player_hits.player_id) AS targets ON player_hits.target_id = targets.player_id
 				WHERE
-					player_hits.target_id = $player_id AND player_hits.game_id IN ($games_ids)
-				GROUP BY player_hits.player_id) AS targets ON player_hits.target_id = targets.player_id
-			WHERE
-				player_hits.player_id = $player_id
-					AND player_hits.game_id IN ($games_ids)
-			GROUP BY player_hits.player_id , player_hits.target_id");
-        
-		$hits = array();
-		foreach($results as $result) {
-			$hits[] = array(
-				'opponent_id' => $result['player_hits']['target_id'],
-				'hits' => $result[0]['hits'],
-				'missiles' => $result[0]['missiles'],
-				'hit_by' => $result['targets']['hit_by'],
-				'missile_by' => $result['targets']['missile_by'],
-			);
+					player_hits.player_id = $player_id
+						AND player_hits.game_id IN ($games_ids)
+				GROUP BY player_hits.player_id , player_hits.target_id");
+			
+			foreach($results as $result) {
+				$hits[] = array(
+					'opponent_id' => $result['player_hits']['target_id'],
+					'hits' => $result[0]['hits'],
+					'missiles' => $result[0]['missiles'],
+					'hit_by' => $result['targets']['hit_by'],
+					'missile_by' => $result['targets']['missile_by'],
+				);
+			}
 		}
 
         return $hits;
