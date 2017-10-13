@@ -1,106 +1,92 @@
-<ul class="breadcrumb">
-    <li class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-        <?=	Inflector::camelize(($this->Session->read('state.gametype') == 'league') ? 'competitive' : $this->Session->read('state.gametype')); ?> 
-            <span class="caret"></span></button>
-        <ul class="dropdown-menu">
-            <li><?= $this->Html->link('All', array(
-                                        'controller' => $this->request->params['controller'], 
-                                        'action' => $this->request->params['action'],
-                                        implode(",", $this->request->pass),
-                                        '?' => array(
-                                            'gametype' => 'all',
-                                            'centerID' => 0,
-                                            'eventID' => 0
-                                        )
-                )); ?>
-            </li>
-            <li><?= $this->Html->link('Social', array(
-                                        'controller' => $this->request->params['controller'], 
-                                        'action' => $this->request->params['action'],
-                                        implode(",", $this->request->pass),
-                                        '?' => array(
-                                            'gametype' => 'social',
-                                            'centerID' => $this->Session->read('state.centerID'),
-                                            'eventID' => 0
-                                        )
-                )); ?>
-            </li>
-            <li><?= $this->Html->link('Competitive', array(
-                                        'controller' => $this->request->params['controller'], 
-                                        'action' => $this->request->params['action'],
-                                        implode(",", $this->request->pass),
-                                        '?' => array(
-                                            'gametype' => 'league',
-                                            'centerID' => $this->Session->read('state.centerID'),
-                                            'eventID' => $this->Session->read('state.eventID')
-                                        )
-                )); ?>
-            </li>
-        </ul>
-    </li>
-    <li class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
-            <?php
-                if($this->Session->read('state.eventID') > 0) {
-                    echo $events[$this->Session->read('state.eventID')];
-                } elseif($this->Session->read('state.centerID') > 0) {
-                    echo $centers[$this->Session->read('state.centerID')];
-                } else {
-                    echo 'All Games';
-                }
-            ?>
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><?= $this->Html->link('All Games', array(
-                    'controller' => $this->request->params['controller'], 
-                    'action' => $this->request->params['action'],
-                    implode(",", $this->request->pass),
-                    '?' => array(
-                        'gametype' => $this->Session->read('state.gametype'),
-                        'centerID' => 0,
-                        'eventID' => 0
-                    )
-                ));
-                ?>
-            </li>
-            <li class="divider"></li>
-            <?php
-                if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
-                    echo "<li class=\"dropdown-header\">Centers</li>";
-                    $sorted_centers = $centers;
-                    asort($sorted_centers);
-                    foreach($sorted_centers as $key => $value) {
-                        echo "<li>".$this->Html->link($value, array(
-                            'controller' => $this->request->params['controller'], 
-                            'action' => $this->request->params['action'],
-                            implode(",", $this->request->pass),
-                            '?' => array(
-                                'gametype' => $this->Session->read('state.gametype'),
-                                'centerID' => $key,
-                                'eventID' => 0
-                            )
-                        ));
-                    }
-                }
-                if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
-                    echo "<li class=\"dropdown-header\">Competitions</li>";
-                    foreach($league_details as $league) {
-                        echo "<li>".$this->Html->link($league['League']['name'], array(
-                            'controller' => $this->request->params['controller'], 
-                            'action' => $this->request->params['action'],
-                            implode(",", $this->request->pass),
-                            '?' => array(
-                                'gametype' => 'league',
-                                'centerID' => $league['League']['center_id'],
-                                'eventID' => $league['League']['id']
-                            )
-                        ));
-                    }
-                }
-            ?>
-        </ul>
-    </li>
-</ul>
+
+<?php
+    $typeSelect = array(
+        array(
+            "text" => 'All',
+            "selected" => (($this->Session->read('state.gametype') == 'all') ? true : false),
+            "id" => 'gametype=all&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+        ),
+        array(
+            "text" => 'Social',
+            "selected" => (($this->Session->read('state.gametype') == 'social') ? true : false),
+            "id" => 'gametype=social&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+        ),
+        array(
+            "text" => 'Competitive',
+            "selected" => (($this->Session->read('state.gametype') == 'league') ? true : false),
+            "id" => 'gametype=league&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+        )
+    );
+
+    $eventSelect = array(
+        array(
+            "text" => 'All Games',
+            "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID=0&eventID=0'
+        )
+    );
+
+    if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') {
+        $sorted_centers = $centers;
+        asort($sorted_centers);
+        $centerOptions = array();
+        foreach($sorted_centers as $key => $value) {
+            $centerOptions[] = array(
+                "text" => $value,
+                "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID='.$key.'&eventID='.$this->Session->read('state.eventID'),
+                "selected" => ((isset($selected_event) && $selected_event['Event']['is_comp']) ? false : (($this->Session->read('state.centerID') == $key) ? true : false))
+            );
+        }
+    }
+
+    if(!empty($centerOptions)) {
+        $eventSelect[] = array(
+            "text" => 'Centers',
+            "children" => $centerOptions
+        );
+    }
+
+    if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
+        $compOptions = array();
+        foreach($event_details as $event) {
+            if($event['Event']['is_comp']) {
+                $compOptions[] = array(
+                    "text" => $event['Event']['name'],
+                    "id" => 'gametype=league&centerID='.$event['Event']['center_id'].'&eventID='.$event['Event']['id'],
+                );
+            }
+        }
+    }
+
+    if(!empty($compOptions)) {
+        $eventSelect[] = array(
+            "text" => 'Competitions',
+            "children" => $compOptions
+        );
+    };
+    
+    $jsonTypeSelect = json_encode($typeSelect);
+    $jsonEventSelect = json_encode($eventSelect);
+?>
+<script>
+    $(document).ready(function() {
+        $('#typeSelect').select2({
+            minimumResultsForSearch: -1,
+            data: <?= $jsonTypeSelect; ?>
+        });
+        $('#eventSelect').select2({
+            data: <?= $jsonEventSelect; ?>
+        });
+
+        $('.lfstatsFilter').on('select2:select', function(e) {
+            var url = $(this).val();
+            if (url) {
+                window.location.search = url;
+            }
+            return false;
+        });
+    });
+</script>
+<select id="typeSelect" class="lfstatsFilter"></select>
+<span> / </span>
+<select id="eventSelect" class="lfstatsFilter"></select>
 <hr>

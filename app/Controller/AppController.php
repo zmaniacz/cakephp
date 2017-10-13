@@ -81,30 +81,21 @@ class AppController extends Controller {
 			);
 		}
 
-		//a specified event takes precedence over gametype and center
 		if(!is_null($this->request->query('eventID'))) {
 			$state['eventID'] = $this->request->query('eventID');
 
-			if($state['eventID'] > 0) {
-				$event = $this->Event->findById($state['eventID']);
-				$state['gametype'] = $event['Event']['type'];
-				$state['centerID'] = $event['Event']['center_id'];
+			if($state['eventID'] > 0)
+				$this->set('selected_event', $this->Event->findById($state['eventID']));
+		}
+		
+		if(!is_null($this->request->query('gametype')))
+			$state['gametype'] = $this->request->query('gametype');
 
-				$this->set('selected_event', $event);
+		if(!is_null($this->request->query('centerID'))) {
+			$state['centerID'] = $this->request->query('centerID');
+			
+			if($state['centerID'] > 0)
 				$this->set('selected_center', $this->Center->findById($state['centerID']));
-			}
-		} else {
-			if(!is_null($this->request->query('gametype')))
-				$state['gametype'] = $this->request->query('gametype');
-
-			if(!is_null($this->request->query('centerID'))) {
-				$state['centerID'] = $this->request->query('centerID');
-				
-				if($state['centerID'] > 0) {
-					$this->set('selected_center', $this->Center->findById($state['centerID']));
-				}
-			}
-				
 		}
 
 		$this->Session->write('state', $state);
