@@ -9,7 +9,6 @@ class PlayersController extends AppController {
 	}
 	
 	public function index() {
-		$this->redirect(array('controller' => 'scorecards', 'action' => 'overall'));
 	}
 	
 	public function view($id = null) {
