@@ -33,7 +33,7 @@
             $centerOptions[] = array(
                 "text" => $value,
                 "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID='.$key.'&eventID='.$this->Session->read('state.eventID'),
-                "selected" => ((isset($selected_event) && $selected_event['Event']['is_comp']) ? false : (($this->Session->read('state.centerID') == $key) ? true : false))
+                "selected" => (($this->Session->read('state.centerID') == $key) ? true : false)
             );
         }
     }
@@ -45,13 +45,14 @@
         );
     }
 
-    if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
+    if($this->Session->read('state.gametype') != 'social') {
         $compOptions = array();
         foreach($event_details as $event) {
             if($event['Event']['is_comp']) {
                 $compOptions[] = array(
                     "text" => $event['Event']['name'],
                     "id" => 'gametype=league&centerID='.$event['Event']['center_id'].'&eventID='.$event['Event']['id'],
+                    "selected" => (($this->Session->read('state.eventID') == $event['Event']['id']) ? true : false)
                 );
             }
         }
