@@ -127,13 +127,6 @@ class EventsController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 
-	public function playerStats($id = null) {
-		if (!$this->Event->exists($id)) {
-			throw new NotFoundException(__('Invalid event'));
-		}
-	}
-	
-
 	//API functions below
 	public function eventList() {
 		$this->request->allowMethod('ajax');
@@ -155,8 +148,6 @@ class EventsController extends AppController {
 	}
 
 	public function eventScorecards($event_id = null) {
-		$this->request->allowMethod('ajax');
-
 		if (!$this->Event->exists($event_id)) {
 			throw new NotFoundException(__('Invalid event'));
 		}
