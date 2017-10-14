@@ -129,22 +129,56 @@ class Event extends AppModel {
 		return $games;
 	}
 
-	public function getScorecards($event_id) {
-		$scorecards = $this->find('first', array(
-			'contain' => array(
-				'Game' => array(
-					'Red_Team' => array(
-						'Scorecard'
-					),
-					'Green_Team' => array(
-						'Scorecard'
-					)
+	public function getScorecards($event_id, $player_id = null, $show_rounds = true, $show_finals = true) {
+		$scorecardModel = ClassRegistry::init('Scorecard');
+
+		$options = array('event_id' => $event_id);
+
+		if(!is_null($player_id))
+			$options[] = array('player_id' => $player_id);
+
+		$scorecards = $scorecardModel->getScorecardIds($options);
+		$conditions = array('Scorecard.id IN' => $scorecards);
+
+		$joins = array(
+			array(
+				'table' => 'teams',
+				'alias' => 'Team',
+				'type' => 'INNER',
+				'conditions' => array(
+					'Team.id = Scorecard.team_id'
 				)
 			),
-			'conditions' => array('id' => $event_id)
+			array(
+				'table' => 'games',
+				'alias' => 'Game',
+				'type' => 'INNER',
+				'conditions' => array(
+					'Game.id = Team.game_id'
+				)
+			),
+			array(
+				'table' => 'events',
+				'alias' => 'Event',
+				'type' => 'INNER',
+				'conditions' => array(
+					'Event.id = Game.event_id'
+				)
+			)
+		);
+
+		$results = $scorecardModel->find('all', array(
+			'fields' => array(
+				'Event.*',
+				'Game.*',
+				'Team.*',
+				'Scorecard.*'
+			),
+			'joins' => $joins,
+			'conditions' => $conditions
 		));
 
-		return $scorecards;
+		return $results;
 	}
 
 	public function getSummaryStats($event_id) {
@@ -261,30 +295,50 @@ class Event extends AppModel {
 	}
 
 	function getScorecardIds($event_id, $player_id = null, $show_rounds = true, $show_finals = true) {
-		$scorecard_conditions = array();
+		$event = $this->findById($event_id);
+
+		$conditions = array('Event.id' => $event_id);
 		if(!is_null($player_id))
-			$scorecard_conditions[] = array('player_id' => $player_id);
+			$conditions[] = array('Scorecard.player_id' => $player_id);
+
 		
-		$events = $this->find('first', array(
-			'fields' => array('id'),
-			'contain' => array(
-				'Game' => array(
-					'fields' => array('id'),
-					'Scorecard' => array(
-						'fields' => array('id'),
-						'conditions' => $scorecard_conditions
+		$scorecards = $this->find('all', array(
+			'fields' => array(
+				'Scorecard.id'
+			),
+			'joins' => array(
+				array(
+					'table' => 'games',
+					'alias' => 'Game',
+					'type' => 'INNER',
+					'conditions' => array(
+						'Game.event_id = Event.id'
+					)
+				),
+				array(
+					'table' => 'teams',
+					'alias' => 'Team',
+					'type' => 'INNER',
+					'conditions' => array(
+						'Team.game_id = Game.id'
+					)
+				),
+				array(
+					'table' => 'scorecards',
+					'alias' => 'Scorecard',
+					'type' => 'INNER',
+					'conditions' => array(
+						'Scorecard.team_id = Team.id'
 					)
 				)
 			),
-			'conditions' => array('id' => $event_id)
+			'conditions' => $conditions
 		));
 
 		$scorecard_ids = array();
 
-		foreach($events['Game'] as $game) {
-			foreach($game['Scorecard'] as $scorecard) {
-				$scorecard_ids[] = $scorecard['id'];
-			}
+		foreach($scorecards as $scorecard) {
+			$scorecard_ids[] = $scorecard['Scorecard']['id'];
 		}
 
 		return $scorecard_ids;

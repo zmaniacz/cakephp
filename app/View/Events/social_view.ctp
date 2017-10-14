@@ -95,7 +95,8 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $selected_event['Event']['id'], 'ext' => 'json'))); ?>",
+				"dataSrc" : "response"
 			},
 			"columns" : [
 				{
@@ -104,58 +105,58 @@
 				},
 				{ "data" : function ( row, type, val, meta) {			
 						if (type === 'display') {
-							return '<a href="/players/view/'+row.player_id+location.search+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+							return '<a href="/players/view/'+row.Scorecard.player_id+location.search+'" class="btn btn-info btn-block">'+row.Scorecard.player_name+'</a>';
 						}
-						return row.player_name;
+						return row.Scorecard.player_name;
 					},
 					"width" : "200px" 
 				},
 				{ "data" : function ( row, type, val, meta) {
-						if(row.winner === 'red') {
+						if(row.Game.winner === 'red') {
 							var btn_class = 'btn btn-danger btn-block';
 						} else {
 							var btn_class = 'btn btn-success btn-block';
 						}
 
 						if (type === 'display') {
-							return '<a href="/games/view/'+row.game_id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
+							return '<a href="/games/view/'+row.Game.id+location.search+'" class="'+btn_class+'">'+row.Game.game_name+'</a>';
 						}
-						return row.game_name;
+						return row.Game.game_name;
 					}
 				},
-				{ "data" : "position" },
+				{ "data" : "Scorecard.position" },
 				{
-					"data" : "score",
+					"data" : "Scorecard.score",
 					"orderSequence": [ "desc", "asc"]
 				},
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
-							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/'+row.id+'.json">'+row.mvp_points+'</button>';
+							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/'+row.Scorecard.id+'.json">'+row.Scorecard.mvp_points+'</button>';
 						}
-						return row.mvp_points;
+						return row.Scorecard.mvp_points;
 					},
 					"orderSequence": [ "desc", "asc"]
 				},
 				{ "data" : function ( row, type, val, meta) {
-						var hit_diff = row.shot_opponent/row.times_zapped;
+						var hit_diff = row.Scorecard.shot_opponent/row.Scorecard.times_zapped;
 						if (type === 'display') {
-							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/'+row.player_id+'/'+row.game_id+'.json">'+parseFloat(hit_diff).toFixed(2)+' ('+row.shot_opponent+'/'+row.times_zapped+')</button>';
+							return '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/'+row.Scorecard.player_id+'/'+row.Game.id+'.json">'+parseFloat(hit_diff).toFixed(2)+' ('+row.Scorecard.shot_opponent+'/'+row.Scorecard.times_zapped+')</button>';
 						}
 						return hit_diff;
 					},
 					"orderSequence": [ "desc", "asc"]
 				},
-				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "Scorecard.medic_hits", "orderSequence": [ "desc", "asc"] },
 				{ "data" : function ( row, type, val, meta) {
-						var acc = row.accuracy * 100;
+						var acc = row.Scorecard.accuracy * 100;
 						if (type === 'display') {
 							return parseFloat(acc).toFixed(2);
 						}
-						return row.accuracy;
+						return row.Scorecard.accuracy;
 					},
 					"orderSequence": [ "desc", "asc"]
 				},
-				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
+				{ "data" : "Scorecard.shot_team", "orderSequence": [ "desc", "asc"] },
 			],
 			"order": [[ 5, "desc" ]]
 		});

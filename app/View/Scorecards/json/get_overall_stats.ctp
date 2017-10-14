@@ -1,7 +1,13 @@
 <?php
 	$data = array();
+	$commander = array();
+	$heavy = array();
+	$scout = array();
+	$ammo = array();
+	$medic = array();
+
 	foreach ($response as $score) {
-		$data[] = array(	
+		$stats = array(	
 			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
 			'player_id' => $score['Player']['id'],
 			'player_name' => $score['Player']['player_name'],
@@ -23,7 +29,26 @@
 			'games_played' => $score[0]['games_played'],
 			'games_won' => $score[0]['games_won']
 		);
+
+		switch($score['Scorecard']['position']) {
+			case 'Commander':
+				$commander[] = $stats;
+				break;
+			case 'Heavy Weapons':
+				$heavy[] = $stats;
+				break;
+			case 'Scout':
+				$scout[] = $stats;
+				break;
+			case 'Ammo Carrier':
+				$ammo[] = $stats;
+				break;
+			case 'Medic':
+				$medic[] = $stats;
+				break;
+		}
 	}
-	
+
+	$data = compact('commander','heavy','scout','ammo','medic');
 	echo json_encode(compact('data'), JSON_NUMERIC_CHECK);
 ?>

@@ -1,3 +1,6 @@
+<?php
+	echo $this->element('filter');
+?>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var min = 0
@@ -242,42 +245,22 @@
 		}).done(function(response) {
 			overall_data = response.data
 			update_table(overall_table, min, overall_data)
-		})
+		});
 
 		$.ajax({
-			"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'commander', 'ext' => 'json'))); ?>"
+			"url": "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ext' => 'json'))); ?>"
 		}).done(function(response) {
-			commander_overall_data = response.data
-			update_table(commander_overall_table, min, commander_overall_data)
-		})
-
-		$.ajax({
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'heavy', 'ext' => 'json'))); ?>"
-		}).done(function(response) {
-			heavy_overall_data = response.data
-			update_table(heavy_overall_table, min, heavy_overall_data)
-		})
-
-		$.ajax({
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'scout', 'ext' => 'json'))); ?>"
-		}).done(function(response) {
-			scout_overall_data = response.data
-			update_table(scout_overall_table, min, scout_overall_data)
-		})
-
-		$.ajax({
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'ammo', 'ext' => 'json'))); ?>"
-		}).done(function(response) {
-			ammo_overall_data = response.data
-			update_table(ammo_overall_table, min, ammo_overall_data)
-		})
-
-		$.ajax({
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getOverallStats', 'medic', 'ext' => 'json'))); ?>"
-		}).done(function(response) {
-			medic_overall_data = response.data
-			update_table(medic_overall_table, min, medic_overall_data)
-		})
+			commander_overall_data = response.data.commander;
+			update_table(commander_overall_table, min, commander_overall_data);
+			heavy_overall_data = response.data.heavy;
+			update_table(heavy_overall_table, min, heavy_overall_data);
+			scout_overall_data = response.data.scout;
+			update_table(scout_overall_table, min, scout_overall_data);
+			ammo_overall_data = response.data.ammo;
+			update_table(ammo_overall_table, min, ammo_overall_data);
+			medic_overall_data = response.data.medic;
+			update_table(medic_overall_table, min, medic_overall_data);
+		});
 
 		//Init the slider to set the terms for the ajax filtering
 		if($("#min_games_slider").length) {

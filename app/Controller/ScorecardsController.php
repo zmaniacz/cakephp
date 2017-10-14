@@ -30,7 +30,8 @@ class ScorecardsController extends AppController {
 			'allstar',
 			'getAllStarStats',
 			'getComparison',
-			'getPlayerHitBreakdown'
+			'getPlayerHitBreakdown',
+			'getIds'
 		);
 		parent::beforeFilter();
 	}
@@ -93,52 +94,12 @@ class ScorecardsController extends AppController {
 	
 	public function phpview() {
 	}
-
-	public function getComparison($player1_id, $player2_id) {
-		App::import('Vendor','CosineSimilarity',array('file' => 'CosineSimilarity/CosineSimilarity.php'));
-		$compare = new CosineSimilarity();
-
-		$player1_stats = $this->Scorecard->getComparableMVP($player1_id);
-		$player2_stats = $this->Scorecard->getComparableMVP($player2_id);
-
-		$max = max(max($player1_stats), max($player2_stats));
-		$min = min(min($player1_stats), min($player2_stats));
-
-		foreach($player1_stats as &$stat) {
-			$stat = ($stat - $min) / ($max - $min);
-		}
-
-		foreach($player2_stats as &$stat) {
-			$stat = ($stat - $min) / ($max - $min);
-		}
-
-		$distance = $compare->similarity($player1_stats, $player2_stats);
-
-		$this->set('response', $distance);
-	}
 	
-	public function getOverallStats($position) {
-		switch ($position) {
-			case 'commander':
-				$this->set('response', $this->Scorecard->getPositionStats('Commander',$this->Session->read('state')));
-				break;
-			case 'heavy':
-				$this->set('response', $this->Scorecard->getPositionStats('Heavy Weapons',$this->Session->read('state')));
-				break;
-			case 'scout':
-				$this->set('response', $this->Scorecard->getPositionStats('Scout',$this->Session->read('state')));
-				break;
-			case 'ammo':
-				$this->set('response', $this->Scorecard->getPositionStats('Ammo Carrier',$this->Session->read('state')));
-				break;
-			case 'medic':
-				$this->set('response', $this->Scorecard->getPositionStats('Medic',$this->Session->read('state')));
-				break;
-		}
+	public function getOverallStats($position = null) {
+		$this->set('response', $this->Scorecard->getPositionStats($position,$this->Session->read('state')));
 	}
 
 	public function getAllStarStats() {
-		$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 	
@@ -147,17 +108,14 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallMedicHits() {
-		//$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 
 	public function nightlyMedicHits($date = null) {
-		$this->request->onlyAllow('ajax');
 		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
 	}
 
 	public function playerScorecards($id) {
-		$this->request->onlyAllow('ajax');
 		$this->set('scorecards', $this->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
 	}
 	
