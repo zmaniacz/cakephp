@@ -267,7 +267,7 @@
 			var slider = document.getElementById("min_games_slider")
 
 			noUiSlider.create(slider, {
-				start: 50,
+				start: 10,
 				connect: [true, false],
 				step: 1,
 				range: {
@@ -297,7 +297,7 @@
 <div style="position: sticky; top: 45px; z-index: 1">
 	<div class="panel panel-info">
 		<div class="panel-body bg-info">
-			<?php if($this->Session->read('state.gametype') == 'league'): ?>
+			<?php if($selected_event['Event']['is_comp']): ?>
 				<form class="form-inline">
 					<div class="checkbox">
 						<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>

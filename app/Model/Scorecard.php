@@ -352,14 +352,13 @@ class Scorecard extends AppModel {
 			)
 		);
 
-		if(isset($options['event_id'])) {
+		if(isset($options['event_id']) && $options['event_id'] > 0) {
+			$conditions[] = array('Event.id' => $options['event_id']);
 
 			$eventModel = ClassRegistry::init('Event');
 			$event = $eventModel->findById($options['event_id']);
 
 			if($event['Event']['is_comp']) {
-				$conditions[] = array('Event.id' => $options['event_id']);
-
 				$joins[] = array(
 					'table' => 'matches',
 					'alias' => 'Match',
@@ -389,23 +388,27 @@ class Scorecard extends AppModel {
 				if(isset($options['show_subs']) && $options['show_subs'] === false)
 					$conditions[] = array('Scorecard.is_sub >=' => 0);
 			}
-			
+		}
+
+		if(isset($options['game_type']) && $options['game_type'] != 'all') {
+			if($options['game_type'] == 'social') {
+				$conditions[] = array('Event.is_comp' => 0);
+			} else {
+				$conditions[] = array('Event.is_comp' => 1);					
+			}
 		}
 		
 		if(isset($options['player_id']))
 			$conditions[] = array('Scorecard.player_id' => $options['player_id']);
 
-		if(isset($options['center_id']))
+		if(isset($options['center_id']) && $options['center_id'] > 0)
 			$conditions[] = array('Game.center_id' => $options['center_id']);
 
 		if(isset($options['game_id']))
 			$conditions[] = array('Game.id' => $options['game_id']);
 
 		if(isset($options['team_id']))
-			$conditions[] = array('Team.id' => $options['team_id']);
-
-		if(isset($options['game_type']))
-			$conditions[] = array('Game.type' => $options['game_type']);		
+			$conditions[] = array('Team.id' => $options['team_id']);		
 
 		if(isset($options['date']))
 			$conditions[] = array('DATE(Scorecard.game_datetime)' => $date);
@@ -523,13 +526,13 @@ class Scorecard extends AppModel {
 		$options = array();
 		$conditions = array();
 
-		if(isset($state['centerID']) && $state['centerID'] > 0)
+		if(isset($state['centerID']))
 			$options['center_id'] = $state['centerID'];
 
-		if(isset($state['gametype']) && $state['gametype'] != 'all')
+		if(isset($state['gametype']))
 			$options['game_type'] = $state['gametype'];
 		
-		if(isset($state['eventID']) && $state['eventID'] > 0)
+		if(isset($state['eventID']))
 			$options['event_id'] = $state['eventID'];
 
 		if(isset($state['show_subs']))
@@ -597,46 +600,29 @@ class Scorecard extends AppModel {
 	}
 	
 	public function getAllAvgMVP($state = null) {
+		$options = array();
 		$conditions = array();
+
+		if(isset($state['centerID']))
+			$options['center_id'] = $state['centerID'];
+
+		if(isset($state['gametype']))
+			$options['game_type'] = $state['gametype'];
 		
-		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('Scorecard.center_id' => $state['centerID']);
+		if(isset($state['eventID']))
+			$options['event_id'] = $state['eventID'];
+
+		if(isset($state['show_subs']))
+			$options['show_subs'] = $state['show_subs'];
 		
-		if(isset($state['gametype']) && $state['gametype'] != 'all') {
-			$conditions[] = array('Scorecard.type' => $state['gametype']);
-			
-			if($state['gametype'] == 'league') {
-				if(isset($state['show_subs']) && $state['show_subs'] == 'true')
-					$conditions[] = array('Scorecard.is_sub >=' => 0);
-				else
-					$conditions[] = array('Scorecard.is_sub' => 0);
-					
-				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
-					$subQuery = new stdClass();
-					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['eventID']}')";
-       		 		$conditions[] = $subQuery;					
-				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
-					$subQuery = new stdClass();
-					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['eventID']}')";
-       		 		$conditions[] = $subQuery;
-				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
-					$subQuery = new stdClass();
-					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['eventID']}')";
-       		 		$conditions[] = $subQuery;
-				} else {
-					$subQuery = new stdClass();
-					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (0)";
-       		 		$conditions[] = $subQuery;
-				}
-			}
-		}
+		if(isset($state['show_finals']))
+			$options['show_finals'] = $state['show_finals'];
+
+		if(isset($state['show_rounds']))
+			$options['show_rounds'] = $state['show_rounds'];
 		
-		/*if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('Scorecard.event_id' => $state['eventID']);*/
+		$scorecards = $this->getScorecardIds($options);
+		$conditions[] = array('Scorecard.id IN' => $scorecards);
 
 		$players_position = $this->find('all', array(
 			'fields' => array(
