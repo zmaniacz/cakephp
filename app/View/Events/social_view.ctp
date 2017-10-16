@@ -6,7 +6,7 @@
 			"paging": false,
 			"ordering": false,
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'gameList', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'gameList', $event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{ "data" : function ( row, type, val, meta) {
@@ -95,7 +95,7 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $selected_event['Event']['id'], 'ext' => 'json'))); ?>",
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $event['Event']['id'], 'ext' => 'json'))); ?>",
 				"dataSrc" : "response"
 			},
 			"columns" : [
@@ -179,7 +179,7 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'summaryStats', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'summaryStats', $event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
@@ -267,7 +267,7 @@
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'medicHits', $selected_event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'medicHits', $event['Event']['id'], 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
