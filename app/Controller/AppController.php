@@ -67,7 +67,7 @@ class AppController extends Controller {
 	public function beforeFilter() {
 		//gametype, centerID and eventID should be defined in the session state at all times
 		//values of all, 0 and 0 respectively indicate no filtering to occur on those items
-		//gametype can be all, social, league, or tournament
+		//gametype can be all, social, or comp (competitive)
 		//default to all, 0, 0
 		//selected_ecentID is hacky as fuck method to shoehorn the updated table structure in
 
@@ -101,7 +101,7 @@ class AppController extends Controller {
 				}
 
 				if($state['selected_event']['is_comp']) {
-					$state['gametype'] = $selected_event['Event']['type'];
+					$state['gametype'] = 'comp';
 					$state['centerID'] = $selected_event['Event']['center_id'];
 				}
 			}

@@ -97,7 +97,7 @@
 							</button>
 							<?= $this->Html->image('/img/LF-logo1-shadow-small.png', array(
 								'alt' => 'Lfstats Home',
-								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'leagueID' => 0, 'centerID' => 0))
+								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'eventID' => 0, 'centerID' => 0))
 								)
 							); ?>
     					</div>
@@ -107,14 +107,14 @@
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
 										<ul class="dropdown-menu">
-											<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'events', 'action' => 'view', $selected_event['Event']['id'])); ?></li>
+											<li><?= $this->Html->link('Summary - '.$this->Session->read('state.selected_event.name'), array('controller' => 'events', 'action' => 'view', $this->Session->read('state.selected_event.id'))); ?></li>
 											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
 											<?php if($this->Session->read('state.selected_event.type') != 'social'): ?>
-											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
-											<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
-											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
-											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
-											<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
+											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $this->Session->read('state.selected_event.id'))); ?></li>
+											<li><?= "todo";//$this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
+											<li><?= "todo";//$this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
+											<li><?= "todo";//$this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
+											<li><?= "todo";//$this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 											<?php endif; ?>
 											<li role="separator" class="divider"></li>
 											<li><?= $this->Html->link('Event List', array('controller' => 'events', 'action' => 'index')); ?></li>
@@ -133,7 +133,7 @@
 								<?php endif; ?>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 16, 'centerID' => 14))); ?></li>
+                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'events', 'action' => 'view', '?' => array('gametype' => 'comp', 'eventID' => 16, 'centerID' => 14))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || AuthComponent::user('role') === 'center_admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>

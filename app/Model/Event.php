@@ -57,10 +57,14 @@ class Event extends AppModel {
 	public function getEventList($type = null, $limit = null, $center_id = null) {
 		$conditions[] = array();
 		
-		if(isset($type))
-			$conditions[] = array('Event.type' => $type);
+		if(isset($type)) {
+			if($type == 'social')
+				$conditions[] = array('Event.is_comp' => 0);
+			elseif($type == 'comp')
+				$conditions[] = array('Event.is_comp' => 1);
+		}
 
-		if(isset($center_id))
+		if(isset($center_id) && $center_id > 0)
 			$conditions[] = array('Event.center_id' => $center_id);
 		
 		$this->virtualFields['last_gametime'] = 0;

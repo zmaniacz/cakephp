@@ -1,3 +1,6 @@
+<?php
+	echo $this->element('filter');
+?>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.event_table').DataTable( {

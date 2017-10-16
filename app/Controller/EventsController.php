@@ -129,8 +129,6 @@ class EventsController extends AppController {
 
 	//API functions below
 	public function eventList() {
-		$this->request->allowMethod('ajax');
-
 		$limit = $this->request->query('limit');
 		$type = $this->request->query('gametype');
 		$center_id = $this->request->query('centerID');

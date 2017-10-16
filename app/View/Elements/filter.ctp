@@ -4,23 +4,23 @@
         array(
             "text" => 'All',
             "selected" => (($this->Session->read('state.gametype') == 'all') ? true : false),
-            "id" => 'gametype=all&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+            "id" => 'gametype=all&centerID='.$this->Session->read('state.centerID').'&eventID=0'
         ),
         array(
             "text" => 'Social',
             "selected" => (($this->Session->read('state.gametype') == 'social') ? true : false),
-            "id" => 'gametype=social&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+            "id" => 'gametype=social&centerID='.$this->Session->read('state.centerID').'&eventID=0'
         ),
         array(
             "text" => 'Competitive',
-            "selected" => (($this->Session->read('state.gametype') == 'league') ? true : false),
-            "id" => 'gametype=league&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+            "selected" => (($this->Session->read('state.gametype') == 'comp') ? true : false),
+            "id" => 'gametype=comp&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
         )
     );
 
     $eventSelect = array(
         array(
-            "text" => 'All Games',
+            "text" => 'All Events',
             "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID=0&eventID=0'
         )
     );
@@ -32,7 +32,7 @@
         foreach($sorted_centers as $key => $value) {
             $centerOptions[] = array(
                 "text" => $value,
-                "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID='.$key.'&eventID='.$this->Session->read('state.eventID'),
+                "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID='.$key.'&eventID=0',
                 "selected" => (($this->Session->read('state.centerID') == $key) ? true : false)
             );
         }
@@ -45,13 +45,13 @@
         );
     }
 
-    if($this->Session->read('state.gametype') != 'social') {
+    if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'comp') {
         $compOptions = array();
         foreach($event_details as $event) {
             if($event['Event']['is_comp']) {
                 $compOptions[] = array(
                     "text" => $event['Event']['name'],
-                    "id" => 'gametype=league&centerID='.$event['Event']['center_id'].'&eventID='.$event['Event']['id'],
+                    "id" => 'gametype=comp&centerID='.$event['Event']['center_id'].'&eventID='.$event['Event']['id'],
                     "selected" => (($this->Session->read('state.eventID') == $event['Event']['id']) ? true : false)
                 );
             }
