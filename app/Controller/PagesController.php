@@ -82,6 +82,11 @@ class PagesController extends AppController {
 		$this->render(implode('/', $path));
 	}
 
+	public function murder() {
+		session_unset();
+		$this->redirect('/');
+	}
+
 	public function aboutSM5() {
         //
 	}
