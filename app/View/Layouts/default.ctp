@@ -83,6 +83,7 @@
 	});
 </script>
 <body>
+<?php debug($this->Session->read('state')); ?>
 	<div class="container">
 		<div id="container">
 			<div id="header">
@@ -102,13 +103,13 @@
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
-								<?php if(isset($selected_event)): ?>
+								<?php if($this->Session->read('state.selected_event.id') > 0): ?>
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
 										<ul class="dropdown-menu">
 											<li><?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array('controller' => 'events', 'action' => 'view', $selected_event['Event']['id'])); ?></li>
 											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
-											<?php if($selected_event['Event']['type'] != 'social'): ?>
+											<?php if($this->Session->read('state.selected_event.type') != 'social'): ?>
 											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
 											<li><?= $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
 											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
@@ -122,13 +123,13 @@
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Overall Stats<span class="caret"></span></a>
 										<ul class="dropdown-menu">
-											<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter')); ?></li>
-											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
-											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
-											<li><?= $this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
+											<li><?= $this->Html->link('Top Players', array('controller' => 'players', 'action' => 'index', '?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => 0, 'centerID' => $this->Session->read('state.centerID')))); ?></li>
+											<li><?= $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter', '?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => 0, 'centerID' => $this->Session->read('state.centerID')))); ?></li>
+											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index', '?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => 0, 'centerID' => $this->Session->read('state.centerID')))); ?></li>
+											<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards', '?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => 0, 'centerID' => $this->Session->read('state.centerID')))); ?></li>
+											<li><?= $this->Html->link('Center Stats', array('controller' => 'games', 'action' => 'overall', '?' => array('gametype' => $this->Session->read('state.gametype'), 'eventID' => 0, 'centerID' => $this->Session->read('state.centerID')))); ?></li>
 										</ul>
 									</li>
-									<li><?= $this->Html->link('Player Stats', array('controller' => 'players', 'action' => 'index')); ?></li>
 								<?php endif; ?>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>

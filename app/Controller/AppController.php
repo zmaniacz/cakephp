@@ -69,6 +69,7 @@ class AppController extends Controller {
 		//values of all, 0 and 0 respectively indicate no filtering to occur on those items
 		//gametype can be all, social, league, or tournament
 		//default to all, 0, 0
+		//selected_ecentID is hacky as fuck method to shoehorn the updated table structure in
 
 		if($this->Session->check('state')) {
 			$state = $this->Session->read('state');
@@ -79,27 +80,29 @@ class AppController extends Controller {
 				'eventID' => 0,
 				'show_rounds' => true,
 				'show_finals' => false,
-				'show_subs' => false
+				'show_subs' => false,
+				'selected_event' => array()
 			);
 		}
+
+		if(!is_null($this->request->query('gametype')))
+			$state['gametype'] = $this->request->query('gametype');
+
+		if(!is_null($this->request->query('centerID')))
+			$state['centerID'] = $this->request->query('centerID');
 
 		if(!is_null($this->request->query('eventID'))) {
 			$state['eventID'] = $this->request->query('eventID');
 
 			if($state['eventID'] > 0) {
-				$selected_event = $this->Event->findById($state['eventID']);
-				$this->set('selected_event', $selected_event);
+				if(empty($state['selected_event']) || $state['eventID'] != $state['selected_event']['id']) {
+					$selected_event = $this->Event->findById($state['eventID']);
+					$state['selected_event'] = $selected_event['Event'];
+				}
 
-				if($selected_event['Event']['is_comp']) {
+				if($state['selected_event']['is_comp']) {
 					$state['gametype'] = $selected_event['Event']['type'];
 					$state['centerID'] = $selected_event['Event']['center_id'];
-				} else {
-					if(!is_null($this->request->query('gametype')))
-						$state['gametype'] = $this->request->query('gametype');
-		
-					if(!is_null($this->request->query('centerID'))) {
-						$state['centerID'] = $this->request->query('centerID');
-					}
 				}
 			}
 		}
