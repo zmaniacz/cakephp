@@ -31,11 +31,11 @@ class Match extends AppModel {
 			'foreignKey' => 'round_id'
 		),
 		'Team_1' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'team_1_id'
 		),
 		'Team_2' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'team_2_id'
 		)
 	);
@@ -92,8 +92,14 @@ class Match extends AppModel {
 	public function updatePoints($match_id) {
 		$match = $this->find('first', array(
 			'contain' => array(
-				'Game_1',
-				'Game_2',
+				'Game_1' =>array(
+					'Red_Team',
+					'Green_Team'
+				),
+				'Game_2' =>array(
+					'Red_Team',
+					'Green_Team'
+				),
 				'Team_1',
 				'Team_2'
 			),
@@ -125,8 +131,8 @@ class Match extends AppModel {
 		if(!empty($match['Game_1']['id']) && !empty($match['Game_2']['id'])) {
 			if($team_1_points == $team_2_points) {
 				//tie round, goes to score
-				$team_1_total_score = $match['Game_1']['red_score'] + $match['Game_1']['red_adj'] + $match['Game_2']['green_score'] + $match['Game_2']['green_adj'];
-				$team_2_total_score = $match['Game_1']['green_score'] + $match['Game_1']['green_adj'] + $match['Game_2']['red_score'] + $match['Game_2']['red_adj'];
+				$team_1_total_score = $match['Game_1']['Red_Team']['raw_score'] + $match['Game_1']['Red_Team']['bonus_score'] + $match['Game_1']['Red_Team']['penalty_score'] + $match['Game_2']['Green_Team']['raw_score'] + $match['Game_2']['Green_Team']['bonus_score'] + $match['Game_2']['Green_Team']['penalty_score'];
+				$team_2_total_score = $match['Game_1']['Green_Team']['raw_score'] + $match['Game_1']['Green_Team']['bonus_score'] + $match['Game_1']['Green_Team']['penalty_score'] + $match['Game_2']['Red_Team']['raw_score'] + $match['Game_2']['Red_Team']['bonus_score'] + $match['Game_2']['Red_Team']['penalty_score'];
 				
 				if($team_1_total_score > $team_2_total_score) {
 					$team_1_points += 2;
