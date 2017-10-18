@@ -8,6 +8,8 @@
 		var overall_data
 		var overall_table = $('#overall_averages_table').DataTable( {
 			"deferRender" : true,
+			scrollX: true,
+			fixedColumns: true,
 			"order": [[1, "desc"]],
 			"columns" : [
 				{ "data" : "name", },
@@ -297,7 +299,7 @@
 <div style="position: sticky; top: 45px; z-index: 1">
 	<div class="panel panel-info">
 		<div class="panel-body bg-info">
-			<?php if($selected_event['Event']['is_comp']): ?>
+			<?php if(isset($selected_event) && $selected_event['Event']['is_comp']): ?>
 				<form class="form-inline">
 					<div class="checkbox">
 						<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>
