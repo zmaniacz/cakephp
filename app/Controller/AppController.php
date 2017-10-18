@@ -65,12 +65,10 @@ class AppController extends Controller {
 	}
 	
 	public function beforeFilter() {
-		//gametype, centerID and eventID should be defined in the session state at all times
-		//values of all, 0 and 0 respectively indicate no filtering to occur on those items
-		//gametype can be all, social, or comp (competitive)
-		//default to all, 0, 0
-		//selected_ecentID is hacky as fuck method to shoehorn the updated table structure in
-
+		//gametype, centerID and eventID and compID should be defined in the session state at all times
+		//values of all, 0 and 0 and 0 respectively indicate no filtering to occur on those items
+		//gametype can be all, social, league or tournament
+		//default to all, 0, 0, 0
 		if($this->Session->check('state')) {
 			$state = $this->Session->read('state');
 		} else {
@@ -78,10 +76,10 @@ class AppController extends Controller {
 				'gametype' => 'all',
 				'centerID' => 0,
 				'eventID' => 0,
+				'selectedEvent' => 0,
 				'show_rounds' => true,
 				'show_finals' => false,
-				'show_subs' => false,
-				'selected_event' => array()
+				'show_subs' => false
 			);
 		}
 
@@ -91,26 +89,26 @@ class AppController extends Controller {
 		if(!is_null($this->request->query('centerID')))
 			$state['centerID'] = $this->request->query('centerID');
 
-		if(!is_null($this->request->query('eventID'))) {
+		if(!is_null($this->request->query('eventID')))
 			$state['eventID'] = $this->request->query('eventID');
+		
+		if(!is_null($this->request->query('selectedEvent')))
+			$state['selectedEvent'] = $this->request->query('selectedEvent');
 
-			if($state['eventID'] > 0) {
-				if(empty($state['selected_event']) || $state['eventID'] != $state['selected_event']['id']) {
-					$selected_event = $this->Event->findById($state['eventID']);
-					$state['selected_event'] = $selected_event['Event'];
-				}
-
-				if($state['selected_event']['is_comp']) {
-					$state['gametype'] = 'comp';
-					$state['centerID'] = $selected_event['Event']['center_id'];
-				}
-			}
+		if($state['eventID'] > 0) {
+			$state['selectedEvent'] = $state['eventID'];
+			$selected_event = $this->Event->findById($state['selectedEvent']);
+			$state['centerID'] = $selected_event['Event']['center_id'];
+			$state['gametype'] = $selected_event['Event']['type'];
 		}
+
+		$this->Session->write('state', $state);
+
+		if($state['selectedEvent'] > 0)
+			$this->set('selected_event', $selected_event);
 
 		if($state['centerID'] > 0)
 			$this->set('selected_center', $this->Center->findById($state['centerID']));
-
-		$this->Session->write('state', $state);
 		
 		$this->set('centers', $this->Center->find('list'));
 		$this->set('events', $this->Event->find('list'));
