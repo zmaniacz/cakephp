@@ -37,9 +37,6 @@ class EventsController extends AppController {
 	public function index() {
 	}
 
-	public function landing() {
-	}
-
 /**
  * view method
  *
