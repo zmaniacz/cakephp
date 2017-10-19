@@ -20,20 +20,20 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-	Router::connect('/', array('controller' => 'events', 'action' => 'landing'));
-	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'league', 6, 7));
-	Router::connect('/wct3', array('controller' => 'scorecards', 'action' => 'setState', 'league', 9, 13));
-	Router::connect('/wct4', array('controller' => 'scorecards', 'action' => 'setState', 'league', 12, 14));
+	Router::connect('/', array('controller' => 'events', 'action' => 'index'));
+	Router::connect('/ect5', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 6, 7));
+	Router::connect('/wct3', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 9, 13));
+	Router::connect('/wct4', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 12, 14));
 	Router::connect('/syr', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 8));
 	Router::connect('/ltc', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 14));
 	Router::connect('/cv', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 15));
 	Router::connect('/akl', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 16));
 	Router::connect('/geddon2014', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 3));
 	Router::connect('/geddon2015', array('controller' => 'scorecards', 'action' => 'setState', 'social', null, 9));
-	Router::connect('/internationals-2014', array('controller' => 'scorecards', 'action' => 'setState', 'league', 7, 5));
-	Router::connect('/internationals-2015', array('controller' => 'scorecards', 'action' => 'setState', 'league', 8, 10));
-	Router::connect('/nats2016', array('controller' => 'scorecards', 'action' => 'setState', 'league', 10, 8));
-	Router::connect('/internats2017', array('controller' => 'scorecards', 'action' => 'setState', 'league', 16, 14));
+	Router::connect('/internationals-2014', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 7, 5));
+	Router::connect('/internationals-2015', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 8, 10));
+	Router::connect('/nats2016', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 10, 8));
+	Router::connect('/internats2017', array('controller' => 'scorecards', 'action' => 'setState', 'comp', 16, 14));
 	Router::parseExtensions();
 
 /**
