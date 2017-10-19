@@ -97,7 +97,7 @@
 							</button>
 							<?= $this->Html->image('/img/LF-logo1-shadow-small.png', array(
 								'alt' => 'Lfstats Home',
-								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'eventID' => 0, 'centerID' => 0, 'selectedEvent' => 0))
+								'url' => array('controller' => 'events', 'action' => 'index', '?' => array('gametype' => 'all', 'eventID' => 0, 'centerID' => 0, 'selectedEvent' => 0))
 								)
 							); ?>
     					</div>
@@ -145,7 +145,7 @@
 								<?php endif; ?>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'events', 'action' => 'view', '?' => array('gametype' => 'comp', 'eventID' => 16, 'centerID' => 14))); ?></li>
+                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'events', 'action' => 'view', 16, '?' => array('gametype' => 'comp', 'eventID' => 16, 'centerID' => 14))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || AuthComponent::user('role') === 'center_admin'): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>

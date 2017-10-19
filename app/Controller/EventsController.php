@@ -54,7 +54,7 @@ class EventsController extends AppController {
 		if($event['Event']['type'] == 'social') {
 			$this->render('social_view');
 		} else {
-			$this->render('competition_view');
+			$this->render('comp_view');
 		}
 	}
 
