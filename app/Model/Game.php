@@ -191,17 +191,17 @@ class Game extends AppModel {
 		return $data;
 	}
 
-	public function getGameList($date = null, $state) {
+	public function getGameList($state) {
 		$conditions = array();
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
-			$conditions[] = array('Game.center_id' => $state['centerID']);
+			$conditions[] = array('Event.center_id' => $state['centerID']);
 		
 		if(isset($state['gametype']) && $state['gametype'] != 'all')
-			$conditions[] = array('Game.type' => $state['gametype']);
+			$conditions[] = array('Event.type' => $state['gametype']);
 		
 		if(isset($state['eventID']) && $state['eventID'] > 0)
-			$conditions[] = array('Game.event_id' => $state['eventID']);
+			$conditions[] = array('Event.id' => $state['eventID']);
 
 		$games = $this->find('all', array(
 			'contain' => array(
@@ -213,7 +213,8 @@ class Game extends AppModel {
 				),
 				'Match' => array(
 					'Round'
-				)
+				),
+				'Event'
 			),
 			'conditions' => $conditions,
 			'order' => 'Game.game_datetime ASC'
@@ -236,7 +237,6 @@ class Game extends AppModel {
 						'Penalty'
 					)
 				),
-				'Match',
 				'Red_TeamPenalties',
 				'Green_TeamPenalties'
 			),
@@ -280,8 +280,6 @@ class Game extends AppModel {
 			$game['Green_Team']['penalty_score'] += $team_penalty['value'];
 		}
 		
-		//Apply the elim bonus if the ooposing team was eliminated...both teams can get the bonus
-		//in the case that the elim bonus does not produce a win by score, the bonus is increased until it does
 		if($game['Red_Team']['eliminated_opponent'])
 			$game['Red_Team']['bonus_score'] += $elim_bonus;
 
@@ -294,7 +292,6 @@ class Game extends AppModel {
 					$game['Red_Team']['bonus_score'] += ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']) - ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']) + 1;
 				}
 			}
-
 			if($game['Green_Team']['eliminated_opponent']) {
 				if($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score'] < $game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']) {
 					$game['Green_Team']['bonus_score'] += ($game['Red_Team']['raw_score'] + $game['Red_Team']['bonus_score'] + $game['Red_Team']['penalty_score']) - ($game['Green_Team']['raw_score'] + $game['Green_Team']['bonus_score'] + $game['Green_Team']['penalty_score']) + 1;
@@ -309,8 +306,23 @@ class Game extends AppModel {
 			$game['Green_Team']['winner'] = 1;
 			$game['Game']['winner'] = 'green';
 		}
+
+		//if you elimed, you win
+		if($game['Red_Team']['eliminated_opponent'])
+			$game['Game']['winner'] = 'red';
+		elseif($game['Green_Team']['eliminated_opponent'])
+			$game['Game']['winner'] = 'green';
 		
 		$this->saveAll($game);
+
+		$game = $this->find('first', array(
+			'contain' => array(
+				'Match'
+			),
+			'conditions' => array(
+				'Game.id' => $id
+			)
+		));
 		
 		if(isset($game['Match']['id'])) {
 			$this->Match->updatePoints($game['Match']['id']);
