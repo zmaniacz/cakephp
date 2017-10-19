@@ -13,22 +13,21 @@
 			"columns" : [
 				{ "data" : function ( row, type, val, meta) {			
 						if (type === 'display') {
-							return '<a href="/events/view/'+row.id+'?gametype='+row.type+'&centerID='+row.center_id+'&eventID='+row.id+'" class="btn btn-info btn-block">'+row.center_name+" - "+row.name+'</a>';
+							return '<a href="'+row.Event.link+'" class="btn btn-info btn-block">'+row.Center.name+" - "+row.Event.name+'</a>';
 						}
-						return row.name;
-					},
-					"width" : "200px" 
+						return row.Event.name;
+					}
 				},
                 { "data" : function ( row, type, val, meta ) {
 						if (type === 'display') {
-							let date = new Date(row.last_gametime);
+							let date = new Date(row.Event.last_gametime);
                             return date.toLocaleDateString();
 						}
 						
-						return row.last_gametime;
+						return row.Event.last_gametime;
 					}
 				},
-                { "data" : "games_played" }
+                { "data" : "Event.games_played" }
 			]
 		});
     });
