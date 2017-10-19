@@ -68,6 +68,7 @@ class AppController extends Controller {
 		//gametype, centerID and eventID and compID should be defined in the session state at all times
 		//values of all, 0 and 0 and 0 respectively indicate no filtering to occur on those items
 		//gametype can be all, social, league or tournament
+		//matchtype can be rounds, finals or all
 		//default to all, 0, 0, 0
 		if($this->Session->check('state')) {
 			$state = $this->Session->read('state');
@@ -77,8 +78,7 @@ class AppController extends Controller {
 				'centerID' => 0,
 				'eventID' => 0,
 				'selectedEvent' => 0,
-				'show_rounds' => true,
-				'show_finals' => false,
+				'matchtype' => 'rounds',
 				'show_subs' => false
 			);
 		}
@@ -99,12 +99,15 @@ class AppController extends Controller {
 			$state['selectedEvent'] = $state['eventID'];
 			$selected_event = $this->Event->findById($state['selectedEvent']);
 			$state['centerID'] = $selected_event['Event']['center_id'];
-			$state['gametype'] = $selected_event['Event']['type'];
+			$state['gametype'] = ($selected_event['Event']['is_comp']) ? 'comp' : 'social';
 		}
 
 		$this->Session->write('state', $state);
 
-		if($state['selectedEvent'] > 0)
+		if($state['selectedEvent'] > 0 && !isset($selected_event))
+			$selected_event = $this->Event->findById($state['selectedEvent']);
+		
+		if(isset($selected_event))
 			$this->set('selected_event', $selected_event);
 
 		if($state['centerID'] > 0)

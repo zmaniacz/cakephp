@@ -135,32 +135,9 @@ class EventsController extends AppController {
 		$this->set('response', $this->Event->getEventList($type, $limit, $center_id));
 	}
 
-	public function gameList($event_id = null) {
-		$this->request->allowMethod('ajax');
-
-		if (!$this->Event->exists($event_id)) {
-			throw new NotFoundException(__('Invalid event'));
-		}
-
+	public function gameList() {
+		$event_id = $this->request->query('eventID');
 		$this->set('response', $this->Event->getGameList($event_id));
-	}
-
-	public function eventScorecards($event_id = null) {
-		if (!$this->Event->exists($event_id)) {
-			throw new NotFoundException(__('Invalid event'));
-		}
-
-		$this->set('response', $this->Event->getScorecards($event_id));
-	}
-
-	public function summaryStats($event_id = null) {
-		if (!$this->Event->exists($event_id)) {
-			throw new NotFoundException(__('Invalid event'));
-		}
-
-		$this->loadModel('Scorecard');
-		$this->set('summary', $this->Event->getSummaryStats($event_id));
-		$this->set('overall', $this->Scorecard->getAllAvgMVP());
 	}
 
 	public function medicHits($event_id = null) {

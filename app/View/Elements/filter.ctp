@@ -4,24 +4,44 @@
         array(
             "text" => 'All',
             "selected" => (($this->Session->read('state.gametype') == 'all') ? true : false),
-            "id" => 'gametype=all&centerID='.$this->Session->read('state.centerID').'&eventID=0'
+            "id" => html_entity_decode($this->Html->url(array('?' => array(
+                'gametype' => 'all',
+                'centerID' => $this->Session->read('state.centerID'),
+                'eventID' => 0,
+                'selectedEvent' => $this->Session->read('state.selectedEvent')
+            ))))
         ),
         array(
             "text" => 'Social',
             "selected" => (($this->Session->read('state.gametype') == 'social') ? true : false),
-            "id" => 'gametype=social&centerID='.$this->Session->read('state.centerID').'&eventID=0'
+            "id" => html_entity_decode($this->Html->url(array('?' => array(
+                'gametype' => 'social',
+                'centerID' => $this->Session->read('state.centerID'),
+                'eventID' => 0,
+                'selectedEvent' => $this->Session->read('state.selectedEvent')
+            ))))
         ),
         array(
             "text" => 'Competitive',
             "selected" => (($this->Session->read('state.gametype') == 'comp') ? true : false),
-            "id" => 'gametype=comp&centerID='.$this->Session->read('state.centerID').'&eventID='.$this->Session->read('state.eventID')
+            "id" => html_entity_decode($this->Html->url(array('?' => array(
+                'gametype' => 'comp',
+                'centerID' => $this->Session->read('state.centerID'),
+                'eventID' => 0,
+                'selectedEvent' => $this->Session->read('state.selectedEvent')
+            ))))
         )
     );
 
     $eventSelect = array(
         array(
             "text" => 'All Events',
-            "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID=0&eventID=0'
+            "id" => html_entity_decode($this->Html->url(array('?' => array(
+                'gametype' => $this->Session->read('state.gametype'),
+                'centerID' => 0,
+                'eventID' => 0,
+                'selectedEvent' => $this->Session->read('state.selectedEvent')
+            ))))
         )
     );
 
@@ -32,8 +52,13 @@
         foreach($sorted_centers as $key => $value) {
             $centerOptions[] = array(
                 "text" => $value,
-                "id" => 'gametype='.$this->Session->read('state.gametype').'&centerID='.$key.'&eventID=0',
-                "selected" => (($this->Session->read('state.centerID') == $key) ? true : false)
+                "selected" => (($this->Session->read('state.centerID') == $key) ? true : false),
+                "id" => html_entity_decode($this->Html->url(array('?' => array(
+                    'gametype' => $this->Session->read('state.gametype'),
+                    'centerID' => $key,
+                    'eventID' => 0,
+                    'selectedEvent' => $this->Session->read('state.selectedEvent')
+                ))))
             );
         }
     }
@@ -51,8 +76,13 @@
             if($event['Event']['is_comp']) {
                 $compOptions[] = array(
                     "text" => $event['Event']['name'],
-                    "id" => 'gametype=comp&centerID='.$event['Event']['center_id'].'&eventID='.$event['Event']['id'],
-                    "selected" => (($this->Session->read('state.eventID') == $event['Event']['id']) ? true : false)
+                    "selected" => (($this->Session->read('state.eventID') == $event['Event']['id']) ? true : false),
+                    "id" => html_entity_decode($this->Html->url(array('?' => array(
+                        'gametype' => 'comp',
+                        'centerID' => $event['Event']['center_id'],
+                        'eventID' => $event['Event']['id'],
+                        'selectedEvent' => $event['Event']['id']
+                    ))))
                 );
             }
         }
@@ -81,7 +111,7 @@
         $('.lfstatsFilter').on('select2:select', function(e) {
             var url = $(this).val();
             if (url) {
-                window.location.search = url;
+                window.location = url;
             }
             return false;
         });

@@ -1,5 +1,5 @@
 <?php
-    foreach($response as &$player) {
+    foreach($data as &$player) {
         $player['non_resup_total_medic_hits'] = 0;
         $player['non_resup_total_games_played'] = 0;
         
@@ -18,7 +18,6 @@
             $player['non_resup_total_games_played'] += $player['Scout']['games_played'];
         }
     }
-    
-    $data = array_values($response);
+    $data = array_values($data);
     echo json_encode(compact('data'), JSON_NUMERIC_CHECK);
 ?>

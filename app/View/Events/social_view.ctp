@@ -4,9 +4,9 @@
 			"searching": false,
 			"info": false,
 			"paging": false,
-			"ordering": false,
+			"order": [[1, 'asc']],
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'gameList', $event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'gameList', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{ "data" : function ( row, type, val, meta) {
@@ -17,10 +17,10 @@
 						}
 						
 						if (type === 'display') {
-							return '<a href="/games/view/'+row.id+location.search+'" class="'+btn_class+'">'+row.game_name+'</a>';
+							return '<a href="'+row.link+'" class="'+btn_class+'">'+row.game_name+'</a>';
 						}
 
-						return row.name;
+						return row.game_name;
 					}
 				},
 				{ "data" : "game_datetime" },
@@ -95,8 +95,7 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'events', 'action' => 'eventScorecards', $event['Event']['id'], 'ext' => 'json'))); ?>",
-				"dataSrc" : "response"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getScorecards', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
@@ -105,9 +104,9 @@
 				},
 				{ "data" : function ( row, type, val, meta) {			
 						if (type === 'display') {
-							return '<a href="/players/view/'+row.Scorecard.player_id+location.search+'" class="btn btn-info btn-block">'+row.Scorecard.player_name+'</a>';
+							return '<a href="'+row.Player.link+'" class="btn btn-info btn-block">'+row.Player.player_name+'</a>';
 						}
-						return row.Scorecard.player_name;
+						return row.Player.player_name;
 					},
 					"width" : "200px" 
 				},
@@ -119,7 +118,7 @@
 						}
 
 						if (type === 'display') {
-							return '<a href="/games/view/'+row.Game.id+location.search+'" class="'+btn_class+'">'+row.Game.game_name+'</a>';
+							return '<a href="'+row.Game.link+'" class="'+btn_class+'">'+row.Game.game_name+'</a>';
 						}
 						return row.Game.game_name;
 					}
@@ -179,7 +178,7 @@
 			"orderCellsTop" : true,
 			"dom": '<lr>t<ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'summaryStats', $event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getScorecardSummary', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{
@@ -188,7 +187,7 @@
 				},
 				{ "data" : function ( row, type, val, meta) {			
 						if (type === 'display') {
-							return '<a href="/players/view/'+row.player_id+location.search+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+							return '<a href="'+row.link+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
 						}
 						return row.player_name;
 					},
@@ -201,10 +200,11 @@
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
 							var avg_mvp = parseFloat(row.avg_mvp).toFixed(2);
+							var overall_avg_mvp = parseFloat(row.overall_avg_mvp).toFixed(2);
 							if (row.overall_avg_mvp >= row.avg_mvp) {
-								return avg_mvp+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_mvp+'"></span>'
+								return avg_mvp+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+overall_avg_mvp+'"></span>'
 							} else {
-								return avg_mvp+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_mvp+'"></span>'
+								return avg_mvp+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+overall_avg_mvp+'"></span>'
 							}
 						}
 
@@ -215,10 +215,11 @@
 				{ "data" : function ( row, type, val, meta) {
 						if (type === 'display') {
 							var avg_acc = parseFloat(row.avg_acc*100).toFixed(2);
+							var overall_avg_acc = parseFloat(row.overall_avg_acc*100).toFixed(2);
 							if (row.overall_avg_acc >= row.avg_acc) {
-								return avg_acc+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+row.overall_avg_acc+'"></span>'
+								return avg_acc+'<span class="glyphicon glyphicon-arrow-down text-danger" title="'+overall_avg_acc+'"></span>'
 							} else {
-								return avg_acc+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+row.overall_avg_acc+'"></span>'
+								return avg_acc+'<span class="glyphicon glyphicon-arrow-up text-success" title="'+overall_avg_acc+'"></span>'
 							}
 						}
 
@@ -267,7 +268,7 @@
 			"orderCellsTop" : true,
 			"dom": '<"H"lr>t<"F"ip>',
 			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'medicHits', $event['Event']['id'], 'ext' => 'json'))); ?>"
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getMedicHits', 'ext' => 'json'))); ?>"
 			},
 			"columns" : [
 				{

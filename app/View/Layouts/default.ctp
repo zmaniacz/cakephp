@@ -83,7 +83,7 @@
 	});
 </script>
 <body>
-<?php debug($this->Session->read('state')); ?>
+<?php //debug($this->Session->read('state')); ?>
 	<div class="container">
 		<div id="container">
 			<div id="header">
@@ -97,20 +97,32 @@
 							</button>
 							<?= $this->Html->image('/img/LF-logo1-shadow-small.png', array(
 								'alt' => 'Lfstats Home',
-								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'eventID' => 0, 'centerID' => 0))
+								'url' => array('controller' => 'events', 'action' => 'landing', '?' => array('gametype' => 'all', 'eventID' => 0, 'centerID' => 0, 'selectedEvent' => 0))
 								)
 							); ?>
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
-								<?php if($this->Session->read('state.selected_event.id') > 0): ?>
+								<?php if($this->Session->read('state.selectedEvent') > 0): ?>
 									<li class="dropdown">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Event Stats<span class="caret"></span></a>
 										<ul class="dropdown-menu">
-											<li><?= $this->Html->link('Summary - '.$this->Session->read('state.selected_event.name'), array('controller' => 'events', 'action' => 'view', $this->Session->read('state.selected_event.id'))); ?></li>
+											<li>
+											<?= $this->Html->link('Summary - '.$selected_event['Event']['name'], array(
+												'controller' => 'events',
+												'action' => 'view',
+												$selected_event['Event']['id'],
+												'?' => array(
+													'gametype' => $selected_event['Event']['type'],
+													'eventID' => $selected_event['Event']['id'],
+													'centerID' => $selected_event['Event']['center_id'],
+													'selectedEvent' => $selected_event['Event']['id']
+												)
+											)); ?>
+											</li>
 											<li><?= $this->Html->link('Games Played', array('controller' => 'games', 'action' => 'index')); ?></li>
-											<?php if($this->Session->read('state.selected_event.type') != 'social'): ?>
-											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $this->Session->read('state.selected_event.id'))); ?></li>
+											<?php if($selected_event['Event']['type'] != 'social'): ?>
+											<li><?= $this->Html->link('Player Stats', array('controller' => 'events', 'action' => 'playerStats', $selected_event['Event']['id'])); ?></li>
 											<li><?= "todo";//$this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar')); ?></li>
 											<li><?= "todo";//$this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
 											<li><?= "todo";//$this->Html->link('Aggregate Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>

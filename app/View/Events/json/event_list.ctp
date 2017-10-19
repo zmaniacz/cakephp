@@ -1,19 +1,19 @@
 <?php
 	$data = array();
 	foreach ($response as $event) {
-		$data[] = array(
-            'id' => $event['Event']['id'],
-			'name' => $event['Event']['name'],
-			'description' => $event['Event']['description'],
-            'is_comp' => $event['Event']['is_comp'],
-			'type' => $event['Event']['type'],
-			'last_gametime' => $event['Event']['last_gametime'],
-			'games_played' => $event['Event']['games_played'],
-			'center_id' => $event['Center']['id'],
-            'center_short_name' => $event['Center']['short_name'],
-			'center_name' => $event['Center']['name'],
-			'center' => $event['Center']['name']
+		$event['Event']['link'] = html_entity_decode($this->Html->url(array(
+				'controller' => 'events',
+				'action' => 'view',
+				$event['Event']['id'],
+				'?' => array(
+					'gametype' => $event['Event']['type'],
+					'centerID' => $event['Center']['id'],
+					'eventID' => $event['Event']['id'],
+					'selectedEvent' => $event['Event']['id']
+				)
+			))
 		);
+		$data[] = $event;
 	}
 	echo json_encode(compact('data'), JSON_NUMERIC_CHECK);
 ?>

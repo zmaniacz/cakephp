@@ -1,7 +1,8 @@
 <?php
 	$response = array();
-	foreach ($summary as $score) {
-		$response[$score['Player']['id']] = array(
+
+	foreach ($data as $score) {
+		$response[$score['Scorecard']['player_id']] = array(
             'player_id' => $score['Player']['id'],
 			'player_name' => $score['Player']['player_name'],
             'min_score' => $score[0]['min_score'],
@@ -15,18 +16,22 @@
 			'medic_hits' => $score[0]['medic_hits'],
 			'elim_rate' => $score[0]['elim_rate'],
 			'games_played' => $score[0]['games_played'],
-			'games_won' => $score[0]['games_won']
+			'games_won' => $score[0]['games_won'],
+			'link' => html_entity_decode($this->Html->url(array(
+				'controller' => 'players',
+				'action' => 'view',
+				$score['Player']['id']
+			)))
 		);
 	}
 
-	foreach ($overall as $key => $value) {
-		if(isset($response[$key])) {
-			$response[$key]['overall_avg_mvp'] = $value['avg_avg_mvp'];
-			$response[$key]['overall_avg_acc'] = $value['avg_avg_acc'];
+	foreach ($overall as $score) {
+		if(isset($response[$score['Scorecard']['player_id']])) {
+			$response[$score['Scorecard']['player_id']]['overall_avg_mvp'] = $score[0]['avg_mvp'];
+			$response[$score['Scorecard']['player_id']]['overall_avg_acc'] = $score[0]['avg_acc'];
 		}
 	}
 
     $data = array_values($response);
-	
 	echo json_encode(compact('data'), JSON_NUMERIC_CHECK);
 ?>

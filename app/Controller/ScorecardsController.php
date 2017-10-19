@@ -31,7 +31,10 @@ class ScorecardsController extends AppController {
 			'getAllStarStats',
 			'getComparison',
 			'getPlayerHitBreakdown',
-			'getIds'
+			'getIds',
+			'getScorecards',
+			'getScorecardSummary',
+			'getMedicHits'
 		);
 		parent::beforeFilter();
 	}
@@ -93,6 +96,22 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function phpview() {
+	}
+
+	public function getScorecards() {
+		$this->set('data', $this->Scorecard->getScorecardDetails($this->Session->read('state')));
+	}
+
+	public function getScorecardSummary() {
+		$options = $this->Session->read('state');
+		$this->set('data', $this->Scorecard->getScorecardSummaryDetails($options));
+
+		$options['eventID'] = 0;
+		$this->set('overall', $this->Scorecard->getScorecardSummaryDetails($options));
+	}
+
+	public function getMedicHits() {
+		$this->set('data', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 	
 	public function getOverallStats($position = null) {
