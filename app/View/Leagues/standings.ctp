@@ -39,6 +39,9 @@
 	</div>
 </div>
 <div>
+	<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
+		echo $this->Html->link('Add Round', array('controller' => 'leagues', 'action' => 'addRound'), array('class' => 'btn btn-success'));
+	?>
 	<input class="pull-right" type="text" id="search-criteria" placeholder="Search Matches..." />
 	<?php foreach($details['Round'] as $round): ?>
 		<div class="page-header">
