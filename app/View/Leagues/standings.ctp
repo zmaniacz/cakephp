@@ -48,6 +48,10 @@
 			<h3><?= (($round['is_finals']) ? "Finals" : "Round ".$round['round']); ?></h3>
 		</div>
 		<div class="row">
+		<?php 
+			if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
+				echo $this->Html->link('Add Match', array('controller' => 'leagues', 'action' => 'addMatch', $details['League']['id'], $round['id']), array('class' => 'btn btn-success'));
+		?>
 		<?php foreach($round['Match'] as $match): ?>
 			<div class="col-md-4 match-panel">
 				<div class="panel panel-info">
