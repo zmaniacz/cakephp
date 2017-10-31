@@ -101,4 +101,8 @@ class PagesController extends AppController {
 	public function internats2017Bracket() {
 		//
 	}
+
+	public function ect2017Bracket() {
+		//
+	}
 }
