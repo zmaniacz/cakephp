@@ -9,7 +9,7 @@ class LeaguesController extends AppController {
 	public $uses = array('League','Scorecard','Game');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails','ajax_getTeamStandings');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails','ajax_getTeamStandings','bracket');
 		parent::beforeFilter();
 	}
 
@@ -26,6 +26,11 @@ class LeaguesController extends AppController {
 		if($this->Session->read('state.gametype') != 'league' || !$this->Session->check('state.leagueID') || $this->Session->read('state.leagueID') <= 0)
 			$this->redirect(array('controller' => 'scorecards', 'action' => 'nightly'));
 		
+		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
+		$this->set('details', $this->League->getLeagueDetails($this->Session->read('state')));
+	}
+
+	public function bracket() {
 		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
 		$this->set('details', $this->League->getLeagueDetails($this->Session->read('state')));
 	}
