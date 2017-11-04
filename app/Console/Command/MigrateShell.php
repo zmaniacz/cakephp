@@ -268,35 +268,9 @@ class MigrateShell extends AppShell {
         $db->rawQuery("ALTER TABLE `scorecards`
                         CHANGE COLUMN `team` `color` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL
         ");
-
-        /*$db->rawQuery("CREATE OR REPLACE 
-                        ALGORITHM = UNDEFINED 
-                        DEFINER = `dbo_redial`@`%` 
-                        SQL SECURITY DEFINER
-                    VIEW `game_results` AS
-                    SELECT 
-                        `scorecards`.`game_datetime` AS `game_datetime`,
-                        `scorecards`.`player_id` AS `player_id`,
-                        `scorecards`.`id` AS `scorecard_id`,
-                        `games`.`id` AS `game_id`,
-                        `games`.`type` AS `type`,
-                        `games`.`center_id` AS `center_id`,
-                        `games`.`event_id` AS `event_id`,
-                        (CASE (`scorecards`.`team` = `games`.`winner`)
-                            WHEN 1 THEN 'W'
-                            ELSE 'L'
-                        END) AS `result`,
-                        (CASE (`scorecards`.`team` = `games`.`winner`)
-                            WHEN 1 THEN 1
-                            ELSE 0
-                        END) AS `won`
-                    FROM
-                        (`scorecards`
-                        JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
-                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");*/
     }
 
-    public function vGames() {
+    public function views() {
         //create the vGames view
         $db = ConnectionManager::getDataSource('default');
         $db->rawQuery("CREATE OR REPLACE
@@ -368,5 +342,64 @@ class MigrateShell extends AppShell {
                         LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
                         WHERE
                             (`teams`.`color` = 'red')) `red_team` ON ((`games`.`id` = `red_team`.`game_id`)))");
+
+        $db->rawQuery("CREATE OR REPLACE
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                        VIEW `v_leagues` AS
+                        SELECT 
+                            `events`.`id`,
+                            `events`.`name`,
+                            `events`.`description`,
+                            `events`.`type`,
+                            `events`.`center_id`,
+                            `events`.`challonge_id`,
+                            `events`.`challonge_link`
+                        FROM
+                            `events`
+                        WHERE
+                            `events`.`is_comp` = TRUE");
+
+        $db->rawQuery("CREATE OR REPLACE 
+                            ALGORITHM = UNDEFINED 
+                            DEFINER = `dbo_redial`@`%` 
+                            SQL SECURITY DEFINER
+                        VIEW `v_teams` AS
+                            SELECT 
+                                `event_teams`.`id`,
+                                `event_teams`.`name`,
+                                `event_teams`.`points`,
+                                `event_teams`.`country_code`,
+                                `event_teams`.`event_id` AS `league_id`,
+                                `event_teams`.`challonge_id`
+                            FROM
+                                `event_teams`");
+
+        $db->rawQuery("CREATE OR REPLACE 
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                        VIEW `game_results` AS
+                        SELECT 
+                            `scorecards`.`game_datetime` AS `game_datetime`,
+                            `scorecards`.`player_id` AS `player_id`,
+                            `scorecards`.`id` AS `scorecard_id`,
+                            `games`.`id` AS `game_id`,
+                            `games`.`type` AS `type`,
+                            `games`.`center_id` AS `center_id`,
+                            `games`.`event_id` AS `event_id`,
+                            (CASE (`scorecards`.`team` = `games`.`winner`)
+                                WHEN 1 THEN 'W'
+                                ELSE 'L'
+                            END) AS `result`,
+                            (CASE (`scorecards`.`team` = `games`.`winner`)
+                                WHEN 1 THEN 1
+                                ELSE 0
+                            END) AS `won`
+                        FROM
+                        (`scorecards`
+                        JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
+                        JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
     }
 }
