@@ -346,6 +346,13 @@ $(document).ready(function(){
 	var scout_acc_data = <?php echo $scout_acc_json; ?>;
 	var ammo_acc_data = <?php echo $ammo_acc_json; ?>;
 	var medic_acc_data = <?php echo $medic_acc_json; ?>;
+
+	var overall_medic_data = <?php echo $overall_medic_json; ?>;
+	var commander_medic_data = <?php echo $commander_medic_json; ?>;
+	var heavy_medic_data = <?php echo $heavy_medic_json; ?>;
+	var scout_medic_data = <?php echo $scout_medic_json; ?>;
+	var ammo_medic_data = <?php echo $ammo_medic_json; ?>;
+	var medic_medic_data = <?php echo $medic_medic_json; ?>;
 	
 	(overall_mvp_data.length < 1) ? line1 = [null] : "";
 	(commander_mvp_data.length < 1) ? line2 = [null] : "";
