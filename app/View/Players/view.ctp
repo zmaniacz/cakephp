@@ -930,6 +930,7 @@ $(document).ready(function(){
 		},
 		yAxis: {
 			title: {text: 'Medic Hits'},
+			min: -5,
 			max: 20,
 			tickInterval: 1
 		},
