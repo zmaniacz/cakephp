@@ -6,74 +6,92 @@
 	$overall_acc_plot = array();
 	$overall_score_plot = array();
 	$overall_mvp_plot = array();
+	$overall_medic_plot = array();
 	foreach($overall[0]['Scorecard'] as $key => $val) {
 		$overall_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$overall_score_plot[] = (float)$val['score'];
 		$overall_mvp_plot[] = (float)$val['mvp_points'];
+		$overall_medic_plot[] = $val['medic_hits'];
 	}
 	$overall_acc_json = json_encode($overall_acc_plot);
 	$overall_score_json = json_encode($overall_score_plot);
 	$overall_mvp_json = json_encode($overall_mvp_plot);
+	$overall_medic_json = json_encode($overall_medic_plot);
 
 	$commander_acc_plot = array();
 	$commander_score_plot = array();
 	$commander_mvp_plot = array();
+	$commander_medic_plot = array();
 	foreach($commander[0]['Scorecard'] as $key => $val) {
 		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$commander_score_plot[] = (float)$val['score'];
 		$commander_mvp_plot[] = (float)$val['mvp_points'];
+		$commander_medic_plot[] = $val['medic_hits'];
 	}
 	$commander_acc_json = json_encode($commander_acc_plot);
 	$commander_score_json = json_encode($commander_score_plot);
 	$commander_mvp_json = json_encode($commander_mvp_plot);
+	$commander_medic_json = json_encode($commander_medic_plot);
 
 	$heavy_acc_plot = array();
 	$heavy_score_plot = array();
 	$heavy_mvp_plot = array();
+	$heavy_medic_plot = array();
 	foreach($heavy[0]['Scorecard'] as $key => $val) {
 		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$heavy_score_plot[] = (float)$val['score'];
 		$heavy_mvp_plot[] = (float)$val['mvp_points'];
+		$heavy_medic_plot[] = $val['medic_hits'];
 	}
 	$heavy_acc_json = json_encode($heavy_acc_plot);
 	$heavy_score_json = json_encode($heavy_score_plot);
 	$heavy_mvp_json = json_encode($heavy_mvp_plot);
+	$heavy_medic_json = json_encode($heavy_medic_plot);
 
 	$scout_acc_plot = array();
 	$scout_score_plot = array();
 	$scout_mvp_plot = array();
+	$scout_medic_plot = array();
 	foreach($scout[0]['Scorecard'] as $key => $val) {
 		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$scout_score_plot[] = (float)$val['score'];
 		$scout_mvp_plot[] = (float)$val['mvp_points'];
+		$scout_medic_plot[] = $val['medic_hits'];
 	}
 	$scout_acc_json = json_encode($scout_acc_plot);
 	$scout_score_json = json_encode($scout_score_plot);
 	$scout_mvp_json = json_encode($scout_mvp_plot);
+	$scout_medic_json = json_encode($scout_medic_plot);
 
 	$ammo_acc_plot = array();
 	$ammo_score_plot = array();
 	$ammo_mvp_plot = array();
+	$ammo_medic_plot = array();
 	foreach($ammo[0]['Scorecard'] as $key => $val) {
 		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$ammo_score_plot[] = (float)$val['score'];
 		$ammo_mvp_plot[] = (float)$val['mvp_points'];
+		$ammo_medic_plot[] = $val['medic_hits'];
 	}
 	$ammo_acc_json = json_encode($ammo_acc_plot);
 	$ammo_score_json = json_encode($ammo_score_plot);
 	$ammo_mvp_json = json_encode($ammo_mvp_plot);
+	$ammo_medic_json = json_encode($ammo_medic_plot);
 
 	$medic_acc_plot = array();
 	$medic_score_plot = array();
 	$medic_mvp_plot = array();
+	$medic_medic_plot = array();
 	foreach($medic[0]['Scorecard'] as $key => $val) {
 		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$medic_score_plot[] = (float)$val['score'];
 		$medic_mvp_plot[] = (float)$val['mvp_points'];
+		$medic_medic_plot[] = $val['medic_hits'];
 	}
 	$medic_acc_json = json_encode($medic_acc_plot);
 	$medic_score_json = json_encode($medic_score_plot);
 	$medic_mvp_json = json_encode($medic_mvp_plot);
+	$medic_medic_json = json_encode($medic_medic_plot);
 ?>
 
 <script class="code" type="text/javascript">
@@ -891,6 +909,188 @@ $(document).ready(function(){
 		]
 	});
 
+	$('#medic_plot').highcharts({
+		chart: {
+			alignTicks: false
+		},
+		title: {text: 'Medic Hits'},
+		legend: {
+			enabled: true,
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle',
+			borderWidth: 0
+		},
+		yAxis: {
+			title: {text: 'Medic Hits'},
+			max: 20,
+			tickInterval: 1
+		},
+		xAxis: [{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: overall_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: commander_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: heavy_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: scout_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: ammo_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		},
+		{
+			maxPadding: 0.1,
+			minPadding: 0.1,
+			min: 5,
+			max: medic_medic_data.length + 5,
+			labels: {
+				enabled: false
+			},
+			tickWidth: 0
+		}],
+		series: [{
+			id: 'overall',
+			name: 'All Positions (Scatter)',
+			type: 'scatter',
+			data: overall_medic_data,
+			visible: false,
+			xAxis: 0
+		},
+		{
+			id: 'commander',
+			name: 'Commander (Scatter)',
+			type: 'scatter',
+			data: commander_medic_data,
+			visible: false,
+			xAxis: 1
+		},
+		{
+			id: 'heavy',
+			name: 'Heavy Weapons (Scatter)',
+			type: 'scatter',
+			data: heavy_medic_data,
+			visible: false,
+			xAxis: 2
+		},
+		{
+			id: 'scout',
+			name: 'Scout (Scatter)',
+			type: 'scatter',
+			data: scout_medic_data,
+			visible: false,
+			xAxis: 3
+		},
+		{
+			id: 'ammo',
+			name: 'Ammo Carrier (Scatter)',
+			type: 'scatter',
+			data: ammo_medic_data,
+			visible: false,
+			xAxis: 4
+		},
+		{
+			id: 'medic',
+			name: 'Medic (Scatter)',
+			type: 'scatter',
+			data: medic_medic_data,
+			visible: false,
+			xAxis: 5
+		},
+		{
+			name: 'All Positions',
+			type: 'trendline',
+			linkedTo: 'overall',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(overall_medic_data.length/10),10),
+			xAxis: 0
+		},
+		{
+			name: 'Commander',
+			type: 'trendline',
+			linkedTo: 'commander',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(commander_medic_data.length/10),10),
+			xAxis: 1
+		},
+		{
+			name: 'Heavy Weapons',
+			type: 'trendline',
+			linkedTo: 'heavy',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(heavy_medic_data.length/10),10),
+			xAxis: 2
+		},
+		{
+			name: 'Scout',
+			type: 'trendline',
+			linkedTo: 'scout',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(scout_medic_data.length/10),10),
+			xAxis: 3
+		},
+		{
+			name: 'Ammo Carrier',
+			type: 'trendline',
+			linkedTo: 'ammo',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(ammo_medic_data.length/10),10),
+			xAxis: 4
+		},
+		{
+			name: 'Medic',
+			type: 'trendline',
+			linkedTo: 'medic',
+			algorithm: 'EMA',
+			showInLegend: true,
+			periods: Math.max(Math.round(medic_medic_data.length/10),10),
+			xAxis: 5
+		}
+		]
+	});
+
 	$('#game_list thead tr th.searchable').each( function () {
 		var title = $('#game_list thead th').eq( $(this).index() ).text();
 		$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
@@ -1060,6 +1260,8 @@ $(document).ready(function(){
 		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
 		<br />
 		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="medic_plot" style="display: inline-block;height:400px;width:800px; "></div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
 		<div class="table-responsive">
