@@ -11,7 +11,7 @@
 		$overall_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$overall_score_plot[] = (float)$val['score'];
 		$overall_mvp_plot[] = (float)$val['mvp_points'];
-		$overall_medic_plot[] = $val['medic_hits'];
+		$overall_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$overall_acc_json = json_encode($overall_acc_plot);
 	$overall_score_json = json_encode($overall_score_plot);
@@ -26,7 +26,7 @@
 		$commander_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$commander_score_plot[] = (float)$val['score'];
 		$commander_mvp_plot[] = (float)$val['mvp_points'];
-		$commander_medic_plot[] = $val['medic_hits'];
+		$commander_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$commander_acc_json = json_encode($commander_acc_plot);
 	$commander_score_json = json_encode($commander_score_plot);
@@ -41,7 +41,7 @@
 		$heavy_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$heavy_score_plot[] = (float)$val['score'];
 		$heavy_mvp_plot[] = (float)$val['mvp_points'];
-		$heavy_medic_plot[] = $val['medic_hits'];
+		$heavy_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$heavy_acc_json = json_encode($heavy_acc_plot);
 	$heavy_score_json = json_encode($heavy_score_plot);
@@ -56,7 +56,7 @@
 		$scout_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$scout_score_plot[] = (float)$val['score'];
 		$scout_mvp_plot[] = (float)$val['mvp_points'];
-		$scout_medic_plot[] = $val['medic_hits'];
+		$scout_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$scout_acc_json = json_encode($scout_acc_plot);
 	$scout_score_json = json_encode($scout_score_plot);
@@ -71,7 +71,7 @@
 		$ammo_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$ammo_score_plot[] = (float)$val['score'];
 		$ammo_mvp_plot[] = (float)$val['mvp_points'];
-		$ammo_medic_plot[] = $val['medic_hits'];
+		$ammo_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$ammo_acc_json = json_encode($ammo_acc_plot);
 	$ammo_score_json = json_encode($ammo_score_plot);
@@ -86,7 +86,7 @@
 		$medic_acc_plot[] = ((float)$val['shots_hit']/(float)$val['shots_fired'])*100;
 		$medic_score_plot[] = (float)$val['score'];
 		$medic_mvp_plot[] = (float)$val['mvp_points'];
-		$medic_medic_plot[] = $val['medic_hits'];
+		$medic_medic_plot[] = (float)$val['medic_hits'];
 	}
 	$medic_acc_json = json_encode($medic_acc_plot);
 	$medic_score_json = json_encode($medic_score_plot);
@@ -931,8 +931,8 @@ $(document).ready(function(){
 		yAxis: {
 			title: {text: 'Medic Hits'},
 			min: -5,
-			max: 20,
-			tickInterval: 1
+			max: 15,
+			tickInterval: 2
 		},
 		xAxis: [{
 			maxPadding: 0.1,
