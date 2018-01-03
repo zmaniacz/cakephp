@@ -3,7 +3,7 @@
 	
 	foreach ($response as $key => $value) {
 		$data[] = array(
-			'name' => $this->Html->link($value['player_name'], array('controller' => 'Players', 'action' => 'view', $key), array('class' => 'btn btn-block btn-info')),
+			'link' => $this->Html->url(array('controller' => 'Players', 'action' => 'view', $key)),
 			'player_id' => $key,
 			'player_name' => $value['player_name'],
 			'avg_avg_mvp' => round($value['avg_avg_mvp'],2),

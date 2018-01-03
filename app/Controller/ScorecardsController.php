@@ -110,14 +110,17 @@ class ScorecardsController extends AppController {
 		$this->set('overall', $this->Scorecard->getScorecardSummaryDetails($options));
 	}
 
+	public function getOverallStats() {
+		$this->set('response', $this->Scorecard->getScorecardSummaryDetailsByPosition($this->Session->read('state')));
+	}
+
+
+
+	///////////////////////////////
 	public function getMedicHits() {
 		$this->set('data', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 	
-	public function getOverallStats($position = null) {
-		$this->set('response', $this->Scorecard->getPositionStats($position,$this->Session->read('state')));
-	}
-
 	public function getAllStarStats() {
 		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}

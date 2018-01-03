@@ -12,7 +12,14 @@
 			fixedColumns: true,
 			"order": [[1, "desc"]],
 			"columns" : [
-				{ "data" : "name", },
+				{ "data" : function ( row, type, val, meta ) {
+						if (type === 'display') {
+							return '<a href="'+row.link+'" class="btn btn-info btn-block">'+row.player_name+'</a>';
+						}
+						
+						return row.player_name;
+					}
+				},
 				{ "data" : "avg_avg_mvp" },
 				{ "data" : "total_mvp" },
 				{ "data" : "avg_avg_acc" },

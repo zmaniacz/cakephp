@@ -603,6 +603,7 @@ class Scorecard extends AppModel {
 				'MIN(Scorecard.accuracy) as min_acc',
 				'AVG(Scorecard.accuracy) as avg_acc',
 				'MAX(Scorecard.accuracy) as max_acc',
+				'SUM(Scorecard.accuracy) as total_acc',
 				'(SUM(Scorecard.nukes_detonated)/SUM(Scorecard.nukes_activated)) as nuke_ratio',
 				'(SUM(Scorecard.shot_opponent)/SUM(Scorecard.times_zapped)) as hit_diff',
 				'AVG(Scorecard.missiled_opponent) as avg_missiles',
@@ -846,28 +847,8 @@ class Scorecard extends AppModel {
 		return $scores;
 	}
 	
-	public function getAllAvgMVP($state = null) {
-		$options = array();
+	public function getAllAvgMVP($options = null) {
 		$conditions = array();
-
-		if(isset($state['centerID']))
-			$options['center_id'] = $state['centerID'];
-
-		if(isset($state['gametype']))
-			$options['game_type'] = $state['gametype'];
-		
-		if(isset($state['eventID']))
-			$options['event_id'] = $state['eventID'];
-
-		if(isset($state['show_subs']))
-			$options['show_subs'] = $state['show_subs'];
-		
-		if(isset($state['show_finals']))
-			$options['show_finals'] = $state['show_finals'];
-
-		if(isset($state['show_rounds']))
-			$options['show_rounds'] = $state['show_rounds'];
-		
 		$scorecards = $this->getScorecardIds($options);
 		$conditions[] = array('Scorecard.id IN' => $scorecards);
 

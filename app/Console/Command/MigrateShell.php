@@ -85,7 +85,7 @@ class MigrateShell extends AppShell {
                         `game_id` int(11) NOT NULL,
                         `event_team_id` int(11) DEFAULT NULL,
                         `created` datetime NULL DEFAULT NULL,
-                        `updated` datetime NULL DEFAULT NULL,
+                        `modified` datetime NULL DEFAULT NULL,
                         PRIMARY KEY (`id`),
                         KEY `game_id_idx` (`game_id`),
                         KEY `event_team_id_idx` (`event_team_id`), 
@@ -283,12 +283,12 @@ class MigrateShell extends AppShell {
                         `games`.`game_name` AS `game_name`,
                         `games`.`game_description` AS `game_description`,
                         `games`.`game_datetime` AS `game_datetime`,
-                        `green_team`.`id` AS `green_team_id`,
+                        `green_team`.`event_team_id` AS `green_team_id`,
                         `green_team`.`name` AS `green_team_name`,
                         `green_team`.`raw_score` AS `green_score`,
                         (`green_team`.`bonus_score` + `green_team`.`penalty_score`) AS `green_adj`,
                         `green_team`.`eliminated` AS `green_eliminated`,
-                        `red_team`.`id` AS `red_team_id`,
+                        `red_team`.`event_team_id` AS `red_team_id`,
                         `red_team`.`name` AS `red_team_name`,
                         `red_team`.`raw_score` AS `red_score`,
                         (`red_team`.`bonus_score` + `red_team`.`penalty_score`) AS `red_adj`,
@@ -318,7 +318,7 @@ class MigrateShell extends AppShell {
                                 `teams`.`event_team_id` AS `event_team_id`,
                                 `event_teams`.`name` AS `name`,
                                 `teams`.`created` AS `created`,
-                                `teams`.`updated` AS `updated`
+                                `teams`.`modified` AS `modified`
                         FROM
                             (`teams`
                         LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
@@ -336,7 +336,7 @@ class MigrateShell extends AppShell {
                                 `teams`.`event_team_id` AS `event_team_id`,
                                 `event_teams`.`name` AS `name`,
                                 `teams`.`created` AS `created`,
-                                `teams`.`updated` AS `updated`
+                                `teams`.`modified` AS `modified`
                         FROM
                             (`teams`
                         LEFT JOIN `event_teams` ON ((`teams`.`event_team_id` = `event_teams`.`id`)))
@@ -353,9 +353,12 @@ class MigrateShell extends AppShell {
                             `events`.`name`,
                             `events`.`description`,
                             `events`.`type`,
+                            `events`.`is_comp`,
                             `events`.`center_id`,
                             `events`.`challonge_id`,
-                            `events`.`challonge_link`
+                            `events`.`challonge_link`,
+                            `events`.`created` AS `created`,
+                            `events`.`modified` AS `modified`
                         FROM
                             `events`
                         WHERE
@@ -372,7 +375,9 @@ class MigrateShell extends AppShell {
                                 `event_teams`.`points`,
                                 `event_teams`.`country_code`,
                                 `event_teams`.`event_id` AS `league_id`,
-                                `event_teams`.`challonge_id`
+                                `event_teams`.`challonge_id`,
+                                `event_teams`.`created` AS `created`,
+                                `event_teams`.`modified` AS `modified`
                             FROM
                                 `event_teams`");
 
@@ -389,11 +394,11 @@ class MigrateShell extends AppShell {
                             `games`.`type` AS `type`,
                             `games`.`center_id` AS `center_id`,
                             `games`.`event_id` AS `event_id`,
-                            (CASE (`scorecards`.`team` = `games`.`winner`)
+                            (CASE (`scorecards`.`color` = `games`.`winner`)
                                 WHEN 1 THEN 'W'
                                 ELSE 'L'
                             END) AS `result`,
-                            (CASE (`scorecards`.`team` = `games`.`winner`)
+                            (CASE (`scorecards`.`color` = `games`.`winner`)
                                 WHEN 1 THEN 1
                                 ELSE 0
                             END) AS `won`
@@ -401,5 +406,108 @@ class MigrateShell extends AppShell {
                         (`scorecards`
                         JOIN `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
                         JOIN `games` ON (`teams`.`game_id` = `games`.`id`))");
+
+        $db->rawQuery("CREATE OR REPLACE 
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                        VIEW `v_rounds` AS
+                        SELECT 
+                            `rounds`.`id`,
+                            `rounds`.`round`,
+                            `rounds`.`is_finals`,
+                            `rounds`.`event_id` AS `league_id`,
+                            `rounds`.`created` AS `created`,
+                            `rounds`.`modified` AS `modified`
+                        FROM
+                            `rounds`");
+
+        $db->rawQuery("CREATE OR REPLACE 
+                        ALGORITHM = UNDEFINED 
+                        DEFINER = `dbo_redial`@`%` 
+                        SQL SECURITY DEFINER
+                    VIEW `v_scorecards` AS
+                        SELECT 
+                            `scorecards`.`id`,
+                            `scorecards`.`player_name`,
+                            `scorecards`.`game_datetime`,
+                            `scorecards`.`color` AS `team`,
+                            `scorecards`.`position`,
+                            `scorecards`.`shots_hit`,
+                            `scorecards`.`shots_fired`,
+                            `scorecards`.`times_zapped`,
+                            `scorecards`.`times_missiled`,
+                            `scorecards`.`missile_hits`,
+                            `scorecards`.`nukes_activated`,
+                            `scorecards`.`nukes_detonated`,
+                            `scorecards`.`nukes_canceled`,
+                            `scorecards`.`medic_hits`,
+                            `scorecards`.`own_medic_hits`,
+                            `scorecards`.`medic_nukes`,
+                            `scorecards`.`scout_rapid`,
+                            `scorecards`.`life_boost`,
+                            `scorecards`.`ammo_boost`,
+                            `scorecards`.`lives_left`,
+                            `scorecards`.`score`,
+                            `scorecards`.`shots_left`,
+                            `scorecards`.`penalties`,
+                            `scorecards`.`shot_3hit`,
+                            `scorecards`.`elim_other_team`,
+                            `scorecards`.`team_elim`,
+                            `scorecards`.`own_nuke_cancels`,
+                            `scorecards`.`shot_opponent`,
+                            `scorecards`.`shot_team`,
+                            `scorecards`.`missiled_opponent`,
+                            `scorecards`.`missiled_team`,
+                            `scorecards`.`resupplies`,
+                            `scorecards`.`rank`,
+                            `scorecards`.`bases_destroyed`,
+                            `scorecards`.`accuracy`,
+                            `scorecards`.`mvp_points`,
+                            `scorecards`.`sp_earned`,
+                            `scorecards`.`sp_spent`,
+                            `scorecards`.`game_id`,
+                            `scorecards`.`type`,
+                            `scorecards`.`is_sub`,
+                            `scorecards`.`player_id`,
+                            `scorecards`.`center_id`,
+                            `scorecards`.`pdf_id`,
+                            (CASE (`events`.`is_comp` = 1)
+                                WHEN 1 THEN `events`.`id`
+                                ELSE NULL
+                            END) AS `league_id`,
+                            `scorecards`.`created`,
+                            `scorecards`.`modified`
+                        FROM
+                            `scorecards`
+                                LEFT JOIN
+                            `teams` ON (`scorecards`.`team_id` = `teams`.`id`)
+                                LEFT JOIN
+                            `games` ON (`teams`.`game_id` = `games`.`id`)
+                                LEFT JOIN
+                            `events` ON (`games`.`event_id` = `events`.`id`)");
+
+        $db->rawQuery("CREATE OR REPLACE
+        ALGORITHM = UNDEFINED 
+        DEFINER = `dbo_redial`@`%` 
+        SQL SECURITY DEFINER
+        VIEW `v_league_games` AS
+        SELECT 
+            `Event`.`id` AS `league_id`,
+            `Round`.`id` AS `round_id`,
+            `Round`.`round` AS `round_number`,
+            `Round`.`is_finals` AS `is_finals`,
+            `Match`.`id` AS `match_id`,
+            `Match`.`match` AS `match_number`,
+            `Game`.`id` AS `game_id`,
+            `Game`.`league_game` AS `game_number`
+        FROM
+            (((`events` `Event`
+            JOIN `rounds` `Round` ON ((`Round`.`event_id` = `Event`.`id`)))
+            JOIN `matches` `Match` ON ((`Match`.`round_id` = `Round`.`id`)))
+            JOIN `games` `Game` ON ((`Game`.`match_id` = `Match`.`id`)))
+        WHERE
+            `Event`.`is_comp` = 1
+        ORDER BY `Event`.`id` , `Round`.`round` , `Match`.`match` , `Game`.`league_game`");
     }
 }
