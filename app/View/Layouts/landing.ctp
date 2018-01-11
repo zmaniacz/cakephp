@@ -86,7 +86,7 @@
 					</div>
 				</nav>
 			<div id="content">
-				<div class="row"><div class="col-xs-4 col-xs-offset-4"><?= $this->Html->link('ECT 7', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 17, 'centerID' => 7)), array('class' => 'btn btn-block btn-primary')); ?></div></div>
+				<div class="row"><div class="col-xs-4 col-xs-offset-4"><?= $this->Html->link('WCT 5', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 18, 'centerID' => 10)), array('class' => 'btn btn-block btn-primary')); ?></div></div>
 				<br />
 				<?php echo $this->Session->flash(); ?>
 				<?php echo $this->fetch('content'); ?>
