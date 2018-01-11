@@ -100,8 +100,8 @@
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
 								<li>|</li>
-                                <li><?= $this->Html->link('ECT 2017', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 17, 'centerID' => 7))); ?></li>
-								<li><?= $this->Html->link('Finals Bracket', array('controller' => 'pages', 'action' => 'ect2017Bracket', '?' => array('gametype' => 'league', 'leagueID' => 17, 'centerID' => 7))); ?></li>
+                                <li><?= $this->Html->link('WCT 2018', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 18, 'centerID' => 10))); ?></li>
+								<li><?= $this->Html->link('Finals Bracket', array('controller' => 'pages', 'action' => 'wct2018Bracket', '?' => array('gametype' => 'league', 'leagueID' => 18, 'centerID' => 10))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
