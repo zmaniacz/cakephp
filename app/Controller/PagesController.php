@@ -105,4 +105,8 @@ class PagesController extends AppController {
 	public function ect2017Bracket() {
 		//
 	}
+
+	public function wct2018Bracket() {
+		//
+	}
 }
