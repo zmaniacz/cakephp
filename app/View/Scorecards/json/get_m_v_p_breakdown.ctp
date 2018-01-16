@@ -25,6 +25,7 @@
 	$mvp['Nukes Detonated'] = $score['Scorecard']['nukes_detonated'];
 	$mvp['Nukes Canceled'] = $score['Scorecard']['nukes_canceled']*3;
 	$mvp['Medic Hits'] = $score['Scorecard']['medic_hits'];
+	$mvp['Own Medic Hits'] = $score['Scorecard']['own_medic_hits']*-1;
 	$mvp['Activate Rapid Fire'] = $score['Scorecard']['scout_rapid']*.5;
 	$mvp['Shoot 3-Hit'] = (floor(($score['Scorecard']['shot_3hit']/6)*100) / 100);
 	$mvp['Ammo Boost'] = $score['Scorecard']['ammo_boost'] * 3;
