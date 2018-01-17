@@ -69,7 +69,7 @@ class GamesController extends AppController {
 				$rank[$key] = $row['rank'];
 			}
 			
-			if(count($team) > 0) {
+			if(!empty($team)) {
 				if($game['Game']['winner'] == 'red')
 					array_multisort($team, SORT_DESC, $rank, SORT_ASC, $game['Scorecard']);
 				else
