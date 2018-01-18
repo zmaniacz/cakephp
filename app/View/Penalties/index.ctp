@@ -23,8 +23,24 @@
 					<th>Actions</th>
 				</thead>
 				<?php foreach ($penalties as $penalty): ?>
+					<?php
+						if(!empty($penalty['Scorecard']['Game']['Match'])) {
+							if($penalty['Scorecard']['Game']['Match']['Round']['is_finals']) {
+								$game_name = "Finals ";
+							} else {
+								$game_name = "R".$penalty['Scorecard']['Game']['Match']['Round']['round']." ";
+							}
+							$game_name .= "M".$penalty['Scorecard']['Game']['Match']['match']." G".$penalty['Scorecard']['Game']['league_game'];
+
+							if(!empty($penalty['Scorecard']['Game']['Red_Team'] && !empty($penalty['Scorecard']['Game']['Green_Team']))) {
+								$game_name .= " ".$penalty['Scorecard']['Game']['Red_Team']['name']." v ".$penalty['Scorecard']['Game']['Green_Team']['name'];
+							}
+						} else {
+							$game_name = $penalty['Scorecard']['Game']['game_name']." ".$penalty['Scorecard']['Game']['game_datetime'];
+						}
+					?>
 					<tr>
-						<td><?php echo $this->Html->link($penalty['Scorecard']['Game']['game_name']." ".$penalty['Scorecard']['Game']['game_datetime'], array('controller' => 'games', 'action' => 'view', $penalty['Scorecard']['Game']['id'])); ?>&nbsp;</td>
+						<td><?php echo $this->Html->link($game_name, array('controller' => 'games', 'action' => 'view', $penalty['Scorecard']['Game']['id'])); ?>&nbsp;</td>
 						<td><?php echo $penalty['Scorecard']['Game']['game_datetime']; ?></td>
 						<td>
 							<?php echo $this->Html->link($penalty['Scorecard']['Player']['player_name'], array('controller' => 'players', 'action' => 'view', $penalty['Scorecard']['Player']['id'])); ?>
