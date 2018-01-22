@@ -53,7 +53,11 @@ class PlayersController extends AppController {
 		$this->request->onlyAllow('ajax');
 		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $this->Session->read('state')));
 		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $this->Session->read('state')));
-		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $this->Session->read('state')));
-		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition(null, $this->Session->read('state')));
+		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, null, $this->Session->read('state')));
+		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition(null, null, $this->Session->read('state')));
+	}
+
+	public function allPlayersOverallMVP($color = null) {
+		$this->set('overall_mvp', $this->Player->getMedianMVPByPosition(null, $color, $this->Session->read('state')));
 	}
 }

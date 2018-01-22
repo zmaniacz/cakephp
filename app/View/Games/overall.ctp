@@ -1,68 +1,93 @@
-<?php
-	echo $this->Html->script('highcharts.js');
-	echo $this->Html->script('highcharts-more.js');
-?>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
 
 <script class="code" type="text/javascript">
 
-
 function overallData(data) {
-	var winloss = [['Red Wins', data['winloss']['red_wins']], ['Green Wins', data['winloss']['green_wins']]];
-	var winlossdetail = [
-		['Elim Wins from Red', data['winlossdetail']['elim_wins_from_red']],
-		['Non-Elim Wins from Red', data['winlossdetail']['non_elim_wins_from_red']],
-		['Elim Wins from Green', data['winlossdetail']['elim_wins_from_green']],
-		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
-	];
-	var mvp = data['overall_mvp'];
-	var commander_max = mvp['commander_max'];
-	
-	$('#win_loss_pie').highcharts({
+	var non_elim_wins = [["Non-Elim Wins", data['winlossdetail']['non_elim_wins_from_red']],["Non-Elim Wins",data['winlossdetail']['non_elim_wins_from_green']]];
+	var elim_wins = [["Elim Wins", data['winlossdetail']['elim_wins_from_red']],["Elim Wins",data['winlossdetail']['elim_wins_from_green']]];
+
+	$('#win_loss_chart').highcharts({
 		chart: {
-			type: 'pie'
+			type: 'bar',
+			height: '200px'
 		},
 		title: {
-			text: ''
+			text: null
+		},
+		xAxis: {
+			categories: ['Red','Green']
 		},
 		yAxis: {
 			title: {
 				text: 'Wins'
 			}
 		},
+		tooltip: {
+			pointFormat: "{point.y}"
+		},
+		legend: {
+			enabled: false
+		},
 		plotOptions: {
-			pie: {
-				shadow: false,
-				center: ['50%', '50%']
+			bar: {
+				stacking: 'normal',
+				colors: ["#FF0000","#CC0000","#00CC00","#00FF00"],
+				groupPadding: 0,
+				pointPadding: 0.1
 			}
 		},
-		series: [{
-			data: winloss,
-			size: '60%',
-			dataLabels: {
-				formatter: function() {
-					return this.y > 0 ? this.point.name : null;
-				},
-				color: 'white',
-				distance: -30
+		series: [
+			{
+				name: "Non-Elim Wins",
+				data: non_elim_wins,
+				colorByPoint: true,
+				colors: ["#CC0000","#00CC00"]
+			},
+			{
+				name: "Elim Wins",
+				data: elim_wins,
+				colorByPoint: true,
+				colors: ["#FF0000","#00FF00"]
 			}
-		}, {
-			data: winlossdetail,
-			colors: [
-				'#FF0000',
-				'#CC0000',
-				'#00FF00',
-				'#00CC00'
-			],
-			size: '80%',
-			innerSize: '60%',
-			dataLabels: {
-				formatter: function() {
-					return this.y > 0 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
-				}
-			}
-		}]
+		]
 	});
-	
+
+	$('#avg_positions').DataTable( {
+		"destroy": true,
+		"autoWidth": false,
+		"searching": false,
+		"info": false,
+		"paging": false,
+		"ordering": false,
+		"data" : data['averages'],
+		"columns" : [
+			{ "data" : "position"},
+			{ "data" : "avg_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}},
+			{ "data" : "avg_mvp", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
+		],
+	});
+
+
+	$('#avg_scores').DataTable( {
+		"destroy": true,
+		"autoWidth": false,
+		"searching": false,
+		"info": false,
+		"paging": false,
+		"ordering": false,
+		"data" : data['scoredetail'],
+		"columns" : [
+			{ "data" : "Game"},
+			{ "data" : "green_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);} },
+			{ "data" : "red_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
+		],
+	});
+}
+
+function renderBoxPlot(data) {
+	var mvp = data['overall_mvp'];
+
 	$('#mvp_box_plot').highcharts({
 		chart: {
 			type: 'boxplot'
@@ -106,38 +131,31 @@ function overallData(data) {
 			]
 		}]
 	});
+}
 
-	$('#avg_positions').DataTable( {
-		"destroy": true,
-		"autoWidth": false,
-		"searching": false,
-		"info": false,
-		"paging": false,
-		"ordering": false,
-		"data" : data['averages'],
-		"columns" : [
-			{ "data" : "position"},
-			{ "data" : "avg_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}},
-			{ "data" : "avg_mvp", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
-		],
-	});
+function updateBoxPlot(color) {
 
-
-	$('#avg_scores').DataTable( {
-		"destroy": true,
-		"autoWidth": false,
-		"searching": false,
-		"info": false,
-		"paging": false,
-		"ordering": false,
-		"data" : data['scoredetail'],
-		"columns" : [
-			{ "data" : "Game"},
-			{ "data" : "green_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);} },
-			{ "data" : "red_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
-		],
+	var data_url = '/players/allPlayersOverallMVP.json';
+	if(color === 'red') {
+		data_url = '/players/allPlayersOverallMVP/red.json';
+	} else if(color === 'green') {
+		data_url = '/players/allPlayersOverallMVP/green.json';
+	}
+	
+	$.ajax({
+		type: 'get',
+		url: data_url,
+		dataType: 'json',
+		success: function(data) {
+			renderBoxPlot(data);
+		},
+		error: function() {
+			alert('Failed to retrieve box plot data');
+		}
 	});
 }
+
+
 
 $(document).ready(function(){	
 	$.ajax({
@@ -148,33 +166,31 @@ $(document).ready(function(){
 			overallData(data);
 		},
 		error: function() {
-			alert('fail');
+			alert('Failed to retrieve data');
 		}
 	});
+
+	updateBoxPlot('all');
 });
 </script>
-<div id="winloss_panel" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#winloss_panel" data-target="#collapse_winloss" role="tab" id="winloss_heading">
+<div class="panel panel-info">
+	<div class="panel-heading">
 		<h4 class="panel-title">
-			Wins & Losses
+			Wins By Color
 		</h4>
 	</div>
-	<div id="collapse_winloss" class="panel-collapse collapse in" role="tabpanel">
-		<div class="panel-body">
-			<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
-		</div>
+	<div class="panel-body">
+		<div id="win_loss_chart"></div>
 	</div>
 </div>
 <div id="boxplot_panel" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#boxplot_panel" data-target="#collapse_boxplot" role="tab" id="boxplot_heading">
+	<div class="panel-heading" id="boxplot_heading">
 		<h4 class="panel-title">
 			Median MVP
 		</h4>
 	</div>
-	<div id="collapse_boxplot" class="panel-collapse collapse in" role="tabpanel">
-		<div class="panel-body">
-			<div id="mvp_box_plot" style="height: 500px; width: 800px"></div>
-		</div>
+	<div class="panel-body">
+		<div id="mvp_box_plot" style="height: 500px;"></div>
 	</div>
 </div>
 <div id="avg_pos_panel" class="panel panel-info">
