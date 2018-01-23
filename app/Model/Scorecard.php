@@ -1628,7 +1628,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('league_id' => $state['leagueID']);
 		}
 		
-		if(isset($state['gametype']) && ($state['gametype'] == 'all' || $state['gametype'] == 'social')) {
+		if($min_days > 0 && isset($state['gametype']) && ($state['gametype'] == 'all' || $state['gametype'] == 'social')) {
 			$conditions['DATEDIFF(DATE(NOW()),DATE(game_datetime)) <='] = $min_days;
 		}
 

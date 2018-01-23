@@ -19,7 +19,15 @@
 				columns: [
 					{ data: "position" },
 					{ data: "player_name" },
-					{ data: "avg_mvp" }
+					{ 
+						"data" : function ( row, type, val, meta ) {
+							var avg_mvp = Math.round(row.avg_mvp * 100) / 100;
+							if (type === 'display') {
+								return avg_mvp;
+							}
+							return row.avg_mvp;
+						}
+					}
 				]
 			});
 
@@ -32,7 +40,15 @@
 				columns: [
 					{ data: "position" },
 					{ data: "player_name" },
-					{ data: "avg_mvp" }
+					{ 
+						"data" : function ( row, type, val, meta ) {
+							var avg_mvp = Math.round(row.avg_mvp * 100) / 100;
+							if (type === 'display') {
+								return avg_mvp;
+							}
+							return row.avg_mvp;
+						}
+					}
 				]
 			});
 		});
@@ -73,6 +89,11 @@
 				updateAllCenter(min_games, min_days);
 			});
 		}
+
+		$("#min_days_select").change(function() {
+			min_days = this.value;
+			updateAllCenter(min_games, min_days);
+		});
 	});
 </script>
 <div id="all_center_teams" class="panel panel-info">
@@ -83,9 +104,18 @@
 	</div>
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-xs-4">
+				<div class="col-xs-6">
 					Minimum Games:<br /><br />
 					<div id="min_games_slider"></div>
+				</div>
+				<div class="col-xs-6">
+					Timeframe:<br /><br />
+					<select class="form-control" id="min_days_select">
+						<option value="0">All Time</option>
+						<option value="365" selected>Last 12 Months</option>
+						<option value="120">Last 120 Days</option>
+						<option value="90">Last 90 Days</option>
+					</select>
 				</div>
 			</div>
 			<div class="row">
