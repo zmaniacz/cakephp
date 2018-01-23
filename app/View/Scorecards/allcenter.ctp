@@ -1,13 +1,16 @@
 <script type="text/javascript">
-	function updateAllCenter(min_games, min_days) {
+	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
-		params.set('min_games',min_games);
-		params.set('min_days',min_days);
+		var min_games = 15;
+		var min_days = 365;
+		var all_center_table_a;
+		var all_center_table_b;
+		var min_games_slider = document.getElementById("min_games_slider")
 
 		$.ajax({
 			"url" : "/scorecards/getAllCenter.json?"+params.toString()
 		}).done(function(response) {
-			$('#all_center_a').DataTable( {
+			all_center_table_a = $('#all_center_a').DataTable( {
 				searching: false,
 				info: false,
 				paging: false,
@@ -20,7 +23,7 @@
 				]
 			});
 
-			$('#all_center_b').DataTable( {
+			all_center_table_b = $('#all_center_b').DataTable( {
 				searching: false,
 				info: false,
 				paging: false,
@@ -32,14 +35,44 @@
 					{ data: "avg_mvp" }
 				]
 			});
-		})
-	}
+		});
 
-	$(document).ready(function() {
-		let min_games = 15;
-		let min_days = 365;
+		function updateAllCenter(min_games, min_days) {
+			params.set('min_games',min_games);
+			params.set('min_days',min_days);
 
-		updateAllCenter(min_games, min_days);
+			$.ajax({
+				"url" : "/scorecards/getAllCenter.json?"+params.toString()
+			}).done(function(response) {
+				all_center_table_a.clear();
+				all_center_table_a.rows.add(response.all_center.team_a).draw();
+
+				all_center_table_b.clear();
+				all_center_table_b.rows.add(response.all_center.team_b).draw();
+			})
+		}
+
+		if($("#min_games_slider").length) {
+			noUiSlider.create(min_games_slider, {
+				start: min_games,
+				connect: [true, false],
+				step: 5,
+				range: {
+					'min': 0,
+					'max': 100
+				}
+			});
+
+			min_games_slider.noUiSlider.on('update', function(values, handle, unencoded) {
+				min_games = unencoded
+				children = min_games_slider.getElementsByClassName('noUi-handle');
+				children[0].dataset.value = min_games;
+			})
+
+			min_games_slider.noUiSlider.on('end', function(values, handle, unencoded) {
+				updateAllCenter(min_games, min_days);
+			});
+		}
 	});
 </script>
 <div id="all_center_teams" class="panel panel-info">
@@ -49,6 +82,12 @@
 		</h4>
 	</div>
 		<div class="panel-body">
+			<div class="row">
+				<div class="col-xs-4">
+					Minimum Games:<br /><br />
+					<div id="min_games_slider"></div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-6">
 					<h3><span class="label label-success">1st Team</span></h3>
