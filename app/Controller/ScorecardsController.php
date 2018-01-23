@@ -30,7 +30,8 @@ class ScorecardsController extends AppController {
 			'allstar',
 			'getAllStarStats',
 			'getComparison',
-			'getPlayerHitBreakdown'
+			'getPlayerHitBreakdown',
+			'getAllCenter'
 		);
 		parent::beforeFilter();
 	}
@@ -204,7 +205,12 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function allcenter() {
-		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('state')));
+	}
+
+	public function getAllCenter() {
+		$min_games = (empty($this->request->query('min_games'))) ? 15 : $this->request->query('min_games');
+		$min_days = (empty($this->request->query('min_days'))) ? 365 : $this->request->query('min_days');
+		$this->set('all_center', $this->Scorecard->getTopTeams($min_games, $min_days, $this->Session->read('state')));
 	}
 
 	public function allstar() {

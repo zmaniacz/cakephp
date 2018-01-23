@@ -1,17 +1,47 @@
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('.allcenter').DataTable( {
-			"searching": false,
-			"info": false,
-			"paging": false,
-			"ordering": false
+	function updateAllCenter(min_games, min_days) {
+		const params = new URLSearchParams(location.search);
+		params.set('min_games',min_games);
+		params.set('min_days',min_days);
+
+		$.ajax({
+			"url" : "/scorecards/getAllCenter.json?"+params.toString()
+		}).done(function(response) {
+			$('#all_center_a').DataTable( {
+				searching: false,
+				info: false,
+				paging: false,
+				ordering: false,
+				data: response.all_center.team_a,
+				columns: [
+					{ data: "position" },
+					{ data: "player_name" },
+					{ data: "avg_mvp" }
+				]
+			});
+
+			$('#all_center_b').DataTable( {
+				searching: false,
+				info: false,
+				paging: false,
+				ordering: false,
+				data: response.all_center.team_b,
+				columns: [
+					{ data: "position" },
+					{ data: "player_name" },
+					{ data: "avg_mvp" }
+				]
+			});
 		})
+	}
+
+	$(document).ready(function() {
+		let min_games = 15;
+		let min_days = 365;
+
+		updateAllCenter(min_games, min_days);
 	});
 </script>
-<div class="well">
-All/Social: MVP points calculated based on games played within the last 365 days.  Player must have at least 15 games at a position over that time period to be eligible.
-League: MVP points calculated based on all league games played.  Player must have at least 3 games at a position to be eligible.
-</div>
 <div id="all_center_teams" class="panel panel-info">
 	<div class="panel-heading" role="tab" id="all_center_teams_heading">
 		<h4 class="panel-title">
@@ -22,86 +52,22 @@ League: MVP points calculated based on all league games played.  Player must hav
 			<div class="row">
 				<div class="col-sm-6">
 					<h3><span class="label label-success">1st Team</span></h3>
-					<table class="allcenter table table-striped table-bordered table-hover">
+					<table class="allcenter table table-striped table-bordered table-hover" id="all_center_a">
 						<thead>
 							<th>Position</th>
 							<th>Player</th>
 							<th>Average MVP</th>
 						</thead>
-						<tbody>
-							<tr>
-								<td>Commander</td>
-								<td><?php echo $this->Html->link($top['team_a']['Commander']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Commander']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Commander']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Heavy Weapons</td>
-								<td><?php echo $this->Html->link($top['team_a']['Heavy Weapons']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Heavy Weapons']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Heavy Weapons']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Scout 1</td>
-								<td><?php echo $this->Html->link($top['team_a']['Scout']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Scout']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Scout']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Scout 2</td>
-								<td><?php echo $this->Html->link($top['team_a']['Scout2']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Scout2']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Scout2']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Ammo Carrier</td>
-								<td><?php echo $this->Html->link($top['team_a']['Ammo Carrier']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Ammo Carrier']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Ammo Carrier']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Medic</td>
-								<td><?php echo $this->Html->link($top['team_a']['Medic']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_a']['Medic']['player_id'])); ?></td>
-								<td><?php echo round($top['team_a']['Medic']['avg_mvp'],2); ?></td>
-							</tr>
-						</tbody>
 					</table>
 				</div>
 				<div class="col-sm-6">
 					<h3><span class="label label-danger">2nd Team</span></h3>
-					<table class="allcenter table table-striped table-bordered table-hover">
+					<table class="allcenter table table-striped table-bordered table-hover" id="all_center_b">
 						<thead>
 							<th>Position</th>
 							<th>Player</th>
 							<th>Average MVP</th>
 						</thead>
-						<tbody>
-							<tr>
-								<td>Commander</td>
-								<td><?php echo $this->Html->link($top['team_b']['Commander']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Commander']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Commander']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Heavy Weapons</td>
-								<td><?php echo $this->Html->link($top['team_b']['Heavy Weapons']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Heavy Weapons']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Heavy Weapons']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Scout 1</td>
-								<td><?php echo $this->Html->link($top['team_b']['Scout']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Scout']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Scout']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Scout 2</td>
-								<td><?php echo $this->Html->link($top['team_b']['Scout2']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Scout2']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Scout2']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Ammo Carrier</td>
-								<td><?php echo $this->Html->link($top['team_b']['Ammo Carrier']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Ammo Carrier']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Ammo Carrier']['avg_mvp'],2); ?></td>
-							</tr>
-							<tr>
-								<td>Medic</td>
-								<td><?php echo $this->Html->link($top['team_b']['Medic']['player_name'], array('controller' => 'Players', 'action' => 'view', $top['team_b']['Medic']['player_id'])); ?></td>
-								<td><?php echo round($top['team_b']['Medic']['avg_mvp'],2); ?></td>
-							</tr>
-						</tbody>
 					</table>
 				</div>
 			</div>
