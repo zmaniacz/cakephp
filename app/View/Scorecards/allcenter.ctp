@@ -4,53 +4,30 @@
 		var min_games = 15;
 		var min_days = 365;
 		var all_center_table_a;
-		var all_center_table_b;
 		var min_games_slider = document.getElementById("min_games_slider")
 
-		$.ajax({
-			"url" : "/scorecards/getAllCenter.json?"+params.toString()
-		}).done(function(response) {
-			all_center_table_a = $('#all_center_a').DataTable( {
-				searching: false,
-				info: false,
-				paging: false,
-				ordering: false,
-				data: response.all_center.team_a,
-				columns: [
-					{ data: "position" },
-					{ data: "player_name" },
-					{ 
-						"data" : function ( row, type, val, meta ) {
-							var avg_mvp = Math.round(row.avg_mvp * 100) / 100;
-							if (type === 'display') {
-								return avg_mvp;
-							}
-							return row.avg_mvp;
+		$('.allcenter').DataTable( {
+			searching: false,
+			info: false,
+			paging: false,
+			ordering: false,
+			columns: [
+				{ data: "position" },
+				{ 
+					data: function( row, type, val, meta ) {
+						return '<a href="/players/view/'+row.player_id+'?'+params.toString()+'">'+row.player_name+'</a>';
+					},
+				},
+				{ 
+					data: function ( row, type, val, meta ) {
+						var avg_mvp = Math.round(row.avg_mvp * 100) / 100;
+						if (type === 'display') {
+							return avg_mvp;
 						}
+						return row.avg_mvp;
 					}
-				]
-			});
-
-			all_center_table_b = $('#all_center_b').DataTable( {
-				searching: false,
-				info: false,
-				paging: false,
-				ordering: false,
-				data: response.all_center.team_b,
-				columns: [
-					{ data: "position" },
-					{ data: "player_name" },
-					{ 
-						"data" : function ( row, type, val, meta ) {
-							var avg_mvp = Math.round(row.avg_mvp * 100) / 100;
-							if (type === 'display') {
-								return avg_mvp;
-							}
-							return row.avg_mvp;
-						}
-					}
-				]
-			});
+				}
+			]
 		});
 
 		function updateAllCenter(min_games, min_days) {
@@ -60,13 +37,12 @@
 			$.ajax({
 				"url" : "/scorecards/getAllCenter.json?"+params.toString()
 			}).done(function(response) {
-				all_center_table_a.clear();
-				all_center_table_a.rows.add(response.all_center.team_a).draw();
-
-				all_center_table_b.clear();
-				all_center_table_b.rows.add(response.all_center.team_b).draw();
+				$('#all_center_a').DataTable().clear().rows.add(response.all_center.team_a).draw();
+				$('#all_center_b').DataTable().clear().rows.add(response.all_center.team_b).draw();
 			})
 		}
+
+		updateAllCenter(min_games, min_days);
 
 		if($("#min_games_slider").length) {
 			noUiSlider.create(min_games_slider, {
@@ -104,11 +80,11 @@
 	</div>
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-xs-6">
+				<div class="col-sm-6">
 					Minimum Games:<br /><br />
 					<div id="min_games_slider"></div>
 				</div>
-				<div class="col-xs-6">
+				<div class="col-sm-6">
 					Timeframe:<br /><br />
 					<select class="form-control" id="min_days_select">
 						<option value="0">All Time</option>
@@ -127,6 +103,8 @@
 							<th>Player</th>
 							<th>Average MVP</th>
 						</thead>
+						<tbody>
+						</tbody>
 					</table>
 				</div>
 				<div class="col-sm-6">
@@ -137,6 +115,8 @@
 							<th>Player</th>
 							<th>Average MVP</th>
 						</thead>
+						<tbody>
+						</tbody>
 					</table>
 				</div>
 			</div>
