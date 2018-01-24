@@ -137,8 +137,8 @@ function displayWinLossPie(data) {
 		series: [{
 			data: winloss,
 			colors: [
-				'#87CEFA',
-				'#F08080'
+				'#5bc0de',
+				'#008cba'
 			],
 			size: '40%',
 			dataLabels: {
@@ -151,10 +151,10 @@ function displayWinLossPie(data) {
 		}, {
 			data: winlossdetail,
 			colors: [
-				'#FF0000',
-				'#CC0000',
-				'#00FF00',
-				'#00CC00'
+				'#F04124',
+				'#D7280B',
+				'#43ac6a',
+				'#2A9351'
 			],
 			size: '80%',
 			innerSize: '60%',
@@ -1216,7 +1216,8 @@ $(document).ready(function(){
 		
 		winLossBarData = winLossBarData.map(function(item, index) {
 			let value = (item.winloss === "W") ? 1 : -1;
-			return {'y':value,'color':item.team,'name':item.game_datetime}
+			let color = (item.team === 'red') ? '#F04124' : '#43ac6a';
+			return {'y':value,'color':color,'name':item.game_datetime}
 		});
 		
 		winLossBarChart.addSeries({
