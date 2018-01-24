@@ -310,7 +310,7 @@ class Player extends AppModel {
 		return $results;
 	}
 	
-	public function getMedianMVPByPosition($id = null, $color = null, $state = null) {
+	public function getMedianMVPByPosition($id = null, $team = null, $state = null) {
 		$fields = array('position','mvp_points');
 		$conditions = array();
 		
@@ -319,9 +319,9 @@ class Player extends AppModel {
 			$conditions[] = array('Scorecard.player_id' => $id);
 		}
 
-		if(!is_null($color)) {
-			$fields[] = 'color';
-			$conditions[] = array('Scorecard.color' => $color);
+		if(!is_null($team)) {
+			$fields[] = 'team';
+			$conditions[] = array('Scorecard.team' => $team);
 		}
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)

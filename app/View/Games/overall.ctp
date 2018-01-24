@@ -84,8 +84,10 @@ function overallData(data) {
 	});
 }
 
-function renderBoxPlot(data) {
-	var mvp = data['overall_mvp'];
+function renderBoxPlot(all, red, green) {
+	var all_mvp = all['overall_mvp'];
+	var red_mvp = red['overall_mvp'];
+	var green_mvp = green['overall_mvp'];
 
 	$('#mvp_box_plot').highcharts({
 		chart: {
@@ -119,38 +121,59 @@ function renderBoxPlot(data) {
                 whiskerWidth: 3
 			}
 		},
-		series: [{
-			name: 'Positions',
-			data: [
-				[mvp['commander_min'], mvp['commander_lower'], mvp['commander'], mvp['commander_upper'], mvp['commander_max']],
-				[mvp['heavy_min'], mvp['heavy_lower'], mvp['heavy'], mvp['heavy_upper'], mvp['heavy_max']],
-				[mvp['scout_min'], mvp['scout_lower'], mvp['scout'], mvp['scout_upper'], mvp['scout_max']],
-				[mvp['ammo_min'], mvp['ammo_lower'], mvp['ammo'], mvp['ammo_upper'], mvp['ammo_max']],
-				[mvp['medic_min'], mvp['medic_lower'], mvp['medic'], mvp['medic_upper'], mvp['medic_max']]
-			]
-		}]
+		series: [
+			{
+				name: 'Red',
+				data: [
+					[red_mvp['commander_min'], red_mvp['commander_lower'], red_mvp['commander'], red_mvp['commander_upper'], red_mvp['commander_max']],
+					[red_mvp['heavy_min'], red_mvp['heavy_lower'], red_mvp['heavy'], red_mvp['heavy_upper'], red_mvp['heavy_max']],
+					[red_mvp['scout_min'], red_mvp['scout_lower'], red_mvp['scout'], red_mvp['scout_upper'], red_mvp['scout_max']],
+					[red_mvp['ammo_min'], red_mvp['ammo_lower'], red_mvp['ammo'], red_mvp['ammo_upper'], red_mvp['ammo_max']],
+					[red_mvp['medic_min'], red_mvp['medic_lower'], red_mvp['medic'], red_mvp['medic_upper'], red_mvp['medic_max']]
+				],
+				visible: false,
+				color: '#F04124'
+			},
+			{
+				name: 'All',
+				data: [
+					[all_mvp['commander_min'], all_mvp['commander_lower'], all_mvp['commander'], all_mvp['commander_upper'], all_mvp['commander_max']],
+					[all_mvp['heavy_min'], all_mvp['heavy_lower'], all_mvp['heavy'], all_mvp['heavy_upper'], all_mvp['heavy_max']],
+					[all_mvp['scout_min'], all_mvp['scout_lower'], all_mvp['scout'], all_mvp['scout_upper'], all_mvp['scout_max']],
+					[all_mvp['ammo_min'], all_mvp['ammo_lower'], all_mvp['ammo'], all_mvp['ammo_upper'], all_mvp['ammo_max']],
+					[all_mvp['medic_min'], all_mvp['medic_lower'], all_mvp['medic'], all_mvp['medic_upper'], all_mvp['medic_max']]
+				],
+				color: '#008CBA'
+			},
+			{
+				name: 'Green',
+				data: [
+					[green_mvp['commander_min'], green_mvp['commander_lower'], green_mvp['commander'], green_mvp['commander_upper'], green_mvp['commander_max']],
+					[green_mvp['heavy_min'], green_mvp['heavy_lower'], green_mvp['heavy'], green_mvp['heavy_upper'], green_mvp['heavy_max']],
+					[green_mvp['scout_min'], green_mvp['scout_lower'], green_mvp['scout'], green_mvp['scout_upper'], green_mvp['scout_max']],
+					[green_mvp['ammo_min'], green_mvp['ammo_lower'], green_mvp['ammo'], green_mvp['ammo_upper'], green_mvp['ammo_max']],
+					[green_mvp['medic_min'], green_mvp['medic_lower'], green_mvp['medic'], green_mvp['medic_upper'], green_mvp['medic_max']]
+				],
+				visible: false,
+				color: '#43AC6A'
+			},
+		]
 	});
 }
 
-function updateBoxPlot(color) {
-
-	var data_url = '/players/allPlayersOverallMVP.json';
-	if(color === 'red') {
-		data_url = '/players/allPlayersOverallMVP/red.json';
-	} else if(color === 'green') {
-		data_url = '/players/allPlayersOverallMVP/green.json';
-	}
-	
-	$.ajax({
-		type: 'get',
-		url: data_url,
-		dataType: 'json',
-		success: function(data) {
-			renderBoxPlot(data);
-		},
-		error: function() {
-			alert('Failed to retrieve box plot data');
-		}
+function updateBoxPlot() {
+	$.when(
+		$.ajax({
+			url: '/players/allPlayersOverallMVP.json',
+		}),
+		$.ajax({
+			url: '/players/allPlayersOverallMVP/red.json',
+		}),
+		$.ajax({
+			url: '/players/allPlayersOverallMVP/green.json',
+		})
+	).done(function(all, red, green) {
+		renderBoxPlot(all[0], red[0], green[0]);
 	});
 }
 
@@ -158,18 +181,12 @@ function updateBoxPlot(color) {
 
 $(document).ready(function(){	
 	$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			overallData(data);
-		},
-		error: function() {
-			alert('Failed to retrieve data');
-		}
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json'))); ?>'
+	}).done( function(response) {
+		overallData(response);
 	});
 
-	updateBoxPlot('all');
+	updateBoxPlot();
 });
 </script>
 <div class="panel panel-info">
