@@ -32,7 +32,6 @@ function overallData(data) {
 		plotOptions: {
 			bar: {
 				stacking: 'normal',
-				colors: ["#FF0000","#CC0000","#00CC00","#00FF00"],
 				groupPadding: 0,
 				pointPadding: 0.1
 			}
@@ -42,13 +41,13 @@ function overallData(data) {
 				name: "Non-Elim Wins",
 				data: non_elim_wins,
 				colorByPoint: true,
-				colors: ["#CC0000","#00CC00"]
+				colors: ["#D7280B","#2A9351"]
 			},
 			{
 				name: "Elim Wins",
 				data: elim_wins,
 				colorByPoint: true,
-				colors: ["#FF0000","#00FF00"]
+				colors: ["#F04124","#43ac6a"]
 			}
 		]
 	});
