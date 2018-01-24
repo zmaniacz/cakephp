@@ -375,6 +375,7 @@ class Player extends AppModel {
 			$results['commander_upper'] = $commander[floor((count($commander)-1) * .75)];
 			$results['commander_min'] = $commander[0];
 			$results['commander_max'] = $commander[(count($commander)-1)];
+			$results['commander_avg'] = array_sum($commander)/count($commander);
 		}
 			
 		if(count($heavy) > 0) {
@@ -383,6 +384,7 @@ class Player extends AppModel {
 			$results['heavy_upper'] = $heavy[floor((count($heavy)-1) * .75)];
 			$results['heavy_min'] = $heavy[0];
 			$results['heavy_max'] = $heavy[(count($heavy)-1)];
+			$results['heavy_avg'] = array_sum($heavy)/count($heavy);
 		}
 		
 		if(count($scout) > 0) {
@@ -391,6 +393,7 @@ class Player extends AppModel {
 			$results['scout_upper'] = $scout[floor((count($scout)-1) * .75)];
 			$results['scout_min'] = $scout[0];
 			$results['scout_max'] = $scout[(count($scout)-1)];
+			$results['scout_avg'] = array_sum($scout)/count($scout);
 		}
 		
 		if(count($ammo) > 0) {
@@ -399,6 +402,7 @@ class Player extends AppModel {
 			$results['ammo_upper'] = $ammo[floor((count($ammo)-1) * .75)];
 			$results['ammo_min'] = $ammo[0];
 			$results['ammo_max'] = $ammo[(count($ammo)-1)];
+			$results['ammo_avg'] = array_sum($ammo)/count($ammo);
 		}
 		
 		if(count($medic) > 0) {
@@ -407,6 +411,7 @@ class Player extends AppModel {
 			$results['medic_upper'] = $medic[floor((count($medic)-1) * .75)];
 			$results['medic_min'] = $medic[0];
 			$results['medic_max'] = $medic[(count($medic)-1)];
+			$results['medic_avg'] = array_sum($medic)/count($medic);
 		}
 		
 		return $results;

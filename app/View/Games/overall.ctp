@@ -85,16 +85,21 @@ function overallData(data) {
 }
 
 function renderBoxPlot(all, red, green) {
-	var all_mvp = all['overall_mvp'];
-	var red_mvp = red['overall_mvp'];
-	var green_mvp = green['overall_mvp'];
-
 	$('#mvp_box_plot').highcharts({
 		chart: {
 			type: 'boxplot'
 		},
 		title: {
 			text: null
+		},
+		tooltip: {
+			pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}<br />' +
+						'Maximum: {point.high}<br />' +
+						'Upper quartile: {point.q1}<br />' +
+						'Median: {point.median}<br />' +
+						'Mean: {point.mean}<br />' +
+						'Lower quartile: {point.q3}<br />' +
+						'Minimum: {point.low}<br />'
 		},
 		yAxis: {
 			title: {
@@ -124,36 +129,18 @@ function renderBoxPlot(all, red, green) {
 		series: [
 			{
 				name: 'Red',
-				data: [
-					[red_mvp['commander_min'], red_mvp['commander_lower'], red_mvp['commander'], red_mvp['commander_upper'], red_mvp['commander_max']],
-					[red_mvp['heavy_min'], red_mvp['heavy_lower'], red_mvp['heavy'], red_mvp['heavy_upper'], red_mvp['heavy_max']],
-					[red_mvp['scout_min'], red_mvp['scout_lower'], red_mvp['scout'], red_mvp['scout_upper'], red_mvp['scout_max']],
-					[red_mvp['ammo_min'], red_mvp['ammo_lower'], red_mvp['ammo'], red_mvp['ammo_upper'], red_mvp['ammo_max']],
-					[red_mvp['medic_min'], red_mvp['medic_lower'], red_mvp['medic'], red_mvp['medic_upper'], red_mvp['medic_max']]
-				],
+				data: red,
 				visible: false,
 				color: '#F04124'
 			},
 			{
 				name: 'All',
-				data: [
-					[all_mvp['commander_min'], all_mvp['commander_lower'], all_mvp['commander'], all_mvp['commander_upper'], all_mvp['commander_max']],
-					[all_mvp['heavy_min'], all_mvp['heavy_lower'], all_mvp['heavy'], all_mvp['heavy_upper'], all_mvp['heavy_max']],
-					[all_mvp['scout_min'], all_mvp['scout_lower'], all_mvp['scout'], all_mvp['scout_upper'], all_mvp['scout_max']],
-					[all_mvp['ammo_min'], all_mvp['ammo_lower'], all_mvp['ammo'], all_mvp['ammo_upper'], all_mvp['ammo_max']],
-					[all_mvp['medic_min'], all_mvp['medic_lower'], all_mvp['medic'], all_mvp['medic_upper'], all_mvp['medic_max']]
-				],
+				data: all,
 				color: '#5bc0de'
 			},
 			{
 				name: 'Green',
-				data: [
-					[green_mvp['commander_min'], green_mvp['commander_lower'], green_mvp['commander'], green_mvp['commander_upper'], green_mvp['commander_max']],
-					[green_mvp['heavy_min'], green_mvp['heavy_lower'], green_mvp['heavy'], green_mvp['heavy_upper'], green_mvp['heavy_max']],
-					[green_mvp['scout_min'], green_mvp['scout_lower'], green_mvp['scout'], green_mvp['scout_upper'], green_mvp['scout_max']],
-					[green_mvp['ammo_min'], green_mvp['ammo_lower'], green_mvp['ammo'], green_mvp['ammo_upper'], green_mvp['ammo_max']],
-					[green_mvp['medic_min'], green_mvp['medic_lower'], green_mvp['medic'], green_mvp['medic_upper'], green_mvp['medic_max']]
-				],
+				data: green,
 				visible: false,
 				color: '#43AC6A'
 			},
@@ -173,11 +160,57 @@ function updateBoxPlot() {
 			url: '/players/allPlayersOverallMVP/green.json',
 		})
 	).done(function(all, red, green) {
-		renderBoxPlot(all[0], red[0], green[0]);
+		rawData = [all, red, green];
+
+		allData = rawData.map(function(item) {
+			item = item[0]['overall_mvp'];
+			return [
+				{
+					low: item['commander_min'],
+					q1: item['commander_lower'],
+					median: item['commander'],
+					q3: item['commander_upper'],
+					high: item['commander_max'],
+					mean: Math.round(item['commander_avg'] * 100)/100
+				},
+				{
+					low: item['heavy_min'],
+					q1: item['heavy_lower'],
+					median: item['heavy'],
+					q3: item['heavy_upper'],
+					high: item['heavy_max'],
+					mean: Math.round(item['heavy_avg'] * 100)/100
+				},
+				{
+					low: item['scout_min'],
+					q1: item['scout_lower'],
+					median: item['scout'],
+					q3: item['scout_upper'],
+					high: item['scout_max'],
+					mean: Math.round(item['scout_avg'] * 100)/100
+				},
+				{
+					low: item['ammo_min'],
+					q1: item['ammo_lower'],
+					median: item['ammo'],
+					q3: item['ammo_upper'],
+					high: item['ammo_max'],
+					mean: Math.round(item['ammo_avg'] * 100)/100
+				},
+				{
+					low: item['medic_min'],
+					q1: item['medic_lower'],
+					median: item['medic'],
+					q3: item['medic_upper'],
+					high: item['medic_max'],
+					mean: Math.round(item['medic_avg'] * 100)/100
+				}
+			];
+		});
+
+		renderBoxPlot(allData[0], allData[1], allData[2]);
 	});
 }
-
-
 
 $(document).ready(function(){	
 	$.ajax({
