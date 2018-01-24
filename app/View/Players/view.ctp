@@ -101,22 +101,27 @@ function displayWinLossPie(data) {
 		['Losses', data['winloss']['losses']]
 	];
 	var winlossdetail = [
-		['Elim Wins from Red', data['winlossdetail']['elim_wins_from_red']],
-		['Non-Elim Wins from Red', data['winlossdetail']['non_elim_wins_from_red']],
-		['Elim Wins from Green', data['winlossdetail']['elim_wins_from_green']],
-		['Non-Elim Wins from Green', data['winlossdetail']['non_elim_wins_from_green']],
-		['Elim Losses from Red', data['winlossdetail']['elim_losses_from_red']],
-		['Non-Elim Losses from Red', data['winlossdetail']['non_elim_losses_from_red']],
-		['Elim Losses from Green', data['winlossdetail']['elim_losses_from_green']],
-		['Non-Elim Losses from Green', data['winlossdetail']['non_elim_losses_from_green']]
+		['Red Elim Wins', data['winlossdetail']['elim_wins_from_red']],
+		['Red Non-Elim Wins', data['winlossdetail']['non_elim_wins_from_red']],
+		['Green Elim Wins', data['winlossdetail']['elim_wins_from_green']],
+		['Green Non-Elim Wins', data['winlossdetail']['non_elim_wins_from_green']],
+		['Red Elim Losses', data['winlossdetail']['elim_losses_from_red']],
+		['Red Non-Elim Losses', data['winlossdetail']['non_elim_losses_from_red']],
+		['Green Elim Losses', data['winlossdetail']['elim_losses_from_green']],
+		['Green Non-Elim Losses', data['winlossdetail']['non_elim_losses_from_green']]
 	];
 	
 	$('#win_loss_pie').highcharts({
 		chart: {
-			type: 'pie'
+			type: 'pie',
+			height: 400
 		},
 		title: {
-			text: 'Wins & Losses'
+			text: null
+		},
+		tooltip: {
+			headerFormat: '',
+			pointFormat: '{point.name}: <b>{point.y}</b>'
 		},
 		yAxis: {
 			title: {
@@ -131,12 +136,16 @@ function displayWinLossPie(data) {
 		},
 		series: [{
 			data: winloss,
-			size: '60%',
+			colors: [
+				'#87CEFA',
+				'#F08080'
+			],
+			size: '40%',
 			dataLabels: {
 				formatter: function() {
 					return this.point.name;
 				},
-				color: 'white',
+				color: 'black',
 				distance: -30
 			}
 		}, {
@@ -150,9 +159,7 @@ function displayWinLossPie(data) {
 			size: '80%',
 			innerSize: '60%',
 			dataLabels: {
-				formatter: function() {
-					return '<b>'+ this.point.name +':</b> '+ this.y;
-				}
+				enabled: false
 			}
 		}]
 	});
@@ -165,7 +172,8 @@ function displayPositionScoreSpider(data) {
 	$('#position_score_spider').highcharts({
 		chart: {
 			polar: true,
-			type: 'line'
+			type: 'line',
+			height: 400
 		},
 		title: {
 			text: 'Position Score vs Median'
@@ -210,7 +218,8 @@ function displayPositionMVPSpider(data) {
 	$('#position_mvp_spider').highcharts({
 		chart: {
 			polar: true,
-			type: 'line'
+			type: 'line',
+			height: 400
 		},
 		title: {
 			text: 'Position MVP vs Median'
@@ -255,7 +264,8 @@ function displayPositionBoxPlot(data) {
 
 	$('#mvp_box_plot').highcharts({
 		chart: {
-			type: 'boxplot'
+			type: 'boxplot',
+			height: 400
 		},
 		title: {
 			text: ''
@@ -1115,9 +1125,6 @@ $(document).ready(function(){
 		"deferRender" : true,
 		"orderCellsTop" : true,
 		"dom": '<"H"lr>t<"F"ip>',
-		"ajax" : {
-			"url" : "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>"
-		},
 		"columns" : [
 			{ "data" : "game_name" },
 			{ "data" : "game_datetime" },
@@ -1168,6 +1175,54 @@ $(document).ready(function(){
 		],
 		"order": [[ 1, "desc" ]]
 	});
+
+	var winLossBarChart = Highcharts.chart('win_loss_bar', {
+		chart: {
+			type: 'column',
+			height: 200
+		},
+		title: {
+			text: null
+		},
+		tooltip: {
+			headerFormat: '',
+			pointFormat: '<b>{point.name}</b>'
+		},
+		legend: {
+			enabled: false
+		},
+		xAxis: {
+			visible: false
+		},
+		yAxis: {
+			min: -1,
+			max: 1,
+			tickPositions: [0],
+			title: {
+				text: "Latest"
+			},
+			labels: {
+				enabled: false
+			}
+		}
+	})
+
+	$.ajax({
+		url: "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>"
+	}).done(function(response) {
+		$('#game_list').DataTable().clear().rows.add(response.data).draw();
+		
+		var winLossBarData = response.data.slice(0,25);
+		
+		winLossBarData = winLossBarData.map(function(item, index) {
+			let value = (item.winloss === "W") ? 1 : -1;
+			return {'y':value,'color':item.team,'name':item.game_datetime}
+		});
+		
+		winLossBarChart.addSeries({
+			data: winLossBarData
+		});
+	})
 });
 </script>
 <h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
@@ -1195,6 +1250,26 @@ $(document).ready(function(){
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
+		<div id="win_loss_bar_panel" class="panel panel-info">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					Recent Wins and Losses
+				</h4>
+			</div>
+			<div class="panel-body">
+				<div id="win_loss_bar"></div>
+			</div>
+		</div>
+		<div id="win_loss_pie_panel" class="panel panel-info">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					Overall Wins and Losses
+				</h4>
+			</div>
+			<div class="panel-body">
+				<div id="win_loss_pie"></div>
+			</div>
+		</div>		
 		<div class="table-responsive">
 			<table id="game_list" class="table table-striped table-hover table-border table-condensed">
 				<thead>
@@ -1241,9 +1316,14 @@ $(document).ready(function(){
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="overall_tab">
-		<div id="win_loss_pie" style="height: 500px; width: 800px"></div>
-		<div id="position_score_spider" style="display: inline-block;height: 500px; width: 500px"></div>
-		<div id="position_mvp_spider" style="display: inline-block;height: 500px; width: 500px"></div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div id="position_score_spider"></div>
+			</div>
+			<div class="col-sm-6">
+				<div id="position_mvp_spider"></div>
+			</div>
+		</div>
 		<div id="boxplot_panel" class="panel panel-info">
 			<div class="panel-heading" data-toggle="collapse" data-parent="#boxplot_panel" data-target="#collapse_boxplot" role="tab" id="boxplot_heading">
 				<h4 class="panel-title">
@@ -1252,7 +1332,7 @@ $(document).ready(function(){
 			</div>
 			<div id="collapse_boxplot" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<div id="mvp_box_plot" style="height: 500px; width: 800px"></div>
+					<div id="mvp_box_plot"></div>
 				</div>
 			</div>
 		</div>

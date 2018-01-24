@@ -45,12 +45,10 @@ class PlayersController extends AppController {
 	}
 	
 	public function playerWinLossDetail($id) {
-		$this->request->onlyAllow('ajax');
 		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
 	}
 	
 	public function playerPositionSpider($id) {
-		$this->request->onlyAllow('ajax');
 		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $this->Session->read('state')));
 		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $this->Session->read('state')));
 		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, null, $this->Session->read('state')));
