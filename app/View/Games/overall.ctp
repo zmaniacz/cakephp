@@ -94,7 +94,7 @@ function renderBoxPlot(all, red, green) {
 			type: 'boxplot'
 		},
 		title: {
-			text: ''
+			text: null
 		},
 		yAxis: {
 			title: {
@@ -104,19 +104,19 @@ function renderBoxPlot(all, red, green) {
 		xAxis: {
 			categories: ['Commander', 'Heavy', 'Scout', 'Ammo', 'Medic'],
 			title: {
-				text: 'Position'
+				text: null
 			}	
 		},
 		plotOptions: {
 			boxplot: {
-                fillColor: '#F0F0E0',
+                fillColor: '#eee',
                 lineWidth: 2,
-                medianColor: '#0C5DA5',
+                medianColor: '#008cba',
                 medianWidth: 3,
-                stemColor: '#A63400',
+                stemColor: '#E99002',
                 stemDashStyle: 'dot',
                 stemWidth: 1,
-                whiskerColor: '#3D9200',
+                whiskerColor: '#008cba',
                 whiskerLength: '20%',
                 whiskerWidth: 3
 			}
@@ -143,7 +143,7 @@ function renderBoxPlot(all, red, green) {
 					[all_mvp['ammo_min'], all_mvp['ammo_lower'], all_mvp['ammo'], all_mvp['ammo_upper'], all_mvp['ammo_max']],
 					[all_mvp['medic_min'], all_mvp['medic_lower'], all_mvp['medic'], all_mvp['medic_upper'], all_mvp['medic_max']]
 				],
-				color: '#008CBA'
+				color: '#5bc0de'
 			},
 			{
 				name: 'Green',
