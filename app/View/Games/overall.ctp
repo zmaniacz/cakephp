@@ -245,6 +245,7 @@ $(document).ready(function(){
 		</h4>
 	</div>
 	<div class="panel-body">
+		<div class="col-sm-4 col-sm-offset-4">
 			<div id="medianSelector" class="btn-group" data-toggle="buttons">
 				<label class="btn btn-primary active">
 					<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
@@ -253,6 +254,7 @@ $(document).ready(function(){
 					<input type="radio" name="options" id="option_score" autocomplete="off">Score
 				</label>
 			</div>
+		</div>
 		<div id="mvp_box_plot" style="height: 500px;"></div>
 	</div>
 </div>
