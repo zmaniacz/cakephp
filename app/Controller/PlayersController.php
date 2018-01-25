@@ -56,6 +56,10 @@ class PlayersController extends AppController {
 	}
 
 	public function allPlayersOverallMVP($team = null) {
-		$this->set('overall_mvp', $this->Player->getMedianMVPByPosition(null, $team, $this->Session->read('state')));
+		$this->set('overall', $this->Player->getMedianByPosition(null, $team, 'mvp_points', $this->Session->read('state')));
+	}
+
+	public function allPlayersOverallScore($team = null) {
+		$this->set('overall', $this->Player->getMedianByPosition(null, $team, 'score', $this->Session->read('state')));
 	}
 }

@@ -310,8 +310,9 @@ class Player extends AppModel {
 		return $results;
 	}
 	
-	public function getMedianMVPByPosition($id = null, $team = null, $state = null) {
-		$fields = array('position','mvp_points');
+	public function getMedianByPosition($id = null, $team = null, $type = 'mvp_points', $state = null) {
+		$fields = array('position', $type);
+
 		$conditions = array();
 		
 		if(!is_null($id)) {
@@ -340,7 +341,7 @@ class Player extends AppModel {
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
 			'conditions' => $conditions,
-			'order' => 'mvp_points ASC'
+			'order' => "$type ASC"
 		));
 		
 		$commander = array();
@@ -352,19 +353,19 @@ class Player extends AppModel {
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
 				case 'Commander':
-					$commander[] = $score['Scorecard']['mvp_points'];
+					$commander[] = $score['Scorecard'][$type];
 					break;
 				case 'Heavy Weapons':
-					$heavy[] = $score['Scorecard']['mvp_points'];
+					$heavy[] = $score['Scorecard'][$type];
 					break;
 				case 'Scout':
-					$scout[] = $score['Scorecard']['mvp_points'];
+					$scout[] = $score['Scorecard'][$type];
 					break;
 				case 'Ammo Carrier':
-					$ammo[] = $score['Scorecard']['mvp_points'];
+					$ammo[] = $score['Scorecard'][$type];
 					break;
 				case 'Medic':
-					$medic[] = $score['Scorecard']['mvp_points'];
+					$medic[] = $score['Scorecard'][$type];
 					break;
 			}
 		}

@@ -52,22 +52,6 @@ function overallData(data) {
 		]
 	});
 
-	$('#avg_positions').DataTable( {
-		"destroy": true,
-		"autoWidth": false,
-		"searching": false,
-		"info": false,
-		"paging": false,
-		"ordering": false,
-		"data" : data['averages'],
-		"columns" : [
-			{ "data" : "position"},
-			{ "data" : "avg_score", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}},
-			{ "data" : "avg_mvp", "render" : function(data, type, row, meta) {return parseFloat(data).toFixed(2);}}
-		],
-	});
-
-
 	$('#avg_scores').DataTable( {
 		"destroy": true,
 		"autoWidth": false,
@@ -84,7 +68,9 @@ function overallData(data) {
 	});
 }
 
-function renderBoxPlot(all, red, green) {
+function renderBoxPlot(type, all, red, green) {
+	let titleText = (type === 'mvp') ? 'MVP' : 'Score';
+
 	$('#mvp_box_plot').highcharts({
 		chart: {
 			type: 'boxplot'
@@ -103,7 +89,7 @@ function renderBoxPlot(all, red, green) {
 		},
 		yAxis: {
 			title: {
-				text: 'MVP'
+				text: titleText
 			}
 		},
 		xAxis: {
@@ -148,22 +134,32 @@ function renderBoxPlot(all, red, green) {
 	});
 }
 
-function updateBoxPlot() {
+function updateBoxPlot(type) {
+	if(type === 'mvp') {
+		var allUrl = '/players/allPlayersOverallMVP.json';
+		var redUrl = '/players/allPlayersOverallMVP/red.json';
+		var greenUrl = '/players/allPlayersOverallMVP/green.json';
+	} else if(type === 'score') {
+		var allUrl = '/players/allPlayersOverallScore.json';
+		var redUrl = '/players/allPlayersOverallScore/red.json';
+		var greenUrl = '/players/allPlayersOverallScore/green.json';
+	}
+
 	$.when(
 		$.ajax({
-			url: '/players/allPlayersOverallMVP.json',
+			url: allUrl,
 		}),
 		$.ajax({
-			url: '/players/allPlayersOverallMVP/red.json',
+			url: redUrl,
 		}),
 		$.ajax({
-			url: '/players/allPlayersOverallMVP/green.json',
+			url: greenUrl,
 		})
 	).done(function(all, red, green) {
 		rawData = [all, red, green];
 
 		allData = rawData.map(function(item) {
-			item = item[0]['overall_mvp'];
+			item = item[0]['overall'];
 			return [
 				{
 					low: item['commander_min'],
@@ -208,18 +204,28 @@ function updateBoxPlot() {
 			];
 		});
 
-		renderBoxPlot(allData[0], allData[1], allData[2]);
+		renderBoxPlot(type, allData[0], allData[1], allData[2]);
 	});
 }
 
-$(document).ready(function(){	
+$(document).ready(function(){
+	$("#medianSelector :input").change(function() {
+    	if(this.id === 'option_mvp') {
+			updateBoxPlot('mvp');
+		}
+
+		if(this.id === 'option_score') {
+			updateBoxPlot('score');
+		}
+	});
+	
 	$.ajax({
 		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'overallWinLossDetail', 'ext' => 'json'))); ?>'
 	}).done( function(response) {
 		overallData(response);
 	});
 
-	updateBoxPlot();
+	updateBoxPlot('mvp');
 });
 </script>
 <div class="panel panel-info">
@@ -235,29 +241,19 @@ $(document).ready(function(){
 <div id="boxplot_panel" class="panel panel-info">
 	<div class="panel-heading" id="boxplot_heading">
 		<h4 class="panel-title">
-			Median MVP
+			Median MVP and Score
 		</h4>
 	</div>
 	<div class="panel-body">
+			<div id="medianSelector" class="btn-group" data-toggle="buttons">
+				<label class="btn btn-primary active">
+					<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
+				</label>
+				<label class="btn btn-primary">
+					<input type="radio" name="options" id="option_score" autocomplete="off">Score
+				</label>
+			</div>
 		<div id="mvp_box_plot" style="height: 500px;"></div>
-	</div>
-</div>
-<div id="avg_pos_panel" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_pos_panel" data-target="#collapse_avg_pos" role="tab" id="avg_pos_heading">
-		<h4 class="panel-title">
-			Averages By Position
-		</h4>
-	</div>
-	<div id="collapse_avg_pos" class="panel-collapse collapse in" role="tabpanel">
-		<div class="panel-body">
-			<table class="table table-striped table-bordered table-hover" id="avg_positions">
-				<thead>
-					<th>Position</th>
-					<th>Average Score</th>
-					<th>Average MVP</th>
-				<thead>
-			</table>
-		</div>
 	</div>
 </div>
 <div id="avg_score_panel" class="panel panel-info">
