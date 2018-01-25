@@ -47,19 +47,11 @@ class PlayersController extends AppController {
 	public function playerWinLossDetail($id) {
 		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
 	}
-	
-	public function playerPositionSpider($id) {
-		$this->set('player_mdn_scores', $this->Player->getMedianByPosition($id, null, 'score', $this->Session->read('state')));
-		$this->set('center_mdn_scores', $this->Player->getMedianByPosition(null, null, 'score', $this->Session->read('state')));
-		$this->set('player_mdn_mvp', $this->Player->getMedianByPosition($id, null, 'mvp_points', $this->Session->read('state')));
-		$this->set('center_mdn_mvp', $this->Player->getMedianByPosition(null, null, 'mvp_points', $this->Session->read('state')));
-	}
 
-	public function allPlayersOverallMVP($team = null) {
-		$this->set('overall', $this->Player->getMedianByPosition(null, $team, 'mvp_points', $this->Session->read('state')));
-	}
-
-	public function allPlayersOverallScore($team = null) {
-		$this->set('overall', $this->Player->getMedianByPosition(null, $team, 'score', $this->Session->read('state')));
+	public function getPlayerMedians() {
+		$player_id = (empty($this->request->query('player_id'))) ? null : $this->request->query('player_id');
+		$team = (empty($this->request->query('team'))) ? null : $this->request->query('team');
+		$type = (empty($this->request->query('type'))) ? 'mvp_points' : $this->request->query('type');
+		$this->set('data', $this->Player->getMedianByPosition($player_id, $team, $type, $this->Session->read('state')));
 	}
 }

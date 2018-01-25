@@ -7,7 +7,7 @@ function overallData(data) {
 	$('#win_loss_chart').highcharts({
 		chart: {
 			type: 'bar',
-			height: '200px'
+			height: 200
 		},
 		title: {
 			text: null
@@ -132,15 +132,21 @@ function renderBoxPlot(type, all, red, green) {
 }
 
 function updateBoxPlot(type) {
+	const params = new URLSearchParams(location.search);
+
 	if(type === 'mvp') {
-		var allUrl = '/players/allPlayersOverallMVP.json';
-		var redUrl = '/players/allPlayersOverallMVP/red.json';
-		var greenUrl = '/players/allPlayersOverallMVP/green.json';
+		params.set('type','mvp_points');
 	} else if(type === 'score') {
-		var allUrl = '/players/allPlayersOverallScore.json';
-		var redUrl = '/players/allPlayersOverallScore/red.json';
-		var greenUrl = '/players/allPlayersOverallScore/green.json';
+		params.set('type','score');
 	}
+
+	var allUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	params.set('team','red');
+	var redUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	params.set('team','green');
+	var greenUrl = '/players/getPlayerMedians.json?'+params.toString();
 
 	$.when(
 		$.ajax({
@@ -156,7 +162,7 @@ function updateBoxPlot(type) {
 		rawData = [all, red, green];
 
 		allData = rawData.map(function(item) {
-			item = item[0]['overall'];
+			item = item[0]['data'];
 			return [
 				{
 					low: item['commander_min'],
@@ -252,7 +258,7 @@ $(document).ready(function(){
 				</label>
 			</div>
 		</div>
-		<div id="mvp_box_plot" style="height: 500px;"></div>
+		<div id="mvp_box_plot"></div>
 	</div>
 </div>
 <div id="avg_score_panel" class="panel panel-info">

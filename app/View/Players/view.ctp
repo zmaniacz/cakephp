@@ -93,7 +93,7 @@
 ?>
 
 <script class="code" type="text/javascript">
-function displayWinLossPie(data) {
+function renderWinLossPie(data) {
 	var winloss = [
 		['Wins', data['winloss']['wins']],
 		['Losses', data['winloss']['losses']]
@@ -163,18 +163,22 @@ function displayWinLossPie(data) {
 	});
 }
 
-function displayPositionScoreSpider(data) {
-	var mdn_score = [data['player_mdn_scores']['ammo'],data['player_mdn_scores']['commander'],data['player_mdn_scores']['heavy'],data['player_mdn_scores']['medic'],data['player_mdn_scores']['scout']];
-	var ctr_mdn_score = [data['center_mdn_scores']['ammo'],data['center_mdn_scores']['commander'],data['center_mdn_scores']['heavy'],data['center_mdn_scores']['medic'],data['center_mdn_scores']['scout']];
+function renderPositionSpider(type, ctrData, allData, redData, greenData) {
+	let titleText = 'Score';
+	let yMax = 10000;
 	
-	$('#position_score_spider').highcharts({
+	if(type === 'mvp') {
+		titleText = 'MVP';
+		yMax = 25;
+	}
+
+	$('#position_spider').highcharts({
 		chart: {
 			polar: true,
-			type: 'line',
-			height: 400
+			type: 'line'
 		},
 		title: {
-			text: 'Position Score vs Median'
+			text: 'Player Median '+titleText+' vs Center'
 		},
 		xAxis: {
 			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
@@ -183,156 +187,235 @@ function displayPositionScoreSpider(data) {
 		},
 		yAxis: [{
 			min: 0,
-			max: 10000,
+			max: yMax,
 			labels: {
 				enabled: false
 			}
 		}],
-		series: [ {
-			name: 'Median Score',
-			data: mdn_score,
+		series: [{
+			name: 'All Median ' + titleText,
+			data: allData,
 			marker: {
                 symbol: 'square'
             },
 			pointPlacement: 'on',
-			yAxis: 0
+			yAxis: 0,
+			color: '#5bc0de'
+		},
+		{
+			name: 'Red Median ' + titleText,
+			data: redData,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			yAxis: 0,
+			visible: false,
+			color: '#F04124'
+		},
+		{
+			name: 'Green Median ' + titleText,
+			data: greenData,
+			marker: {
+                symbol: 'square'
+            },
+			pointPlacement: 'on',
+			yAxis: 0,
+			visible: false,
+			color: '#43AC6A'
 		},{
-			name: 'Center Median Score',
-			data: ctr_mdn_score,
+			name: 'Center Median ' + titleText,
+			data: ctrData,
 			marker: {
                 symbol: 'square'
             },
 			pointPlacement: 'on',
 			dashStyle: 'dash',
-			yAxis: 0
+			yAxis: 0,
+			color: '#222222'
 		}]
 	});
 }
 
-function displayPositionMVPSpider(data) {
-	var mdn_mvp = [data['player_mdn_mvp']['ammo'],data['player_mdn_mvp']['commander'],data['player_mdn_mvp']['heavy'],data['player_mdn_mvp']['medic'],data['player_mdn_mvp']['scout']];
-	var ctr_mdn_mvp = [data['center_mdn_mvp']['ammo'],data['center_mdn_mvp']['commander'],data['center_mdn_mvp']['heavy'],data['center_mdn_mvp']['medic'],data['center_mdn_mvp']['scout']];
-	
-	$('#position_mvp_spider').highcharts({
+function renderBoxPlot(type, all, red, green) {
+	let titleText = (type === 'mvp') ? 'MVP' : 'Score';
+
+	$('#position_box_plot').highcharts({
 		chart: {
-			polar: true,
-			type: 'line',
-			height: 400
+			type: 'boxplot'
 		},
 		title: {
-			text: 'Position MVP vs Median'
+			text: 'Player Median '+titleText+' Details'
 		},
-		xAxis: {
-			categories: ['Ammo Carrier','Commander','Heavy Weapons','Medic','Scout'],
-			tickmarkPlacement: 'on',
-			lineWidth: 0
-		},
-		yAxis: [{
-			min: 0,
-			max: 25,
-			labels: {
-				enabled: false
-			}
-		}],
-		series: [
-		{
-			name: 'Median MVP',
-			data: mdn_mvp,
-			marker: {
-                symbol: 'circle'
-            },
-			pointPlacement: 'on',
-			yAxis: 0
-		},
-		{
-			name: 'Center Median MVP',
-			data: ctr_mdn_mvp,
-			marker: {
-                symbol: 'circle'
-            },
-			pointPlacement: 'on',
-			dashStyle: 'dash',
-			yAxis: 0
-		}]
-	});
-}
-
-function displayPositionBoxPlot(data) {
-	var mvp = data['player_mdn_mvp'];
-
-	$('#mvp_box_plot').highcharts({
-		chart: {
-			type: 'boxplot',
-			height: 400
-		},
-		title: {
-			text: ''
+		tooltip: {
+			pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}<br />' +
+						'Maximum: {point.high}<br />' +
+						'Upper quartile: {point.q1}<br />' +
+						'Median: {point.median}<br />' +
+						'Mean: {point.mean}<br />' +
+						'Lower quartile: {point.q3}<br />' +
+						'Minimum: {point.low}<br />'
 		},
 		yAxis: {
 			title: {
-				text: 'MVP'
+				text: titleText
 			}
 		},
 		xAxis: {
 			categories: ['Commander', 'Heavy', 'Scout', 'Ammo', 'Medic'],
 			title: {
-				text: 'Position'
+				text: null
 			}	
 		},
 		plotOptions: {
 			boxplot: {
-                fillColor: '#F0F0E0',
+                fillColor: '#eee',
                 lineWidth: 2,
-                medianColor: '#0C5DA5',
+                medianColor: '#008cba',
                 medianWidth: 3,
-                stemColor: '#A63400',
+                stemColor: '#E99002',
                 stemDashStyle: 'dot',
                 stemWidth: 1,
-                whiskerColor: '#3D9200',
+                whiskerColor: '#008cba',
                 whiskerLength: '20%',
                 whiskerWidth: 3
 			}
 		},
-		series: [{
-			name: 'Positions',
-			data: [
-				[mvp['commander_min'], mvp['commander_lower'], mvp['commander'], mvp['commander_upper'], mvp['commander_max']],
-				[mvp['heavy_min'], mvp['heavy_lower'], mvp['heavy'], mvp['heavy_upper'], mvp['heavy_max']],
-				[mvp['scout_min'], mvp['scout_lower'], mvp['scout'], mvp['scout_upper'], mvp['scout_max']],
-				[mvp['ammo_min'], mvp['ammo_lower'], mvp['ammo'], mvp['ammo_upper'], mvp['ammo_max']],
-				[mvp['medic_min'], mvp['medic_lower'], mvp['medic'], mvp['medic_upper'], mvp['medic_max']]
-			]
-		}]
+		series: [
+			{
+				name: 'Red',
+				data: red,
+				visible: false,
+				color: '#F04124'
+			},
+			{
+				name: 'All',
+				data: all,
+				color: '#5bc0de'
+			},
+			{
+				name: 'Green',
+				data: green,
+				visible: false,
+				color: '#43AC6A'
+			},
+		]
 	});
 }
 
+function updateSpiderAndBoxPlot(type) {
+	const params = new URLSearchParams(location.search);
+
+	if(type === 'mvp') {
+		params.set('type','mvp_points');
+	} else if(type === 'score') {
+		params.set('type','score');
+	}
+
+	var allUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	params.set('player_id',<?= $id; ?>);
+	var allPlayerUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	params.set('team','red');
+	var redPlayerUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	params.set('team','green');
+	var greenPlayerUrl = '/players/getPlayerMedians.json?'+params.toString();
+
+	$.when(
+		$.ajax({
+			url: allUrl,
+		}),
+		$.ajax({
+			url: allPlayerUrl,
+		}),
+		$.ajax({
+			url: redPlayerUrl,
+		}),
+		$.ajax({
+			url: greenPlayerUrl,
+		})
+	).done(function(all, playerAll, playerRed, playerGreen) {
+		rawData = [all, playerAll, playerRed, playerGreen];
+
+		spiderData = rawData.map(function(item) {
+			item = item[0]['data'];
+			return [item['ammo'], item['commander'], item['heavy'], item['medic'], item['scout']] 
+		});
+
+		boxData = rawData.map(function(item) {
+			item = item[0]['data'];
+			return [
+				{
+					low: item['commander_min'],
+					q1: item['commander_lower'],
+					median: item['commander'],
+					q3: item['commander_upper'],
+					high: item['commander_max'],
+					mean: Math.round(item['commander_avg'] * 100)/100
+				},
+				{
+					low: item['heavy_min'],
+					q1: item['heavy_lower'],
+					median: item['heavy'],
+					q3: item['heavy_upper'],
+					high: item['heavy_max'],
+					mean: Math.round(item['heavy_avg'] * 100)/100
+				},
+				{
+					low: item['scout_min'],
+					q1: item['scout_lower'],
+					median: item['scout'],
+					q3: item['scout_upper'],
+					high: item['scout_max'],
+					mean: Math.round(item['scout_avg'] * 100)/100
+				},
+				{
+					low: item['ammo_min'],
+					q1: item['ammo_lower'],
+					median: item['ammo'],
+					q3: item['ammo_upper'],
+					high: item['ammo_max'],
+					mean: Math.round(item['ammo_avg'] * 100)/100
+				},
+				{
+					low: item['medic_min'],
+					q1: item['medic_lower'],
+					median: item['medic'],
+					q3: item['medic_upper'],
+					high: item['medic_max'],
+					mean: Math.round(item['medic_avg'] * 100)/100
+				}
+			];
+		});
+
+		renderBoxPlot(type, boxData[1], boxData[2], boxData[3]);
+		renderPositionSpider(type, spiderData[0], spiderData[1], spiderData[2], spiderData[3]);
+	});
+}
+
+function updateWinLossPie() {
+	$.ajax({
+		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json'))); ?>'
+	}).done(function(data) {
+		renderWinLossPie(data);
+	});
+}
 
 $(document).ready(function(){
-	$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerWinLossDetail', $id, 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			displayWinLossPie(data);
-		},
-		error: function() {
-			alert('winlossfail');
+	$("#spiderSelector :input").change(function() {
+    	if(this.id === 'option_mvp') {
+			updateSpiderAndBoxPlot('mvp');
+		}
+
+		if(this.id === 'option_score') {
+			updateSpiderAndBoxPlot('score');
 		}
 	});
-	
-	$.ajax({
-		type: 'get',
-		url: '<?php echo html_entity_decode($this->Html->url(array('action' => 'playerPositionSpider', $id, 'ext' => 'json'))); ?>',
-		dataType: 'json',
-		success: function(data) {
-			displayPositionScoreSpider(data);
-			displayPositionMVPSpider(data);
-			displayPositionBoxPlot(data);
-		},
-		error: function() {
-			alert('spiderfail');
-		}
-	});
+
+	updateWinLossPie();
+	updateSpiderAndBoxPlot('mvp');
 	
 	var overall_mvp_data = <?php echo $overall_mvp_json; ?>;
 	var commander_mvp_data = <?php echo $commander_mvp_json; ?>;
@@ -1315,26 +1398,17 @@ $(document).ready(function(){
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="overall_tab">
-		<div class="row">
-			<div class="col-sm-6">
-				<div id="position_score_spider"></div>
-			</div>
-			<div class="col-sm-6">
-				<div id="position_mvp_spider"></div>
-			</div>
+		<div id="spiderSelector" class="btn-group" data-toggle="buttons">
+			<label class="btn btn-primary active">
+				<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
+			</label>
+			<label class="btn btn-primary">
+				<input type="radio" name="options" id="option_score" autocomplete="off">Score
+			</label>
 		</div>
-		<div id="boxplot_panel" class="panel panel-info">
-			<div class="panel-heading" data-toggle="collapse" data-parent="#boxplot_panel" data-target="#collapse_boxplot" role="tab" id="boxplot_heading">
-				<h4 class="panel-title">
-					Median MVP
-				</h4>
-			</div>
-			<div id="collapse_boxplot" class="panel-collapse collapse in" role="tabpanel">
-				<div class="panel-body">
-					<div id="mvp_box_plot"></div>
-				</div>
-			</div>
-		</div>
+		<div id="position_spider"></div>
+		<hr>
+		<div id="position_box_plot"></div>
 		<br />
 		<br />
 		<br />
