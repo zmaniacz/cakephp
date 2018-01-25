@@ -1,6 +1,4 @@
 <?php
-	echo $this->Html->script('highcharts.js');
-	echo $this->Html->script('highcharts-more.js');
 	echo $this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js');
 	
 	$overall_acc_plot = array();

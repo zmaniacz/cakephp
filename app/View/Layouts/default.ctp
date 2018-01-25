@@ -28,6 +28,8 @@
 		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
 		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js');
 		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js');
+		echo $this->Html->script('highcharts.js');
+		echo $this->Html->script('highcharts-more.js');
 		echo $this->Html->css('bootstrap.min.css');
 		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
 		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
@@ -45,6 +47,14 @@
 		if (theme) {
 			set_theme(theme);
 		}
+
+		Highcharts.setOptions({
+			chart: {
+				style: {
+					fontFamily: '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
+				}
+			}
+		});
         
         $.ajax({ 
             url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',

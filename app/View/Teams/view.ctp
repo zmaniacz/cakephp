@@ -1,8 +1,4 @@
 <?php
-	echo $this->Html->script('https://code.highcharts.com/highcharts.js');
-	echo $this->Html->script('https://code.highcharts.com/highcharts-more.js');
-	echo $this->Html->script('https://code.highcharts.com/modules/drilldown.js');
-
 	$scorecards = array();
 
 	$wins = 0;
