@@ -1278,7 +1278,7 @@ $(document).ready(function(){
 		yAxis: {
 			min: -1,
 			max: 1,
-			tickPositions: [0],
+			
 			title: {
 				text: "Latest"
 			},
@@ -1304,6 +1304,7 @@ $(document).ready(function(){
 		winLossBarChart.addSeries({
 			data: winLossBarData
 		});
+		console.log(winLossBarData);
 	})
 });
 </script>
