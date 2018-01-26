@@ -14,21 +14,31 @@
 </br>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#game_list').DataTable( {
-			"searching": false,
-			"info": false,
-			"paging": false,
-			"ordering": false,
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>"
-			},
-			"columns" : [
-				{ "data" : "game_name", },
-				{ "data" : "game_datetime" },
-				{ "data" : "winner" },
-				{ "data" : "loser" },
-				{ "data" : "pdf" }
-			]
+		const params = new URLSearchParams(location.search);
+
+		$.ajax({
+			url: "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>",
+		}).done(function(response) {
+			response.data.forEach(function(element) {
+				var $li = $('<li>', {class: 'list-group-item'});
+				var $link = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
+				var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).text('PDF');
+
+				$link.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
+
+				var red_team = '<span class="text-danger">Red Team: '+(element.Game.red_score+element.Game.red_adj)+'</span>';
+				var green_team = '<span class="text-success">Green Team: '+(element.Game.green_score+element.Game.green_adj)+'</span>';
+
+				if(element.Game.winner === 'red') {
+					$li.append($link);
+					$li.append(' - <strong>'+red_team+'</strong> | '+green_team+' - ');
+				} else {
+					$li.append($link);
+					$li.append(' - <strong>'+green_team+'</strong> | '+red_team+' - ');
+				}
+				$li.append($pdfLink);
+				$('#game_list_group').append($li);
+			});
 		});
 
 		$("#overall thead th input").on( 'keyup change', function () {
@@ -188,28 +198,8 @@
 		} ).draw();
 	} );
 </script>
-<div id="top_accordion" class="panel panel-info">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#top_accordion" data-target="#collapse_game_list" role="tab" id="game_list_heading">
-		<h4 class="panel-title">
-			Games Played
-		</h4>
-	</div>
-	<div id="collapse_game_list" class="panel-collapse collapse in" role="tabpanel">
-		<div class="panel-body">
-			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
-					<thead>
-						<th>Game</th>
-						<th>Time</th>
-						<th>Winner Score</th>
-						<th>Loser Score</th>
-						<th>Scorecard PDF</th>
-					</thead>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+<h4>Games Played</h4>
+<div id="game_list_group" class="list-group"></div>
 <div class="panel-group" id="accordion" role="tablist">
 	<div class="panel panel-info">
 		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_overall" role="tab" id="overall_heading">

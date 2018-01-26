@@ -147,7 +147,7 @@ class GamesController extends AppController {
 	}
 	
 	public function getGameList($date = null) {
-		$this->set('games', $this->Game->getGameList($date, $this->Session->read('state')));
+		$this->set('data', $this->Game->getGameList($date, $this->Session->read('state')));
 	}
 	
 	public function overallWinLossDetail() {
