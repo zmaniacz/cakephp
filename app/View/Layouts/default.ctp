@@ -22,18 +22,18 @@
 <head>
 	<?php
 		echo $this->Html->charset();
-		echo $this->Html->script('//code.jquery.com/jquery-2.1.4.min.js');
-		echo $this->Html->script('//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
-		echo $this->Html->script('//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js');
-		echo $this->Html->script('//cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js');
-		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js');
-		echo $this->Html->script('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js');
-		echo $this->Html->script('highcharts.js');
-		echo $this->Html->script('highcharts-more.js');
-		echo $this->Html->css('bootstrap.min.css');
-		echo $this->Html->css('//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css');
-		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
-		echo $this->Html->css('//cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.css');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js');
+		echo $this->Html->script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js');
+		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js');
+		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.css');
 		echo $this->Html->css('laserforce');
 	?>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
