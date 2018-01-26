@@ -13,6 +13,14 @@
 </form>
 </br>
 <script type="text/javascript">
+	function stopPropagation(evt) {
+		if (evt.stopPropagation !== undefined) {
+			evt.stopPropagation();
+		} else {
+			evt.cancelBubble = true;
+		}
+	}
+
 	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
 
@@ -49,31 +57,56 @@
 		});
 
 		var overall = $('#overall').DataTable( {
-			"deferRender" : true,
-			"orderCellsTop" : true,
-			"dom": '<lr>t<ip>',
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>"
+			orderCellsTop : true,
+			dom: '<r>t<ip>',
+			ajax : {
+				url : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>",
+				dataSrc: function(response) {
+					var result = response.data.map(function(element) {
+						let positionClass = (element.Scorecard.team === 'red') ? 'text-danger' : 'text-success';
+						let gameClass = (element.Game.winner === 'red') ? 'text-danger' : 'text-success';
+
+						let hitDiff = Math.round(element.Scorecard.shot_opponent/Math.max(element.Scorecard.times_zapped,1) * 100) / 100;
+
+						let playerLink = `<a href="/players/view/${element.Scorecard.player_id}?${params.toString()}">${element.Scorecard.player_name}</a>`;
+						let gameLink = `<a href="/games/view/${element.Game.id}?${params.toString()}" class="${gameClass}">${element.Game.game_name}</a>`;
+						let mvpLink = `<a href="#" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/${element.Scorecard.id}.json?${params.toString()}">${element.Scorecard.mvp_points} <span class="glyphicon glyphicon-stats"></span></a>`;
+						let hitDiffLink = `<a href="#" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/${element.Scorecard.player_id}/${element.Scorecard.id}/${element.Scorecard.game_id}.json?${params.toString()}">${hitDiff} (${element.Scorecard.shot_opponent}/${element.Scorecard.times_zapped}) <span class="glyphicon glyphicon-stats"></span></a>`;
+						let positionFormat = `<span class="${positionClass}">${element.Scorecard.position}</span>`;
+
+						return {
+							player_name: playerLink,
+							game_name: gameLink,
+							position: positionFormat,
+							score: element.Scorecard.score,
+							mvp_points: mvpLink,
+							accuracy: (Math.round(element.Scorecard.accuracy * 100 * 100) / 100),
+							hit_diff: hitDiffLink,
+							medic_hits: element.Scorecard.medic_hits,
+							shot_team: element.Scorecard.shot_team
+						};
+					});
+					console.log(result);
+					
+					return result;
+				}
 			},
-			"columns" : [
+			columns : [
 				{
-					"defaultContent" : '',
-					"orderable": false
+					defaultContent : '',
+					orderable: false
 				},
-				{ "data" : "player_name", "width" : "200px" },
+				{ "data" : "player_name" },
 				{ "data" : "game_name" },
 				{ "data" : "position" },
-				{
-					"data" : "score",
-					"orderSequence": [ "desc", "asc"]
-				},
+				{ "data" : "score",	"orderSequence": [ "desc", "asc"] },
 				{ "data" : "mvp_points", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
 				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
 			],
-			"order": [[ 5, "desc" ]]
+			order: [[ 5, "desc" ]]
 		});
 
 		overall.on( 'order.dt', function () {
@@ -90,13 +123,13 @@
 		});
 
 		var summary_stats = $('#summary_stats').DataTable( {
-			"deferRender" : true,
-			"orderCellsTop" : true,
-			"dom": '<lr>t<ip>',
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
+			orderCellsTop : true,
+			dom: '<r>t<ip>',
+			scrollY: '500px',
+			ajax : {
+				url : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
 			},
-			"columns" : [
+			columns : [
 				{
 					"defaultContent" : '',
 					"orderable": false
@@ -169,9 +202,9 @@
 		});
 
 		var medicHitsTable = $('#medic_hits').DataTable( {
-			"deferRender" : true,
 			"orderCellsTop" : true,
-			"dom": '<"H"lr>t<"F"ip>',
+			"dom": '<r>t<ip>',
+			scrollY: '500px',
 			"ajax" : {
 				"url" : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json'))); ?>"
 			},
@@ -200,89 +233,57 @@
 </script>
 <h4>Games Played</h4>
 <div id="game_list_group" class="list-group"></div>
-<div class="panel-group" id="accordion" role="tablist">
-	<div class="panel panel-info">
-		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_overall" role="tab" id="overall_heading">
-			<h4 class="panel-title">
-				Overall
-			</h4>
-		</div>
-		<div id="collapse_overall" class="panel-collapse collapse in" role="tabpanel">
-			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
-						<thead>
-							<th>#</th>
-							<th class="searchable col-xs-2"><input type="text" placeholder="Name" /></th>
-							<th class="searchable col-xs-2"><input type="text" placeholder="Game" /></th>
-							<th class="searchable col-xs-2"><input type="text" placeholder="Position" /></th>
-							<th class="col-xs-1">Score</th>
-							<th class="col-xs-1">MVP</th>
-							<th class="col-xs-1">Hit Diff</th>
-							<th class="col-xs-1">Medic Hits</th>
-							<th class="col-xs-1">Accuracy</th>
-							<th class="col-xs-1">Shot Team</th>
-						</thead>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel-info">
-		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_summary_stats" role="tab" id="#summary_stats_heading">
-			<h4 class="panel-title">
-				Summary Stats
-			</h4>
-		</div>
-		<div id="collapse_summary_stats" class="panel-collapse collapse" role="tabpanel">
-			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover table-condensed" id="summary_stats">
-						<thead>
-							<th>#</th>
-							<th><input type="text" placeholder="Name" /></th>
-							<th>Min Score</th>
-							<th>Avg Score</th>
-							<th>Max Score</th>
-							<th>Min MVP</th>
-							<th>Avg MVP</th>
-							<th>Max MVP</th>
-							<th>Avg Acc</th>
-							<th>Hit Diff</th>
-							<th>Medic Hits</th>
-							<th>Elim Rate</th>
-							<th>Won/Played</th>
-						</thead>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel-info">
-		<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_medic_hits" role="tab" id="#medic_hits_heading">
-			<h4 class="panel-title">
-				Medic Hits
-			</h4>
-		</div>
-		<div id="collapse_medic_hits" class="panel-collapse collapse" role="tabpanel">
-			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
-						<thead>
-							<th>#</th>
-							<th class="searchable col-xs-2"><input type="text" placeholder="Name" /></th>
-							<th class="col-xs-1">Total Medic Hits (All)</th>
-							<th class="col-xs-1">Average Medic Hits (All)</th>
-							<th class="col-xs-1">Games Played (All)</th>
-							<th class="col-xs-1">Total Medic Hits (Non-Resupply)</th>
-							<th class="col-xs-1">Average Medic Hits (Non-Resupply)</th>
-							<th class="col-xs-1">Games Played (Non-Resupply)</th>
-						</thead>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+<h4>Overall</h4>
+<div class="table-responsive">
+	<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
+		<thead>
+			<th>#</th>
+			<th><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
+			<th><input type="text" placeholder="Game" onClick="stopPropagation(event);" /></th>
+			<th><input type="text" placeholder="Position" onClick="stopPropagation(event);" /></th>
+			<th>Score</th>
+			<th>MVP</th>
+			<th>Hit Diff</th>
+			<th>Medic Hits</th>
+			<th>Accuracy</th>
+			<th>Shot Team</th>
+		</thead>
+	</table>
+</div>
+<h4>Summary Stats</h4>
+<div class="table-responsive">
+	<table class="table table-striped table-bordered table-hover table-condensed" id="summary_stats">
+		<thead>
+			<th>#</th>
+			<th><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
+			<th>Min Score</th>
+			<th>Avg Score</th>
+			<th>Max Score</th>
+			<th>Min MVP</th>
+			<th>Avg MVP</th>
+			<th>Max MVP</th>
+			<th>Avg Acc</th>
+			<th>Hit Diff</th>
+			<th>Medic Hits</th>
+			<th>Elim Rate</th>
+			<th>Won/Played</th>
+		</thead>
+	</table>
+</div>
+<h4>Medic Hits</h4>
+<div class="table-responsive">
+	<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
+		<thead>
+			<th class="col-xs-1">#</th>
+			<th class="searchable col-xs-2"><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
+			<th class="col-xs-1">Total Medic Hits (All)</th>
+			<th class="col-xs-1">Average Medic Hits (All)</th>
+			<th class="col-xs-1">Games Played (All)</th>
+			<th class="col-xs-1">Total Medic Hits (Non-Resupply)</th>
+			<th class="col-xs-1">Average Medic Hits (Non-Resupply)</th>
+			<th class="col-xs-1">Games Played (Non-Resupply)</th>
+		</thead>
+	</table>
 </div>
 <script>
 $('#nightlySelectDate').change(function() {
