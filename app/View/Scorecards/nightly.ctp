@@ -28,24 +28,27 @@
 			url: "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>",
 		}).done(function(response) {
 			response.data.forEach(function(element) {
-				var $li = $('<li>', {class: 'list-group-item'});
-				var $link = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
+				var $wrapper = $('<div>', {class: 'list-group-item'});
+				var $heading = $('<div>', {class: 'list-group-item-heading'});
+				var $body = $('<div>', {class: 'list-group-item-text'});
+				var $gameLink = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
 				var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).text('PDF');
 
-				$link.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
-
+				$gameLink.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
+				$heading.append($gameLink);
+				
 				var red_team = '<span class="text-danger">Red Team: '+(element.Game.red_score+element.Game.red_adj)+'</span>';
 				var green_team = '<span class="text-success">Green Team: '+(element.Game.green_score+element.Game.green_adj)+'</span>';
 
+				$wrapper.append($heading);
 				if(element.Game.winner === 'red') {
-					$li.append($link);
-					$li.append(' - <strong>'+red_team+'</strong> | '+green_team+' - ');
+					$body.append('<strong>'+red_team+'</strong> | '+green_team+' - ');
 				} else {
-					$li.append($link);
-					$li.append(' - <strong>'+green_team+'</strong> | '+red_team+' - ');
+					$body.append('<strong>'+green_team+'</strong> | '+red_team+' - ');
 				}
-				$li.append($pdfLink);
-				$('#game_list_group').append($li);
+				$body.append($pdfLink);
+				$wrapper.append($body);
+				$('#game_list_group').append($wrapper);
 			});
 		});
 
@@ -65,29 +68,32 @@
 					var result = response.data.map(function(element) {
 						let positionClass = (element.Scorecard.team === 'red') ? 'text-danger' : 'text-success';
 						let gameClass = (element.Game.winner === 'red') ? 'text-danger' : 'text-success';
-
 						let hitDiff = Math.round(element.Scorecard.shot_opponent/Math.max(element.Scorecard.times_zapped,1) * 100) / 100;
 
 						let playerLink = `<a href="/players/view/${element.Scorecard.player_id}?${params.toString()}">${element.Scorecard.player_name}</a>`;
 						let gameLink = `<a href="/games/view/${element.Game.id}?${params.toString()}" class="${gameClass}">${element.Game.game_name}</a>`;
 						let mvpLink = `<a href="#" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/${element.Scorecard.id}.json?${params.toString()}">${element.Scorecard.mvp_points} <span class="glyphicon glyphicon-stats"></span></a>`;
 						let hitDiffLink = `<a href="#" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/${element.Scorecard.player_id}/${element.Scorecard.id}/${element.Scorecard.game_id}.json?${params.toString()}">${hitDiff} (${element.Scorecard.shot_opponent}/${element.Scorecard.times_zapped}) <span class="glyphicon glyphicon-stats"></span></a>`;
-						let positionFormat = `<span class="${positionClass}">${element.Scorecard.position}</span>`;
+						let positionElement = `<span class="${positionClass}">${element.Scorecard.position}</span>`;
 
 						return {
-							player_name: playerLink,
-							game_name: gameLink,
-							position: positionFormat,
+							player_name: element.Scorecard.player_name,
+							player_link: playerLink,
+							game_name: element.Game.game_name,
+							game_link: gameLink,
+							position: element.Scorecard.position,
+							position_element: positionElement,
 							score: element.Scorecard.score,
-							mvp_points: mvpLink,
+							mvp_points: element.Scorecard.mvp_points,
+							mvp_points_link: mvpLink,
 							accuracy: (Math.round(element.Scorecard.accuracy * 100 * 100) / 100),
-							hit_diff: hitDiffLink,
+							hit_diff: hitDiff,
+							hit_diff_link: hitDiffLink,
 							medic_hits: element.Scorecard.medic_hits,
 							shot_team: element.Scorecard.shot_team
 						};
 					});
 					console.log(result);
-					
 					return result;
 				}
 			},
@@ -96,15 +102,47 @@
 					defaultContent : '',
 					orderable: false
 				},
-				{ "data" : "player_name" },
-				{ "data" : "game_name" },
-				{ "data" : "position" },
-				{ "data" : "score",	"orderSequence": [ "desc", "asc"] },
-				{ "data" : "mvp_points", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "hit_diff", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "medic_hits", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "accuracy", "orderSequence": [ "desc", "asc"] },
-				{ "data" : "shot_team", "orderSequence": [ "desc", "asc"] },
+				{
+					data : null,
+					render: {
+						_: "player_name",
+						display: "player_link"
+					}
+				},
+				{
+					data : null,
+					render: {
+						_: "game_name",
+						display: "game_link"
+					}
+				},
+				{
+					data : null,
+					render: {
+						_: "position",
+						display: "position_element"
+					}
+				},
+				{ data: "score", orderSequence: [ "desc", "asc"], className: "text-right" },
+				{
+					data : null,
+					render: {
+						_: "mvp_points",
+						display: "mvp_points_link"
+					},
+					className: "text-right"
+				},
+				{
+					data : null,
+					render: {
+						_: "hit_diff",
+						display: "hit_diff_link"
+					},
+					className: "text-right"
+				},
+				{ data: "medic_hits", orderSequence: [ "desc", "asc"], className: "text-right"  },
+				{ data: "accuracy", orderSequence: [ "desc", "asc"], className: "text-right"  },
+				{ data: "shot_team", orderSequence: [ "desc", "asc"], className: "text-right"  },
 			],
 			order: [[ 5, "desc" ]]
 		});
