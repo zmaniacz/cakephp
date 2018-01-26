@@ -32,7 +32,7 @@
                     $red_table .= $red_line;
                 }
             } else {
-                $title_line = "<h3>".$hit['name']." - <span class=\"text-success\">".$hit['team']." ".$hit['position']."</span></h3>";
+                $title_line = "<h3>".$hit['name']." - <span class=\"text-".(($hit['team'] == 'red') ? "danger" : "success")." text-capitalize\">".$hit['team']." ".$hit['position']."</span></h3>";
             }
         }
 ?>
