@@ -60,6 +60,6 @@
 	<?php endforeach; ?>
 	<hr>
 	<dt>Total</dt>
-	<dd class="text-info"><?= $score['Scorecard']['mvp_points']; ?></dd>
+	<dd class="text-primary"><?= $score['Scorecard']['mvp_points']; ?></dd>
 </dl>
 			

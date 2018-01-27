@@ -1,4 +1,4 @@
-<div id="team_penalty_edit" class="panel panel-info">
+<div id="team_penalty_edit" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="team_penalty_edit_heading">
 		<h4 class="panel-title">
 			Edit Team Penalty

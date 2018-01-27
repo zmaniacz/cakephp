@@ -312,8 +312,8 @@
 	} );
 </script>
 <div style="position: sticky; top: 45px; z-index: 1">
-	<div class="panel panel-info">
-		<div class="panel-body bg-info">
+	<div class="panel panel-primary">
+		<div class="panel-body bg-primary">
 			<?php if($this->Session->read('state.gametype') == 'league'): ?>
 				<form class="form-inline">
 					<div class="checkbox">
@@ -332,7 +332,7 @@
 		</div>
 	</div>
 </div>
-<div id="overall" class="panel panel-info">
+<div id="overall" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#overall" data-target="#collapse_overall" role="tab" id="overall_heading">
 		<h4 class="panel-title">
 			Average Averages
@@ -379,7 +379,7 @@
 		</div>
 	</div>
 </div>
-<div id="commander" class="panel panel-info">
+<div id="commander" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#commander" data-target="#collapse_commander" role="tab" id="commander_heading">
 		<h4 class="panel-title">
 			Commander
@@ -417,7 +417,7 @@
 		</div>
 	</div>
 </div>
-<div id="heavy" class="panel panel-info">
+<div id="heavy" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#heavy" data-target="#collapse_heavy" role="tab" id="heavy_heading">
 		<h4 class="panel-title">
 			Heavy Weapons
@@ -446,7 +446,7 @@
 		</div>
 	</div>
 </div>
-<div id="scout" class="panel panel-info">
+<div id="scout" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#scout" data-target="#collapse_scout" role="tab" id="scout_heading">
 		<h4 class="panel-title">
 			Scout
@@ -475,7 +475,7 @@
 		</div>
 	</div>
 </div>
-<div id="ammo" class="panel panel-info">
+<div id="ammo" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#ammo" data-target="#collapse_ammo" role="tab" id="ammo_heading">
 		<h4 class="panel-title">
 			Ammo Carrier
@@ -504,7 +504,7 @@
 		</div>
 	</div>
 </div>
-<div id="medic" class="panel panel-info">
+<div id="medic" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#medic" data-target="#collapse_medic" role="tab" id="medic_heading">
 		<h4 class="panel-title">
 			Medic
@@ -535,7 +535,7 @@
 		</div>
 	</div>
 </div>
-<div id="medic_hits" class="panel panel-info">
+<div id="medic_hits" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#medic_hits" data-target="#collapse_medic_hits" role="tab" id="medic_hits_heading">
 		<h4 class="panel-title">
 			Medic Hits

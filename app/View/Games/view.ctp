@@ -149,7 +149,7 @@
 <h3 class="row">
 	<span class="col-md-4">
 	<?php if(!empty($neighbors['prev'])): ?>
-		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?>
 	<?php endif; ?>
 	</span>
 	<span class="col-md-4 text-center">
@@ -176,7 +176,7 @@
 	</span>
 	<span class="col-md-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?></span>
 	<?php endif; ?>
 	</span>
 </h3>
@@ -243,13 +243,13 @@
 				}
 				
 				$score_line .= (($score['lives_left'] > 0) ? "<td class=\"text-success\"><span class=\"glyphicon glyphicon-ok\"></span>" : "<td class=\"text-danger text-center\"><span class=\"glyphicon glyphicon-remove\"></span>")."</td>";
-				$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-info btn-block'))."</td>";
+				$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-primary btn-block'))."</td>";
 				$score_line .= "<td>".$score['position']."</td>";
 				$score_line .= "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
+				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 				$score_line .= "<td>".$score['lives_left']."</td>";
 				$score_line .= "<td>".$score['shots_left']."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
+				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
 				$score_line .= "<td>".$score['missiled_opponent']."</td>";
 				$score_line .= "<td>".$score['times_missiled']."</td>";
 				$score_line .= "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
@@ -281,7 +281,7 @@
 			</div>
 			<div id="collapse_winner_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info">
+					<h3 class="text-primary">
 						<?= "Score: ".$winner_score.$winner_adj; ?>
 						<span class="pull-right">
 						<?php
@@ -345,7 +345,7 @@
 			</div>
 			<div id="collapse_loser_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info">
+					<h3 class="text-primary">
 						<?= "Score: ".$loser_score.$loser_adj; ?>
 						<span class="pull-right">
 							<?php

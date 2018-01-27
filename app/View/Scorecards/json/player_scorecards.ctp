@@ -13,18 +13,18 @@
 		if($score['Game']['pdf_id'] == null) {
 			$pdf = "";
 		} else {
-			$pdf = "<a href=\"http://scorecards.lfstats.com/".$score['Game']['pdf_id'].".pdf\" class=\"btn btn-info btn-block\" target=\"_blank\">PDF</a>";
+			$pdf = "<a href=\"http://scorecards.lfstats.com/".$score['Game']['pdf_id'].".pdf\" class=\"btn btn-primary btn-block\" target=\"_blank\">PDF</a>";
 		}
 		
 		$data[] = array(
-			'game_name' => $this->Html->link($game_name, array('controller' => 'games', 'action' => 'view', $score['Game']['id']), array('class' => 'btn btn-info btn-block')),
+			'game_name' => $this->Html->link($game_name, array('controller' => 'games', 'action' => 'view', $score['Game']['id']), array('class' => 'btn btn-primary btn-block')),
 			'game_datetime' => 	$score['Game']['game_datetime'],
 			'winloss' => ($score['Scorecard']['team'] == $score['Game']['winner']) ? "W" : "L",
 			'team' => $score['Scorecard']['team'],
 			'position' => $score['Scorecard']['position'],
 			'score' => $score['Scorecard']['score'],
 			'accuracy' => round($score['Scorecard']['accuracy']*100,2),
-			'mvp_points' => "<button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['Scorecard']['id'], 'ext' => 'json'))."\">".$score['Scorecard']['mvp_points']."</button>",
+			'mvp_points' => "<button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['Scorecard']['id'], 'ext' => 'json'))."\">".$score['Scorecard']['mvp_points']."</button>",
 			'lives_left' => $score['Scorecard']['lives_left'],
 			'shots_left' => $score['Scorecard']['shots_left'],
 			'shot_opponent' => $score['Scorecard']['shot_opponent'],

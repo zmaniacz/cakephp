@@ -1308,7 +1308,7 @@ $(document).ready(function(){
 	})
 });
 </script>
-<h1 class="text-info"><?= $overall[0]['Player']['player_name']; ?></h1>
+<h1 class="text-primary"><?= $overall[0]['Player']['player_name']; ?></h1>
 <?php if(sizeof($aliases) > 1): ?>
 <p>
 	Aliases:
@@ -1333,7 +1333,7 @@ $(document).ready(function(){
 </ul>
 <div class="tab-content" id="tabs">
 	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
-		<div id="win_loss_bar_panel" class="panel panel-info">
+		<div id="win_loss_bar_panel" class="panel panel-primary">
 			<div class="panel-heading">
 				<h4 class="panel-title">
 					Recent Wins and Losses
@@ -1343,7 +1343,7 @@ $(document).ready(function(){
 				<div id="win_loss_bar"></div>
 			</div>
 		</div>
-		<div id="win_loss_pie_panel" class="panel panel-info">
+		<div id="win_loss_pie_panel" class="panel panel-primary">
 			<div class="panel-heading">
 				<h4 class="panel-title">
 					Overall Wins and Losses

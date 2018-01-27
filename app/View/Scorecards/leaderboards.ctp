@@ -19,7 +19,7 @@
 		</div>
 	</form>
 <?php endif; ?>
-<div id="positions" class="panel panel-info">
+<div id="positions" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
 			Positions
@@ -129,7 +129,7 @@
 		</div>
 	</div>
 </div>
-<div id="games_points" class="panel panel-info">
+<div id="games_points" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#games_points" data-target="#collapse_games_points" role="tab" id="games_points_heading">
 		<h4 class="panel-title">
 			Games and Points
@@ -178,7 +178,7 @@
 		</div>
 	</div>
 </div>
-<div id="medic_tomfoolery" class="panel panel-info">
+<div id="medic_tomfoolery" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#medic_tomfoolery" data-target="#collapse_medic_tomfoolery" role="tab" id="medic_tomfoolery_heading">
 		<h4 class="panel-title">
 			Medic Tomfoolery
@@ -245,7 +245,7 @@
 		</div>
 	</div>
 </div>
-<div id="missile_malarkey" class="panel panel-info">
+<div id="missile_malarkey" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#missile_malarkey" data-target="#collapse_missile_malarkey" role="tab" id="missile_malarkey_heading">
 		<h4 class="panel-title">
 			Missile Malarkey
@@ -312,7 +312,7 @@
 		</div>
 	</div>
 </div>
-<div id="nuke_nonsense" class="panel panel-info">
+<div id="nuke_nonsense" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#nuke_nonsense" data-target="#collapse_nuke_nonsense" role="tab" id="nuke_nonsense_heading">
 		<h4 class="panel-title">
 			Nuke Nonsense
@@ -379,7 +379,7 @@
 		</div>
 	</div>
 </div>
-<div id="elimination_frustration" class="panel panel-info">
+<div id="elimination_frustration" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#elimination_frustration" data-target="#collapse_elimination_frustration" role="tab" id="elimination_frustration_heading">
 		<h4 class="panel-title">
 			Elimination Frustration
@@ -428,7 +428,7 @@
 		</div>
 	</div>
 </div>
-<div id="streaky" class="panel panel-info">
+<div id="streaky" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#streaky" data-target="#collapse_streaky" role="tab" id="streaky_heading">
 		<h4 class="panel-title">
 			Streaky
@@ -511,7 +511,7 @@
 		</div>
 	</div>
 </div>
-<div id="misc_mischief" class="panel panel-info">
+<div id="misc_mischief" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#misc_mischief" data-target="#collapse_misc_mischief" role="tab" id="misc_mischief_heading">
 		<h4 class="panel-title">
 			Miscellaneous Mischief

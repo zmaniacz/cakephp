@@ -1,4 +1,4 @@
-<div id="team_add" class="panel panel-info">
+<div id="team_add" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="team_add_heading">
 		<h4 class="panel-title">
 			Add Team

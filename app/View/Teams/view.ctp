@@ -102,7 +102,7 @@
 	}
 ?>
 <h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
-<div class="panel panel-info">
+<div class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#win_loss_panel" data-target="#collapse_win_loss" role="tab" id="positions_heading">
 		<h4 class="panel-title">
 			Wins/Losses
@@ -114,7 +114,7 @@
 		</div>
 	</div>
 </div>
-<div class="panel panel-info">
+<div class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#team_detail_panel" data-target="#collapse_team_detail" role="tab" id="positions_heading">
 		<h4 class="panel-title">
 			Team Detail
@@ -129,7 +129,7 @@
 		</div>
 	</div>
 </div>
-<div id="positions_panel" class="panel panel-info">
+<div id="positions_panel" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#positions_panel" data-target="#collapse_positions" role="tab" id="positions_heading">
 		<h4 class="panel-title">
 			Positions Detail
@@ -201,7 +201,7 @@
 		<div class="row">
 		<?php foreach($round['Match'] as $match): ?>
 			<div class="col-md-4 match-panel">
-				<div class="panel panel-info">
+				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#matchModal" target="<?= $this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getMatchDetails', $match['id'], 'ext' => 'json')); ?>">More...</button>
 						<h5><?= (($round['is_finals']) ? "Finals" : "R".$round['round'])." M".$match['match']; ?></h5>

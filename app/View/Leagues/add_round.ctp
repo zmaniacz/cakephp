@@ -1,5 +1,5 @@
 <div class="col-lg-7">
-<div id="round_add" class="panel panel-info">
+<div id="round_add" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="round_add_heading">
 		<h4 class="panel-title">
 			Add Round

@@ -5,7 +5,7 @@
 		} );
 	} );
 </script>
-<div id="penalties_list" class="panel panel-info">
+<div id="penalties_list" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="overall_heading">
 		<h4 class="panel-title">
 			Penalties
@@ -49,7 +49,7 @@
 						<td><?php echo h($penalty['Penalty']['value']); ?>&nbsp;</td>
 						<td><?php echo h($penalty['Penalty']['mvp_value']); ?>&nbsp;</td>
 						<td class="actions">
-							<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id']), array('class' => 'btn btn-info')); ?>
+							<?php echo $this->Html->link(__('View'), array('action' => 'view', $penalty['Penalty']['id']), array('class' => 'btn btn-primary')); ?>
 							<?php 
 								if(AuthComponent::user('role') === 'admin') {
 									echo $this->Html->link(__('Edit'), array('action' => 'edit', $penalty['Penalty']['id']), array('class' => 'btn btn-warning'));

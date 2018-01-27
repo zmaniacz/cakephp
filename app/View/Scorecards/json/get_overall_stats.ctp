@@ -2,7 +2,7 @@
 	$data = array();
 	foreach ($response as $score) {
 		$data[] = array(	
-			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
+			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-primary')),
 			'player_id' => $score['Player']['id'],
 			'player_name' => $score['Player']['player_name'],
 			'avg_score' => $score[0]['avg_score'],

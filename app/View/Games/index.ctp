@@ -37,7 +37,7 @@
 				
 				let pdf = '';
 				if(element.Game.pdf_id) {
-					pdf = '<a href="http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf" class="btn btn-info btn-block" target="_blank">PDF</a>';
+					pdf = '<a href="http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf" class="btn btn-primary btn-block" target="_blank">PDF</a>';
 				}
 
 				return {game_name: game_name, game_datetime: element.Game.game_datetime, winner: winner, loser: loser, pdf: pdf};
@@ -58,7 +58,7 @@
 		});
 	});
 </script>
-<div id="game_list_panel" class="panel panel-info">
+<div id="game_list_panel" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="game_list_heading">
 		<h4 class="panel-title">
 			Game List

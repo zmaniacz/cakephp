@@ -231,7 +231,7 @@ $(document).ready(function(){
 	updateBoxPlot('mvp');
 });
 </script>
-<div class="panel panel-info">
+<div class="panel panel-primary">
 	<div class="panel-heading">
 		<h4 class="panel-title">
 			Wins By Color
@@ -241,7 +241,7 @@ $(document).ready(function(){
 		<div id="win_loss_chart"></div>
 	</div>
 </div>
-<div id="boxplot_panel" class="panel panel-info">
+<div id="boxplot_panel" class="panel panel-primary">
 	<div class="panel-heading" id="boxplot_heading">
 		<h4 class="panel-title">
 			Median MVP and Score
@@ -261,7 +261,7 @@ $(document).ready(function(){
 		<div id="mvp_box_plot"></div>
 	</div>
 </div>
-<div id="avg_score_panel" class="panel panel-info">
+<div id="avg_score_panel" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_score_panel" data-target="#collapse_avg_score" role="tab" id="avg_score_heading">
 		<h4 class="panel-title">
 			Average Team Scores

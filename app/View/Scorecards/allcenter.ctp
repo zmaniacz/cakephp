@@ -72,7 +72,7 @@
 		});
 	});
 </script>
-<div id="all_center_teams" class="panel panel-info">
+<div id="all_center_teams" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="all_center_teams_heading">
 		<h4 class="panel-title">
 			All-Center Teams

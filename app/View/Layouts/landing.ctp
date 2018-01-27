@@ -76,9 +76,9 @@
 							<ul class="nav navbar-nav navbar-right">
 								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<a class="btn btn-info btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+									<a class="btn btn-primary btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
 								<?php else: ?>
-									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
+									<a class="btn btn-primary btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 								</li>
 							</ul>

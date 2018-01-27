@@ -75,7 +75,7 @@
                                                     'leagueID' => (is_null($event['Game']['league_id']) ? 0 : $event['Game']['league_id'])
                                                 )
                                             ),
-                                            array('class' => 'btn btn-block btn-info')
+                                            array('class' => 'btn btn-block btn-primary')
 								); ?>
                     </td>
                     <td class="text-center"><strong><?=$event[0]['games_date']; ?></strong></td>

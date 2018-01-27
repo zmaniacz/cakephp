@@ -123,7 +123,7 @@
 		</div>
 	</form>
 <?php endif; ?>
-<div id="commander" class="panel panel-info">
+<div id="commander" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#commander" data-target="#collapse_commander" role="tab" id="commander_heading">
 		<h4 class="panel-title">
 			Commander
@@ -145,7 +145,7 @@
 		</div>
 	</div>
 </div>
-<div id="heavy" class="panel panel-info">
+<div id="heavy" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#heavy" data-target="#collapse_heavy" role="tab" id="heavy_heading">
 		<h4 class="panel-title">
 			Heavy Weapons
@@ -167,7 +167,7 @@
 		</div>
 	</div>
 </div>
-<div id="scout" class="panel panel-info">
+<div id="scout" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#scout" data-target="#collapse_scout" role="tab" id="scout_heading">
 		<h4 class="panel-title">
 			Scout
@@ -189,7 +189,7 @@
 		</div>
 	</div>
 </div>
-<div id="ammo" class="panel panel-info">
+<div id="ammo" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#ammo" data-target="#collapse_ammo" role="tab" id="ammo_heading">
 		<h4 class="panel-title">
 			Ammo Carrier
@@ -211,7 +211,7 @@
 		</div>
 	</div>
 </div>
-<div id="medic" class="panel panel-info">
+<div id="medic" class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#medic" data-target="#collapse_medic" role="tab" id="medic_heading">
 		<h4 class="panel-title">
 			Medic
