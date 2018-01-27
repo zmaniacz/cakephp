@@ -26,12 +26,15 @@
 		echo $this->Html->script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js');
+		echo $this->Html->script('https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js');
 		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js');
-		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css');
+		
+		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css');
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap.min.css');
+		echo $this->Html->css('https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css');
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.css');
 		echo $this->Html->css('laserforce');
@@ -76,7 +79,7 @@
 	<div class="container">
 		<div id="container">
 			<div id="header">
-				<nav class="navbar navbar-default navbar-fixed-top">
+				<nav class="navbar navbar-inverse navbar-fixed-top">
 					<div class="container-fluid">
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -109,7 +112,6 @@
 								<li><?= $this->Html->link('Penalties', array('controller' => 'penalties', 'action' => 'index')); ?></li>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-								<li>|</li>
                                 <li><?= $this->Html->link('WCT 2018', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 18, 'centerID' => 10))); ?></li>
 								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
@@ -118,9 +120,9 @@
 							<ul class="nav navbar-nav navbar-right">
 								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<a class="btn btn-info btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+									<button class="btn btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
 								<?php else: ?>
-									<a class="btn btn-info btn-sm" href="/users/login" role="button">Login</a>
+									<button class="btn btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 								</li>
 							</ul>

@@ -61,7 +61,7 @@
 
 		var overall = $('#overall').DataTable( {
 			orderCellsTop : true,
-			dom: '<r>t<ip>',
+			responsive: true,
 			ajax : {
 				url : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>",
 				dataSrc: function(response) {
@@ -272,13 +272,13 @@
 <h4>Games Played</h4>
 <div id="game_list_group" class="list-group"></div>
 <h4>Overall</h4>
-<div class="table-responsive">
+<div>
 	<table class="table table-striped table-bordered table-hover table-condensed" id="overall">
 		<thead>
 			<th>#</th>
-			<th><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
-			<th><input type="text" placeholder="Game" onClick="stopPropagation(event);" /></th>
-			<th><input type="text" placeholder="Position" onClick="stopPropagation(event);" /></th>
+			<th>Name</th>
+			<th>Game</th>
+			<th>Position</th>
 			<th>Score</th>
 			<th>MVP</th>
 			<th>Hit Diff</th>
@@ -312,14 +312,14 @@
 <div class="table-responsive">
 	<table class="table table-striped table-bordered table-hover table-condensed" id="medic_hits">
 		<thead>
-			<th class="col-xs-1">#</th>
-			<th class="searchable col-xs-2"><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
-			<th class="col-xs-1">Total Medic Hits (All)</th>
-			<th class="col-xs-1">Average Medic Hits (All)</th>
-			<th class="col-xs-1">Games Played (All)</th>
-			<th class="col-xs-1">Total Medic Hits (Non-Resupply)</th>
-			<th class="col-xs-1">Average Medic Hits (Non-Resupply)</th>
-			<th class="col-xs-1">Games Played (Non-Resupply)</th>
+			<th>#</th>
+			<th><input type="text" placeholder="Name" onClick="stopPropagation(event);" /></th>
+			<th>Total Medic Hits (All)</th>
+			<th>Average Medic Hits (All)</th>
+			<th>Games Played (All)</th>
+			<th>Total Medic Hits (Non-Resupply)</th>
+			<th>Average Medic Hits (Non-Resupply)</th>
+			<th>Games Played (Non-Resupply)</th>
 		</thead>
 	</table>
 </div>
