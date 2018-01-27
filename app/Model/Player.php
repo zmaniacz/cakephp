@@ -377,6 +377,8 @@ class Player extends AppModel {
 			$results['commander_min'] = $commander[0];
 			$results['commander_max'] = $commander[(count($commander)-1)];
 			$results['commander_avg'] = array_sum($commander)/count($commander);
+		} else {
+			$results['commander'] = $results['commander_lower'] = $results['commander_upper'] = $results['commander_min'] = $results['commander_max'] = $results['commander_avg'] = 0;
 		}
 			
 		if(count($heavy) > 0) {
@@ -386,6 +388,8 @@ class Player extends AppModel {
 			$results['heavy_min'] = $heavy[0];
 			$results['heavy_max'] = $heavy[(count($heavy)-1)];
 			$results['heavy_avg'] = array_sum($heavy)/count($heavy);
+		} else {
+			$results['heavy'] = $results['heavy_lower'] = $results['heavy_upper'] = $results['heavy_min'] = $results['heavy_max'] = $results['heavy_avg'] = 0;
 		}
 		
 		if(count($scout) > 0) {
@@ -395,6 +399,8 @@ class Player extends AppModel {
 			$results['scout_min'] = $scout[0];
 			$results['scout_max'] = $scout[(count($scout)-1)];
 			$results['scout_avg'] = array_sum($scout)/count($scout);
+		} else {
+			$results['scout'] = $results['scout_lower'] = $results['scout_upper'] = $results['scout_min'] = $results['scout_max'] = $results['scout_avg'] = 0;
 		}
 		
 		if(count($ammo) > 0) {
@@ -404,6 +410,8 @@ class Player extends AppModel {
 			$results['ammo_min'] = $ammo[0];
 			$results['ammo_max'] = $ammo[(count($ammo)-1)];
 			$results['ammo_avg'] = array_sum($ammo)/count($ammo);
+		} else {
+			$results['ammo'] = $results['ammo_lower'] = $results['ammo_upper'] = $results['ammo_min'] = $results['ammo_max'] = $results['ammo_avg'] = 0;
 		}
 		
 		if(count($medic) > 0) {
@@ -413,6 +421,8 @@ class Player extends AppModel {
 			$results['medic_min'] = $medic[0];
 			$results['medic_max'] = $medic[(count($medic)-1)];
 			$results['medic_avg'] = array_sum($medic)/count($medic);
+		} else {
+			$results['medic'] = $results['medic_lower'] = $results['medic_upper'] = $results['medic_min'] = $results['medic_max'] = $results['medic_avg'] = 0;
 		}
 		
 		return $results;
