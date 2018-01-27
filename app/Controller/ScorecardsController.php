@@ -177,12 +177,57 @@ class ScorecardsController extends AppController {
 	}
 
 	public function nightlyMedicHits($date = null) {
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
+		$medic_hits = $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state'));
+
+		$data = array();
+		foreach($medic_hits as $medic) {
+			$data[] = array(
+				'player_name' => $medic['Scorecard']['player_name'],
+				'player_id' => $medic['Scorecard']['player_id'],
+				'total_medic_hits' => $medic[0]['total_medic_hits'],
+				'medic_hits_per_game' => $medic[0]['medic_hits_per_game'],
+				'games_played' => $medic[0]['games_played'],
+				'non_resup_total_medic_hits' => $medic['ScorecardNoResup']['total_medic_hits'],
+				'non_resup_medic_hits_per_game' => $medic['ScorecardNoResup']['medic_hits_per_game'],
+				'non_resup_games_played' => $medic['ScorecardNoResup']['games_played'],
+			);
+		}
+
+		$this->set('data', $data);
 	}
 
 	public function nightlySummaryStats($date = null) {
-		$this->set('nightly', $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state')));
-		$this->set('overall', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
+		$nightly = $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state'));
+		$overall = $this->Scorecard->getAllAvgMVP($this->Session->read('state'));
+
+		$data = array();
+		foreach ($nightly as $score) {
+			$response[$score['Player']['id']] = array(	
+				'player_name' => $score['Player']['player_name'],
+				'player_id' => $score['Player']['id'],
+				'min_score' => $score[0]['min_score'],
+				'avg_score' => $score[0]['avg_score'],
+				'max_score' => $score[0]['max_score'],
+				'min_mvp' =>  $score[0]['min_mvp'],
+				'avg_mvp' =>  $score[0]['avg_mvp'],
+				'max_mvp' =>  $score[0]['max_mvp'],
+				'avg_acc' => $score[0]['avg_acc'],
+				'hit_diff' => $score[0]['hit_diff'],
+				'medic_hits' => $score[0]['medic_hits'],
+				'elim_rate' => $score[0]['elim_rate'],
+				'games_played' => $score[0]['games_played'],
+				'games_won' => $score[0]['games_won']
+			);
+		}
+	
+		foreach ($overall as $key => $value) {
+			if(isset($response[$key])) {
+				$response[$key]['overall_avg_mvp'] = $value['avg_avg_mvp'];
+				$response[$key]['overall_avg_acc'] = $value['avg_avg_acc'];
+			}
+		}
+
+		$this->set('data', array_values($response));
 	}
 
 	public function playerScorecards($id) {
