@@ -15,40 +15,47 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
+		params.set('date', '<?= $current_date; ?>');
 
-		$.ajax({
-			url: "<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameList', $current_date, 'ext' => 'json'))); ?>",
-		}).done(function(response) {
-			response.data.forEach(function(element) {
-				var $wrapper = $('<div>', {class: 'list-group-item'});
-				var $heading = $('<div>', {class: 'list-group-item-heading'});
-				var $body = $('<div>', {class: 'list-group-item-text'});
-				var $gameLink = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
-				var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).text('PDF');
+		function updateGameList(params) {
+			$.ajax({
+				url: `/games/getGameList.json?${params.toString()}`,
+			}).done(function(response) {
+				$('#game_list_group').empty();
 
-				$gameLink.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
-				$heading.append($gameLink);
-				
-				var red_team = '<span class="text-danger">Red Team: '+(element.Game.red_score+element.Game.red_adj)+'</span>';
-				var green_team = '<span class="text-success">Green Team: '+(element.Game.green_score+element.Game.green_adj)+'</span>';
+				response.data.forEach(function(element) {
+					var $wrapper = $('<div>', {class: 'list-group-item'});
+					var $heading = $('<div>', {class: 'list-group-item-heading'});
+					var $body = $('<div>', {class: 'list-group-item-text'});
+					var $gameLink = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
+					var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).text('PDF');
 
-				$wrapper.append($heading);
-				if(element.Game.winner === 'red') {
-					$body.append('<strong>'+red_team+'</strong> | '+green_team+' - ');
-				} else {
-					$body.append('<strong>'+green_team+'</strong> | '+red_team+' - ');
-				}
-				$body.append($pdfLink);
-				$wrapper.append($body);
-				$('#game_list_group').append($wrapper);
+					$gameLink.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
+					$heading.append($gameLink);
+					
+					var red_team = '<span class="text-danger">Red Team: '+(element.Game.red_score+element.Game.red_adj)+'</span>';
+					var green_team = '<span class="text-success">Green Team: '+(element.Game.green_score+element.Game.green_adj)+'</span>';
+
+					$wrapper.append($heading);
+					if(element.Game.winner === 'red') {
+						$body.append('<strong>'+red_team+'</strong> | '+green_team+' - ');
+					} else {
+						$body.append('<strong>'+green_team+'</strong> | '+red_team+' - ');
+					}
+					$body.append($pdfLink);
+					$wrapper.append($body);
+					$('#game_list_group').append($wrapper);
+				});
 			});
-		});
+		}
+
+		updateGameList(params);
 
 		var overall = $('#overall').DataTable( {
 			orderCellsTop : true,
 			responsive: true,
 			ajax: {
-				url: "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyScorecards', $current_date, 'ext' => 'json'))); ?>",
+				url: `/scorecards/nightlyScorecards.json?${params.toString()}`,
 				dataSrc: function(response) {
 					var result = response.data.map(function(element) {
 						let positionClass = (element.Scorecard.team === 'red') ? 'text-danger' : 'text-success';
@@ -144,7 +151,7 @@
 			orderCellsTop : true,
 			responsive: true,
 			ajax : {
-				url : "<?= html_entity_decode($this->Html->url(array('action' => 'nightlySummaryStats', $current_date, 'ext' => 'json'))); ?>"
+				url : `/scorecards/nightlySummaryStats.json?${params.toString()}`
 			},
 			columns : [
 				{
@@ -255,7 +262,7 @@
 			orderCellsTop: true,
 			responsive: true,
 			ajax: {
-				url: "<?= html_entity_decode($this->Html->url(array('action' => 'nightlyMedicHits', $current_date, 'ext' => 'json'))); ?>"
+				url: `/scorecards/nightlyMedicHits.json?${params.toString()}`
 			},
 			columns: [
 				{
@@ -286,6 +293,16 @@
 				cell.innerHTML = i+1;
 			} );
 		} ).draw();
+
+		$('#nightlySelectDate').change(function() {
+			const params = new URLSearchParams(location.search);
+			params.set('date', $(this).val());
+
+			updateGameList(params);
+			$('#overall').DataTable().ajax.url(`/scorecards/nightlyScorecards.json?${params.toString()}`).load();
+			$('#summary_stats').DataTable().ajax.url(`/scorecards/nightlySummaryStats.json?${params.toString()}`).load();
+			$('#medic_hits').DataTable().ajax.url(`/scorecards/nightlyMedicHits.json?${params.toString()}`).load();
+		});
 	} );
 </script>
 <h4>Games Played</h4>
@@ -342,15 +359,3 @@
 		</thead>
 	</table>
 </div>
-<script>
-$('#nightlySelectDate').change(function() {
-	var new_game_url = $('#game_list').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_overall_url = $('#overall').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_summary_url = $('#summary_stats').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	var new_medic_url = $('#medic_hits').DataTable().ajax.url().replace(/\d{4}-\d{2}-\d{2}/, $(this).val());
-	$('#game_list').DataTable().ajax.url(new_game_url).load();
-	$('#overall').DataTable().ajax.url(new_overall_url).load();
-	$('#summary_stats').DataTable().ajax.url(new_summary_url).load();
-	$('#medic_hits').DataTable().ajax.url(new_medic_url).load();
-});
-</script>

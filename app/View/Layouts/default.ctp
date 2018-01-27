@@ -120,9 +120,9 @@
 							<ul class="nav navbar-nav navbar-right">
 								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<button class="btn btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+									<a class="btn btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
 								<?php else: ?>
-									<button class="btn btn-sm" href="/users/login" role="button">Login</a>
+									<a class="btn btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 								</li>
 							</ul>

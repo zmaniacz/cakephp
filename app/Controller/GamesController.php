@@ -146,12 +146,12 @@ class GamesController extends AppController {
 	public function overall() {
 	}
 	
-	public function getGameList($date = null) {
+	public function getGameList() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 		$this->set('data', $this->Game->getGameList($date, $this->Session->read('state')));
 	}
 	
 	public function overallWinLossDetail() {
-		$this->request->onlyAllow('ajax');
 		$this->set('overall', $this->Game->getOverallStats($this->Session->read('state')));
 		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($this->Session->read('state')));
 	}

@@ -142,7 +142,6 @@ class ScorecardsController extends AppController {
 	}
 
 	public function getAllStarStats() {
-		$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getAllAvgMVP($this->Session->read('state')));
 	}
 	
@@ -151,11 +150,12 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function getOverallMedicHits() {
-		//$this->request->allowMethod('ajax');
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
 	
-	public function nightly($date = null) {
+	public function nightly() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
+
 		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		
@@ -165,18 +165,20 @@ class ScorecardsController extends AppController {
 		if($this->request->isPost()) {
 			$date = $this->request->data['Scorecard']['date'];
 		}
-		
-		if(!$date)
+
+		if(empty($date))
 			$date = reset($game_dates);
 
 		$this->set('current_date', $date);
 	}
 	
-	public function nightlyScorecards($date = null) {
+	public function nightlyScorecards() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 		$this->set('data', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
 	}
 
-	public function nightlyMedicHits($date = null) {
+	public function nightlyMedicHits() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 		$medic_hits = $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state'));
 
 		$data = array();
@@ -196,7 +198,8 @@ class ScorecardsController extends AppController {
 		$this->set('data', $data);
 	}
 
-	public function nightlySummaryStats($date = null) {
+	public function nightlySummaryStats() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 		$nightly = $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state'));
 		$overall = $this->Scorecard->getAllAvgMVP($this->Session->read('state'));
 
