@@ -1304,7 +1304,6 @@ $(document).ready(function(){
 		winLossBarChart.addSeries({
 			data: winLossBarData
 		});
-		console.log(winLossBarData);
 	})
 });
 </script>
