@@ -21,6 +21,15 @@
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	<script defer src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js'></script>
+	<script defer src='https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js'></script>
 	<?php
 		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css');
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap.min.css');
@@ -34,6 +43,55 @@
 	</title>
 </head>
 <body>
+	<script>
+		$(document).ready(function() {
+			Highcharts.setOptions({
+				chart: {
+					style: {
+						fontFamily: '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
+					}
+				}
+			});
+			
+			$.ajax({ 
+				url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
+				dataType:'jsonp',
+			}).done(function(channel) { 
+				if(channel["stream"] == null) {
+					$("#twitch_status").append(" <span class='label label-default'>Offline</span>");
+				} else {
+					$("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
+				}
+			});
+
+			//global handlers for the various modals
+			$('#penaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#teamPenaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#hitModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#matchModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#mvpModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+		});
+	</script>
 	<div class="container">
 		<div id="container">
 			<div id="header">
@@ -283,66 +341,5 @@
 			</div>
 		</div>
 	</div>
-	<?php
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js');
-		echo $this->Html->script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js');
-		echo $this->Html->script('https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js');
-		echo $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js');
-	?>
-	<script>
-		$(document).ready(function() {
-			Highcharts.setOptions({
-				chart: {
-					style: {
-						fontFamily: '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
-					}
-				}
-			});
-			
-			$.ajax({ 
-				url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
-				dataType:'jsonp',
-			}).done(function(channel) { 
-				if(channel["stream"] == null) {
-					$("#twitch_status").append(" <span class='label label-default'>Offline</span>");
-				} else {
-					$("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
-				}
-			});
-
-			//global handlers for the various modals
-			$('#penaltyModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#teamPenaltyModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#hitModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#matchModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#mvpModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-		});
-	</script>
-	<?= $this->fetch('scriptBottom'); ?>
 </body>
 </html>

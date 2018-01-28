@@ -191,7 +191,6 @@
 	</ul>
 </ul>
 <script>
-<?php ob_start(); ?>
 $(document).ready(function() {
 	$('.info').dataTable( {
 		"searching": false,
@@ -201,9 +200,4 @@ $(document).ready(function() {
 		"jQueryUI": true
 	});
 });
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

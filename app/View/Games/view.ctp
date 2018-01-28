@@ -325,7 +325,6 @@
 	</div>
 </div>
 <script type="text/javascript">
-<?php ob_start(); ?>
 	$(document).ready(function() {
 		$('.gamelist').DataTable( {
 			"searching": false,
@@ -380,9 +379,4 @@
 			}
 		});
 	});
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

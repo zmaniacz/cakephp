@@ -67,7 +67,6 @@
 	</table>
 </div>
 <script type="text/javascript">
-<?php ob_start(); ?>
 	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
 		params.set('date', '<?= $current_date; ?>');
@@ -359,9 +358,4 @@
 			$('#medic_hits').DataTable().ajax.url(`/scorecards/nightlyMedicHits.json?${params.toString()}`).load();
 		});
 	} );
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

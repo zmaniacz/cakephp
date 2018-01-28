@@ -1,6 +1,5 @@
 <div id="status"><img src="http://lfstats.redial.net/img/lfstats_loading.gif" /></div>
 <script>
-<?php ob_start(); ?>
 	$(document).ready(function() {
 		var checkStatus = function() {
 			$.getJSON("<?php echo $this->Html->url(array('action' => 'checkPid', $pid, 'ext' => 'json')); ?>", function(data) {
@@ -14,9 +13,4 @@
 
 		checkStatus();
 	});
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

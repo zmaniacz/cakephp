@@ -47,7 +47,6 @@
 	</div>
 </div>
 <script class="code" type="text/javascript">
-<?php ob_start(); ?>
 function overallData(data) {
 	var non_elim_wins = [["Non-Elim Wins", data['winlossdetail']['non_elim_wins_from_red']],["Non-Elim Wins",data['winlossdetail']['non_elim_wins_from_green']]];
 	var elim_wins = [["Elim Wins", data['winlossdetail']['elim_wins_from_red']],["Elim Wins",data['winlossdetail']['elim_wins_from_green']]];
@@ -278,9 +277,4 @@ $(document).ready(function(){
 
 	updateBoxPlot('mvp');
 });
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

@@ -130,7 +130,6 @@
     echo $this->Html->script('JqueryFileUpload/jquery.fileupload-ui.js', array('inline' => false, 'block' => 'scriptBottom'));
 ?>
 <script>
-<?php ob_start(); ?>
     $(function () {
         'use strict';
 
@@ -167,9 +166,4 @@
         });
 
     });
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

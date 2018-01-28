@@ -121,7 +121,6 @@
 	</div>
 </div>
 <script type="text/javascript">
-<?php ob_start(); ?>
 	$(document).ready(function() {
 		$('#commander_allstar_table').DataTable( {
 			"deferRender" : true,
@@ -255,9 +254,4 @@
 			}
 		});
 	});
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>

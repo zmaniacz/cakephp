@@ -192,7 +192,6 @@
 	<?php endforeach; ?>
 </div>
 <script>
-<?php ob_start(); ?>
 	$(document).ready(function() {
 		var standings_data
 		var standings_table = $('#team_standings').DataTable( {
@@ -273,9 +272,4 @@
 	
 		update_standings(standings_table,0)
 	});
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>
