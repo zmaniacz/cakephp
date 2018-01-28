@@ -12,7 +12,62 @@
 	</div>
 </form>
 </br>
+<h4>Games Played</h4>
+<div id="game_list_group" class="list-group"></div>
+<h4>Overall</h4>
+<div>
+	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="overall">
+		<thead>
+			<th>#</th>
+			<th>Name</th>
+			<th>Game</th>
+			<th>Position</th>
+			<th>Score</th>
+			<th>MVP</th>
+			<th>Hit Diff</th>
+			<th>Medic Hits</th>
+			<th>Accuracy</th>
+			<th>Shot Team</th>
+		</thead>
+	</table>
+</div>
+<h4>Summary Stats</h4>
+<div>
+	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="summary_stats">
+		<thead>
+			<th>#</th>
+			<th>Name</th>
+			<th>Min Score</th>
+			<th>Avg Score</th>
+			<th>Max Score</th>
+			<th>Min MVP</th>
+			<th>Avg MVP</th>
+			<th>Max MVP</th>
+			<th>Avg Acc</th>
+			<th>Hit Diff</th>
+			<th>Medic Hits</th>
+			<th>Elim Rate</th>
+			<th>Won/Played</th>
+		</thead>
+	</table>
+</div>
+<h4>Medic Hits</h4>
+<div>
+	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="medic_hits">
+		<thead>
+			<th>#</th>
+			<th>Name</th>
+			<th>Medic Hits (All)</th>
+			<th>Avg Medic Hits (All)</th>
+			<th>Games Played (All)</th>
+			<th>Medic Hits (Non-Resup)</th>
+			<th>Avg Medic Hits (Non-Resup)</th>
+			<th>Games Played (Non-Resup)</th>
+		</thead>
+	</table>
+</div>
 <script type="text/javascript">
+<?php ob_start(); ?>
 	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
 		params.set('date', '<?= $current_date; ?>');
@@ -304,58 +359,9 @@
 			$('#medic_hits').DataTable().ajax.url(`/scorecards/nightlyMedicHits.json?${params.toString()}`).load();
 		});
 	} );
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>
-<h4>Games Played</h4>
-<div id="game_list_group" class="list-group"></div>
-<h4>Overall</h4>
-<div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="overall">
-		<thead>
-			<th>#</th>
-			<th>Name</th>
-			<th>Game</th>
-			<th>Position</th>
-			<th>Score</th>
-			<th>MVP</th>
-			<th>Hit Diff</th>
-			<th>Medic Hits</th>
-			<th>Accuracy</th>
-			<th>Shot Team</th>
-		</thead>
-	</table>
-</div>
-<h4>Summary Stats</h4>
-<div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="summary_stats">
-		<thead>
-			<th>#</th>
-			<th>Name</th>
-			<th>Min Score</th>
-			<th>Avg Score</th>
-			<th>Max Score</th>
-			<th>Min MVP</th>
-			<th>Avg MVP</th>
-			<th>Max MVP</th>
-			<th>Avg Acc</th>
-			<th>Hit Diff</th>
-			<th>Medic Hits</th>
-			<th>Elim Rate</th>
-			<th>Won/Played</th>
-		</thead>
-	</table>
-</div>
-<h4>Medic Hits</h4>
-<div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="medic_hits">
-		<thead>
-			<th>#</th>
-			<th>Name</th>
-			<th>Medic Hits (All)</th>
-			<th>Avg Medic Hits (All)</th>
-			<th>Games Played (All)</th>
-			<th>Medic Hits (Non-Resup)</th>
-			<th>Avg Medic Hits (Non-Resup)</th>
-			<th>Games Played (Non-Resup)</th>
-		</thead>
-	</table>
-</div>

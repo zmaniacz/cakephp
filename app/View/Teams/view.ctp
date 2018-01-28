@@ -322,86 +322,91 @@
 	<?php endforeach; ?>
 </div>
 <script>
-	$('#search-criteria').keyup(function(){
-		$('.match-panel').hide();
-		var txt = $('#search-criteria').val();
-		$('.match-panel').each(function(){
-		if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
-			$(this).show();
-		}
-		});
-	});
-
-
-	function displayWinLossPie(data) {
-		var winloss = [
-			{ name:'Wins', y: data['winloss']['wins'], drilldown:'wins'},
-			{ name:'Losses', y: data['winloss']['losses'], drilldown:'losses'},
-		];
-		var winlossdetail = [
-			{name:'Wins', id:'wins', data: [
-				{name: 'Red Win - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_wins_from_red']},
-				{name: 'Red Win - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_wins_from_red']},
-				{name: 'Green Win - Elim', color: "#00FF00", y: data['winlossdetail']['elim_wins_from_green']},
-				{name: 'Green Win - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_wins_from_green']}
-			]},
-			{name:'Losses', id:'losses', data: [
-				{name: 'Red Loss - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_losses_from_red']},
-				{name: 'Red Loss - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_losses_from_red']},
-				{name: 'Green Loss - Elim', color: "#00FF00", y: data['winlossdetail']['elim_losses_from_green']},
-				{name: 'Green Loss - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_losses_from_green']}
-			]}
-		];
-		
-		Highcharts.chart('win_loss_pie', {
-			chart: {
-				type: 'pie'
-			},
-			title: {
-				text: 'Wins & Losses'
-			},
-			subtitle: {
-        		text: 'Click the slices for details'
-			},
-			legend: {
-				enabled: true,
-				borderWidth: 1,
-				borderColor: 'gray',
-				align: 'left',
-				verticalAlign: 'top',
-				layout: 'vertical',
-				x: 0, y: 50
-			},
-			yAxis: {
-				title: {
-					text: 'Wins'
-				}
-			},
-			plotOptions: {
-				pie: {
-					allowPointSelect: true,
-					cursor: 'pointer',
-					dataLabels: { enabled: false },
-					showInLegend: true
-           	 	}
-    		},			
-			series: [{
-				name: 'Wins & Losses',
-				data: winloss
-			}],
-			drilldown: {
-				drillUpButton: {
-            		relativeTo: 'plotBox',
-            		position: {
-                		verticalAlign: 'top'
-            		}
-				},	
-				series: winlossdetail
-			}
-		});
-	}
-
+<?php ob_start(); ?>
 	$(document).ready(function(){
+		$('#search-criteria').keyup(function(){
+			$('.match-panel').hide();
+			var txt = $('#search-criteria').val();
+			$('.match-panel').each(function(){
+			if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
+				$(this).show();
+			}
+			});
+		});
+
+		function displayWinLossPie(data) {
+			var winloss = [
+				{ name:'Wins', y: data['winloss']['wins'], drilldown:'wins'},
+				{ name:'Losses', y: data['winloss']['losses'], drilldown:'losses'},
+			];
+			var winlossdetail = [
+				{name:'Wins', id:'wins', data: [
+					{name: 'Red Win - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_wins_from_red']},
+					{name: 'Red Win - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_wins_from_red']},
+					{name: 'Green Win - Elim', color: "#00FF00", y: data['winlossdetail']['elim_wins_from_green']},
+					{name: 'Green Win - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_wins_from_green']}
+				]},
+				{name:'Losses', id:'losses', data: [
+					{name: 'Red Loss - Elim', color: "#FF0000", distance: 0, y: data['winlossdetail']['elim_losses_from_red']},
+					{name: 'Red Loss - Non-Elim', color: "#CC0000", y: data['winlossdetail']['non_elim_losses_from_red']},
+					{name: 'Green Loss - Elim', color: "#00FF00", y: data['winlossdetail']['elim_losses_from_green']},
+					{name: 'Green Loss - Non-Elim', color: "#00CC00", y: data['winlossdetail']['non_elim_losses_from_green']}
+				]}
+			];
+			
+			Highcharts.chart('win_loss_pie', {
+				chart: {
+					type: 'pie'
+				},
+				title: {
+					text: 'Wins & Losses'
+				},
+				subtitle: {
+					text: 'Click the slices for details'
+				},
+				legend: {
+					enabled: true,
+					borderWidth: 1,
+					borderColor: 'gray',
+					align: 'left',
+					verticalAlign: 'top',
+					layout: 'vertical',
+					x: 0, y: 50
+				},
+				yAxis: {
+					title: {
+						text: 'Wins'
+					}
+				},
+				plotOptions: {
+					pie: {
+						allowPointSelect: true,
+						cursor: 'pointer',
+						dataLabels: { enabled: false },
+						showInLegend: true
+					}
+				},			
+				series: [{
+					name: 'Wins & Losses',
+					data: winloss
+				}],
+				drilldown: {
+					drillUpButton: {
+						relativeTo: 'plotBox',
+						position: {
+							verticalAlign: 'top'
+						}
+					},	
+					series: winlossdetail
+				}
+			});
+		}
+
 		displayWinLossPie(<?= json_encode(compact('winloss','winlossdetail')); ?>);
 	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

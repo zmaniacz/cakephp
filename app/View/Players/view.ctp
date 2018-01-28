@@ -1,6 +1,4 @@
 <?php
-	echo $this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js');
-	
 	$overall_acc_plot = array();
 	$overall_score_plot = array();
 	$overall_mvp_plot = array();
@@ -91,8 +89,146 @@
 	$medic_mvp_json = json_encode($medic_mvp_plot);
 	$medic_medic_json = json_encode($medic_medic_plot);
 ?>
-
+<h1 class="text-primary"><?= $overall[0]['Player']['player_name']; ?></h1>
+<?php if(sizeof($aliases) > 1): ?>
+<p>
+	Aliases:
+	<ul>
+		<?php foreach($aliases as $alias): ?>
+		<?php if($alias['PlayersName']['player_name'] != $overall[0]['Player']['player_name']): ?>
+		<li><?php echo $alias['PlayersName']['player_name']; ?></li>
+		<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+</p>
+<?php endif; ?>
+<div>
+	<?php if (AuthComponent::user('role') === 'admin'): ?>
+		<a href="<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?>" class="btn btn-success" role="button">Link</a>
+	<?php endif; ?>
+</div>
+<ul class="nav nav-tabs" role="tablist" id="myTab">
+	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
+	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
+	<li role="presentation"><a href="#head_to_head_tab" role="tab" data-toggle="tab">Head To Head</a></li>
+</ul>
+<div class="tab-content" id="tabs">
+	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
+		<div id="win_loss_bar_panel" class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					Recent Wins and Losses
+				</h4>
+			</div>
+			<div class="panel-body">
+				<div id="win_loss_bar"></div>
+			</div>
+		</div>
+		<div id="win_loss_pie_panel" class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					Overall Wins and Losses
+				</h4>
+			</div>
+			<div class="panel-body">
+				<div id="win_loss_pie"></div>
+			</div>
+		</div>		
+		<div class="table-responsive">
+			<table id="game_list" class="table table-striped table-hover table-border table-condensed">
+				<thead>
+					<tr>
+						<th>Game</th>
+						<th>Time</th>
+						<th>W/L</th>
+						<th>Team</th>
+						<th>Position</th>
+						<th rowspan="2">Score</th>
+						<th rowspan="2">Accuracy</th>
+						<th rowspan="2">MVP Points</th>
+						<th rowspan="2">Lives Left</th>
+						<th rowspan="2">Shots Left</th>
+						<th rowspan="2">Shot Opponent</th>
+						<th rowspan="2">Got Shot</th>
+						<th rowspan="2">Hit Diff</th>
+						<th rowspan="2">Missiled</th>
+						<th rowspan="2">Got Missiled</th>
+						<th rowspan="2">Medic Hits</th>
+						<th rowspan="2">Medic Nukes</th>
+						<th rowspan="2">Shot 3-Hits</th>
+						<th rowspan="2">Shot Team</th>
+						<th rowspan="2">Missiled Team</th>
+						<th rowspan="2">Shot Own Medic</th>
+						<th rowspan="2">Nukes Activated</th>
+						<th rowspan="2">Nukes Detonated</th>
+						<th rowspan="2">Nuke Cancels</th>
+						<th rowspan="2">Own Nuke Cancels</th>
+						<th rowspan="2">Rapid Fires</th>
+						<th rowspan="2">Boosts</th>
+						<th rowspan="2">Resupplies</th>
+						<th rowspan="2">PDF</th>
+					</tr>
+					<tr>
+						<th class="searchable">Game</th>
+						<th class="searchable">Time</th>
+						<th class="searchable">W/L</th>
+						<th class="searchable">Team</th>
+						<th class="searchable">Position</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="overall_tab">
+		<div id="spiderSelector" class="btn-group" data-toggle="buttons">
+			<label class="btn btn-primary active">
+				<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
+			</label>
+			<label class="btn btn-primary">
+				<input type="radio" name="options" id="option_score" autocomplete="off">Score
+			</label>
+		</div>
+		<div id="position_spider"></div>
+		<hr>
+		<div id="position_box_plot"></div>
+		<br />
+		<br />
+		<br />
+		<p>The following graphs represent a simple rolling average for accuracy, score and MVP points both overall and by position.<br />
+		Individual lines can be turned on and off by clicking on the title in the legend.<br />
+		Clicking the legend items marked scatter will show all the points on the graph for the data set, if you like that sort of thing.<br />
+		These graphs are not affected by the filters above.</p>
+		<div id="acc_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
+		<br />
+		<div id="medic_plot" style="display: inline-block;height:400px;width:800px; "></div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
+		<div class="table-responsive">
+			<table id="head_to_head" class="table table-striped table-hover table-border table-condensed">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Shot</th>
+						<th>Shot By</th>
+						<th>Shot Ratio</th>
+						<th>Missiles</th>
+						<th>Missiled By</th>
+						<th>Missile Ratio</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
 <script class="code" type="text/javascript">
+<?php
+	$this->Html->script('https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js',  array('inline' => false, 'block' => 'scriptBottom'));
+	ob_start();
+?>
 function renderWinLossPie(data) {
 	var winloss = [
 		['Wins', data['winloss']['wins']],
@@ -1306,139 +1442,9 @@ $(document).ready(function(){
 		});
 	})
 });
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>
-<h1 class="text-primary"><?= $overall[0]['Player']['player_name']; ?></h1>
-<?php if(sizeof($aliases) > 1): ?>
-<p>
-	Aliases:
-	<ul>
-		<?php foreach($aliases as $alias): ?>
-		<?php if($alias['PlayersName']['player_name'] != $overall[0]['Player']['player_name']): ?>
-		<li><?php echo $alias['PlayersName']['player_name']; ?></li>
-		<?php endif; ?>
-		<?php endforeach; ?>
-	</ul>
-</p>
-<?php endif; ?>
-<div>
-	<?php if (AuthComponent::user('role') === 'admin'): ?>
-		<a href="<?= $this->Html->url(array('controller' => 'players', 'action' => 'link', $overall[0]['Player']['id'])); ?>" class="btn btn-success" role="button">Link</a>
-	<?php endif; ?>
-</div>
-<ul class="nav nav-tabs" role="tablist" id="myTab">
-	<li role="presentation" class="active"><a href="#game_list_tab" role="tab" data-toggle="tab">Game List</a></li>
-	<li role="presentation"><a href="#overall_tab" role="tab" data-toggle="tab">Overall</a></li>
-	<li role="presentation"><a href="#head_to_head_tab" role="tab" data-toggle="tab">Head To Head</a></li>
-</ul>
-<div class="tab-content" id="tabs">
-	<div role="tabpanel" class="tab-pane active" id="game_list_tab">
-		<div id="win_loss_bar_panel" class="panel panel-primary">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-					Recent Wins and Losses
-				</h4>
-			</div>
-			<div class="panel-body">
-				<div id="win_loss_bar"></div>
-			</div>
-		</div>
-		<div id="win_loss_pie_panel" class="panel panel-primary">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-					Overall Wins and Losses
-				</h4>
-			</div>
-			<div class="panel-body">
-				<div id="win_loss_pie"></div>
-			</div>
-		</div>		
-		<div class="table-responsive">
-			<table id="game_list" class="table table-striped table-hover table-border table-condensed">
-				<thead>
-					<tr>
-						<th>Game</th>
-						<th>Time</th>
-						<th>W/L</th>
-						<th>Team</th>
-						<th>Position</th>
-						<th rowspan="2">Score</th>
-						<th rowspan="2">Accuracy</th>
-						<th rowspan="2">MVP Points</th>
-						<th rowspan="2">Lives Left</th>
-						<th rowspan="2">Shots Left</th>
-						<th rowspan="2">Shot Opponent</th>
-						<th rowspan="2">Got Shot</th>
-						<th rowspan="2">Hit Diff</th>
-						<th rowspan="2">Missiled</th>
-						<th rowspan="2">Got Missiled</th>
-						<th rowspan="2">Medic Hits</th>
-						<th rowspan="2">Medic Nukes</th>
-						<th rowspan="2">Shot 3-Hits</th>
-						<th rowspan="2">Shot Team</th>
-						<th rowspan="2">Missiled Team</th>
-						<th rowspan="2">Shot Own Medic</th>
-						<th rowspan="2">Nukes Activated</th>
-						<th rowspan="2">Nukes Detonated</th>
-						<th rowspan="2">Nuke Cancels</th>
-						<th rowspan="2">Own Nuke Cancels</th>
-						<th rowspan="2">Rapid Fires</th>
-						<th rowspan="2">Boosts</th>
-						<th rowspan="2">Resupplies</th>
-						<th rowspan="2">PDF</th>
-					</tr>
-					<tr>
-						<th class="searchable">Game</th>
-						<th class="searchable">Time</th>
-						<th class="searchable">W/L</th>
-						<th class="searchable">Team</th>
-						<th class="searchable">Position</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-	<div role="tabpanel" class="tab-pane" id="overall_tab">
-		<div id="spiderSelector" class="btn-group" data-toggle="buttons">
-			<label class="btn btn-primary active">
-				<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
-			</label>
-			<label class="btn btn-primary">
-				<input type="radio" name="options" id="option_score" autocomplete="off">Score
-			</label>
-		</div>
-		<div id="position_spider"></div>
-		<hr>
-		<div id="position_box_plot"></div>
-		<br />
-		<br />
-		<br />
-		<p>The following graphs represent a simple rolling average for accuracy, score and MVP points both overall and by position.<br />
-		Individual lines can be turned on and off by clicking on the title in the legend.<br />
-		Clicking the legend items marked scatter will show all the points on the graph for the data set, if you like that sort of thing.<br />
-		These graphs are not affected by the filters above.</p>
-		<div id="acc_plot" style="display: inline-block;height:400px;width:800px; "></div>
-		<br />
-		<div id="mvp_plot" style="display: inline-block;height:400px;width:800px; "></div>
-		<br />
-		<div id="score_plot" style="display: inline-block;height:400px;width:800px; "></div>
-		<br />
-		<div id="medic_plot" style="display: inline-block;height:400px;width:800px; "></div>
-	</div>
-	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
-		<div class="table-responsive">
-			<table id="head_to_head" class="table table-striped table-hover table-border table-condensed">
-				<thead>
-					<tr>
-						<th>Player</th>
-						<th>Shot</th>
-						<th>Shot By</th>
-						<th>Shot Ratio</th>
-						<th>Missiles</th>
-						<th>Missiled By</th>
-						<th>Missile Ratio</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>

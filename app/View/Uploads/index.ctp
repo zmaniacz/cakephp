@@ -121,16 +121,16 @@
 {% } %}
 </script>
 <?php
-    echo $this->Html->script('Javascript-Templates/tmpl.min.js');
-    echo $this->Html->script('JqueryFileUpload/vendor/jquery.ui.widget.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.iframe-transport.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-process.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-validate.js');
-    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-ui.js');
+    echo $this->Html->script('Javascript-Templates/tmpl.min.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/vendor/jquery.ui.widget.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/jquery.iframe-transport.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/jquery.fileupload.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-process.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-validate.js', array('inline' => false, 'block' => 'scriptBottom'));
+    echo $this->Html->script('JqueryFileUpload/jquery.fileupload-ui.js', array('inline' => false, 'block' => 'scriptBottom'));
 ?>
-
 <script>
+<?php ob_start(); ?>
     $(function () {
         'use strict';
 
@@ -167,4 +167,9 @@
         });
 
     });
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

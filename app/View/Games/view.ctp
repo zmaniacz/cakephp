@@ -5,88 +5,6 @@
 	$red_data = (!empty($game["Red_Scorecard"]) ? $game["Red_Scorecard"][0]["Red_Scorecard"][0] : null);
 	$red_data_string = $game["Game"]["red_score"]+$game["Game"]["red_adj"].",$red_data[hit_diff],$red_data[accuracy],$red_data[mvp_points],$red_data[medic_hits],$red_data[lives_left],$red_data[shots_left],$red_data[missile_hits],$red_data[nukes_detonated],$red_data[resupplies],$red_data[bases_destroyed]";
 ?>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.gamelist').DataTable( {
-			"searching": false,
-			"info": false,
-			"paging": false,
-			"ordering": false
-		} );
-
-		$('#breakdown_container').highcharts({
-			chart: {
-				type: 'bar',
-				height: 700
-			},
-			title: {
-				text: 'Game Breakdown'
-			},
-			xAxis: {
-				categories: ['Score', 'Hit Diff', 'Accuracy', 'MVP', 'Medic Hits', 'Lives Left', 'Shots Left', 'Missiles', 'Nukes', 'Resupplies', 'Bases']
-			},
-			legend: {
-				enabled: false
-			},
-			plotOptions: {
-				series: {
-					stacking: 'percent'
-				}
-			},
-			series: [
-				{
-					name: 'Green Team',
-					color: 'green',
-					data: [<?= $green_data_string; ?>]
-				},
-				{
-					name: 'Red Team',
-					color: 'red',
-					data: [<?= $red_data_string; ?>]
-				}
-			]
-		});
-
-		/*$('#matchups').DataTable( {
-			"deferRender" : true,
-            "ordering" : false,
-            "paging" : false,
-            "pageLength" : 5,
-            "searching" : false,
-            "info" : false,
-			"columns" : [
-				{ "data" : function ( row, type, val, meta) {			
-						if (type === 'display') {
-							return '<a href="/players/view/'+row.red_player_id+location.search+'" class="btn btn-danger btn-block">'+row.red_player_name+'</a>';
-						}
-						return row.red_player_name;
-					},
-					"width" : "200px" 
-				},
-                { "data" : function ( row, type, val, meta) {
-						var matchup = row.matchup * 100;
-						if (type === 'display') {
-							return parseFloat(matchup).toFixed(2)+'%';
-						}
-						return row.matchup;
-					}
-				},
-				{ "data" : function ( row, type, val, meta) {			
-						if (type === 'display') {
-							return '<a href="/players/view/'+row.green_player_id+location.search+'" class="btn btn-success btn-block">'+row.green_player_name+'</a>';
-						}
-						return row.green_player_name;
-					},
-					"width" : "200px" 
-				},
-			]
-		});*/
-	});
-	
-	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-		$('#breakdown_container').highcharts().reflow();
-	});
-</script>
 <?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 <div class="well well-lg">
 	<h3 class="text-danger">IMPORTANT</h3>
@@ -403,24 +321,57 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
-		<!--<div class="table-responsive">
-			<table 
-			 class="table table-striped table-bordered table-hover table-condensed" 
-			 id="matchups" 
-			 data-ajax="<?= html_entity_decode($this->Html->url(array('controller' => 'games', 'action' => 'getGameMatchups', $game['Game']['id'], 'ext' => 'json'))); ?>"
-			>
-				<thead>
-					<th>Red</th>
-					<th>Match Quality</th>
-					<th>Green</th>
-				</thead>
-			</table>
-		</div>-->
-		<div id="breakdown_container">
-		</div>
+		<div id="breakdown_container"></div>
 	</div>
 </div>
-<script>
+<script type="text/javascript">
+<?php ob_start(); ?>
+	$(document).ready(function() {
+		$('.gamelist').DataTable( {
+			"searching": false,
+			"info": false,
+			"paging": false,
+			"ordering": false
+		} );
+
+		$('#breakdown_container').highcharts({
+			chart: {
+				type: 'bar',
+				height: 700
+			},
+			title: {
+				text: 'Game Breakdown'
+			},
+			xAxis: {
+				categories: ['Score', 'Hit Diff', 'Accuracy', 'MVP', 'Medic Hits', 'Lives Left', 'Shots Left', 'Missiles', 'Nukes', 'Resupplies', 'Bases']
+			},
+			legend: {
+				enabled: false
+			},
+			plotOptions: {
+				series: {
+					stacking: 'percent'
+				}
+			},
+			series: [
+				{
+					name: 'Green Team',
+					color: 'green',
+					data: [<?= $green_data_string; ?>]
+				},
+				{
+					name: 'Red Team',
+					color: 'red',
+					data: [<?= $red_data_string; ?>]
+				}
+			]
+		});
+	});
+	
+	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+		$('#breakdown_container').highcharts().reflow();
+	});
+
 	$('.switch_sub_cbox').change(function() {
 		$.ajax({
 			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json",
@@ -429,4 +380,9 @@
 			}
 		});
 	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

@@ -1,4 +1,23 @@
+<div id="game_list_panel" class="panel panel-primary">
+	<div class="panel-heading" role="tab" id="game_list_heading">
+		<h4 class="panel-title">
+			Game List
+		</h4>
+	</div>
+	<div class="panel-body">
+		<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
+			<thead>
+				<th>Game</th>
+				<th>Time</th>
+				<th>Winner Score</th>
+				<th>Loser Score</th>
+				<th>PDF</th>
+			</thead>
+		</table>
+	</div>
+</div>
 <script type="text/javascript">
+<?php ob_start(); ?>
 	$(document).ready(function() {
 		const params = new URLSearchParams(location.search);
 
@@ -57,22 +76,9 @@
 		});
 		});
 	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>
-<div id="game_list_panel" class="panel panel-primary">
-	<div class="panel-heading" role="tab" id="game_list_heading">
-		<h4 class="panel-title">
-			Game List
-		</h4>
-	</div>
-	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
-			<thead>
-				<th>Game</th>
-				<th>Time</th>
-				<th>Winner Score</th>
-				<th>Loser Score</th>
-				<th>PDF</th>
-			</thead>
-		</table>
-	</div>
-</div>

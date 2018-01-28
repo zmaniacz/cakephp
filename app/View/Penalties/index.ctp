@@ -1,10 +1,3 @@
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.display').DataTable( {
-			"order": [[1, "desc"]]
-		} );
-	} );
-</script>
 <div id="penalties_list" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="overall_heading">
 		<h4 class="panel-title">
@@ -63,3 +56,16 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+<?php ob_start(); ?>
+	$(document).ready(function() {
+		$('.display').DataTable( {
+			"order": [[1, "desc"]]
+		} );
+	} );
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
+</script>

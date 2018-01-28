@@ -192,84 +192,90 @@
 	<?php endforeach; ?>
 </div>
 <script>
-	var standings_data
-	var standings_table = $('#team_standings').DataTable( {
-		"deferRender" : true,
-		"order": [[1, "desc"]],
-		"columns" : [
-			{ "data" : "name", },
-			{ "data" : "points" },
-			{ "data" : "match_win_lose" },
-			{ "data" : "game_win_lose" },
-			{ "data" : "elims" },
-			{ "data" : "score_ratio" },
-		]
-	});
-
-	$('.match-select').change(function() {
-		toastr.options = {
-			"closeButton": false,
-			"debug": false,
-			"newestOnTop": false,
-			"progressBar": false,
-			"positionClass": "toast-top-right",
-			"preventDuplicates": false,
-			"onclick": null,
-			"showDuration": "300",
-			"hideDuration": "1000",
-			"timeOut": "3000",
-			"extendedTimeOut": "1000",
-			"showEasing": "swing",
-			"hideEasing": "linear",
-			"showMethod": "slideDown",
-			"hideMethod": "slideUp"
-		}
-		$.ajax({
-			url: "/leagues/ajax_assignTeam/"+$(this).data('matchId')+"/"+$(this).data('team')+"/"+$(this).val()+".json",
-			success: function(data) {
-				toastr.success('Assigned Team')
-			},
-			error: function(data) {
-				toastr.error('Assignment Failed')
-			}
-		});
-	});
-
-	$('#search-criteria').keyup(function(){
-		$('.match-panel').hide();
-		var txt = $('#search-criteria').val();
-		$('.match-panel').each(function(){
-		if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
-			$(this).show();
-		}
-		});
-	});
-
-	function update_standings(table, round) {
-		var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getTeamStandings', 'ext' => 'json'))); ?>"
-		
-		if(round > 0) {
-			url = url.replace(".json", "/"+round+".json")
-		}
-		
-		$.ajax({
-			"url" : url
-		}).done(function(response) {
-			table.clear()
-			table.rows.add(response.data).draw()
-		})
-	}
-
-	$("#round_radio :input").change(function() {
-		update_standings(standings_table,this.value)
-	});
-
-	$("#view_radio :input").change(function() {
-		var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'bracket'))); ?>"
-		document.location = url;
-	});
-
+<?php ob_start(); ?>
 	$(document).ready(function() {
+		var standings_data
+		var standings_table = $('#team_standings').DataTable( {
+			"deferRender" : true,
+			"order": [[1, "desc"]],
+			"columns" : [
+				{ "data" : "name", },
+				{ "data" : "points" },
+				{ "data" : "match_win_lose" },
+				{ "data" : "game_win_lose" },
+				{ "data" : "elims" },
+				{ "data" : "score_ratio" },
+			]
+		});
+
+		$('.match-select').change(function() {
+			toastr.options = {
+				"closeButton": false,
+				"debug": false,
+				"newestOnTop": false,
+				"progressBar": false,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "3000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "slideDown",
+				"hideMethod": "slideUp"
+			}
+			$.ajax({
+				url: "/leagues/ajax_assignTeam/"+$(this).data('matchId')+"/"+$(this).data('team')+"/"+$(this).val()+".json",
+				success: function(data) {
+					toastr.success('Assigned Team')
+				},
+				error: function(data) {
+					toastr.error('Assignment Failed')
+				}
+			});
+		});
+
+		$('#search-criteria').keyup(function(){
+			$('.match-panel').hide();
+			var txt = $('#search-criteria').val();
+			$('.match-panel').each(function(){
+			if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
+				$(this).show();
+			}
+			});
+		});
+
+		function update_standings(table, round) {
+			var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'ajax_getTeamStandings', 'ext' => 'json'))); ?>"
+			
+			if(round > 0) {
+				url = url.replace(".json", "/"+round+".json")
+			}
+			
+			$.ajax({
+				"url" : url
+			}).done(function(response) {
+				table.clear()
+				table.rows.add(response.data).draw()
+			})
+		}
+
+		$("#round_radio :input").change(function() {
+			update_standings(standings_table,this.value)
+		});
+
+		$("#view_radio :input").change(function() {
+			var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'bracket'))); ?>"
+			document.location = url;
+		});
+	
 		update_standings(standings_table,0)
 	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

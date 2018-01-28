@@ -1,5 +1,53 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Wins By Color
+		</h4>
+	</div>
+	<div class="panel-body">
+		<div id="win_loss_chart"></div>
+	</div>
+</div>
+<div id="boxplot_panel" class="panel panel-primary">
+	<div class="panel-heading" id="boxplot_heading">
+		<h4 class="panel-title">
+			Median MVP and Score
+		</h4>
+	</div>
+	<div class="panel-body">
+		<div class="col-sm-4 col-sm-offset-4">
+			<div id="medianSelector" class="btn-group" data-toggle="buttons">
+				<label class="btn btn-primary active">
+					<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
+				</label>
+				<label class="btn btn-primary">
+					<input type="radio" name="options" id="option_score" autocomplete="off">Score
+				</label>
+			</div>
+		</div>
+		<div id="mvp_box_plot"></div>
+	</div>
+</div>
+<div id="avg_score_panel" class="panel panel-primary">
+	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_score_panel" data-target="#collapse_avg_score" role="tab" id="avg_score_heading">
+		<h4 class="panel-title">
+			Average Team Scores
+		</h4>
+	</div>
+	<div id="collapse_avg_score" class="panel-collapse collapse in" role="tabpanel">
+		<div class="panel-body">
+			<table class="table table-striped table-bordered table-hover" id="avg_scores">
+				<thead>
+					<th>Win Type</th>
+					<th>Green Score</th>
+					<th>Red Score</th>
+				<thead>
+			</table>
+		</div>
+	</div>
+</div>
 <script class="code" type="text/javascript">
-
+<?php ob_start(); ?>
 function overallData(data) {
 	var non_elim_wins = [["Non-Elim Wins", data['winlossdetail']['non_elim_wins_from_red']],["Non-Elim Wins",data['winlossdetail']['non_elim_wins_from_green']]];
 	var elim_wins = [["Elim Wins", data['winlossdetail']['elim_wins_from_red']],["Elim Wins",data['winlossdetail']['elim_wins_from_green']]];
@@ -230,52 +278,9 @@ $(document).ready(function(){
 
 	updateBoxPlot('mvp');
 });
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>
-<div class="panel panel-primary">
-	<div class="panel-heading">
-		<h4 class="panel-title">
-			Wins By Color
-		</h4>
-	</div>
-	<div class="panel-body">
-		<div id="win_loss_chart"></div>
-	</div>
-</div>
-<div id="boxplot_panel" class="panel panel-primary">
-	<div class="panel-heading" id="boxplot_heading">
-		<h4 class="panel-title">
-			Median MVP and Score
-		</h4>
-	</div>
-	<div class="panel-body">
-		<div class="col-sm-4 col-sm-offset-4">
-			<div id="medianSelector" class="btn-group" data-toggle="buttons">
-				<label class="btn btn-primary active">
-					<input type="radio" name="options" id="option_mvp" autocomplete="off" checked>MVP
-				</label>
-				<label class="btn btn-primary">
-					<input type="radio" name="options" id="option_score" autocomplete="off">Score
-				</label>
-			</div>
-		</div>
-		<div id="mvp_box_plot"></div>
-	</div>
-</div>
-<div id="avg_score_panel" class="panel panel-primary">
-	<div class="panel-heading" data-toggle="collapse" data-parent="#avg_score_panel" data-target="#collapse_avg_score" role="tab" id="avg_score_heading">
-		<h4 class="panel-title">
-			Average Team Scores
-		</h4>
-	</div>
-	<div id="collapse_avg_score" class="panel-collapse collapse in" role="tabpanel">
-		<div class="panel-body">
-			<table class="table table-striped table-bordered table-hover" id="avg_scores">
-				<thead>
-					<th>Win Type</th>
-					<th>Green Score</th>
-					<th>Red Score</th>
-				<thead>
-			</table>
-		</div>
-	</div>
-</div>

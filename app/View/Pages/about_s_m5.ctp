@@ -1,14 +1,3 @@
-<script>
-$(document).ready(function() {
-	$('.info').dataTable( {
-		"searching": false,
-		"info": false,
-		"paging": false,
-		"ordering": false,
-		"jQueryUI": true
-	});
-});
-</script>
 <h3><a href="http://lfstats.redial.net/files/LaserforceOfficialSM5TournamentRules.pdf">Official Rules</a></h3>
 <h3>Class Details</h3>
 <table class="info">
@@ -201,3 +190,20 @@ $(document).ready(function() {
 		<li>Score bonus: 1 point for scoring at least 3000 points</li>
 	</ul>
 </ul>
+<script>
+<?php ob_start(); ?>
+$(document).ready(function() {
+	$('.info').dataTable( {
+		"searching": false,
+		"info": false,
+		"paging": false,
+		"ordering": false,
+		"jQueryUI": true
+	});
+});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
+</script>

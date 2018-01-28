@@ -1,14 +1,3 @@
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.display').DataTable( {
-			"order": [[1, "desc"]],
-			"searching": false,
-			"lengthChange": false,
-			"pageLength": 5,
-			"pagingType": "simple"
-		} );
-	} );
-</script>
 <?php if($this->Session->read('state.gametype') == 'league'): ?>
 	<form class="form-inline">
 		<div class="checkbox">
@@ -560,19 +549,35 @@
 		</div>
 	</div>
 </div>
-<script>
-	$('#sub_cbox').change(function() {
-		if($('#sub_cbox').is(':checked')) {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'true'))); ?>";
-		} else {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'false'))); ?>";
-		}
+<script type="text/javascript">
+<?php ob_start(); ?>
+	$(document).ready(function() {
+		$('.display').DataTable( {
+			"order": [[1, "desc"]],
+			"searching": false,
+			"lengthChange": false,
+			"pageLength": 5,
+			"pagingType": "simple"
+		} );
+
+		$('#sub_cbox').change(function() {
+			if($('#sub_cbox').is(':checked')) {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'true'))); ?>";
+			} else {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'false'))); ?>";
+			}
+		});
+		$('#finals_cbox').change(function() {
+			if($('#finals_cbox').is(':checked')) {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
+			} else {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
+			}
+		});
 	});
-	$('#finals_cbox').change(function() {
-		if($('#finals_cbox').is(':checked')) {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
-		} else {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
-		}
-	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

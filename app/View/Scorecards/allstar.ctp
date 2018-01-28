@@ -1,116 +1,3 @@
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('#commander_allstar_table').DataTable( {
-			"deferRender" : true,
-			"order": [[2, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
-				"dataSrc": "data.commander"
-			},
-			"columns" : [
-				{ "data" : "name" },
-				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
-						if (type === 'display') {
-							return row.games_played+'/'+row.total_games_played;
-						}
-						
-						return ratio;
-					}
-				},
-				{ "data" : "avg_mvp" }
-			]
-		});
-		
-		$('#heavy_allstar_table').DataTable( {
-			"deferRender" : true,
-			"order": [[2, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
-				"dataSrc": "data.heavy"
-			},
-			"columns" : [
-				{ "data" : "name" },
-				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
-						if (type === 'display') {
-							return row.games_played+'/'+row.total_games_played;
-						}
-						
-						return ratio;
-					}
-				},
-				{ "data" : "avg_mvp" }
-			]
-		});
-		
-		$('#scout_allstar_table').DataTable( {
-			"deferRender" : true,
-			"order": [[2, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
-				"dataSrc": "data.scout"
-			},
-			"columns" : [
-				{ "data" : "name" },
-				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
-						if (type === 'display') {
-							return row.games_played+'/'+row.total_games_played;
-						}
-						
-						return ratio;
-					}
-				},
-				{ "data" : "avg_mvp" }
-			]
-		});
-		
-		$('#ammo_allstar_table').DataTable( {
-			"deferRender" : true,
-			"order": [[2, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
-				"dataSrc": "data.ammo"
-			},
-			"columns" : [
-				{ "data" : "name" },
-				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
-						if (type === 'display') {
-							return row.games_played+'/'+row.total_games_played;
-						}
-						
-						return ratio;
-					}
-				},
-				{ "data" : "avg_mvp" }
-			]
-		});
-		
-		$('#medic_allstar_table').DataTable( {
-			"deferRender" : true,
-			"order": [[2, "desc"]],
-			"ajax" : {
-				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
-				"dataSrc": "data.medic"
-			},
-			"columns" : [
-				{ "data" : "name" },
-				{ "data" : function ( row, type, val, meta ) {
-						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
-						if (type === 'display') {
-							return row.games_played+'/'+row.total_games_played;
-						}
-						
-						return ratio;
-					}
-				},
-				{ "data" : "avg_mvp" }
-			]
-		});
-	} );
-</script>
 <?php if($this->Session->read('state.gametype') == 'league'): ?>
 	<form class="form-inline">
 		<div class="checkbox">
@@ -233,26 +120,144 @@
 		</div>
 	</div>
 </div>
-<script>
-	$('#sub_cbox').change(function() {
-		if($('#sub_cbox').is(':checked')) {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'true'))); ?>";
-		} else {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'false'))); ?>";
-		}
+<script type="text/javascript">
+<?php ob_start(); ?>
+	$(document).ready(function() {
+		$('#commander_allstar_table').DataTable( {
+			"deferRender" : true,
+			"order": [[2, "desc"]],
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
+				"dataSrc": "data.commander"
+			},
+			"columns" : [
+				{ "data" : "name" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
+						if (type === 'display') {
+							return row.games_played+'/'+row.total_games_played;
+						}
+						
+						return ratio;
+					}
+				},
+				{ "data" : "avg_mvp" }
+			]
+		});
+		
+		$('#heavy_allstar_table').DataTable( {
+			"deferRender" : true,
+			"order": [[2, "desc"]],
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
+				"dataSrc": "data.heavy"
+			},
+			"columns" : [
+				{ "data" : "name" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
+						if (type === 'display') {
+							return row.games_played+'/'+row.total_games_played;
+						}
+						
+						return ratio;
+					}
+				},
+				{ "data" : "avg_mvp" }
+			]
+		});
+		
+		$('#scout_allstar_table').DataTable( {
+			"deferRender" : true,
+			"order": [[2, "desc"]],
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
+				"dataSrc": "data.scout"
+			},
+			"columns" : [
+				{ "data" : "name" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
+						if (type === 'display') {
+							return row.games_played+'/'+row.total_games_played;
+						}
+						
+						return ratio;
+					}
+				},
+				{ "data" : "avg_mvp" }
+			]
+		});
+		
+		$('#ammo_allstar_table').DataTable( {
+			"deferRender" : true,
+			"order": [[2, "desc"]],
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
+				"dataSrc": "data.ammo"
+			},
+			"columns" : [
+				{ "data" : "name" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
+						if (type === 'display') {
+							return row.games_played+'/'+row.total_games_played;
+						}
+						
+						return ratio;
+					}
+				},
+				{ "data" : "avg_mvp" }
+			]
+		});
+		
+		$('#medic_allstar_table').DataTable( {
+			"deferRender" : true,
+			"order": [[2, "desc"]],
+			"ajax" : {
+				"url" : "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'getAllStarStats', 'ext' => 'json'))); ?>",
+				"dataSrc": "data.medic"
+			},
+			"columns" : [
+				{ "data" : "name" },
+				{ "data" : function ( row, type, val, meta ) {
+						var ratio = Math.round((row.games_played/row.total_games_played) * 100);
+						if (type === 'display') {
+							return row.games_played+'/'+row.total_games_played;
+						}
+						
+						return ratio;
+					}
+				},
+				{ "data" : "avg_mvp" }
+			]
+		});
+
+		$('#sub_cbox').change(function() {
+			if($('#sub_cbox').is(':checked')) {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'true'))); ?>";
+			} else {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterSub', 'false'))); ?>";
+			}
+		});
+		$('#finals_cbox').change(function() {
+			if($('#finals_cbox').is(':checked')) {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
+			} else {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
+			}
+		});
+		$('#rounds_cbox').change(function() {
+			if($('#rounds_cbox').is(':checked')) {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'true'))); ?>";
+			} else {
+				window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'false'))); ?>";
+			}
+		});
 	});
-	$('#finals_cbox').change(function() {
-		if($('#finals_cbox').is(':checked')) {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'true'))); ?>";
-		} else {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterFinals', 'false'))); ?>";
-		}
-	});
-	$('#rounds_cbox').change(function() {
-		if($('#rounds_cbox').is(':checked')) {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'true'))); ?>";
-		} else {
-			window.location = "<?= html_entity_decode($this->Html->url(array('controller' => 'scorecards', 'action' => 'filterRounds', 'false'))); ?>";
-		}
-	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>

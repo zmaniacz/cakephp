@@ -150,6 +150,7 @@
 	<?php endforeach; ?>
 </div>
 <script>
+<?php ob_start(); ?>
 	$('.match-select').change(function() {
 		toastr.options = {
 			"closeButton": false,
@@ -193,4 +194,9 @@
 		var url = "<?= html_entity_decode($this->Html->url(array('controller' => 'leagues', 'action' => 'standings'))); ?>"
 		document.location = url;
 	});
+<?php
+	$script = ob_get_contents();
+	ob_end_clean();
+	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
+?>
 </script>
