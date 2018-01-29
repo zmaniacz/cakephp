@@ -42,8 +42,6 @@ class ScorecardsController extends AppController {
 	}
 
 	public function landing() {
-		$this->layout = 'landing';
-
 		$events = $this->Game->find('all', array(
 			'fields' => array(
 				'COUNT(Game.id) as games_played',
@@ -73,6 +71,7 @@ class ScorecardsController extends AppController {
 		));
 
 		$this->set('events', $events);
+		$this->set('landing', true);
 	}
 	
 	public function setState($gametype, $league_id, $center_id) {
