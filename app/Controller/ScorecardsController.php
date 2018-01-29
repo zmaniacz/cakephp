@@ -31,7 +31,8 @@ class ScorecardsController extends AppController {
 			'getAllStarStats',
 			'getComparison',
 			'getPlayerHitBreakdown',
-			'getAllCenter'
+			'getAllCenter',
+			'getDBStats'
 		);
 		parent::beforeFilter();
 	}
@@ -96,7 +97,12 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function overall() {	
-    }
+	}
+	
+	public function getDBStats() {
+		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
+		$this->set('game_stats', $this->Game->getDatabaseStats());
+	}
 
 	public function getComparison($player1_id, $player2_id) {
 		App::import('Vendor','CosineSimilarity',array('file' => 'CosineSimilarity/CosineSimilarity.php'));

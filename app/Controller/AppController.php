@@ -108,7 +108,5 @@ class AppController extends Controller {
 		$this->set('centers', $this->Center->find('list'));
 		$this->set('leagues', $this->League->find('list'));
 		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
-		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
-		$this->set('game_stats', $this->Game->getDatabaseStats());
 	}
 }
