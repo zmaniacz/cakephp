@@ -22,6 +22,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 	<script defer src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js'></script>
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js'></script>
@@ -51,44 +52,6 @@
 						fontFamily: '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
 					}
 				}
-			});
-			
-			$.ajax({ 
-				url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
-				dataType:'jsonp',
-			}).done(function(channel) { 
-				if(channel["stream"] == null) {
-					$("#twitch_status").append(" <span class='label label-default'>Offline</span>");
-				} else {
-					$("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
-				}
-			});
-
-			//global handlers for the various modals
-			$('#penaltyModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#teamPenaltyModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#hitModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#matchModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
-			});
-			$('#mvpModal').on('show.bs.modal', function (event) {
-				var button = $(event.relatedTarget);
-				$(this).find(".modal-body").text("Loading...");
-				$(this).find(".modal-body").load(button.attr("target"));
 			});
 		});
 	</script>
@@ -341,5 +304,46 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		$(document).ready(function() {
+			$.ajax({ 
+				url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
+				dataType:'jsonp',
+			}).done(function(channel) { 
+				if(channel["stream"] == null) {
+					$("#twitch_status").append(" <span class='label label-default'>Offline</span>");
+				} else {
+					$("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
+				}
+			});
+
+			//global handlers for the various modals
+			$('#penaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#teamPenaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#hitModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#matchModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#mvpModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+		});
+	</script>
 </body>
 </html>

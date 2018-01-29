@@ -1,8 +1,15 @@
 <div class="row">
-    <div class="col-md-6">
-        <div class="dropdown pull-right">
-            <button class="btn btn-default dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
-                Jump to social games <span class="caret"></span>
+    <div class="jumbotron">
+        <h3>WCT 2018</h3>
+        <p>The 5th West Coast Tournament held January 16th - 18th, 2017 at Loveland LaserTag in Loveland, CO.</p>
+        <p><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10">Details <i class="fas fa-caret-right"></i></a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-3 col-sm-offset-3">
+        <div class="dropdown">
+            <button class="btn btn-default btn-block dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
+                Jump to social games <i class="fas fa-caret-down"></i>
             </button>
             <ul class="dropdown-menu">
                 <li class="dropdown-header">Centers</li>
@@ -25,10 +32,10 @@
             </ul>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="dropdown pull-left">
-            <button class="btn btn-default dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
-                Jump to competition <span class="caret"></span>
+    <div class="col-xs-8 col-xs-offset-2 col-sm-3 col-sm-offset-0">
+        <div class="dropdown">
+            <button class="btn btn-default btn-block dropdown-toggle" type="button" id="compDropDown" data-toggle="dropdown">
+                Jump to competition <i class="fas fa-caret-down"></i>
             </button>
             <ul class="dropdown-menu">
                 <li class="dropdown-header">Competitions</li>
@@ -52,37 +59,40 @@
 </div>
 <hr>
 <div class="row">
-    <div class="col-xs-8 col-xs-offset-2">
-        <table class="table table-striped table-condensed table-bordered table-hover">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <table class="table table-striped table-condensed table-bordered table-hover" id="events_list">
             <thead>
                 <tr>
-                    <th class="col-xs-6">Center</th>
-                    <th class="col-xs-3">Date</th>
-                    <th class="col-xs-3">Games Played</th>
+                    <th class="col-xs-4">Center</th>
+                    <th class="col-xs-4 text-right">Date</th>
+                    <th class="col-xs-4 text-right">Games Played</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($events as $event): ?>
-                <tr>
-                    <td><?= $this->Html->link($event['Center']['name']." - ".ucfirst($event['Game']['type']), array(
-                                                'controller' => 'scorecards', 
-                                                'action' => 'nightly',
-                                                $event[0]['games_date'],
-                                                implode(",", $this->request->pass),
-                                                '?' => array(
-                                                    'gametype' => $event['Game']['type'],
-                                                    'centerID' => $event['Center']['id'],
-                                                    'leagueID' => (is_null($event['Game']['league_id']) ? 0 : $event['Game']['league_id'])
-                                                )
-                                            ),
-                                            array('class' => 'btn btn-block btn-primary')
-								); ?>
-                    </td>
-                    <td class="text-center"><strong><?=$event[0]['games_date']; ?></strong></td>
-                    <td class="text-center"><strong><?=$event[0]['games_played']; ?></strong></td>
-                </tr>
-                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        let params = new URLSearchParams();
+        let events = <?= json_encode($events, JSON_NUMERIC_CHECK, JSON_FORCE_OBJECT); ?>;
+        let table = $('#events_list tbody');
+
+        events.forEach( function(item) {
+            params.set('gametype', item.Game.type);
+            params.set('centerID', item.Center.id);
+            params.set('leagueID', (!item.Game.league_id) ? 0 : item.Game.league_id);
+
+            let eventLink = `<a href="/scorecards/nightly/${item[0].games_date}?${params.toString()}">
+                                ${item.Center.name} - <span class="text-capitalize">${item.Game.type}</span></a>`;
+            
+            let row = `<tr>
+                        <td>${eventLink}</td>
+                        <td class="text-right">${item[0].games_date}</td>
+                        <td class="text-right">${item[0].games_played}</td>
+                    </tr>`;
+            table.append(row);
+        });
+    });
+</script>
