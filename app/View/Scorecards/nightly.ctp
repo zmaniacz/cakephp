@@ -82,7 +82,7 @@
 					var $heading = $('<div>', {class: 'list-group-item-heading'});
 					var $body = $('<div>', {class: 'list-group-item-text'});
 					var $gameLink = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
-					var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).text('PDF');
+					var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).append('<i class="far fa-file-pdf" data-fa-transform="grow-6"></i>');
 
 					$gameLink.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
 					$heading.append($gameLink);
