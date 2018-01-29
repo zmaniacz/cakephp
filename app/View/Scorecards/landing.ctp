@@ -1,78 +1,72 @@
-<div class="row">
-    <div class="jumbotron">
-        <h3>WCT 2018</h3>
-        <p>The 5th West Coast Tournament held January 16th - 18th, 2017 at Loveland LaserTag in Loveland, CO.</p>
-        <p><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10">Details <i class="fas fa-caret-right"></i></a></p>
-    </div>
+<div class="jumbotron">
+    <h1 class="display-5">WCT 2018</h3>
+    <p class="lead">The 5th West Coast Tournament held January 16th - 18th, 2017 at Loveland LaserTag in Loveland, CO.</p>
+    <p class="lead"><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10">Details <i class="fas fa-caret-right"></i></a></p>
 </div>
 <div class="row">
-    <div class="col-xs-8 col-xs-offset-2 col-sm-3 col-sm-offset-3">
-        <div class="dropdown">
-            <button class="btn btn-default btn-block dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
-                Jump to social games <i class="fas fa-caret-down"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li class="dropdown-header">Centers</li>
-                <?php
-                    $sorted_centers = $centers;
-                    asort($sorted_centers);
-                    foreach($sorted_centers as $key => $value) {
-                        echo "<li>".$this->Html->link($value, array(
-                            'controller' => 'scorecards', 
-                            'action' => 'nightly',
-                            implode(",", $this->request->pass),
-                            '?' => array(
-                                'gametype' => $this->Session->read('state.gametype'),
-                                'centerID' => $key,
-                                'leagueID' => 0
-                            )
-                        ))."</li>";
-                    }
-                ?>
-            </ul>
+    <div class="col-sm">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
+            Jump to social games
+        </button>
+        <div class="dropdown-menu">
+            <h6 class="dropdown-header">Centers</h6>
+            <?php
+                $sorted_centers = $centers;
+                asort($sorted_centers);
+                foreach($sorted_centers as $key => $value) {
+                    echo $this->Html->link($value, array(
+                        'controller' => 'scorecards', 
+                        'action' => 'nightly',
+                        implode(",", $this->request->pass),
+                        '?' => array(
+                            'gametype' => $this->Session->read('state.gametype'),
+                            'centerID' => $key,
+                            'leagueID' => 0
+                        )
+                    ), array('class' => "dropdown-item"));
+                }
+            ?>
         </div>
     </div>
-    <div class="col-xs-8 col-xs-offset-2 col-sm-3 col-sm-offset-0">
-        <div class="dropdown">
-            <button class="btn btn-default btn-block dropdown-toggle" type="button" id="compDropDown" data-toggle="dropdown">
-                Jump to competition <i class="fas fa-caret-down"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li class="dropdown-header">Competitions</li>
-                <?php
-                    foreach($league_details as $league) {
-                        echo "<li>".$this->Html->link($league['League']['name'], array(
-                            'controller' => 'leagues', 
-                            'action' => 'standings',
-                            implode(",", $this->request->pass),
-                            '?' => array(
-                                'gametype' => 'league',
-                                'centerID' => $league['League']['center_id'],
-                                'leagueID' => $league['League']['id']
-                            )
-                        ))."</li>";
-                    }
-                ?>
-            </ul>
+    </div>
+    <div class="col-sm">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="compDropDown" data-toggle="dropdown">
+            Jump to competition
+        </button>
+        <div class="dropdown-menu">
+            <h6 class="dropdown-header">Competitions</h6>
+            <?php
+                foreach($league_details as $league) {
+                    echo $this->Html->link($league['League']['name'], array(
+                        'controller' => 'leagues', 
+                        'action' => 'standings',
+                        implode(",", $this->request->pass),
+                        '?' => array(
+                            'gametype' => 'league',
+                            'centerID' => $league['League']['center_id'],
+                            'leagueID' => $league['League']['id']
+                        )
+                    ), array('class' => "dropdown-item"));
+                }
+            ?>
         </div>
+    </div>
     </div>
 </div>
 <hr>
-<div class="row">
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-        <table class="table table-striped table-condensed table-bordered table-hover" id="events_list">
-            <thead>
-                <tr>
-                    <th class="col-xs-4">Center</th>
-                    <th class="col-xs-4 text-right">Date</th>
-                    <th class="col-xs-4 text-right">Games Played</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
+<table class="table table-striped table-sm table-bordered table-hover" id="events_list">
+    <thead>
+        <tr>
+            <th>Center</th>
+            <th class="text-right">Date</th>
+            <th class="text-right">Games Played</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 <script type="text/javascript">
     $(document).ready(function() {
         let params = new URLSearchParams();
