@@ -105,7 +105,7 @@ class AppController extends Controller {
 			$this->Session->write('state.centerID', $league['Center']['id']);
 		}
 		
-		$this->set('centers', $this->Center->find('list'));
+		$this->set('centers', $this->Center->findWithLastPlayedDate());
 		$this->set('leagues', $this->League->find('list'));
 		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
 	}

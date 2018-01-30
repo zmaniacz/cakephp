@@ -6,25 +6,23 @@
 <div class="row">
     <div class="col-sm">
     <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">
-            Jump to social games
-        </button>
+        <button class="btn btn-primary dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">Jump to social games</button>
         <div class="dropdown-menu">
             <h6 class="dropdown-header">Centers</h6>
             <?php
-                $sorted_centers = $centers;
-                asort($sorted_centers);
-                foreach($sorted_centers as $key => $value) {
-                    echo $this->Html->link($value, array(
-                        'controller' => 'scorecards', 
-                        'action' => 'nightly',
-                        implode(",", $this->request->pass),
-                        '?' => array(
-                            'gametype' => $this->Session->read('state.gametype'),
-                            'centerID' => $key,
-                            'leagueID' => 0
-                        )
-                    ), array('class' => "dropdown-item"));
+                foreach($centers as $center) {
+                    if(strtotime($center['last_played']) > strtotime('1 year ago')) {
+                        echo $this->Html->link($center['name'], array(
+                            'controller' => 'scorecards', 
+                            'action' => 'nightly',
+                            implode(",", $this->request->pass),
+                            '?' => array(
+                                'gametype' => $this->Session->read('state.gametype'),
+                                'centerID' => $center['id'],
+                                'leagueID' => 0
+                            )
+                        ), array('class' => "dropdown-item"));
+                    }
                 }
             ?>
         </div>
@@ -32,12 +30,13 @@
     </div>
     <div class="col-sm">
     <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="compDropDown" data-toggle="dropdown">
-            Jump to competition
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Jump to Competition
         </button>
         <div class="dropdown-menu">
             <h6 class="dropdown-header">Competitions</h6>
             <?php
+                $i = 0;
                 foreach($league_details as $league) {
                     echo $this->Html->link($league['League']['name'], array(
                         'controller' => 'leagues', 
@@ -49,6 +48,7 @@
                             'leagueID' => $league['League']['id']
                         )
                     ), array('class' => "dropdown-item"));
+                    if ($i++ > 4) break;
                 }
             ?>
         </div>
@@ -56,17 +56,24 @@
     </div>
 </div>
 <hr>
-<table class="table table-striped table-sm table-bordered table-hover" id="events_list">
-    <thead>
-        <tr>
-            <th>Center</th>
-            <th class="text-right">Date</th>
-            <th class="text-right">Games Played</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div class="row justify-content-center">
+<h4 class="text-info d-block">Recent Events</h4>
+</div>
+<div class="row justify-content-center">
+    <div class="col-8">
+    <table class="table table-striped table-sm table-bordered table-hover" id="events_list">
+        <thead>
+            <tr>
+                <th>Center</th>
+                <th class="text-right">Date</th>
+                <th class="text-right">Games Played</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         let params = new URLSearchParams();

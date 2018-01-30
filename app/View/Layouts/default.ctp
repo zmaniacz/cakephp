@@ -34,7 +34,7 @@
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js'></script>
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js'></script>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/materia/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/cerulean/bootstrap.min.css">
 	<?php
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap4.min.css');
 		echo $this->Html->css('https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css');
