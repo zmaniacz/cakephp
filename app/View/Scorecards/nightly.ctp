@@ -1,22 +1,29 @@
 <form class="form-inline" action="/scorecards/nightly" id="nightlyNightlyForm" method="post" accept-charset="utf-8">
-	<div style="display:none;">
-		<input type="hidden" name="_method" value="POST"/>
-	</div>
 	<div class="form-group">
 		<label for="nightlySelectDate">Select Date</label>
-		<select class="form-control" name="data[nightly][selectDate]" id="nightlySelectDate">
+		<select class="custom-select" name="data[nightly][selectDate]" id="nightlySelectDate">
 			<?php foreach($game_dates as $game_date): ?>
 				<option value="<?= $game_date ?>" <?= ($game_date == $current_date) ? "selected" : ""; ?>><?= $game_date ?></option>
 			<?php endforeach; ?>
 		</select>
 	</div>
+	<div class="d-none">
+		<input type="hidden" name="_method" value="POST"/>
+	</div>
 </form>
 </br>
 <h4>Games Played</h4>
-<div id="game_list_group" class="list-group"></div>
+<div class="row">
+	<div class="col-sm-8">
+		<table class="table table-sm" id="game_list">
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
 <h4>Overall</h4>
-<div>
-	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="overall">
+<div class="row">
+	<table class="table table-sm table-striped table-bordered table-hover nowrap" id="overall">
 		<thead>
 			<th>#</th>
 			<th>Name</th>
@@ -29,6 +36,8 @@
 			<th>Accuracy</th>
 			<th>Shot Team</th>
 		</thead>
+		<tbody>
+		</tbody>
 	</table>
 </div>
 <h4>Summary Stats</h4>
@@ -49,6 +58,8 @@
 			<th>Elim Rate</th>
 			<th>Won/Played</th>
 		</thead>
+		<tbody>
+		</tbody>
 	</table>
 </div>
 <h4>Medic Hits</h4>
@@ -64,6 +75,8 @@
 			<th>Avg Medic Hits (Non-Resup)</th>
 			<th>Games Played (Non-Resup)</th>
 		</thead>
+		<tbody>
+		</tbody>
 	</table>
 </div>
 <script type="text/javascript">
@@ -78,27 +91,21 @@
 				$('#game_list_group').empty();
 
 				response.data.forEach(function(element) {
-					var $wrapper = $('<div>', {class: 'list-group-item'});
-					var $heading = $('<div>', {class: 'list-group-item-heading'});
-					var $body = $('<div>', {class: 'list-group-item-text'});
-					var $gameLink = $('<a>', {href: '/games/view/'+element.Game.id+'?'+params.toString()});
-					var $pdfLink = $('<a>', {href: 'http://scorecards.lfstats.com/'+element.Game.pdf_id+'.pdf'}).append('<i class="far fa-file-pdf" data-fa-transform="grow-6"></i>');
-
-					$gameLink.html('<strong>'+element.Game.game_name+' - '+element.Game.game_datetime+'</strong>');
-					$heading.append($gameLink);
+					let game_time = new Date(Date.parse(element.Game.game_datetime)).toLocaleTimeString("en-US");
+					let game = `<a href="/games/view/${element.Game.id}?${params.toString()}"><strong>${element.Game.game_name} - ${game_time}</strong></a>`;
+					let pdf = `<a href="http://scorecards.lfstats.com/${element.Game.pdf_id}.pdf"><i class="far fa-file-pdf" data-fa-transform="grow-6"></i></a>`;
 					
-					var red_team = '<span class="text-danger">Red Team: '+(element.Game.red_score+element.Game.red_adj)+'</span>';
-					var green_team = '<span class="text-success">Green Team: '+(element.Game.green_score+element.Game.green_adj)+'</span>';
-
-					$wrapper.append($heading);
+					let red_team = `<span class="text-danger">Red Team: ${element.Game.red_score+element.Game.red_adj}</span>`;
+					let green_team = `<span class="text-success">Green Team: ${element.Game.green_score+element.Game.green_adj}</span>`;
+					
+					let teams = '';
 					if(element.Game.winner === 'red') {
-						$body.append('<strong>'+red_team+'</strong> | '+green_team+' - ');
+						teams = `<strong>${red_team}</strong><br>${green_team}`;
 					} else {
-						$body.append('<strong>'+green_team+'</strong> | '+red_team+' - ');
+						teams = `<strong>${green_team}</strong><br>${red_team}`;
 					}
-					$body.append($pdfLink);
-					$wrapper.append($body);
-					$('#game_list_group').append($wrapper);
+
+					$('#game_list').append(`<tr><td>${game}</td><td>${teams}</td><td>${pdf}</td></tr>`);
 				});
 			});
 		}
@@ -118,8 +125,8 @@
 
 						let playerLink = `<a href="/players/view/${element.Scorecard.player_id}?${params.toString()}">${element.Scorecard.player_name}</a>`;
 						let gameLink = `<a href="/games/view/${element.Game.id}?${params.toString()}" class="${gameClass}">${element.Game.game_name}</a>`;
-						let mvpLink = `<a href="#" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/${element.Scorecard.id}.json?${params.toString()}">${element.Scorecard.mvp_points} <span class="glyphicon glyphicon-stats"></span></a>`;
-						let hitDiffLink = `<a href="#" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/${element.Scorecard.player_id}/${element.Scorecard.game_id}.json?${params.toString()}">${hitDiff} (${element.Scorecard.shot_opponent}/${element.Scorecard.times_zapped}) <span class="glyphicon glyphicon-stats"></span></a>`;
+						let mvpLink = `<a href="#" data-toggle="modal" data-target="#mvpModal" target="/scorecards/getMVPBreakdown/${element.Scorecard.id}.json?${params.toString()}">${element.Scorecard.mvp_points}</a>`;
+						let hitDiffLink = `<a href="#" data-toggle="modal" data-target="#hitModal" target="/scorecards/getHitBreakdown/${element.Scorecard.player_id}/${element.Scorecard.game_id}.json?${params.toString()}">${hitDiff} (${element.Scorecard.shot_opponent}/${element.Scorecard.times_zapped})</a>`;
 						let positionElement = `<span class="${positionClass}">${element.Scorecard.position}</span>`;
 
 						return {

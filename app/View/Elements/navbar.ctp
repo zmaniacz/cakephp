@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href="/scorecards/landing"><i class="fas fa-home"></i></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
         <i class="fas fa-bars"></i>
