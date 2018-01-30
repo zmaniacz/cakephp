@@ -73,6 +73,18 @@
     </table>
     </div>
 </div>
+<hr>
+<table class="table table-striped table-sm table-bordered table-hover" id="events_list">
+    <thead>
+        <tr>
+            <th>Center</th>
+            <th class="text-right">Date</th>
+            <th class="text-right">Games Played</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 <script type="text/javascript">
     $(document).ready(function() {
         let params = new URLSearchParams();
