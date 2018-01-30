@@ -1,3 +1,4 @@
+<script defer src='https://code.highcharts.com/stock/indicators/indicators.js'></script>
 <?php
 	$overall_acc_plot = array();
 	$overall_score_plot = array();
@@ -226,6 +227,37 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+	var winLossBarChart = Highcharts.chart('win_loss_bar', {
+		chart: {
+			type: 'column',
+			height: 200
+		},
+		title: {
+			text: null
+		},
+		tooltip: {
+			headerFormat: '',
+			pointFormat: '<b>{point.name}</b>'
+		},
+		legend: {
+			enabled: false
+		},
+		xAxis: {
+			visible: false
+		},
+		yAxis: {
+			min: -1,
+			max: 1,
+			
+			title: {
+				text: "Latest"
+			},
+			labels: {
+				enabled: false
+			}
+		}
+	});
+
 	function renderWinLossPie(data) {
 		var winloss = [
 			['Wins', data['winloss']['wins']],
@@ -590,7 +622,7 @@ $(document).ready(function(){
 	(ammo_score_data.length < 1) ? line11 = [null] : "";
 	(medic_score_data.length < 1) ? line12 = [null] : "";
 	
-	$('#acc_plot').highcharts({
+	/*$('#acc_plot').highcharts({
 		chart: {
 			alignTicks: false,
 
@@ -903,7 +935,7 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_mvp_data.length/10),10),
 			xAxis: 0
@@ -912,7 +944,7 @@ $(document).ready(function(){
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_mvp_data.length/10),10),
 			xAxis: 1
@@ -921,7 +953,7 @@ $(document).ready(function(){
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_mvp_data.length/10),10),
 			xAxis: 2
@@ -930,7 +962,7 @@ $(document).ready(function(){
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_mvp_data.length/10),10),
 			xAxis: 3
@@ -939,7 +971,7 @@ $(document).ready(function(){
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_mvp_data.length/10),10),
 			xAxis: 4
@@ -948,7 +980,7 @@ $(document).ready(function(){
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_mvp_data.length/10),10),
 			xAxis: 5
@@ -1086,7 +1118,7 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_score_data.length/10),10),
 			xAxis: 0
@@ -1095,7 +1127,7 @@ $(document).ready(function(){
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_score_data.length/10),10),
 			xAxis: 1
@@ -1104,7 +1136,7 @@ $(document).ready(function(){
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_score_data.length/10),10),
 			xAxis: 2
@@ -1113,7 +1145,7 @@ $(document).ready(function(){
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_score_data.length/10),10),
 			xAxis: 3
@@ -1122,7 +1154,7 @@ $(document).ready(function(){
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_score_data.length/10),10),
 			xAxis: 4
@@ -1131,7 +1163,7 @@ $(document).ready(function(){
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_score_data.length/10),10),
 			xAxis: 5
@@ -1269,7 +1301,7 @@ $(document).ready(function(){
 			name: 'All Positions',
 			type: 'trendline',
 			linkedTo: 'overall',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_medic_data.length/10),10),
 			xAxis: 0
@@ -1278,7 +1310,7 @@ $(document).ready(function(){
 			name: 'Commander',
 			type: 'trendline',
 			linkedTo: 'commander',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_medic_data.length/10),10),
 			xAxis: 1
@@ -1287,7 +1319,7 @@ $(document).ready(function(){
 			name: 'Heavy Weapons',
 			type: 'trendline',
 			linkedTo: 'heavy',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_medic_data.length/10),10),
 			xAxis: 2
@@ -1296,7 +1328,7 @@ $(document).ready(function(){
 			name: 'Scout',
 			type: 'trendline',
 			linkedTo: 'scout',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_medic_data.length/10),10),
 			xAxis: 3
@@ -1305,7 +1337,7 @@ $(document).ready(function(){
 			name: 'Ammo Carrier',
 			type: 'trendline',
 			linkedTo: 'ammo',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_medic_data.length/10),10),
 			xAxis: 4
@@ -1314,13 +1346,13 @@ $(document).ready(function(){
 			name: 'Medic',
 			type: 'trendline',
 			linkedTo: 'medic',
-			algorithm: 'EMA',
+			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_medic_data.length/10),10),
 			xAxis: 5
 		}
 		]
-	});
+	});*/
 
 	$('#game_list thead tr th.searchable').each( function () {
 		var title = $('#game_list thead th').eq( $(this).index() ).text();
@@ -1389,37 +1421,6 @@ $(document).ready(function(){
 		"order": [[ 1, "desc" ]]
 	});
 
-	var winLossBarChart = Highcharts.chart('win_loss_bar', {
-		chart: {
-			type: 'column',
-			height: 200
-		},
-		title: {
-			text: null
-		},
-		tooltip: {
-			headerFormat: '',
-			pointFormat: '<b>{point.name}</b>'
-		},
-		legend: {
-			enabled: false
-		},
-		xAxis: {
-			visible: false
-		},
-		yAxis: {
-			min: -1,
-			max: 1,
-			
-			title: {
-				text: "Latest"
-			},
-			labels: {
-				enabled: false
-			}
-		}
-	})
-
 	$.ajax({
 		url: "<?php echo html_entity_decode($this->Html->url(array('controller' => 'Scorecards', 'action' => 'playerScorecards', $id, 'ext' => 'json'))); ?>"
 	}).done(function(response) {
@@ -1438,9 +1439,4 @@ $(document).ready(function(){
 		});
 	})
 });
-<?php
-	$script = ob_get_contents();
-	ob_end_clean();
-	$this->Html->scriptBlock($script, array('inline' => false, 'block' => 'scriptBottom'));
-?>
 </script>
