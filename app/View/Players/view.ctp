@@ -1,4 +1,3 @@
-<script defer src='https://code.highcharts.com/stock/indicators/indicators.js'></script>
 <?php
 	$overall_acc_plot = array();
 	$overall_score_plot = array();
@@ -227,36 +226,50 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
-	var winLossBarChart = Highcharts.chart('win_loss_bar', {
-		chart: {
-			type: 'column',
-			height: 200
-		},
-		title: {
-			text: null
-		},
-		tooltip: {
-			headerFormat: '',
-			pointFormat: '<b>{point.name}</b>'
-		},
-		legend: {
-			enabled: false
-		},
-		xAxis: {
-			visible: false
-		},
-		yAxis: {
-			min: -1,
-			max: 1,
-			
-			title: {
-				text: "Latest"
+	function renderWinLossBar(data) {
+		
+
+		chartData = data.map(function(item, index) {
+			let value = (item.winloss === "W") ? 1 : -1;
+			let color = (item.team === 'red') ? '#F04124' : '#43ac6a';
+			return {'y':value,'color':color,'name':item.game_datetime}
+		});
+
+		let chart = Highcharts.chart('win_loss_bar', {
+			chart: {
+				type: 'column',
+				height: 200
 			},
-			labels: {
+			title: {
+				text: null
+			},
+			tooltip: {
+				headerFormat: '',
+				pointFormat: '<b>{point.name}</b>'
+			},
+			legend: {
 				enabled: false
+			},
+			xAxis: {
+				visible: false
+			},
+			yAxis: {
+				min: -1,
+				max: 1,
+				
+				title: {
+					text: "Latest"
+				},
+				labels: {
+					enabled: false
+				}
 			}
-		}
-	});
+		});
+
+		chart.addSeries({
+			data: chartData
+		})
+	}
 
 	function renderWinLossPie(data) {
 		var winloss = [
@@ -622,10 +635,9 @@ $(document).ready(function(){
 	(ammo_score_data.length < 1) ? line11 = [null] : "";
 	(medic_score_data.length < 1) ? line12 = [null] : "";
 	
-	/*$('#acc_plot').highcharts({
+	$('#acc_plot').highcharts({
 		chart: {
 			alignTicks: false,
-
 		},
 		title: {text: 'Accuracy'},
 		legend: {
@@ -705,7 +717,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_acc_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -750,54 +762,48 @@ $(document).ready(function(){
 		},
 		{
 			name: 'All Positions',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'overall',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_acc_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'commander',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_acc_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'heavy',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_acc_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'scout',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_acc_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'ammo',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_acc_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'medic',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_acc_data.length/10),10),
 			xAxis: 5
@@ -888,7 +894,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_mvp_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -933,54 +939,48 @@ $(document).ready(function(){
 		},
 		{
 			name: 'All Positions',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'overall',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_mvp_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'commander',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_mvp_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'heavy',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_mvp_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'scout',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_mvp_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'ammo',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_mvp_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'medic',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_mvp_data.length/10),10),
 			xAxis: 5
@@ -1071,7 +1071,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_score_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -1116,54 +1116,48 @@ $(document).ready(function(){
 		},
 		{
 			name: 'All Positions',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'overall',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_score_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'commander',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_score_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'heavy',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_score_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'scout',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_score_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'ammo',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_score_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'medic',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_score_data.length/10),10),
 			xAxis: 5
@@ -1254,7 +1248,7 @@ $(document).ready(function(){
 			name: 'All Positions (Scatter)',
 			type: 'scatter',
 			data: overall_medic_data,
-			visible: false,
+			visible: true,
 			xAxis: 0
 		},
 		{
@@ -1299,60 +1293,54 @@ $(document).ready(function(){
 		},
 		{
 			name: 'All Positions',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'overall',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(overall_medic_data.length/10),10),
 			xAxis: 0
 		},
 		{
 			name: 'Commander',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'commander',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(commander_medic_data.length/10),10),
 			xAxis: 1
 		},
 		{
 			name: 'Heavy Weapons',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'heavy',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(heavy_medic_data.length/10),10),
 			xAxis: 2
 		},
 		{
 			name: 'Scout',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'scout',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(scout_medic_data.length/10),10),
 			xAxis: 3
 		},
 		{
 			name: 'Ammo Carrier',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'ammo',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(ammo_medic_data.length/10),10),
 			xAxis: 4
 		},
 		{
 			name: 'Medic',
-			type: 'trendline',
+			type: 'sma',
 			linkedTo: 'medic',
-			algorithm: 'SMA',
 			showInLegend: true,
 			periods: Math.max(Math.round(medic_medic_data.length/10),10),
 			xAxis: 5
 		}
 		]
-	});*/
+	});
 
 	$('#game_list thead tr th.searchable').each( function () {
 		var title = $('#game_list thead th').eq( $(this).index() ).text();
@@ -1427,16 +1415,7 @@ $(document).ready(function(){
 		$('#game_list').DataTable().clear().rows.add(response.data).draw();
 		
 		var winLossBarData = response.data.slice(0,25);
-		
-		winLossBarData = winLossBarData.map(function(item, index) {
-			let value = (item.winloss === "W") ? 1 : -1;
-			let color = (item.team === 'red') ? '#F04124' : '#43ac6a';
-			return {'y':value,'color':color,'name':item.game_datetime}
-		});
-		
-		winLossBarChart.addSeries({
-			data: winLossBarData
-		});
+		renderWinLossBar(winLossBarData);
 	})
 });
 </script>

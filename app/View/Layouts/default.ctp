@@ -31,6 +31,7 @@
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js'></script>
 	<script defer src='http://code.highcharts.com/stock/highstock.js'></script>
 	<script defer src='http://code.highcharts.com/stock/highcharts-more.js'></script>
+	<script defer src='https://code.highcharts.com/stock/indicators/indicators.js'></script>
 	<?php
 		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css');
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap.min.css');
