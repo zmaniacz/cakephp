@@ -22,19 +22,19 @@
 	</div>
 </div>
 <h4>Overall</h4>
-<div class="row">
-	<table class="table table-sm table-striped table-bordered table-hover nowrap" id="overall">
+<div>
+	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="overall">
 		<thead>
 			<th>#</th>
-			<th>Name</th>
+			<th data-priority="1">Name</th>
 			<th>Game</th>
-			<th>Position</th>
+			<th data-priority="2">Position</th>
 			<th>Score</th>
-			<th>MVP</th>
+			<th data-priority="3">MVP</th>
 			<th>Hit Diff</th>
 			<th>Medic Hits</th>
 			<th>Accuracy</th>
-			<th>Shot Team</th>
+			<th class="none">Shot Team</th>
 		</thead>
 		<tbody>
 		</tbody>
@@ -42,21 +42,21 @@
 </div>
 <h4>Summary Stats</h4>
 <div>
-	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="summary_stats">
+	<table class="table table-bordered table-hover table-sm nowrap" id="summary_stats">
 		<thead>
 			<th>#</th>
 			<th>Name</th>
-			<th>Min Score</th>
+			<th class="none">Min Score</th>
 			<th>Avg Score</th>
-			<th>Max Score</th>
-			<th>Min MVP</th>
+			<th class="none">Max Score</th>
+			<th class="none">Min MVP</th>
 			<th>Avg MVP</th>
-			<th>Max MVP</th>
+			<th class="none">Max MVP</th>
 			<th>Avg Acc</th>
 			<th>Hit Diff</th>
 			<th>Medic Hits</th>
-			<th>Elim Rate</th>
-			<th>Won/Played</th>
+			<th class="none">Elim Rate</th>
+			<th class="none">Won/Played</th>
 		</thead>
 		<tbody>
 		</tbody>
@@ -114,7 +114,12 @@
 
 		var overall = $('#overall').DataTable( {
 			orderCellsTop : true,
-			responsive: true,
+			responsive: {
+        	details: {
+            	renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                	tableClass: 'table'
+            	} )
+			}},
 			ajax: {
 				url: `/scorecards/nightlyScorecards.json?${params.toString()}`,
 				dataSrc: function(response) {
@@ -159,8 +164,7 @@
 					render: {
 						_: "player_name",
 						display: "player_link"
-					},
-					responsivePriority: 1
+					}
 				},
 				{
 					data : null,
@@ -174,8 +178,7 @@
 					render: {
 						_: "position",
 						display: "position_element"
-					},
-					responsivePriority: 2
+					}
 				},
 				{ data: "score", orderSequence: [ "desc", "asc"], className: "text-right" },
 				{
@@ -184,8 +187,7 @@
 						_: "mvp_points",
 						display: "mvp_points_link"
 					},
-					className: "text-right",
-					responsivePriority: 3
+					className: "text-right"
 				},
 				{
 					data : null,
