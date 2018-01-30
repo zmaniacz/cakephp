@@ -16,7 +16,7 @@
 <div id="game_list_group" class="list-group"></div>
 <h4>Overall</h4>
 <div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="overall">
+	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="overall">
 		<thead>
 			<th>#</th>
 			<th>Name</th>
@@ -33,7 +33,7 @@
 </div>
 <h4>Summary Stats</h4>
 <div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="summary_stats">
+	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="summary_stats">
 		<thead>
 			<th>#</th>
 			<th>Name</th>
@@ -53,7 +53,7 @@
 </div>
 <h4>Medic Hits</h4>
 <div>
-	<table class="table table-striped table-bordered table-hover table-condensed nowrap" id="medic_hits">
+	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="medic_hits">
 		<thead>
 			<th>#</th>
 			<th>Name</th>

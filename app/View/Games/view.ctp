@@ -224,7 +224,7 @@
 					</h3>
 				</div>
 				<div class="table-responsive">
-					<table class="gamelist table table-striped table-bordered table-hover table-condensed">
+					<table class="gamelist table table-striped table-bordered table-hover table-sm">
 						<thead>
 							<th>Merc</th>
 							<th>Alive</th>
@@ -288,7 +288,7 @@
 					</h3>
 				</div>
 				<div class="table-responsive">
-					<table class="gamelist table table-striped table-bordered table-hover table-condensed">
+					<table class="gamelist table table-striped table-bordered table-hover table-sm">
 						<thead>
 							<th>Merc</th>
 							<th>Alive</th>

@@ -18,7 +18,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<caption>Commander</caption>
 						<thead>
 							<th>Name</th>
@@ -37,7 +37,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<caption>Heavy Weapons</caption>
 						<thead>
 							<th>Name</th>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<caption>Scout</caption>
 						<thead>
 							<th>Name</th>
@@ -77,7 +77,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<caption>Ammo Carrier</caption>
 						<thead>
 							<th>Name</th>
@@ -96,7 +96,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<caption>Medic</caption>
 						<thead>
 							<th>Name</th>
@@ -128,7 +128,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="games_played_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="games_played_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Games</th>
@@ -146,7 +146,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="score_total_total">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="score_total_total">
 						<thead>
 							<th>Name</th>
 							<th>Total Score</th>
@@ -177,7 +177,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="medic_hits_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="medic_hits_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Medic Hits</th>
@@ -195,7 +195,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="own_medic_hits_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="own_medic_hits_table">
 						<thead>
 							<th>Name</th>
 							<th>Own Medic Hits</th>
@@ -213,7 +213,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="medic_on_medic_hits_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="medic_on_medic_hits_table">
 						<thead>
 							<th>Name</th>
 							<th>Medic On Medic Hits</th>
@@ -244,7 +244,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="missiled_opponent_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="missiled_opponent_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Missiles</th>
@@ -262,7 +262,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="times_missiled_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="times_missiled_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Times Missiled</th>
@@ -280,7 +280,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="missiled_team_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="missiled_team_table">
 						<thead>
 							<th>Name</th>
 							<th>Team Missiles (You Idiot)</th>
@@ -311,7 +311,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="nukes_detonated_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="nukes_detonated_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Nukes Detonated</th>
@@ -329,7 +329,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="nukes_canceled_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="nukes_canceled_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Total Nukes Canceled</th>
@@ -347,7 +347,7 @@
 					</table>
 				</div>
 				<div class="col-sm-4">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="own_nuke_cancels_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="own_nuke_cancels_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Own Nukes Canceled</th>
@@ -378,7 +378,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Eliminated Opposing Team</th>
@@ -396,7 +396,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="team_elim_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="team_elim_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Own Team Eliminated</th>
@@ -427,7 +427,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Current Win Streak</th>
@@ -445,7 +445,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Current Losing Streak</th>
@@ -465,7 +465,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Longest Win Streak</th>
@@ -481,7 +481,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="elim_other_team_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="elim_other_team_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Longest Losing Streak</th>
@@ -510,7 +510,7 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="shots_fired_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="shots_fired_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Shots Fired</th>
@@ -528,7 +528,7 @@
 					</table>
 				</div>
 				<div class="col-sm-6">
-					<table class="display table table-striped table-bordered table-hover table-condensed" id="penalties_total_table">
+					<table class="display table table-striped table-bordered table-hover table-sm" id="penalties_total_table">
 						<thead>
 							<th>Name</th>
 							<th>Penalties</th>

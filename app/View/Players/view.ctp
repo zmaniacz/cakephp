@@ -135,7 +135,7 @@
 			</div>
 		</div>		
 		<div class="table-responsive">
-			<table id="game_list" class="table table-striped table-hover table-border table-condensed">
+			<table id="game_list" class="table table-striped table-hover table-border table-sm">
 				<thead>
 					<tr>
 						<th>Game</th>
@@ -208,7 +208,7 @@
 	</div>
 	<div role="tabpanel" class="tab-pane" id="head_to_head_tab">
 		<div class="table-responsive">
-			<table id="head_to_head" class="table table-striped table-hover table-border table-condensed">
+			<table id="head_to_head" class="table table-striped table-hover table-border table-sm">
 				<thead>
 					<tr>
 						<th>Player</th>

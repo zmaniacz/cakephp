@@ -28,7 +28,7 @@
                             <h5><?= (($round['is_finals']) ? "Finals" : "R".$round['round'])." M".$match['match']; ?></h5>
                         </div>
                         <div class="panel-body">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Team</th>

@@ -5,7 +5,7 @@
 		</h4>
 	</div>
 	<div class="panel-body">
-		<table class="table table-striped table-bordered table-hover table-condensed" id="game_list">
+		<table class="table table-striped table-bordered table-hover table-sm" id="game_list">
 			<thead>
 				<th>Game</th>
 				<th>Time</th>

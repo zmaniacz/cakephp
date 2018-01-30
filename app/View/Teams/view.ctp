@@ -137,7 +137,7 @@
 	</div>
 	<div id="collapse_positions" class="panel-collapse collapse" role="tabpanel">
 		<div class="panel-body">
-			<table class="table table-striped table-bordered table-hover table-condensed" id="positions_table">
+			<table class="table table-striped table-bordered table-hover table-sm" id="positions_table">
 				<thead>
 					<tr>
 						<th class="col-xs-2">Player</th>
@@ -207,7 +207,7 @@
 						<h5><?= (($round['is_finals']) ? "Finals" : "R".$round['round'])." M".$match['match']; ?></h5>
 					</div>
 					<div class="panel-body">
-						<table class="table table-condensed">
+						<table class="table table-sm">
 							<thead>
 								<tr>
 									<th>Team</th>

@@ -45,7 +45,7 @@
         </div>
         <div id="collapse_green_panel" class="panel-collapse collapse in" role="tabpanel">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover table-condensed">
+                <table class="table table-striped table-bordered table-hover table-sm">
                     <thead>
                         <th>Name</th>
                         <th>Position</th>
@@ -69,7 +69,7 @@
         </div>
         <div id="collapse_red_panel" class="panel-collapse collapse in" role="tabpanel">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover table-condensed">
+                <table class="table table-striped table-bordered table-hover table-sm">
                     <thead>
                         <th>Name</th>
                         <th>Position</th>

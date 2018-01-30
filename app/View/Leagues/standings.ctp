@@ -34,7 +34,7 @@
 		</div>
 		<hr>
 		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-hover table-condensed" id="team_standings">
+			<table class="table table-striped table-bordered table-hover table-sm" id="team_standings">
 				<thead>
 					<th class="col-xs-2">Team</th>
 					<th class="col-xs-1">Points</th>
@@ -70,7 +70,7 @@
 							<h5><?= (($round['is_finals']) ? "Finals" : "R".$round['round'])." M".$match['match']; ?></h5>
 						</div>
 						<div class="panel-body">
-							<table class="table table-condensed">
+							<table class="table table-sm">
 								<thead>
 									<tr>
 										<th>Team</th>
