@@ -60,13 +60,12 @@
     <h4 class="text-info d-block">Recent Events</h4>
 </div>
 <div class="row justify-content-center">
-    <div class="col-8">
+    <div class="col-sm-8">
     <table class="table table-striped table-sm table-bordered table-hover" id="events_list">
         <thead>
             <tr>
                 <th>Center</th>
                 <th class="text-right">Date</th>
-                <th class="text-right">Games Played</th>
             </tr>
         </thead>
         <tbody>
@@ -91,7 +90,6 @@
             let row = `<tr>
                         <td>${eventLink}</td>
                         <td class="text-right">${item[0].games_date}</td>
-                        <td class="text-right">${item[0].games_played}</td>
                     </tr>`;
             table.append(row);
         });
