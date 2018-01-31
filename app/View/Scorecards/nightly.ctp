@@ -93,7 +93,7 @@
 				response.data.forEach(function(element) {
 					let game_time = new Date(Date.parse(element.Game.game_datetime)).toLocaleTimeString("en-US");
 					let game = `<a href="/games/view/${element.Game.id}?${params.toString()}"><strong>${element.Game.game_name} - ${game_time}</strong></a>`;
-					let pdf = `<a href="http://scorecards.lfstats.com/${element.Game.pdf_id}.pdf"><i class="far fa-file-pdf" data-fa-transform="grow-6"></i></a>`;
+					let pdf = `<a href="http://scorecards.lfstats.com/${element.Game.pdf_id}.pdf"><i class="far fa-file-pdf" data-fa-transform="grow-20"></i></a>`;
 					
 					let red_team = `<span class="text-danger">Red Team: ${element.Game.red_score+element.Game.red_adj}</span>`;
 					let green_team = `<span class="text-success">Green Team: ${element.Game.green_score+element.Game.green_adj}</span>`;
@@ -105,7 +105,7 @@
 						teams = `<strong>${green_team}</strong><br>${red_team}`;
 					}
 
-					$('#game_list').append(`<tr><td>${game}</td><td>${teams}</td><td>${pdf}</td></tr>`);
+					$('#game_list').append(`<tr><td>${game}</td><td>${pdf}</td><td>${teams}</td></tr>`);
 				});
 			});
 		}
