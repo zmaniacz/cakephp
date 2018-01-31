@@ -272,7 +272,7 @@
 							return hit_diff;
 						}
 
-						return row.avg_acc;
+						return row.hit_diff;
 					},
 					orderSequence: [ "desc", "asc"],
 					className: "text-right"
