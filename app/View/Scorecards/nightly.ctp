@@ -13,16 +13,14 @@
 </form>
 </br>
 <h4>Games Played</h4>
-<div class="row">
-	<div class="col-sm-8">
-		<table class="table table-sm" id="game_list">
-			<tbody>
-			</tbody>
-		</table>
-	</div>
+<div class="col-sm-6">
+	<table class="table table-sm" id="game_list">
+		<tbody>
+		</tbody>
+	</table>
 </div>
 <h4>Overall</h4>
-<div>
+<div class="col-sm-8">
 	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="overall">
 		<thead>
 			<th>#</th>
@@ -41,17 +39,15 @@
 	</table>
 </div>
 <h4>Summary Stats</h4>
-<div>
-	<table class="table table-bordered table-hover table-sm nowrap" id="summary_stats">
+<div class="col-sm-8">
+	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="summary_stats">
 		<thead>
 			<th>#</th>
-			<th>Name</th>
-			<th class="none">Min Score</th>
-			<th>Avg Score</th>
-			<th class="none">Max Score</th>
-			<th class="none">Min MVP</th>
-			<th>Avg MVP</th>
-			<th class="none">Max MVP</th>
+			<th data-priority="1">Name</th>
+			<th data-priority="2">Avg Score</th>
+			<th class="none">Score (Min/Avg/Max)</th>
+			<th data-priority="3">Avg MVP</th>
+			<th class="none">MVP (Min/Avg/Max)</th>
 			<th>Avg Acc</th>
 			<th>Hit Diff</th>
 			<th>Medic Hits</th>
@@ -63,16 +59,16 @@
 	</table>
 </div>
 <h4>Medic Hits</h4>
-<div>
-	<table class="table table-striped table-bordered table-hover table-sm nowrap" id="medic_hits">
+<div class="col-md-8">
+	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="medic_hits">
 		<thead>
 			<th>#</th>
-			<th>Name</th>
-			<th>Medic Hits (All)</th>
-			<th>Avg Medic Hits (All)</th>
+			<th data-priority="1">Name</th>
+			<th data-priority="2">Medic Hits (All)</th>
+			<th data-priority="3">Avg Medic Hits (All)</th>
 			<th>Games Played (All)</th>
 			<th>Medic Hits (Non-Resup)</th>
-			<th>Avg Medic Hits (Non-Resup)</th>
+			<th data-priority="4">Avg Medic Hits (Non-Resup)</th>
 			<th>Games Played (Non-Resup)</th>
 		</thead>
 		<tbody>
@@ -93,7 +89,7 @@
 				response.data.forEach(function(element) {
 					let game_time = new Date(Date.parse(element.Game.game_datetime)).toLocaleTimeString("en-US");
 					let game = `<a href="/games/view/${element.Game.id}?${params.toString()}"><strong>${element.Game.game_name} - ${game_time}</strong></a>`;
-					let pdf = `<a href="http://scorecards.lfstats.com/${element.Game.pdf_id}.pdf"><i class="far fa-file-pdf" data-fa-transform="grow-20"></i></a>`;
+					let pdf = `<a href="http://scorecards.lfstats.com/${element.Game.pdf_id}.pdf"><i class="far fa-file-pdf" data-fa-transform="grow-10"></i></a>`;
 					
 					let red_team = `<span class="text-danger">Red Team: ${element.Game.red_score+element.Game.red_adj}</span>`;
 					let green_team = `<span class="text-success">Green Team: ${element.Game.green_score+element.Game.green_adj}</span>`;
@@ -105,7 +101,7 @@
 						teams = `<strong>${green_team}</strong><br>${red_team}`;
 					}
 
-					$('#game_list').append(`<tr><td>${game}</td><td>${pdf}</td><td>${teams}</td></tr>`);
+					$('#game_list').append(`<tr><td>${game}</td><td>${teams}</td><td>${pdf}</td></tr>`);
 				});
 			});
 		}
@@ -115,11 +111,12 @@
 		var overall = $('#overall').DataTable( {
 			orderCellsTop : true,
 			responsive: {
-        	details: {
-            	renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                	tableClass: 'table'
-            	} )
-			}},
+				details: {
+					renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+						tableClass: 'table'
+					} )
+				}
+			},
 			ajax: {
 				url: `/scorecards/nightlyScorecards.json?${params.toString()}`,
 				dataSrc: function(response) {
@@ -212,7 +209,13 @@
 
 		var summary_stats = $('#summary_stats').DataTable( {
 			orderCellsTop : true,
-			responsive: true,
+			responsive: {
+				details: {
+					renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+						tableClass: 'table'
+					} )
+				}
+			},
 			ajax : {
 				url : `/scorecards/nightlySummaryStats.json?${params.toString()}`
 			},
@@ -230,10 +233,15 @@
 					},
 					responsivePriority: 1
 				},
-				{ data: "min_score", orderSequence: [ "desc", "asc"], className: "text-right" },
 				{ data: "avg_score", orderSequence: [ "desc", "asc"], className: "text-right" },
-				{ data: "max_score", orderSequence: [ "desc", "asc"], className: "text-right" },
-				{ data: "min_mvp", orderSequence: [ "desc", "asc"], className: "text-right" },
+				{
+					data: function(row, type, val, meta) {
+						if(type === 'display') {
+							return `${row.min_score}/${row.avg_score}/${row.max_score}`;
+						}
+						return row.avg_score;
+					}, orderSequence: [ "desc", "asc"], className: "text-right"
+				},
 				{ 
 					data: function ( row, type, val, meta) {
 						if (type === 'display') {
@@ -253,7 +261,15 @@
 					className: "text-right",
 					responsivePriority: 2
 				},
-				{ data: "max_mvp", orderSequence: [ "desc", "asc"], className: "text-right" },
+				{
+					data: function(row, type, val, meta) {
+						if(type === 'display') {
+							avg_mvp = Math.round(row.avg_mvp * 100) / 100;
+							return `${row.min_mvp}/${avg_mvp}/${row.max_mvp}`;
+						}
+						return row.avg_mvp;
+					}, orderSequence: [ "desc", "asc"], className: "text-right"
+				},
 				{
 					data: function ( row, type, val, meta) {
 						if (type === 'display') {
@@ -281,7 +297,7 @@
 							return hit_diff;
 						}
 
-						return row.avg_acc;
+						return row.hit_diff;
 					},
 					orderSequence: [ "desc", "asc"],
 					className: "text-right"
@@ -323,7 +339,13 @@
 
 		var medicHitsTable = $('#medic_hits').DataTable( {
 			orderCellsTop: true,
-			responsive: true,
+			responsive: {
+				details: {
+					renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+						tableClass: 'table'
+					} )
+				}
+			},
 			ajax: {
 				url: `/scorecards/nightlyMedicHits.json?${params.toString()}`
 			},
