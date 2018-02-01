@@ -59,16 +59,16 @@
 	</table>
 </div>
 <h4>Medic Hits</h4>
-<div class="col-md-8">
+<div class="col-sm-8">
 	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="medic_hits">
 		<thead>
 			<th>#</th>
 			<th data-priority="1">Name</th>
-			<th data-priority="2">Medic Hits (All)</th>
-			<th data-priority="3">Avg Medic Hits (All)</th>
+			<th data-priority="2">Total</th>
+			<th data-priority="3">Average</th>
 			<th>Games Played (All)</th>
-			<th>Medic Hits (Non-Resup)</th>
-			<th data-priority="4">Avg Medic Hits (Non-Resup)</th>
+			<th>Total (Non-Resup)</th>
+			<th data-priority="4">Average (Non-Resup)</th>
 			<th>Games Played (Non-Resup)</th>
 		</thead>
 		<tbody>
