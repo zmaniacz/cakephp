@@ -65,12 +65,12 @@
 	}
 ?>
 <h3 class="row">
-	<span class="col-md-4">
+	<div class="col-sm-4">
 	<?php if(!empty($neighbors['prev'])): ?>
-		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?>
+		<?= $this->Html->link("<i class=\"fas fa-step-backward\"></i> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?>
 	<?php endif; ?>
-	</span>
-	<span class="col-md-4 text-center">
+	</div>
+	<div class="col-sm-4 text-center">
 	<?php
 		if($game['Game']['red_team_id'] != null)
 			echo $this->Html->link($teams[$game['Game']['red_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']), array('class' => 'btn btn-danger'));
@@ -83,114 +83,114 @@
 			echo $this->Html->link($teams[$game['Game']['green_team_id']], array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']), array('class' => 'btn btn-success'));
 		else
 			echo "Green Team";
-
-		/*if (file_exists(WWW_ROOT."/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf")) {
-			echo " - ".$this->Html->link("PDF", "/pdf/LTC_SM5".$game['Game']['game_name']."_".date("Y-m-d_Hi",strtotime($game['Game']['game_datetime'])).".pdf");
-		} elseif (file_exists(WWW_ROOT."/pdf/".$game['Game']['pdf_id'].".pdf")) {
-			echo " - ".$this->Html->link("PDF", "/pdf/".$game['Game']['pdf_id'].".pdf");
-		}*/
-		echo " - ".$this->Html->link("PDF", "http://scorecards.lfstats.com/".$game['Game']['pdf_id'].".pdf");
 	?>
-	</span>
-	<span class="col-md-4 text-right">
+	<a href="http://scorecards.lfstats.com/<?= $game['Game']['pdf_id'];?>.pdf"><i class="far fa-file-pdf"></i></a>
+	</div>
+	<div class="col-sm-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?></span>
+		<?= $this->Html->link("Next Game <i class=\"fas fa-step-forward\"></i> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?></span>
 	<?php endif; ?>
-	</span>
+	</div>
 </h3>
-<ul class="nav nav-tabs" role="tablist" id="myTab">
-	<li role="presentation" class="active"><a href="#game_scorecard_tab" role="tab" data-toggle="tab">Scorecard</a></li>
-	<li role="presentation"><a href="#game_breakdown_tab" role="tab" data-toggle="tab">Breakdown</a></li>
-</ul>
-<div class="tab-content" id="tabs">
-	<div role="tabpanel" class="tab-pane active" id="game_scorecard_tab">
-		<br />
-		<div class="well well-sm">Numbers in parentheses are score adjustments due to penalties and elimination bonuses</div>
-		<?php 
-			if($game['Game']['winner'] == 'green') {
-				$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
-				$winner_panel = "panel panel-success";
-				$winner_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
-				$winner_adj = "";
-				if($game['Game']['green_adj'] != 0)
-					$winner_adj = " (".$game['Game']['green_adj'].")";
-					
-				$loser = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
-				$loser_panel = "panel panel-danger";
-				$loser_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
-				$loser_adj = "";
-				if($game['Game']['red_adj'] != 0)
-					$loser_adj = " (".$game['Game']['red_adj'].")";
-			} else {
-				$winner = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
-				$winner_panel = "panel panel-danger";
-				$winner_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
-				$winner_adj = "";
-				if($game['Game']['red_adj'] != 0)
-					$winner_adj = " (".$game['Game']['red_adj'].")";
-				
-				$loser = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
-				$loser_panel = "panel panel-success";
-				$loser_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
-				$loser_adj = "";
-				if($game['Game']['green_adj'] != 0)
-					$loser_adj = " (".$game['Game']['green_adj'].")"; 
-			}
-			
-			$winner_table = "";
-			$loser_table = "";
+<?php
+	$green_team = array(
+		'name' => (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team"),
+		'className' => 'panel panel-success',
+		'score' =>  ($game['Game']['green_score']+$game['Game']['green_adj']),
+		'adj' => ($game['Game']['green_adj'] != 0) ? " (".$game['Game']['green_adj'].")" : ""
+	);
 
-			foreach ($game['Scorecard'] as $score) {
-				$score_line = "";
-				$penalty_score = 0;
-				$penalty_string = "";
-				
-				if(isset($score['Penalty'])) {
-					foreach ($score['Penalty'] as $penalty) {
-						$penalty_score += $penalty['value'];
-						$penalty_string .= "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#penaltyModal\" target=\"".$this->Html->url(array('controller' => 'Penalties', 'action' => 'getPenalty', $penalty['id'], 'ext' => 'json'))."\">".$penalty['type']."</button>";
-					}
-				}
-				
-				$score_line .= "<tr class=\"text-center\">";
-				
-				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
-					$score_line .= "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
-				} else {
-					$score_line .= (($score['is_sub']) ? "<td class=\"text-warning\"><span class=\"glyphicon glyphicon-asterisk\"></span></td>" : "<td></td>");
-				}
-				
-				$score_line .= (($score['lives_left'] > 0) ? "<td class=\"text-success\"><span class=\"glyphicon glyphicon-ok\"></span>" : "<td class=\"text-danger text-center\"><span class=\"glyphicon glyphicon-remove\"></span>")."</td>";
-				$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-primary btn-block'))."</td>";
-				$score_line .= "<td>".$score['position']."</td>";
-				$score_line .= "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
-				$score_line .= "<td>".$score['lives_left']."</td>";
-				$score_line .= "<td>".$score['shots_left']."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
-				$score_line .= "<td>".$score['missiled_opponent']."</td>";
-				$score_line .= "<td>".$score['times_missiled']."</td>";
-				$score_line .= "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
-				$score_line .= "<td>".$score['shot_team']."</td>";
-				$score_line .= "<td>".$score['missiled_team']."</td>";
-				$score_line .= "<td>".round($score['accuracy']*100,2)."%</td>";
-				$score_line .= "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' || $score['position'] == 'Commander' ? $score['sp_spent']."/".$score['sp_earned'] : "-")."</td>";
-				$score_line .= "<td>".($score['position'] == 'Commander' ? $score['nukes_detonated']."/".$score['nukes_activated'] : "-")."</td>";
-				$score_line .= "<td>".($score['nukes_canceled'] > 0 ? $score['nukes_canceled'] : "-")."</td>";
-				$score_line .= "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
-				$score_line .= "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
-				$score_line .= "<td>$penalty_string";
-				if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
-					$score_line.= $this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']), array('class' => 'btn btn-warning'));
-				}
-				$score_line .= "</td></tr>";
-				
-				if($score['team'] == $game['Game']['winner'])
-					$winner_table .= $score_line;
-				else
-					$loser_table .= $score_line;
-			}	
-		?>
+	$red_team = array(
+		'name' => (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team"),
+		'className' => 'panel panel-danger',
+		'score' =>  ($game['Game']['red_score']+$game['Game']['red_adj']),
+		'adj' => ($game['Game']['red_adj'] != 0) ? " (".$game['Game']['red_adj'].")" : ""
+	);
+
+	if($game['Game']['winner'] == 'green') {
+		$winner = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+		$winner_panel = "panel panel-success";
+		$winner_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
+		$winner_adj = "";
+		if($game['Game']['green_adj'] != 0)
+			$winner_adj = " (".$game['Game']['green_adj'].")";
+			
+		$loser = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+		$loser_panel = "panel panel-danger";
+		$loser_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
+		$loser_adj = "";
+		if($game['Game']['red_adj'] != 0)
+			$loser_adj = " (".$game['Game']['red_adj'].")";
+	} else {
+		$winner = (($game['Game']['red_team_id'] != null) ? $teams[$game['Game']['red_team_id']] : "Red Team");
+		$winner_panel = "panel panel-danger";
+		$winner_score = ($game['Game']['red_score']+$game['Game']['red_adj']);
+		$winner_adj = "";
+		if($game['Game']['red_adj'] != 0)
+			$winner_adj = " (".$game['Game']['red_adj'].")";
+		
+		$loser = (($game['Game']['green_team_id'] != null) ? $teams[$game['Game']['green_team_id']] : "Green Team");
+		$loser_panel = "panel panel-success";
+		$loser_score = ($game['Game']['green_score']+$game['Game']['green_adj']);
+		$loser_adj = "";
+		if($game['Game']['green_adj'] != 0)
+			$loser_adj = " (".$game['Game']['green_adj'].")"; 
+	}
+	
+	$winner_table = "";
+	$loser_table = "";
+
+	foreach ($game['Scorecard'] as $score) {
+		$score_line = "";
+		$penalty_score = 0;
+		$penalty_string = "";
+		
+		if(isset($score['Penalty'])) {
+			foreach ($score['Penalty'] as $penalty) {
+				$penalty_score += $penalty['value'];
+				$penalty_string .= "<button type=\"button\" class=\"btn btn-warning btn-block\" data-toggle=\"modal\" data-target=\"#penaltyModal\" target=\"".$this->Html->url(array('controller' => 'Penalties', 'action' => 'getPenalty', $penalty['id'], 'ext' => 'json'))."\">".$penalty['type']."</button>";
+			}
+		}
+		
+		$score_line .= "<tr class=\"text-center\">";
+		
+		if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
+			$score_line .= "<td><form><input type=\"checkbox\" class=\"switch_sub_cbox\" id=".$score['id']." ".(($score['is_sub']) ? "checked" : "")."></form></td>";
+		} else {
+			$score_line .= (($score['is_sub']) ? "<td class=\"text-warning\"><span class=\"glyphicon glyphicon-asterisk\"></span></td>" : "<td></td>");
+		}
+		
+		$score_line .= (($score['lives_left'] > 0) ? "<td class=\"text-success\"><span class=\"glyphicon glyphicon-ok\"></span>" : "<td class=\"text-danger text-center\"><span class=\"glyphicon glyphicon-remove\"></span>")."</td>";
+		$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-primary btn-block'))."</td>";
+		$score_line .= "<td>".$score['position']."</td>";
+		$score_line .= "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
+		$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
+		$score_line .= "<td>".$score['lives_left']."</td>";
+		$score_line .= "<td>".$score['shots_left']."</td>";
+		$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
+		$score_line .= "<td>".$score['missiled_opponent']."</td>";
+		$score_line .= "<td>".$score['times_missiled']."</td>";
+		$score_line .= "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
+		$score_line .= "<td>".$score['shot_team']."</td>";
+		$score_line .= "<td>".$score['missiled_team']."</td>";
+		$score_line .= "<td>".round($score['accuracy']*100,2)."%</td>";
+		$score_line .= "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' || $score['position'] == 'Commander' ? $score['sp_spent']."/".$score['sp_earned'] : "-")."</td>";
+		$score_line .= "<td>".($score['position'] == 'Commander' ? $score['nukes_detonated']."/".$score['nukes_activated'] : "-")."</td>";
+		$score_line .= "<td>".($score['nukes_canceled'] > 0 ? $score['nukes_canceled'] : "-")."</td>";
+		$score_line .= "<td>".($score['position'] == 'Medic' ? $score['life_boost'] : ($score['position'] == 'Ammo Carrier' ? $score['ammo_boost'] : "-"))."</td>";
+		$score_line .= "<td>".($score['position'] == 'Medic' || $score['position'] == 'Ammo Carrier' ? $score['resupplies'] : "-")."</td>";
+		$score_line .= "<td>$penalty_string";
+		if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $game['Game']['center_id'])) {
+			$score_line.= $this->Html->link("Add", array('controller' => 'Penalties', 'action' => 'add', $score['id']), array('class' => 'btn btn-warning'));
+		}
+		$score_line .= "</td></tr>";
+		
+		if($score['team'] == $game['Game']['winner'])
+			$winner_table .= $score_line;
+		else
+			$loser_table .= $score_line;
+	}	
+?>
 		<div id="winner_panel" class="<?= $winner_panel; ?>">
 			<div class="panel-heading" data-toggle="collapse" data-parent="#winner_panel" data-target="#collapse_winner_panel" role="tab" id="winner_panel_heading">
 				<h3 class="panel-title">
@@ -319,64 +319,16 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
-		<div id="breakdown_container"></div>
-	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.gamelist').DataTable( {
-			"searching": false,
-			"info": false,
-			"paging": false,
-			"ordering": false
-		} );
-
-		$('#breakdown_container').highcharts({
-			chart: {
-				type: 'bar',
-				height: 700
-			},
-			title: {
-				text: 'Game Breakdown'
-			},
-			xAxis: {
-				categories: ['Score', 'Hit Diff', 'Accuracy', 'MVP', 'Medic Hits', 'Lives Left', 'Shots Left', 'Missiles', 'Nukes', 'Resupplies', 'Bases']
-			},
-			legend: {
-				enabled: false
-			},
-			plotOptions: {
-				series: {
-					stacking: 'percent'
+		$('.switch_sub_cbox').change(function() {
+			$.ajax({
+				url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json",
+				success: function(data) {
+					toastr.success('Set Merc Status')
 				}
-			},
-			series: [
-				{
-					name: 'Green Team',
-					color: 'green',
-					data: [<?= $green_data_string; ?>]
-				},
-				{
-					name: 'Red Team',
-					color: 'red',
-					data: [<?= $red_data_string; ?>]
-				}
-			]
-		});
-	});
-	
-	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-		$('#breakdown_container').highcharts().reflow();
-	});
-
-	$('.switch_sub_cbox').change(function() {
-		$.ajax({
-			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json",
-			success: function(data) {
-				toastr.success('Set Merc Status')
-			}
+			});
 		});
 	});
 </script>
