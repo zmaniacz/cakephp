@@ -13,22 +13,22 @@
 </form>
 </br>
 <h4>Games Played</h4>
-<div class="col-sm-6">
+<div class="col col-md-6">
 	<table class="table table-sm" id="game_list">
 		<tbody>
 		</tbody>
 	</table>
 </div>
 <h4>Overall</h4>
-<div class="col-sm-8">
+<div class="col col-md-12">
 	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="overall">
 		<thead>
-			<th>#</th>
-			<th data-priority="1">Name</th>
+			<th data-priority="1">#</th>
+			<th data-priority="2">Name</th>
 			<th>Game</th>
-			<th data-priority="2">Position</th>
+			<th data-priority="3">Position</th>
 			<th>Score</th>
-			<th data-priority="3">MVP</th>
+			<th data-priority="4">MVP</th>
 			<th>Hit Diff</th>
 			<th>Medic Hits</th>
 			<th>Accuracy</th>
@@ -39,14 +39,14 @@
 	</table>
 </div>
 <h4>Summary Stats</h4>
-<div class="col-sm-8">
+<div class="col col-md-12">
 	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="summary_stats">
 		<thead>
-			<th>#</th>
-			<th data-priority="1">Name</th>
-			<th data-priority="2">Avg Score</th>
+			<th data-priority="1">#</th>
+			<th data-priority="2">Name</th>
+			<th data-priority="3">Avg Score</th>
 			<th class="none">Score (Min/Avg/Max)</th>
-			<th data-priority="3">Avg MVP</th>
+			<th data-priority="4">Avg MVP</th>
 			<th class="none">MVP (Min/Avg/Max)</th>
 			<th>Avg Acc</th>
 			<th>Hit Diff</th>
@@ -59,16 +59,16 @@
 	</table>
 </div>
 <h4>Medic Hits</h4>
-<div class="col-sm-8">
+<div class="col col-md-12">
 	<table class="table table-sm table-bordered table-hover dt-responsive nowrap" id="medic_hits">
 		<thead>
-			<th>#</th>
-			<th data-priority="1">Name</th>
-			<th data-priority="2">Total</th>
-			<th data-priority="3">Average</th>
+			<th data-priority="1">#</th>
+			<th data-priority="2">Name</th>
+			<th data-priority="3">Total</th>
+			<th data-priority="4">Average</th>
 			<th>Games Played (All)</th>
 			<th>Total (Non-Resup)</th>
-			<th data-priority="4">Average (Non-Resup)</th>
+			<th data-priority="5">Average (Non-Resup)</th>
 			<th>Games Played (Non-Resup)</th>
 		</thead>
 		<tbody>
