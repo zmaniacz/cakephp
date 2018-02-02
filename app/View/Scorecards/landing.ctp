@@ -4,7 +4,7 @@
     <p class="lead"><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10">Details <i class="fas fa-caret-right"></i></a></p>
 </div>
 <div class="row justify-content-center">
-    <div>
+    <div class="col text-md-right text-center">
         <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" id="socialDropDown" data-toggle="dropdown">Jump to social games</button>
             <div class="dropdown-menu">
@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div>
+    <div class="col text-md-left text-center">
         <div class="dropdown">
             <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Jump to Competition
