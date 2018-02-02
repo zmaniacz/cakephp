@@ -13,7 +13,7 @@
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts.js'></script>
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/highcharts/6.0.4/highcharts-more.js'></script>
 
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/spacelab/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/r-2.2.1/datatables.min.css"/>
 	<?php
 		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
