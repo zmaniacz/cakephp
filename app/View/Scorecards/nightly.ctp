@@ -84,7 +84,7 @@
 			$.ajax({
 				url: `/games/getGameList.json?${params.toString()}`,
 			}).done(function(response) {
-				$('#game_list_group').empty();
+				$('#game_list').empty();
 
 				response.data.forEach(function(element) {
 					let game_time = new Date(Date.parse(element.Game.game_datetime)).toLocaleTimeString("en-US");
@@ -382,6 +382,7 @@
 		$('#nightlySelectDate').change(function() {
 			const params = new URLSearchParams(location.search);
 			params.set('date', $(this).val());
+			history.pushState(history.state, '', `?${params.toString()}`);
 
 			updateGameList(params);
 			$('#overall').DataTable().ajax.url(`/scorecards/nightlyScorecards.json?${params.toString()}`).load();
