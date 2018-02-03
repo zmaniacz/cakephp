@@ -4,7 +4,7 @@ class Center extends AppModel {
 	public $hasMany = array(
 		'Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'center_id'
+			'foreignKey' => 'center_id'
 		),
 		'Player' => array(
 			'className' => 'Player',

@@ -68,7 +68,7 @@ class League extends AppModel {
 		),
 		'Round' => array(
 			'className' => 'Round',
-			'foreignkey' => 'league_id'
+			'foreignKey' => 'league_id'
 		)
 	);
 

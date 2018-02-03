@@ -4,7 +4,7 @@ class Match extends AppModel {
 	public $hasMany = array(
 		'Game' => array(
 			'className' => 'Game',
-			'foreignkey' => 'match_id'
+			'foreignKey' => 'match_id'
 		)
 	);
 	
