@@ -63,29 +63,41 @@ class GamesController extends AppController {
 
 			$game = $this->Game->getGameDetails($id);
 			$this->request->data = $game;
-			
-			foreach ($game['Scorecard'] as $key => $row) {
-				$team[$key] = $row['team'];
-				$rank[$key] = $row['rank'];
-			}
-			
-			if(!empty($team)) {
-				if($game['Game']['winner'] == 'red')
-					array_multisort($team, SORT_DESC, $rank, SORT_ASC, $game['Scorecard']);
-				else
-					array_multisort($team, SORT_ASC, $rank, SORT_ASC, $game['Scorecard']);
-			}
+
+			$game['Game']['pdf_link'] = "http://scorecards.lfstats.com/{$game['Game']['pdf_id']}.pdf";
+			$game['Game']['green_team_name'] = "Green Team";
+			$game['Game']['red_team_name'] = "Red Team";
+			$game['Game']['green_team_link'] = "#";
+			$game['Game']['red_team_link'] = "#";
+			$game['Game']['game_name'] = (isset($game['Game']['league_id']) && !is_null($game['Match']['id'])) ? 'R'.$game['Match']['Round']['round'].' M'.$game['Match']['match'].' G'.$game['Game']['league_game'] : $game['Game']['game_name'];
+
+			$teams = array();
+			$matches = array();
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 				$this->loadModel('LeagueGame');
 				
-				$this->set('teams', $this->League->getTeams($game['Game']['league_id']));
-				$this->set('available_matches', $this->League->getAvailableMatches($game));
+				$teams = $this->League->getTeams($game['Game']['league_id']);
+				$matches = $this->League->getAvailableMatches($game);
+
+				if($game['Game']['green_team_id'] != null) {
+					$game['Game']['green_team_name'] = $teams[$game['Game']['green_team_id']];
+					$game['Game']['green_team_link'] = Router::url(array('controller' => 'teams', 'action' => 'view', $game['Game']['green_team_id']));
+				}
+
+				if($game['Game']['red_team_id'] != null) {
+					$game['Game']['red_team_name'] = $teams[$game['Game']['red_team_id']];
+					$game['Game']['red_team_link'] = Router::url(array('controller' => 'teams', 'action' => 'view', $game['Game']['red_team_id']));
+				}
 			}
 			
+			array_multisort(array_column($game['Red_Scorecard'], 'rank'), SORT_ASC, $game['Red_Scorecard']);
+			array_multisort(array_column($game['Green_Scorecard'], 'rank'), SORT_ASC, $game['Green_Scorecard']);
+
 			$this->set('neighbors', $this->Game->getPrevNextGame($game['Game']['id']));
-			
 			$this->set('game', $game);
+			$this->set('teams', $teams);
+			$this->set('available_matches', $matches);
 		}
 	}
 

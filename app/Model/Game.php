@@ -4,16 +4,16 @@ class Game extends AppModel {
 	public $hasMany = array(
 		'Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id'
+			'foreignKey' => 'game_id'
 		),
 		'Red_Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Red_Scorecard.team' => 'red')
 		),
 		'Green_Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Green_Scorecard.team' => 'green')
 		),
 		'GameResult' => array(
@@ -26,12 +26,12 @@ class Game extends AppModel {
 		),
 		'Red_TeamPenalties' => array(
 			'className' => 'TeamPenalties',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Red_TeamPenalties.team_color' => 'red')
 		),
 		'Green_TeamPenalties' => array(
 			'className' => 'TeamPenalties',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Green_TeamPenalties.team_color' => 'green')
 		),
 	);
@@ -103,40 +103,14 @@ class Game extends AppModel {
 
 		$result = $this->find('first', array(
 			'contain' => array(
-				'Scorecard' => array(
-					'Penalty',
-                    'Hit'
-				),
 				'Match' => array(
 					'Round'
 				),
 				'Red_Scorecard' => array(
-					'fields' => array(
-						'SUM(medic_hits) as medic_hits',
-						'SUM(missile_hits) as missile_hits',
-						'SUM(nukes_detonated) as nukes_detonated',
-						'SUM(lives_left) as lives_left',
-						'SUM(shots_left) as shots_left',
-						'( SUM(shot_opponent) / SUM(times_zapped) ) as hit_diff',
-						'SUM(resupplies) as resupplies',
-						'SUM(bases_destroyed) as bases_destroyed',
-						'AVG(accuracy) as accuracy',
-						'SUM(mvp_points) as mvp_points'
-					)
+					'Penalty'
 				),
 				'Green_Scorecard' => array(
-					'fields' => array(
-						'SUM(medic_hits) as medic_hits',
-						'SUM(missile_hits) as missile_hits',
-						'SUM(nukes_detonated) as nukes_detonated',
-						'SUM(lives_left) as lives_left',
-						'SUM(shots_left) as shots_left',
-						'( SUM(shot_opponent) / SUM(times_zapped) ) as hit_diff',
-						'SUM(resupplies) as resupplies',
-						'SUM(bases_destroyed) as bases_destroyed',
-						'AVG(accuracy) as accuracy',
-						'SUM(mvp_points) as mvp_points'
-					)
+					'Penalty'
 				),
 				'Red_TeamPenalties',
 				'Green_TeamPenalties'
