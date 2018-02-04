@@ -1,19 +1,21 @@
 <?php
 
 class Game extends AppModel {
+	public $useTable = 'v_games';
+
 	public $hasMany = array(
 		'Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id'
+			'foreignKey' => 'game_id'
 		),
 		'Red_Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Red_Scorecard.team' => 'red')
 		),
 		'Green_Scorecard' => array(
 			'className' => 'Scorecard',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Green_Scorecard.team' => 'green')
 		),
 		'GameResult' => array(
@@ -26,12 +28,12 @@ class Game extends AppModel {
 		),
 		'Red_TeamPenalties' => array(
 			'className' => 'TeamPenalties',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Red_TeamPenalties.team_color' => 'red')
 		),
 		'Green_TeamPenalties' => array(
 			'className' => 'TeamPenalties',
-			'foreignkey' => 'game_id',
+			'foreignKey' => 'game_id',
 			'conditions' => array('Green_TeamPenalties.team_color' => 'green')
 		),
 	);

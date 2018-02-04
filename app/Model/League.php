@@ -8,6 +8,7 @@ App::uses('AppModel', 'Model');
  * @property Team $Team
  */
 class League extends AppModel {
+	public $useTable = 'v_leagues';
 
 /**
  * Display field
@@ -68,7 +69,7 @@ class League extends AppModel {
 		),
 		'Round' => array(
 			'className' => 'Round',
-			'foreignkey' => 'league_id'
+			'foreignKey' => 'league_id'
 		)
 	);
 

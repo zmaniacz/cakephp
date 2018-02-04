@@ -7,7 +7,7 @@ App::uses('AppModel', 'Model');
  * @property Player $Player
  */
 class Team extends AppModel {
-
+	public $useTable = 'v_teams';
 /**
  * Display field
  *

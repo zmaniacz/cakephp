@@ -2,6 +2,8 @@
 App::uses('AppModel', 'Model');
 
 class LeagueGame extends AppModel {
+	public $useTable = 'v_league_games';
+	
 	public function getPrevNextGame($game_id) {
 		$games = $this->find('all');
 		

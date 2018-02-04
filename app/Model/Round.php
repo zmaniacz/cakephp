@@ -1,10 +1,12 @@
 <?php
 
 class Round extends AppModel {
+	public $useTable = 'v_rounds';
+	
 	public $hasMany = array(
 		'Match' => array(
 			'className' => 'Match',
-			'foreignkey' => 'round_id'
+			'foreignKey' => 'round_id'
 		)
 	);
 

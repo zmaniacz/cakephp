@@ -82,7 +82,7 @@
         events.forEach( function(item) {
             params.set('gametype', item.Game.type);
             params.set('centerID', item.Center.id);
-            params.set('leagueID', (!item.Game.league_id) ? 0 : item.Game.league_id);
+            params.set('leagueID', (item.Game.type === 'league') ? item.Game.league_id : 0);
 
             let eventLink = `<a href="/scorecards/nightly/${item[0].games_date}?${params.toString()}">
                                 ${item.Center.name} - <span class="text-capitalize">${item.Game.type}</span></a>`;

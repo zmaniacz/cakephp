@@ -1,6 +1,8 @@
 <?php
 
 class Scorecard extends AppModel {
+	public $useTable = 'v_scorecards';
+
 	public $belongsTo = array(
 		'Player' => array(
 			'className' => 'Player',
@@ -22,11 +24,11 @@ class Scorecard extends AppModel {
 	public $hasMany = array(
 		'Penalty' => array(
 			'className' => 'Penalty',
-			'foreignkey' => 'scorecard_id'
+			'foreignKey' => 'scorecard_id'
 		),
         'Hit' => array(
 			'className' => 'Hit',
-			'foreignkey' => 'scorecard_id'
+			'foreignKey' => 'scorecard_id'
 		)
 	);
 
