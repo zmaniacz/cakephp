@@ -20,74 +20,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+	<script defer src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap.min.js'></script>
+	<script defer src='https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
+	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.js'></script>
+	<script defer src='http://code.highcharts.com/stock/highstock.js'></script>
+	<script defer src='http://code.highcharts.com/stock/highcharts-more.js'></script>
+	<script defer src='https://code.highcharts.com/stock/indicators/indicators.js'></script>
 	<?php
-		echo $this->Html->charset();
+		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap.min.css');
+		echo $this->Html->css('https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css');
+		echo $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.0.3/nouislider.min.css');
 		echo $this->Html->css('laserforce');
 	?>
-
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/fc-3.2.3/fh-3.1.3/r-2.2.0/datatables.min.css"/>
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css"/>
-	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css"/>
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.css"/>
-
-	<script src="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/fc-3.2.3/fh-3.1.3/r-2.2.0/datatables.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.js"></script>
-
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
 		<?php echo $title_for_layout; ?>
 	</title>
 </head>
-<script>
-	$(document).ready(function() {
-		//Set a global error handler for datatables
-		$.fn.dataTable.ext.errMode = function(settings, techNote, message) {
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": true,
-				"progressBar": false,
-				"positionClass": "toast-top-right",
-				"preventDuplicates": false,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "0",
-				"extendedTimeOut": "0",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut"
-			}
-			toastr.error(message);
-		}
-
-        $.ajax({ 
-            url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
-            dataType:'jsonp',
-            success:function(channel) { 
-                if(channel["stream"] == null) {
-                    $("#twitch_status").append(" <span class='label label-default'>Offline</span>");
-                } else {
-                    $("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
-                }
-            },
-            error:function() {
-                //request failed
-            }
-        });
-	});
-</script>
 <body>
-<?php //debug($this->Session->read('state')); ?>
 	<div class="container">
 		<div id="container">
 			<div id="header">
-				<nav class="navbar navbar-default navbar-fixed-top">
+				<nav class="navbar navbar-inverse navbar-fixed-top">
 					<div class="container-fluid">
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -145,17 +106,17 @@
 								<?php endif; ?>
 								<li><?= $this->Html->link('About SM5', array('controller' => 'pages', 'action' => 'aboutSM5')); ?></li>
                                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
-                                <li><?= $this->Html->link('Internats 2017', array('controller' => 'events', 'action' => 'view', 16, '?' => array('gametype' => 'comp', 'eventID' => 16, 'centerID' => 14))); ?></li>
-								<?php if(AuthComponent::user('role') === 'admin' || AuthComponent::user('role') === 'center_admin'): ?>
+                                <li><?= $this->Html->link('WCT 2018', array('controller' => 'leagues', 'action' => 'standings', '?' => array('gametype' => 'league', 'leagueID' => 18, 'centerID' => 10))); ?></li>
+								<?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 									<li><?= $this->Html->link('Upload PDFs', array('controller' => 'uploads', 'action' => 'index')); ?></li>
 								<?php endif; ?>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<li>
 								<?php if (AuthComponent::user('id')): ?>
-									<a href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
+									<a class="btn btn-sm" href="/users/logout" role="button"><?= AuthComponent::user('username') ?> Logout</a>
 								<?php else: ?>
-									<a href="/users/login" role="button">Login</a>
+									<a class="btn btn-sm" href="/users/login" role="button">Login</a>
 								<?php endif; ?>
 								</li>
 							</ul>
@@ -241,33 +202,7 @@
 						</div>
 					</div>
 				</div>
-				<script>
-					$('#penaltyModal').on('show.bs.modal', function (event) {
-						var button = $(event.relatedTarget);
-						$(this).find(".modal-body").text("Loading...");
-						$(this).find(".modal-body").load(button.attr("target"));
-					});
-					$('#teamPenaltyModal').on('show.bs.modal', function (event) {
-						var button = $(event.relatedTarget);
-						$(this).find(".modal-body").text("Loading...");
-						$(this).find(".modal-body").load(button.attr("target"));
-					});
-					$('#hitModal').on('show.bs.modal', function (event) {
-						var button = $(event.relatedTarget);
-						$(this).find(".modal-body").text("Loading...");
-						$(this).find(".modal-body").load(button.attr("target"));
-					});
-					$('#matchModal').on('show.bs.modal', function (event) {
-						var button = $(event.relatedTarget);
-						$(this).find(".modal-body").text("Loading...");
-						$(this).find(".modal-body").load(button.attr("target"));
-					});
-					$('#mvpModal').on('show.bs.modal', function (event) {
-						var button = $(event.relatedTarget);
-						$(this).find(".modal-body").text("Loading...");
-						$(this).find(".modal-body").load(button.attr("target"));
-					});
-				</script>
+
 			</div>
 			<div id="footer">
 				<h6 class="text-center">
@@ -278,5 +213,78 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		$(document).ready(function() {
+			//Set a global error handler for datatables
+			$.fn.dataTable.ext.errMode = function(settings, techNote, message) {
+				toastr.options = {
+					"closeButton": true,
+					"debug": false,
+					"newestOnTop": true,
+					"progressBar": false,
+					"positionClass": "toast-top-right",
+					"preventDuplicates": false,
+					"onclick": null,
+					"showDuration": "300",
+					"hideDuration": "1000",
+					"timeOut": "0",
+					"extendedTimeOut": "0",
+					"showEasing": "swing",
+					"hideEasing": "linear",
+					"showMethod": "fadeIn",
+					"hideMethod": "fadeOut"
+				}
+				toastr.error(message);
+			}
+
+			$(document).ready(function() {
+				Highcharts.setOptions({
+					chart: {
+						style: {
+							fontFamily: '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
+						}
+					}
+				});
+			});
+			
+			$.ajax({ 
+				url:'https://api.twitch.tv/kraken/streams/laserforcetournaments?client_id=5shofd1neum3sel2bzbaskcvyohfgz',
+				dataType:'jsonp',
+			}).done(function(channel) { 
+				if(channel["stream"] == null) {
+					$("#twitch_status").append(" <span class='label label-default'>Offline</span>");
+				} else {
+					$("#twitch_status").append(" <span class='label label-danger'>LIVE</span>");
+				}
+			});
+
+			//global handlers for the various modals
+			$('#penaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#teamPenaltyModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#hitModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#matchModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+			$('#mvpModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				$(this).find(".modal-body").text("Loading...");
+				$(this).find(".modal-body").load(button.attr("target"));
+			});
+		});
+	</script>
 </body>
 </html>

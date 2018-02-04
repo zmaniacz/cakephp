@@ -343,13 +343,19 @@ class Player extends AppModel {
 		return $results;
 	}
 	
-	public function getMedianMVPByPosition($id = null, $state = null) {
-		$fields = array('position','mvp_points');
+	public function getMedianByPosition($id = null, $team = null, $type = 'mvp_points', $state = null) {
+		$fields = array('position', $type);
+
 		$conditions = array();
 		
 		if(!is_null($id)) {
 			$fields[] = 'player_id';
 			$conditions[] = array('Scorecard.player_id' => $id);
+		}
+
+		if(!is_null($team)) {
+			$fields[] = 'team';
+			$conditions[] = array('Scorecard.team' => $team);
 		}
 		
 		if(isset($state['centerID']) && $state['centerID'] > 0)
@@ -370,7 +376,7 @@ class Player extends AppModel {
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
 			'conditions' => $conditions,
-			'order' => 'mvp_points ASC'
+			'order' => "$type ASC"
 		));
 		
 		$commander = array();
@@ -383,19 +389,19 @@ class Player extends AppModel {
 		foreach($scores as $score) {
 			switch($score['Scorecard']['position']) {
 				case 'Commander':
-					$commander[] = $score['Scorecard']['mvp_points'];
+					$commander[] = $score['Scorecard'][$type];
 					break;
 				case 'Heavy Weapons':
-					$heavy[] = $score['Scorecard']['mvp_points'];
+					$heavy[] = $score['Scorecard'][$type];
 					break;
 				case 'Scout':
-					$scout[] = $score['Scorecard']['mvp_points'];
+					$scout[] = $score['Scorecard'][$type];
 					break;
 				case 'Ammo Carrier':
-					$ammo[] = $score['Scorecard']['mvp_points'];
+					$ammo[] = $score['Scorecard'][$type];
 					break;
 				case 'Medic':
-					$medic[] = $score['Scorecard']['mvp_points'];
+					$medic[] = $score['Scorecard'][$type];
 					break;
 			}
 		}
@@ -406,6 +412,9 @@ class Player extends AppModel {
 			$results['commander_upper'] = $commander[floor((count($commander)-1) * .75)];
 			$results['commander_min'] = $commander[0];
 			$results['commander_max'] = $commander[(count($commander)-1)];
+			$results['commander_avg'] = array_sum($commander)/count($commander);
+		} else {
+			$results['commander'] = $results['commander_lower'] = $results['commander_upper'] = $results['commander_min'] = $results['commander_max'] = $results['commander_avg'] = 0;
 		}
 			
 		if(count($heavy) > 0) {
@@ -414,6 +423,9 @@ class Player extends AppModel {
 			$results['heavy_upper'] = $heavy[floor((count($heavy)-1) * .75)];
 			$results['heavy_min'] = $heavy[0];
 			$results['heavy_max'] = $heavy[(count($heavy)-1)];
+			$results['heavy_avg'] = array_sum($heavy)/count($heavy);
+		} else {
+			$results['heavy'] = $results['heavy_lower'] = $results['heavy_upper'] = $results['heavy_min'] = $results['heavy_max'] = $results['heavy_avg'] = 0;
 		}
 		
 		if(count($scout) > 0) {
@@ -422,6 +434,9 @@ class Player extends AppModel {
 			$results['scout_upper'] = $scout[floor((count($scout)-1) * .75)];
 			$results['scout_min'] = $scout[0];
 			$results['scout_max'] = $scout[(count($scout)-1)];
+			$results['scout_avg'] = array_sum($scout)/count($scout);
+		} else {
+			$results['scout'] = $results['scout_lower'] = $results['scout_upper'] = $results['scout_min'] = $results['scout_max'] = $results['scout_avg'] = 0;
 		}
 		
 		if(count($ammo) > 0) {
@@ -430,6 +445,9 @@ class Player extends AppModel {
 			$results['ammo_upper'] = $ammo[floor((count($ammo)-1) * .75)];
 			$results['ammo_min'] = $ammo[0];
 			$results['ammo_max'] = $ammo[(count($ammo)-1)];
+			$results['ammo_avg'] = array_sum($ammo)/count($ammo);
+		} else {
+			$results['ammo'] = $results['ammo_lower'] = $results['ammo_upper'] = $results['ammo_min'] = $results['ammo_max'] = $results['ammo_avg'] = 0;
 		}
 		
 		if(count($medic) > 0) {
@@ -438,6 +456,9 @@ class Player extends AppModel {
 			$results['medic_upper'] = $medic[floor((count($medic)-1) * .75)];
 			$results['medic_min'] = $medic[0];
 			$results['medic_max'] = $medic[(count($medic)-1)];
+			$results['medic_avg'] = array_sum($medic)/count($medic);
+		} else {
+			$results['medic'] = $results['medic_lower'] = $results['medic_upper'] = $results['medic_min'] = $results['medic_max'] = $results['medic_avg'] = 0;
 		}
 		
 		return $results;

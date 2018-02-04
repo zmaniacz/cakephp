@@ -1,5 +1,5 @@
 <div class="col-lg-7">
-<div id="match_add" class="panel panel-info">
+<div id="match_add" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="match_add_heading">
 		<h4 class="panel-title">
 			Add Match

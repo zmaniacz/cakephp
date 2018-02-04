@@ -1,81 +1,10 @@
-<?= $this->Html->script('highcharts.js'); ?>
-<?= $this->Html->script('highcharts-more.js'); ?>
 <?php
-	$green_data = $green_team_summary["Scorecard"][0]["Scorecard"][0];
-	$green_data_string = 
-		($green_team_summary['Team']['raw_score'] + $green_team_summary['Team']['bonus_score'] + $green_team_summary['Team']['penalty_score']).",
-		$green_data[hit_diff],
-		$green_data[accuracy],
-		$green_data[mvp_points],
-		$green_data[medic_hits],
-		$green_data[lives_left],
-		$green_data[shots_left],
-		$green_data[missile_hits],
-		$green_data[nukes_detonated],
-		$green_data[resupplies],
-		$green_data[bases_destroyed]";
+	$green_data = (!empty($game["Green_Scorecard"]) ? $game["Green_Scorecard"][0]["Green_Scorecard"][0] : null);
+	$green_data_string = $game["Game"]["green_score"]+$game["Game"]["green_adj"].",$green_data[hit_diff],$green_data[accuracy],$green_data[mvp_points],$green_data[medic_hits],$green_data[lives_left],$green_data[shots_left],$green_data[missile_hits],$green_data[nukes_detonated],$green_data[resupplies],$green_data[bases_destroyed]";
 	
-	$red_data = $red_team_summary["Scorecard"][0]["Scorecard"][0];
-	$red_data_string = 
-		($red_team_summary['Team']['raw_score'] + $red_team_summary['Team']['bonus_score'] + $red_team_summary['Team']['penalty_score']).",
-		$red_data[hit_diff],
-		$red_data[accuracy],
-		$red_data[mvp_points],
-		$red_data[medic_hits],
-		$red_data[lives_left],
-		$red_data[shots_left],
-		$red_data[missile_hits],
-		$red_data[nukes_detonated],
-		$red_data[resupplies],
-		$red_data[bases_destroyed]";
+	$red_data = (!empty($game["Red_Scorecard"]) ? $game["Red_Scorecard"][0]["Red_Scorecard"][0] : null);
+	$red_data_string = $game["Game"]["red_score"]+$game["Game"]["red_adj"].",$red_data[hit_diff],$red_data[accuracy],$red_data[mvp_points],$red_data[medic_hits],$red_data[lives_left],$red_data[shots_left],$red_data[missile_hits],$red_data[nukes_detonated],$red_data[resupplies],$red_data[bases_destroyed]";
 ?>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.gamelist').DataTable( {
-			"searching": false,
-			"info": false,
-			"paging": false,
-			"ordering": false
-		} );
-
-		$('#breakdown_container').highcharts({
-			chart: {
-				type: 'bar',
-				height: 700
-			},
-			title: {
-				text: 'Game Breakdown'
-			},
-			xAxis: {
-				categories: ['Score', 'Hit Diff', 'Accuracy', 'MVP', 'Medic Hits', 'Lives Left', 'Shots Left', 'Missiles', 'Nukes', 'Resupplies', 'Bases']
-			},
-			legend: {
-				enabled: false
-			},
-			plotOptions: {
-				series: {
-					stacking: 'percent'
-				}
-			},
-			series: [
-				{
-					name: 'Green Team',
-					color: 'green',
-					data: [<?= $green_data_string; ?>]
-				},
-				{
-					name: 'Red Team',
-					color: 'red',
-					data: [<?= $red_data_string; ?>]
-				}
-			]
-		});
-	});
-	
-	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-		$('#breakdown_container').highcharts().reflow();
-	});
-</script>
 <?php if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID'))): ?>
 <div class="well well-lg">
 	<h3 class="text-danger">IMPORTANT</h3>
@@ -138,7 +67,7 @@
 <h3 class="row">
 	<span class="col-md-4">
 	<?php if(!empty($neighbors['prev'])): ?>
-		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?>
+		<?= $this->Html->link("<span class=\"glyphicon glyphicon-backward\"></span> Previous Game", array('controller' => 'games', 'action' => 'view', $neighbors['prev']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?>
 	<?php endif; ?>
 	</span>
 	<span class="col-md-4 text-center">
@@ -165,7 +94,7 @@
 	</span>
 	<span class="col-md-4 text-right">
 	<?php if(!empty($neighbors['next'])): ?>
-		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-info', 'escape' => false)); ?></span>
+		<?= $this->Html->link("Next Game <span class=\"glyphicon glyphicon-forward\"></span> ", array('controller' => 'games', 'action' => 'view', $neighbors['next']['Game']['game_id']), array('class' => 'btn btn-primary', 'escape' => false)); ?></span>
 	<?php endif; ?>
 	</span>
 </h3>
@@ -225,13 +154,13 @@
 				}
 				
 				$score_line .= (($score['lives_left'] > 0) ? "<td class=\"text-success\"><span class=\"glyphicon glyphicon-ok\"></span>" : "<td class=\"text-danger text-center\"><span class=\"glyphicon glyphicon-remove\"></span>")."</td>";
-				$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-info btn-block'))."</td>";
+				$score_line .= "<td>".$this->Html->link($score['player_name'], array('controller' => 'Players', 'action' => 'view', $score['player_id']), array('class' => 'btn btn-primary btn-block'))."</td>";
 				$score_line .= "<td>".$score['position']."</td>";
 				$score_line .= "<td>".($score['score']+$penalty_score).(($penalty_score != 0) ? " ($penalty_score)" : "")."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
+				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#mvpModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getMVPBreakdown', $score['id'], 'ext' => 'json'))."\">".$score['mvp_points']."</button></td>";
 				$score_line .= "<td>".$score['lives_left']."</td>";
 				$score_line .= "<td>".$score['shots_left']."</td>";
-				$score_line .= "<td><button type=\"button\" class=\"btn btn-info btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
+				$score_line .= "<td><button type=\"button\" class=\"btn btn-primary btn-block\" data-toggle=\"modal\" data-target=\"#hitModal\" target=\"".$this->Html->url(array('controller' => 'scorecards', 'action' => 'getHitBreakdown', $score['player_id'], $score['game_id'], 'ext' => 'json'))."\">".round($score['shot_opponent']/max($score['times_zapped'],1),2)." (".$score['shot_opponent']."/".$score['times_zapped'].")</button></td>";
 				$score_line .= "<td>".$score['missiled_opponent']."</td>";
 				$score_line .= "<td>".$score['times_missiled']."</td>";
 				$score_line .= "<td>".$score['medic_hits'].($score['position'] == 'Commander' ? "/".$score['medic_nukes'] : "")."</td>";
@@ -263,7 +192,7 @@
 			</div>
 			<div id="collapse_winner_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info">
+					<h3 class="text-primary">
 						<?= "Score: ".$winner_score.$winner_adj; ?>
 						<span class="pull-right">
 						<?php
@@ -327,7 +256,7 @@
 			</div>
 			<div id="collapse_loser_panel" class="panel-collapse collapse in" role="tabpanel">
 				<div class="panel-body">
-					<h3 class="text-info">
+					<h3 class="text-primary">
 						<?= "Score: ".$loser_score.$loser_adj; ?>
 						<span class="pull-right">
 							<?php
@@ -385,11 +314,56 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="game_breakdown_tab">
-		<div id="breakdown_container">
-		</div>
+		<div id="breakdown_container"></div>
 	</div>
 </div>
-<script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.gamelist').DataTable( {
+			"searching": false,
+			"info": false,
+			"paging": false,
+			"ordering": false
+		} );
+
+		$('#breakdown_container').highcharts({
+			chart: {
+				type: 'bar',
+				height: 700
+			},
+			title: {
+				text: 'Game Breakdown'
+			},
+			xAxis: {
+				categories: ['Score', 'Hit Diff', 'Accuracy', 'MVP', 'Medic Hits', 'Lives Left', 'Shots Left', 'Missiles', 'Nukes', 'Resupplies', 'Bases']
+			},
+			legend: {
+				enabled: false
+			},
+			plotOptions: {
+				series: {
+					stacking: 'percent'
+				}
+			},
+			series: [
+				{
+					name: 'Green Team',
+					color: 'green',
+					data: [<?= $green_data_string; ?>]
+				},
+				{
+					name: 'Red Team',
+					color: 'red',
+					data: [<?= $red_data_string; ?>]
+				}
+			]
+		});
+	});
+	
+	$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+		$('#breakdown_container').highcharts().reflow();
+	});
+
 	$('.switch_sub_cbox').change(function() {
 		$.ajax({
 			url: "/scorecards/ajax_switchSub/" + $(this).prop('id') + ".json",

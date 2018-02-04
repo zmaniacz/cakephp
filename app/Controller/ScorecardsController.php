@@ -34,7 +34,8 @@ class ScorecardsController extends AppController {
 			'getIds',
 			'getScorecards',
 			'getScorecardSummary',
-			'getMedicHits'
+			'getMedicHits',
+			'getAllCenter'
 		);
 		parent::beforeFilter();
 	}
@@ -132,9 +133,85 @@ class ScorecardsController extends AppController {
 	public function getOverallMedicHits() {
 		$this->set('response', $this->Scorecard->getMedicHitStats($this->Session->read('state')));
 	}
+	
+	public function nightly() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 
-	public function nightlyMedicHits($date = null) {
-		$this->set('medic_hits', $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state')));
+		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
+			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
+		
+		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
+		$this->set('game_dates', $game_dates);
+		
+		if($this->request->isPost()) {
+			$date = $this->request->data['Scorecard']['date'];
+		}
+
+		if(empty($date))
+			$date = reset($game_dates);
+
+		$this->set('current_date', $date);
+	}
+	
+	public function nightlyScorecards() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
+		$this->set('data', $this->Scorecard->getScorecardsByDate($date, $this->Session->read('state')));
+	}
+
+	public function nightlyMedicHits() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
+		$medic_hits = $this->Scorecard->getMedicHitStatsByDate($date, $this->Session->read('state'));
+
+		$data = array();
+		foreach($medic_hits as $medic) {
+			$data[] = array(
+				'player_name' => $medic['Scorecard']['player_name'],
+				'player_id' => $medic['Scorecard']['player_id'],
+				'total_medic_hits' => $medic[0]['total_medic_hits'],
+				'medic_hits_per_game' => $medic[0]['medic_hits_per_game'],
+				'games_played' => $medic[0]['games_played'],
+				'non_resup_total_medic_hits' => $medic['ScorecardNoResup']['total_medic_hits'],
+				'non_resup_medic_hits_per_game' => $medic['ScorecardNoResup']['medic_hits_per_game'],
+				'non_resup_games_played' => $medic['ScorecardNoResup']['games_played'],
+			);
+		}
+
+		$this->set('data', $data);
+	}
+
+	public function nightlySummaryStats() {
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
+		$nightly = $this->Scorecard->getNightlyStatsByDate($date, $this->Session->read('state'));
+		$overall = $this->Scorecard->getAllAvgMVP($this->Session->read('state'));
+
+		$data = array();
+		foreach ($nightly as $score) {
+			$response[$score['Player']['id']] = array(	
+				'player_name' => $score['Player']['player_name'],
+				'player_id' => $score['Player']['id'],
+				'min_score' => $score[0]['min_score'],
+				'avg_score' => $score[0]['avg_score'],
+				'max_score' => $score[0]['max_score'],
+				'min_mvp' =>  $score[0]['min_mvp'],
+				'avg_mvp' =>  $score[0]['avg_mvp'],
+				'max_mvp' =>  $score[0]['max_mvp'],
+				'avg_acc' => $score[0]['avg_acc'],
+				'hit_diff' => $score[0]['hit_diff'],
+				'medic_hits' => $score[0]['medic_hits'],
+				'elim_rate' => $score[0]['elim_rate'],
+				'games_played' => $score[0]['games_played'],
+				'games_won' => $score[0]['games_won']
+			);
+		}
+	
+		foreach ($overall as $key => $value) {
+			if(isset($response[$key])) {
+				$response[$key]['overall_avg_mvp'] = $value['avg_avg_mvp'];
+				$response[$key]['overall_avg_acc'] = $value['avg_avg_acc'];
+			}
+		}
+
+		$this->set('data', array_values($response));
 	}
 
 	public function playerScorecards($id) {
@@ -153,7 +230,12 @@ class ScorecardsController extends AppController {
 	}
 	
 	public function allcenter() {
-		$this->set('top', $this->Scorecard->getTopTeams($this->Session->read('state')));
+	}
+
+	public function getAllCenter() {
+		$min_games = (empty($this->request->query('min_games'))) ? 15 : $this->request->query('min_games');
+		$min_days = (empty($this->request->query('min_days'))) ? 365 : $this->request->query('min_days');
+		$this->set('all_center', $this->Scorecard->getTopTeams($min_games, $min_days, $this->Session->read('state')));
 	}
 
 	public function allstar() {

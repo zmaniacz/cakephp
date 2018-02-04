@@ -45,7 +45,12 @@ class Penalty extends AppModel {
 				'Scorecard' => array(
 					'fields' => array('type','center_id','event_id'),
 					'Game' => array(
-						'fields' => array('id','game_name','game_description','game_datetime'),
+						'fields' => array('id','game_name','game_description','game_datetime','league_game'),
+						'Match' => array(
+							'Round'
+						),
+						'Red_Team',
+						'Green_Team'
 					),
 					'Player' => array(
 						'fields' => array('id','player_name')

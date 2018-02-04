@@ -39,10 +39,14 @@ class PlayersController extends AppController {
 		}
 	}
 	
-	public function playerPositionSpider($id) {
-		$this->set('player_mdn_scores', $this->Player->getMedianScoreByPosition($id, $this->Session->read('state')));
-		$this->set('center_mdn_scores', $this->Player->getMedianScoreByPosition(null, $this->Session->read('state')));
-		$this->set('player_mdn_mvp', $this->Player->getMedianMVPByPosition($id, $this->Session->read('state')));
-		$this->set('center_mdn_mvp', $this->Player->getMedianMVPByPosition(null, $this->Session->read('state')));
+	public function playerWinLossDetail($id) {
+		$this->set('games', $this->Player->Scorecard->getPlayerGamesScorecardsById($id, $this->Session->read('state')));
+	}
+
+	public function getPlayerMedians() {
+		$player_id = (empty($this->request->query('player_id'))) ? null : $this->request->query('player_id');
+		$team = (empty($this->request->query('team'))) ? null : $this->request->query('team');
+		$type = (empty($this->request->query('type'))) ? 'mvp_points' : $this->request->query('type');
+		$this->set('data', $this->Player->getMedianByPosition($player_id, $team, $type, $this->Session->read('state')));
 	}
 }

@@ -9,7 +9,7 @@ class LeaguesController extends AppController {
 	public $uses = array('League','Scorecard','Game');
 
 	public function beforeFilter() {
-		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails','ajax_getTeamStandings');
+		$this->Auth->allow('index','standings','ajax_getLeagues','ajax_getTeams','ajax_getMatchDetails','ajax_getTeamStandings','bracket');
 		parent::beforeFilter();
 	}
 
@@ -29,6 +29,11 @@ class LeaguesController extends AppController {
 		$this->set('teams',  $this->Event->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('event_id' => $this->Session->read('state.eventID')))));
 		$this->set('standings', $this->Event->getTeamStandings($this->Session->read('state')));
 		$this->set('details', $this->Event->getLeagueDetails($this->Session->read('state')));
+	}
+
+	public function bracket() {
+		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
+		$this->set('details', $this->League->getLeagueDetails($this->Session->read('state')));
 	}
 
 	public function ajax_getTeamStandings($round = null) {

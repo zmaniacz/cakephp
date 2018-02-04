@@ -7,8 +7,8 @@
 	$medic = array();
 
 	foreach ($response as $score) {
-		$stats = array(	
-			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-info')),
+		$data[] = array(	
+			'name' => $this->Html->link($score['Player']['player_name'], array('controller' => 'Players', 'action' => 'view', $score['Player']['id']), array('class' => 'btn btn-block btn-primary')),
 			'player_id' => $score['Player']['id'],
 			'player_name' => $score['Player']['player_name'],
 			'avg_score' => $score[0]['avg_score'],

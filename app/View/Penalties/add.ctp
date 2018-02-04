@@ -1,4 +1,4 @@
-<div id="penalty_add" class="panel panel-info">
+<div id="penalty_add" class="panel panel-primary">
 	<div class="panel-heading" role="tab" id="penalty_add_heading">
 		<h4 class="panel-title">
 			Add Penalty

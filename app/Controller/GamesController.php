@@ -63,6 +63,18 @@ class GamesController extends AppController {
 
 			$game = $this->Game->getGameDetails($id);
 			$this->request->data = $game;
+			
+			foreach ($game['Scorecard'] as $key => $row) {
+				$team[$key] = $row['team'];
+				$rank[$key] = $row['rank'];
+			}
+			
+			if(!empty($team)) {
+				if($game['Game']['winner'] == 'red')
+					array_multisort($team, SORT_DESC, $rank, SORT_ASC, $game['Scorecard']);
+				else
+					array_multisort($team, SORT_ASC, $rank, SORT_ASC, $game['Scorecard']);
+			}
 
 			if($game['Game']['type'] == 'league' || $game['Game']['type'] == 'tournament') {
 				$this->loadModel('LeagueGame');
@@ -136,13 +148,12 @@ class GamesController extends AppController {
 	}
 	
 	public function getGameList() {
-		$this->set('games', $this->Game->getGameList($this->Session->read('state')));
+		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
+		$this->set('data', $this->Game->getGameList($date, $this->Session->read('state')));
 	}
 	
 	public function overallWinLossDetail() {
-		$this->request->onlyAllow('ajax');
 		$this->set('overall', $this->Game->getOverallStats($this->Session->read('state')));
 		$this->set('overall_averages', $this->Game->Scorecard->getOverallAverages($this->Session->read('state')));
-		$this->set('overall_mvp', $this->Player->getMedianMVPByPosition(null, $this->Session->read('state')));
 	}
 }
