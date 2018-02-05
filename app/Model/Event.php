@@ -1,82 +1,55 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * League Model
- *
- * @property Center $Center
- * @property Game $Game
- * @property Team $Team
- */
-class League extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
+class Event extends AppModel {
+
 	public $displayField = 'name';
 
-
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
-/**
- * belongsTo associations
- *
- * @var array
- */
 	public $belongsTo = array(
 		'Center' => array(
 			'className' => 'Center',
-			'foreignKey' => 'center_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+			'foreignKey' => 'center_id'
 		)
 	);
 
-/**
- * hasMany associations
- *
- * @var array
- */
 	public $hasMany = array(
 		'Game' => array(
 			'className' => 'Game',
-			'foreignKey' => 'league_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
+			'foreignKey' => 'event_id'
 		),
-		'Team' => array(
-			'className' => 'Team',
-			'foreignKey' => 'league_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
+		'EventTeam' => array(
+			'className' => 'EventTeam',
+			'foreignKey' => 'event_id'
 		),
 		'Round' => array(
 			'className' => 'Round',
-			'foreignkey' => 'league_id'
+			'foreignkey' => 'event_id'
 		)
 	);
+
+	public function getLeagueList() {
+		$leagues = $this->find('list', array(
+			'conditions' => array('is_comp' => true)
+		));
+
+		return $leagues;
+	}
+
+	public function getLeagueDetailList() {
+		$leagues = $this->find('all', array(
+			'conditions' => array('is_comp' => true),
+			'order' => 'id DESC'
+		));
+
+		return $leagues;
+	}
 
 	public function getLeagues($state) {
 		$leagues = $this->find('all', array(
 			'contain' => array(
 				'Center'
 			),
+			'conditions' => array('is_comp' => true),
 			'order' => 'League.name ASC'
 		));
 
@@ -87,7 +60,7 @@ class League extends AppModel {
 		$conditions = array();
 		$round_conditions = array();
 		
-		$conditions[] = array('Team.league_id' => $state['leagueID']);
+		$conditions[] = array('EventTeam.event_id' => $state['leagueID']);
 		$round_conditions[] = array('Round.is_finals' => '0');
 
 		if(isset($round)) {
@@ -108,7 +81,7 @@ class League extends AppModel {
 			'orderby' => 'Round.round ASC'
 		));
 		
-		$teams = $this->Team->find('list', array('conditions' => array('Team.league_id' => $state['leagueID'])));
+		$teams = $this->EventTeam->find('list', array('conditions' => array('EventTeam.event_id' => $state['leagueID'])));
 		
 		$standings = array();
 		
@@ -205,9 +178,9 @@ class League extends AppModel {
 	}
 
 	public function getTeams($league_id) {
-		$teams = $this->Team->find('list', array(
+		$teams = $this->EventTeam->find('list', array(
 			'conditions' => array(
-				'league_id' => $league_id
+				'event_id' => $league_id
 			),
 			'order' => 'name ASC'
 		));
@@ -216,7 +189,7 @@ class League extends AppModel {
 	}
 	
 	public function getLeagueDetails($state) {
-		$league_id = $state['leagueID'];
+		$event_id = $state['leagueID'];
 		
 		$rounds = $this->find('first',array(
 			'contain' => array(
@@ -228,7 +201,7 @@ class League extends AppModel {
 				)
 			),
 			'conditions' => array(
-				'League.id' => $league_id
+				'Event.id' => $event_id
 			)
 		));
 		
@@ -265,7 +238,7 @@ class League extends AppModel {
 			}
 		}
 		
-		$league = $this->find('first', array(
+		$event = $this->find('first', array(
 			'contain' => array(
 				'Round' => array(
 					'Match' => array(
@@ -276,7 +249,7 @@ class League extends AppModel {
 					)
 				)
 			),
-			'conditions' => array('League.id' => $game['Game']['league_id'])
+			'conditions' => array('Event.id' => $game['Game']['event_id'])
 		));
 
 		foreach($league['Round'] as &$round) {

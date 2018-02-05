@@ -9,9 +9,9 @@ class Round extends AppModel {
 	);
 
 	public $belongsTo = array(
-		'League' => array(
-			'className' => 'League',
-			'foreignKey' => 'league_id'
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id'
 		)
 	);
 }

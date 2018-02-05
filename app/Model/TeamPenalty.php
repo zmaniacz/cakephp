@@ -1,24 +1,9 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * TeamPenalty Model
- *
- * @property Scorecard $Scorecard
- */
-class TeamPenalty extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
+class TeamPenalty extends AppModel {
 	public $displayField = 'type';
 
-/**
- * belongsTo associations
- *
- * @var array
- */
 	public $belongsTo = array(
 		'Game' => array(
 			'className' => 'Game',

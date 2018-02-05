@@ -184,9 +184,9 @@ class Scorecard extends AppModel {
 		App::uses('Sanitize', 'Utility');
 		$counter = 0;
 		
-		$scores = $this->query("SELECT green.game_datetime, green.type, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id, green.league_id, green.center_id
+		$scores = $this->query("SELECT green.game_datetime, green.type, green.score, red.score, green.team_elim, red.team_elim, green.pdf_id, green.event_id, green.center_id
 			FROM (
-				SELECT game_datetime, type, pdf_id, league_id, center_id, SUM(score) AS score, SUM(team_elim) AS team_elim
+				SELECT game_datetime, type, pdf_id, event_id, center_id, SUM(score) AS score, SUM(team_elim) AS team_elim
 				FROM scorecards 
 				WHERE team = 'green' AND game_id IS NULL
 				GROUP BY game_datetime
@@ -221,7 +221,7 @@ class Scorecard extends AppModel {
 				'game_datetime' => $score['green']['game_datetime'],
 				'type' => $score['green']['type'],
 				'pdf_id' => $score['green']['pdf_id'],
-				'league_id' => $score['green']['league_id'],
+				'event_id' => $score['green']['event_id'],
 				'center_id' => $score['green']['center_id']
 			));
 			$this->Game->save();
@@ -314,7 +314,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		$game_dates = $this->find('all', array(
 			'fields' => array('DISTINCT DATE(Scorecard.game_datetime) as game_date'),
@@ -338,7 +338,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 	
 		$scorecards = $this->find('all', array(
 			'conditions' => $conditions,
@@ -363,7 +363,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
 		$stats = $this->find('all', array(
 			'fields' => array(
@@ -471,17 +471,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -493,7 +493,7 @@ class Scorecard extends AppModel {
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 		
 		$scores = $this->find('all', array(
 			'fields' => array(
@@ -564,17 +564,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -586,7 +586,7 @@ class Scorecard extends AppModel {
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
 		$players_position = $this->find('all', array(
 			'fields' => array(
@@ -698,17 +698,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -720,7 +720,7 @@ class Scorecard extends AppModel {
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 			
 		$subQueryConditions = $conditions;
 
@@ -787,7 +787,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		$subQueryConditions = $conditions;
 
@@ -843,7 +843,7 @@ class Scorecard extends AppModel {
 		//need to do round shit here
 		$conditions = array();
 			
-		$conditions[] = array('Scorecard.league_id' => $league_id);
+		$conditions[] = array('Scorecard.event_id' => $league_id);
 	
 		$scores = $this->find('all', array(
 			'fields' => array(
@@ -871,7 +871,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
 		$scorecards = $this->find('all', array(
 			'conditions' => $conditions,
@@ -934,7 +934,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 		
 		$overall = $this->find('all', array(
 			'fields' => array(
@@ -1027,7 +1027,7 @@ class Scorecard extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
         $scorecards = $this->find('list', array(
 			'fields' => array('game_id'),
@@ -1106,14 +1106,14 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 
 		$leaderboards = $this->find('all', array(
@@ -1169,14 +1169,14 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		$conditions[] = array('position' => 'Medic');
 
@@ -1221,14 +1221,14 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		$conditions[] = array('position' => $position);
 
@@ -1277,14 +1277,14 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND league_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
 		}
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 
 		$leaderboards = $this->find('all', array(
@@ -1327,7 +1327,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$where .= " AND league_id = $state[leagueID]";
+			$where .= " AND event_id = $state[leagueID]";
 
 		$streaks = $this->query("SELECT 
 									streakset.player_id,
@@ -1379,7 +1379,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$where .= " AND league_id = $state[leagueID]";
+			$where .= " AND event_id = $state[leagueID]";
 
 		$streaks = $this->query("SELECT 
     								streakset.player_id,
@@ -1427,7 +1427,7 @@ class Scorecard extends AppModel {
 			$where .= " AND type = '$state[gametype]'";
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$where .= " AND league_id = $state[leagueID]";
+			$where .= " AND event_id = $state[leagueID]";
 		
 		$streaks = $this->query("SELECT 
     								streakset.player_id,
@@ -1469,7 +1469,7 @@ class Scorecard extends AppModel {
 		//doesnt do shit with rounds yet, just pulls everything
 		$conditions = array();
 			
-		$conditions[] = array('Scorecard.league_id' => $league_id);
+		$conditions[] = array('Scorecard.event_id' => $league_id);
 	
 		$scorecards = $this->find('all', array(
 			'conditions' => $conditions,
@@ -1625,7 +1625,7 @@ class Scorecard extends AppModel {
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0) {
 			$min_games = 9;
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 		}
 		
 		if($min_days > 0 && isset($state['gametype']) && ($state['gametype'] == 'all' || $state['gametype'] == 'social')) {

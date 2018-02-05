@@ -1,35 +1,13 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * Team Model
- *
- * @property League $League
- * @property Player $Player
- */
-class Team extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
+class EventTeam extends AppModel {
 	public $displayField = 'name';
 
-
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
-/**
- * belongsTo associations
- *
- * @var array
- */
 	public $belongsTo = array(
-		'League' => array(
-			'className' => 'League',
-			'foreignKey' => 'league_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id'
 		),
 		'Player' => array(
 			'className' => 'Player',
@@ -56,31 +34,20 @@ class Team extends AppModel {
 		)
 	);
 
-/**
- * hasAndBelongsToMany associations
- *
- * @var array
- */
 	public $hasAndBelongsToMany = array(
 		'Player' => array(
 			'className' => 'Player',
 			'joinTable' => 'players_teams',
 			'foreignKey' => 'team_id',
 			'associationForeignKey' => 'player_id',
-			'unique' => 'keepExisting',
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
+			'unique' => 'keepExisting'
 		)
 	);
 	
 	public function getTeamMatches($team_id, $state) {
-		$league_id = $state['leagueID'];
+		$event_id = $state['leagueID'];
 		
-		$rounds = $this->League->find('first',array(
+		$rounds = $this->Event->find('first',array(
 			'contain' => array(
 				'Round' => array(
 					'Match' => array(
@@ -96,7 +63,7 @@ class Team extends AppModel {
 				)
 			),
 			'conditions' => array(
-				'League.id' => $league_id
+				'Event.id' => $event_id
 			)
 		));
 		

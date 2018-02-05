@@ -1,29 +1,9 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * Player Model
- *
- * @property Center $Center
- * @property Scorecard $Scorecard
- * @property Team $Team
- */
-class Player extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
+class Player extends AppModel {
 	public $displayField = 'player_name';
 
-
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
-/**
- * belongsTo associations
- *
- * @var array
- */
 	public $belongsTo = array(
 		'Center' => array(
 			'className' => 'Center',
@@ -31,11 +11,6 @@ class Player extends AppModel {
 		)
 	);
 
-/**
- * hasMany associations
- *
- * @var array
- */
 	public $hasMany = array(
 		'Scorecard' => array(
 			'className' => 'Scorecard',
@@ -61,28 +36,6 @@ class Player extends AppModel {
 		)
 	);
 
-
-/**
- * hasAndBelongsToMany associations
- *
- * @var array
- */
-	public $hasAndBelongsToMany = array(
-		'Team' => array(
-			'className' => 'Team',
-			'joinTable' => 'players_teams',
-			'foreignKey' => 'player_id',
-			'associationForeignKey' => 'team_id',
-			'unique' => 'keepExisting',
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
-		)
-	);
-
 	public function getPlayerStats($id, $role = null, $state = null) {
 		$conditions = array();
 		if(!is_null($role))
@@ -95,7 +48,7 @@ class Player extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		return $this->find('all', array(
 			'conditions' => array('id' => $id),
@@ -136,7 +89,7 @@ class Player extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 
 		$record = $this->GameResult->find('all', array(
 			'fields' => array(
@@ -164,7 +117,7 @@ class Player extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 		
 		$raw = $this->Scorecard->find('all', array(
 			'fields' => array(
@@ -197,7 +150,7 @@ class Player extends AppModel {
 			$conditions[] = array('type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('league_id' => $state['leagueID']);
+			$conditions[] = array('event_id' => $state['leagueID']);
 		
 		$raw = $this->Scorecard->find('all', array(
 			'fields' => array(
@@ -233,7 +186,7 @@ class Player extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
 		$scores = $this->Scorecard->find('all', array(
 			'fields' => $fields,
@@ -332,10 +285,7 @@ class Player extends AppModel {
 			$conditions[] = array('Scorecard.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
-			
-		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Scorecard.league_id' => $state['leagueID']);
+			$conditions[] = array('Scorecard.event_id' => $state['leagueID']);
 
 		
 		$scores = $this->Scorecard->find('all', array(
