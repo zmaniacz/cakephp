@@ -27,6 +27,67 @@ class Event extends AppModel {
 		)
 	);
 
+	public function getEventList($type = null, $limit = null, $center_id = null) {
+		$conditions[] = array();
+		
+		if(isset($type)) {
+			if($type == 'social')
+				$conditions[] = array('Event.is_comp' => 0);
+			elseif($type == 'comp')
+				$conditions[] = array('Event.is_comp' => 1);
+		}
+
+		if(isset($center_id) && $center_id > 0)
+			$conditions[] = array('Event.center_id' => $center_id);
+		
+		$this->virtualFields['last_gamedate'] = 0;
+		$this->virtualFields['games_played'] = 0;
+
+		$options = array(
+			'fields' => array(
+				'Event.id',
+				'Event.name',
+				'Event.description',
+				'Event.type',
+				'Event.is_comp',
+				'Event.center_id',
+				'Center.id',
+				'Center.name',
+				'Center.short_name',
+				'DATE(MAX(Game.game_datetime)) as Event__last_gamedate',
+				'COUNT(Game.game_datetime) as Event__games_played'
+			),
+			'joins' => array(
+				array(
+					'table' => 'games',
+					'alias' => 'Game',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Event.id = Game.event_id'
+					)
+				),
+				array(
+					'table' => 'centers',
+					'alias' => 'Center',
+					'type' => 'LEFT',
+					'conditions' => array(
+						'Event.center_id = Center.id'
+					)
+				)
+			),
+			'conditions' => $conditions,
+			'group' => 'Event.id',
+			'order' => 'Event__last_gamedate DESC'
+		);
+
+		if(isset($limit))
+			$options['limit'] = $limit;
+
+		$events = $this->find('all', $options);
+
+		return $events;
+	}
+
 	public function getLeagueList() {
 		$leagues = $this->find('list', array(
 			'conditions' => array('is_comp' => true)

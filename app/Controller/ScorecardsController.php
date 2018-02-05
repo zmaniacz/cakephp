@@ -43,34 +43,7 @@ class ScorecardsController extends AppController {
 	public function landing() {
 		$this->layout = 'landing';
 
-		$events = $this->Game->find('all', array(
-			'fields' => array(
-				'COUNT(Game.id) as games_played',
-				'Game.center_id',
-				'Game.league_id',
-				'DATE(Game.game_datetime) as games_date',
-				'Game.type'
-			),
-			'group' => array(
-				'center_id',
-				'league_id',
-				'games_date',
-				'type'
-			),
-			'order' => array(
-				'games_date DESC'
-			),
-			'limit' => 10,
-			'contain' => array(
-				'Center' => array(
-					'fields' => array(
-						'name',
-						'short_name'
-					)
-				)
-			)
-		));
-
+		$events = $this->Event->getEventList(null, 10, null);
 		$this->set('events', $events);
 	}
 	
@@ -156,7 +129,7 @@ class ScorecardsController extends AppController {
 	public function nightly() {
 		$date = (empty($this->request->query('date'))) ? null : $this->request->query('date');
 
-		if($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0)
+		if($this->Session->read('state.isComp') > 0)
 			$this->redirect(array('controller' => 'leagues', 'action' => 'standings'));
 		
 		$game_dates = $this->Scorecard->getGameDates($this->Session->read('state'));
