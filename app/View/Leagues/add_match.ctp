@@ -6,7 +6,7 @@
 		</h4>
 	</div>
 	<div class="panel-body">
-		<h2><?= $league['League']['name']; ?> - <?= ($round['Round']['is_finals']) ? "Finals" : "Round ".$round['Round']['round']; ?></h2>
+		<h2><?= $league['Event']['name']; ?> - <?= ($round['Round']['is_finals']) ? "Finals" : "Round ".$round['Round']['round']; ?></h2>
 		<?php
 			echo $this->Form->create();
 			echo $this->Form->hidden('round_id', array('value' => $round['Round']['id']));
