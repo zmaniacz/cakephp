@@ -11,4 +11,4 @@ var checkStatus = function() {
 
 checkStatus();
 </script>
-<div id="status"><img src="http://lfstats.redial.net/img/lfstats_loading.gif" /></div>
+<div id="status"><img src="http://lfstats.com/img/lfstats_loading.gif" /></div>

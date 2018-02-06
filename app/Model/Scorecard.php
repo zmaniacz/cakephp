@@ -471,17 +471,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -564,17 +564,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "Scorecard.game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -698,17 +698,17 @@ class Scorecard extends AppModel {
 				if(isset($state['show_finals']) && $state['show_finals'] == 'true' && isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;					
 				} elseif(isset($state['show_finals']) && $state['show_finals'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 1 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} elseif(isset($state['show_rounds']) && $state['show_rounds'] == 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				} else {
 					$subQuery = new stdClass();
@@ -1106,7 +1106,7 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
@@ -1169,7 +1169,7 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
@@ -1221,7 +1221,7 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
@@ -1277,7 +1277,7 @@ class Scorecard extends AppModel {
 				if(!isset($state['show_finals']) || $state['show_finals'] != 'true') {
 					$subQuery = new stdClass();
 					$subQuery->type = "expression";
-        			$subQuery->value = "game_id IN (SELECT game_id FROM lfstats.league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
+        			$subQuery->value = "game_id IN (SELECT game_id FROM league_games WHERE is_finals = 0 AND event_id='{$state['leagueID']}')";
        		 		$conditions[] = $subQuery;
 				}
 			}
