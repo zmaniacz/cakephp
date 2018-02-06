@@ -111,7 +111,7 @@ class Event extends AppModel {
 				'Center'
 			),
 			'conditions' => array('is_comp' => true),
-			'order' => 'League.name ASC'
+			'order' => 'Event.name ASC'
 		));
 
 		return $leagues;

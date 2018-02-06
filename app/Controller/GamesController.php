@@ -59,7 +59,7 @@ class GamesController extends AppController {
 				$this->Session->setFlash(__('The game could not be saved. Please, try again.'));
 			}
 		} else {
-			$this->loadModel('League');
+			$this->loadModel('Event');
 
 			$game = $this->Game->getGameDetails($id);
 			$this->request->data = $game;
@@ -112,7 +112,7 @@ class GamesController extends AppController {
 				$this->Session->setFlash(__('The game could not be saved. Please, try again.'));
 			}
 		} else {
-			$this->loadModel('League');
+			$this->loadModel('Event');
 			
 			$options = array('conditions' => array('Game.' . $this->Game->primaryKey => $id));
 			$this->request->data = $this->Game->find('first', $options);
