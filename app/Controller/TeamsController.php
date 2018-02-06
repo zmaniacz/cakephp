@@ -1,10 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
- * Leagues Controller
- *
- * @property League $League
- */
+
 class TeamsController extends AppController {
 	public $uses = array('EventTeam');
 	

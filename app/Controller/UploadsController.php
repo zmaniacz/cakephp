@@ -2,9 +2,10 @@
 App::uses('AppController', 'Controller', 'Xml', 'Utility');
 
 class UploadsController extends AppController {
-	public $uses = array('Scorecard', 'Game');
+	public $uses = array('Scorecard', 'Game', 'Event');
 
 	public function index() {
+		$this->set('social_events', $this->Event->getEventList('social', null, $this->Session->read('state.centerID')));
 	}
 
 	public function handleUploads() {
@@ -63,11 +64,10 @@ class UploadsController extends AppController {
 		$center_id = $this->Session->read('state.centerID');
 		$command = "nohup sh -c '".APP.WEBROOT_DIR.DS."parser/pdfparse.sh $center_id' > /dev/null 2>&1 & echo $!";
 		$this->set('pid', exec($command,$output));
+		$this->set('selectedEvent', (isset($this->request->data['Event']) ? $this->request->data['Event'] : 0));
 	}
 
 	public function checkPid($pid) {
-		$this->request->onlyAllow('ajax');
-
 		$cmd = "ps $pid";
 		exec($cmd, $output, $result);
 		if(count($output) >= 2) {
@@ -81,14 +81,27 @@ class UploadsController extends AppController {
 		//We're only going to process the most recent file
 		$center_id = $this->Session->read('state.centerID');
 		$type = $this->Session->read('state.gametype');
-
-		$league_id = null;
-		if($type == 'league' || $type == 'tournament')
-			$league_id = $this->Session->read('state.leagueID');
+		$selectedEvent = $this->request->data['selectedEvent'];
 
 		//make sure we default to social
 		if($type == 'all')
 			$type = 'social';
+
+		$event_id = null;
+		if($type == 'league' || $type == 'tournament') {
+			$event_id = $this->Session->read('state.leagueID');
+		} elseif($selectedEvent > 0) {
+			$event_id = $selectedEvent['id'];
+		} else {
+			$this->Event->create();
+			$this->Event->set(array(
+				'name' => $selectedEvent['name'],
+				'type' => $type,
+				'is_comp' => (($type == 'league' || $type == 'tournament') ? 1 : 0)
+			));
+			$this->Event->save();
+			$event_id = $this->Event->id;
+		}
 
 		$path = "parser/pending/$center_id";
 
@@ -126,7 +139,7 @@ class UploadsController extends AppController {
 				'game_datetime' => date("Y-m-d H-i-s",strtotime($datetime)),
 				'type' => $type,
 				'pdf_id' => (isset($game['file']) ? str_replace('.pdf', '', $game['file']) : null),
-				'league_id' => $league_id,
+				'event_id' => $event_id,
 				'center_id' => $center_id
 			));
 			
@@ -184,13 +197,13 @@ class UploadsController extends AppController {
 						'center_id' => $center_id,
 						'game_id' => $this->Game->id,
 						'type' => $type,
-						'league_id' => $league_id
+						'event_id' => $event_id
 					));
 
 					if($this->Scorecard->save()) {
 						$row++;
 						
-						$scorecard_id = $this->Scorecard->getLastInsertId();
+						$scorecard_id = $this->Scorecard->id;
 
 						for($i=1; $i<=$player['penalties']; $i++) {
 							$this->Scorecard->Penalty->create();

@@ -122,7 +122,8 @@
 														'?' => array(
 															'gametype' => 'all',
 															'centerID' => 0,
-															'leagueID' => 0
+															'leagueID' => 0,
+															'isComp' => 0
 														)
 								)); ?>
 							</li>
@@ -133,7 +134,8 @@
 														'?' => array(
 															'gametype' => 'social',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => 0
+															'leagueID' => 0,
+															'isComp' => 0
 														)
 								)); ?>
 							</li>
@@ -144,7 +146,8 @@
 														'?' => array(
 															'gametype' => 'league',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => $this->Session->read('state.leagueID')
+															'leagueID' => $this->Session->read('state.leagueID'),
+															'isComp' => 1
 														)
 								)); ?>
 							</li>
@@ -171,7 +174,8 @@
 									'?' => array(
 										'gametype' => $this->Session->read('state.gametype'),
 										'centerID' => 0,
-										'leagueID' => 0
+										'leagueID' => 0,
+										'isComp' => 0
 									)
 								));
 								?>
@@ -190,7 +194,8 @@
 											'?' => array(
 												'gametype' => $this->Session->read('state.gametype'),
 												'centerID' => $key,
-												'leagueID' => 0
+												'leagueID' => 0,
+												'isComp' => 0
 											)
 										))."</li>";
 									}
@@ -205,7 +210,8 @@
 											'?' => array(
 												'gametype' => 'league',
 												'centerID' => $league['Event']['center_id'],
-												'leagueID' => $league['Event']['id']
+												'leagueID' => $league['Event']['id'],
+												'isComp' => 1
 											)
 										))."</li>";
 									}
