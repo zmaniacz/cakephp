@@ -59,7 +59,7 @@
                 <li><?= $this->Html->link('Twitch', array('controller' => 'pages', 'action' => 'twitch'), array('id' => 'twitch_status')); ?></li>
 				<?php
 					if(AuthComponent::user('role') === 'admin') {
-						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads', 'league_id' => $league['League']['id'], 'center_id' => $league['League']['center_id']))."</li>";
+						echo "<li>".$this->Html->link("Upload PDF", array('controller' => 'uploads', 'league_id' => $league['Event']['id'], 'center_id' => $league['Event']['center_id']))."</li>";
 					}
 				?>
 			</ul>
