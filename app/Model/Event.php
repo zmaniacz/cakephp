@@ -313,7 +313,7 @@ class Event extends AppModel {
 			'conditions' => array('Event.id' => $game['Game']['event_id'])
 		));
 
-		foreach($league['Round'] as &$round) {
+		foreach($event['Round'] as &$round) {
 			foreach($round['Match'] as $key => $match) {
 				if(empty($match['Team_1']) || empty($match['Team_2']) || (!empty($match['Game_1']) && !empty($match['Game_2']))) {
 					if($match['id'] != $game['Game']['match_id'])
@@ -322,6 +322,6 @@ class Event extends AppModel {
 			}
 		}
 
-		return $league;
+		return $event;
 	}
 }

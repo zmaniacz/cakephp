@@ -30,7 +30,7 @@
 			    'error' => array('attributes' => array('wrap' => 'span', 'class' => 'help-inline')),
 		)));
 		echo $this->Form->input('id');
-		if(isset($game['Game']['event_id'])) {
+		if($selected_league['Event']['is_comp']) {
 			$match_list = array();
 			foreach($available_matches['Round'] as $round) {
 				foreach($round['Match'] as $match) {
