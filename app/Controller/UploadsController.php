@@ -81,7 +81,7 @@ class UploadsController extends AppController {
 		//We're only going to process the most recent file
 		$center_id = $this->Session->read('state.centerID');
 		$type = $this->Session->read('state.gametype');
-		$selectedEvent = $this->request->data['selectedEvent'];
+		$selectedEvent = json_decode($this->request->query['selectedEvent'], true);
 
 		//make sure we default to social
 		if($type == 'all')
@@ -90,14 +90,15 @@ class UploadsController extends AppController {
 		$event_id = null;
 		if($type == 'league' || $type == 'tournament') {
 			$event_id = $this->Session->read('state.leagueID');
-		} elseif($selectedEvent > 0) {
+		} elseif($selectedEvent['id'] > 0) {
 			$event_id = $selectedEvent['id'];
 		} else {
 			$this->Event->create();
 			$this->Event->set(array(
 				'name' => $selectedEvent['name'],
 				'type' => $type,
-				'is_comp' => (($type == 'league' || $type == 'tournament') ? 1 : 0)
+				'is_comp' => (($type == 'league' || $type == 'tournament') ? 1 : 0),
+				'center_id' => $center_id
 			));
 			$this->Event->save();
 			$event_id = $this->Event->id;
