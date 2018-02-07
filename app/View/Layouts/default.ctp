@@ -67,12 +67,12 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-      						<a class="navbar-brand" href="/scorecards/landing"><img src="/img/LF-logo1-shadow-small.png"></a>
+      						<a class="navbar-brand" href="/scorecards/landing"><span class="glyphicon glyphicon-home"></span></a>
     					</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
 								<li><?php
-									if($this->Session->read('state.gametype') == 'league') {
+									if($this->Session->read('state.isComp') > 0) {
 										echo $this->Html->link('Standings', array('controller' => 'leagues', 'action' => 'standings'));
 									} else {
 										echo $this->Html->link('Nightly Stats', array('controller' => 'scorecards', 'action' => 'nightly'));
@@ -83,7 +83,7 @@
 								<li><?= $this->Html->link('Leader(Loser)boards', array('controller' => 'scorecards', 'action' => 'leaderboards')); ?></li>
 								<li><?= $this->Html->link('Center Stats', array('controller' => 'games', 'action' => 'overall')); ?></li>
 								<li><?php
-									if($this->Session->read('state.gametype') == 'league') {
+									if($this->Session->read('state.isComp') > 0) {
 										echo $this->Html->link('All Star Rankings', array('controller' => 'scorecards', 'action' => 'allstar'));
 									} else {
 										echo $this->Html->link('All-Center Teams', array('controller' => 'scorecards', 'action' => 'allcenter'));
@@ -112,7 +112,7 @@
 				<ul class="breadcrumb">
 					<li class="dropdown">
 						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-						<?=	Inflector::camelize(($this->Session->read('state.gametype') == 'league') ? 'competitive' : $this->Session->read('state.gametype')); ?> 
+						<?=	Inflector::camelize(($this->Session->read('state.isComp') > 0) ? 'competitive' : $this->Session->read('state.gametype')); ?> 
 						 <span class="caret"></span></button>
 						<ul class="dropdown-menu">
 							<li><?= $this->Html->link('All', array(
@@ -122,7 +122,8 @@
 														'?' => array(
 															'gametype' => 'all',
 															'centerID' => 0,
-															'leagueID' => 0
+															'leagueID' => 0,
+															'isComp' => 0
 														)
 								)); ?>
 							</li>
@@ -133,7 +134,8 @@
 														'?' => array(
 															'gametype' => 'social',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => 0
+															'leagueID' => 0,
+															'isComp' => 0
 														)
 								)); ?>
 							</li>
@@ -144,7 +146,8 @@
 														'?' => array(
 															'gametype' => 'league',
 															'centerID' => $this->Session->read('state.centerID'),
-															'leagueID' => $this->Session->read('state.leagueID')
+															'leagueID' => $this->Session->read('state.leagueID'),
+															'isComp' => 1
 														)
 								)); ?>
 							</li>
@@ -153,7 +156,7 @@
 					<li class="dropdown">
 						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
 							<?php
-								if($this->Session->read('state.leagueID') > 0) {
+								if($this->Session->read('state.isComp') > 0) {
 									echo $leagues[$this->Session->read('state.leagueID')];
 								} elseif($this->Session->read('state.centerID') > 0) {
 									echo $centers[$this->Session->read('state.centerID')];
@@ -171,7 +174,8 @@
 									'?' => array(
 										'gametype' => $this->Session->read('state.gametype'),
 										'centerID' => 0,
-										'leagueID' => 0
+										'leagueID' => 0,
+										'isComp' => 0
 									)
 								));
 								?>
@@ -190,22 +194,24 @@
 											'?' => array(
 												'gametype' => $this->Session->read('state.gametype'),
 												'centerID' => $key,
-												'leagueID' => 0
+												'leagueID' => 0,
+												'isComp' => 0
 											)
 										))."</li>";
 									}
 								}
-								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'league') {
+								if($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.isComp') > 0) {
 									echo "<li class=\"dropdown-header\">Competitions</li>";
 									foreach($league_details as $league) {
-										echo "<li>".$this->Html->link($league['League']['name'], array(
+										echo "<li>".$this->Html->link($league['Event']['name'], array(
 											'controller' => $this->request->params['controller'], 
 											'action' => $this->request->params['action'],
 											implode(",", $this->request->pass),
 											'?' => array(
 												'gametype' => 'league',
-												'centerID' => $league['League']['center_id'],
-												'leagueID' => $league['League']['id']
+												'centerID' => $league['Event']['center_id'],
+												'leagueID' => $league['Event']['id'],
+												'isComp' => 1
 											)
 										))."</li>";
 									}

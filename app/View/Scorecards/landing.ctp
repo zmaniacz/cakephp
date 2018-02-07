@@ -2,7 +2,7 @@
     <div class="jumbotron">
         <h3>WCT 2018</h3>
         <p>The 5th West Coast Tournament held January 16th - 18th, 2017 at Loveland LaserTag in Loveland, CO.</p>
-        <p><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10">Details <i class="fas fa-caret-right"></i></a></p>
+        <p><a class="btn btn-primary btn-lg" href="/leagues/standings?gametype=league&amp;leagueID=18&amp;centerID=10&amp;isComp=1">Details <i class="fas fa-caret-right"></i></a></p>
     </div>
 </div>
 <div class="row">
@@ -41,14 +41,14 @@
                 <li class="dropdown-header">Competitions</li>
                 <?php
                     foreach($league_details as $league) {
-                        echo "<li>".$this->Html->link($league['League']['name'], array(
+                        echo "<li>".$this->Html->link($league['Event']['name'], array(
                             'controller' => 'leagues', 
                             'action' => 'standings',
                             implode(",", $this->request->pass),
                             '?' => array(
                                 'gametype' => 'league',
-                                'centerID' => $league['League']['center_id'],
-                                'leagueID' => $league['League']['id']
+                                'centerID' => $league['Event']['center_id'],
+                                'leagueID' => $league['Event']['id']
                             )
                         ))."</li>";
                     }
@@ -80,17 +80,19 @@
         let table = $('#events_list tbody');
 
         events.forEach( function(item) {
-            params.set('gametype', item.Game.type);
+            params.set('gametype', item.Event.type);
             params.set('centerID', item.Center.id);
-            params.set('leagueID', (!item.Game.league_id) ? 0 : item.Game.league_id);
+            params.set('leagueID', (item.Event.is_comp) ? item.Event.id : 0);
+            params.set('isComp', (item.Event.is_comp) ? 1 : 0);
 
-            let eventLink = `<a href="/scorecards/nightly/${item[0].games_date}?${params.toString()}">
-                                ${item.Center.name} - <span class="text-capitalize">${item.Game.type}</span></a>`;
+            let eventName = (item.Event.is_comp) ? item.Event.name : `${item.Center.name} - <span class="text-capitalize">${item.Event.type}`;
+
+            let eventLink = `<a href="/scorecards/nightly/${item.Event.last_gamedate}?${params.toString()}">${eventName}</a>`;
             
             let row = `<tr>
                         <td>${eventLink}</td>
-                        <td class="text-right">${item[0].games_date}</td>
-                        <td class="text-right">${item[0].games_played}</td>
+                        <td class="text-right">${item.Event.last_gamedate}</td>
+                        <td class="text-right">${item.Event.games_played}</td>
                     </tr>`;
             table.append(row);
         });

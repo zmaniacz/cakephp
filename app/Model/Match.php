@@ -31,11 +31,11 @@ class Match extends AppModel {
 			'foreignKey' => 'round_id'
 		),
 		'Team_1' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'team_1_id'
 		),
 		'Team_2' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'team_2_id'
 		)
 	);

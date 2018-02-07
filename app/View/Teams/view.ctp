@@ -101,7 +101,7 @@
 		}
 	}
 ?>
-<h2 class="text-warning"><?= $details['League']['name']; ?> - <?= $team['Team']['name']; ?></h2>
+<h2 class="text-warning"><?= $details['Event']['name']; ?> - <?= $team['EventTeam']['name']; ?></h2>
 <div class="panel panel-primary">
 	<div class="panel-heading" data-toggle="collapse" data-parent="#win_loss_panel" data-target="#collapse_win_loss" role="tab" id="positions_heading">
 		<h4 class="panel-title">

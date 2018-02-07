@@ -1,4 +1,4 @@
-<h3><a href="http://lfstats.redial.net/files/LaserforceOfficialSM5TournamentRules.pdf">Official Rules</a></h3>
+<h3><a href="http://lfstats.com/files/LaserforceOfficialSM5TournamentRules.pdf">Official Rules</a></h3>
 <h3>Class Details</h3>
 <table class="info">
 	<thead>

@@ -1,7 +1,7 @@
 <div style="position: sticky; top: 45px; z-index: 1">
 	<div class="panel panel-primary">
 		<div class="panel-body bg-primary">
-			<?php if($this->Session->read('state.gametype') == 'league'): ?>
+			<?php if($this->Session->read('state.isComp') > 0): ?>
 				<form class="form-inline">
 					<div class="checkbox">
 						<input type="checkbox" id="rounds_cbox" <?= (($this->Session->read('state.show_rounds') == 'true') ? "checked" : "")?>>

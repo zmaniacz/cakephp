@@ -7,7 +7,7 @@
 	</label>
 </div>
 <hr>
-<iframe src="<?= $details['League']['challonge_link']; ?>" width="100%" height="500" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
+<iframe src="<?= $details['Event']['challonge_link']; ?>" width="100%" height="500" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
 <div>
 	<input class="pull-right" type="text" id="search-criteria" placeholder="Search Matches..." />
 	<?php foreach($details['Round'] as $round): ?>
@@ -17,7 +17,7 @@
             </div>
             <?php 
                 if(AuthComponent::user('role') === 'admin' || (AuthComponent::user('role') === 'center_admin' && AuthComponent::user('center') == $this->Session->read('state.centerID')))
-                    echo $this->Html->link('Add Match', array('controller' => 'leagues', 'action' => 'addMatch', $details['League']['id'], $round['id']), array('class' => 'btn btn-success'));
+                    echo $this->Html->link('Add Match', array('controller' => 'leagues', 'action' => 'addMatch', $details['Event']['id'], $round['id']), array('class' => 'btn btn-success'));
             ?>
             <div class="row">
             <?php foreach($round['Match'] as $match): ?>

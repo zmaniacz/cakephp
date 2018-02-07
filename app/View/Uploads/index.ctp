@@ -2,8 +2,29 @@
     echo $this->Html->css(array('JqueryFileUpload/jquery.fileupload','JqueryFileUpload/jquery.fileupload-ui'));
 ?>
 <div>
-    Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click <?= $this->Html->link("Process", array('controller' => 'uploads', 'action' => 'parse')); ?> to start the import.
+    <ol>
+        <li>Choose to add these scorecards to a new or an existing event (in most cases, you'll just want a new event)</li>
+        <li>Click Add Files to (duh) add files.  Then click Start upload to start uploading them (also duh).  Once they are uploaded, click Process to start the import.</li>
+    </ol>
 </div>
+<form class="form-inline" action="<?= $this->Html->url(array('controller' => 'uploads', 'action' => 'parse')); ?>" id="uploadForm" method="post" accept-charset="utf-8">
+    <select class="form-control" name="data[Event][id]" id="uploadSelectEvent">
+    <?php
+        if($this->Session->read('state.gametype') == 'social' || $this->Session->read('state.gametype') == 'all') {
+            //Options should be 'Create New Social Event' or list of all previous Social events at the center
+            echo "<option value=\"0\">Create New Social Event</option>";
+            foreach($social_events as $event) {
+                echo "<option value=\"{$event['Event']['id']}\">{$event['Event']['name']}</option>";
+            }
+        } else {
+            echo "<option value=\"{$selected_league['Event']['id']}\">{$selected_league['Event']['name']}</option>";
+        }
+    ?>
+    </select>
+    <input class="form-control" type="text" name="data[Event][name]" id="textEventName" value="Socials <?= date('Y-m-d');?>">
+    <button class="btn btn-primary form-control" type="submit">Process <span class="glyphicon glyphicon-play"></span></button>
+</form>
+    <hr>
 <!-- The file upload form used as target for the file upload widget -->
 <!--<form id="fileupload" action="uploads/upload" method="POST" enctype="multipart/form-data">-->
     <?php echo $this->Form->create('fileupload', array('type' => 'file', 'id' => 'fileupload')); ?>
@@ -129,6 +150,14 @@
 <script defer src='/js/JqueryFileUpload/jquery.fileupload-ui.js'></script>
 <script>
     $(document).ready(function() {
+        $('#uploadSelectEvent').change(function() {
+			if($(this).val() > 0) {
+                $('#textEventName').addClass('hidden');
+            } else {
+                $('#textEventName').removeClass('hidden');
+            }
+		});
+
         $(function () {
             'use strict';
 

@@ -42,20 +42,20 @@ class Game extends AppModel {
 			'foreignKey' => 'center_id'
 		),
 		'Red_Team' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'red_team_id'
 		),
 		'Green_Team' => array(
-			'className' => 'Team',
+			'className' => 'EventTeam',
 			'foreignKey' => 'green_team_id'
 		),
 		'Match' => array(
 			'className' => 'Match',
 			'foreignKey' => 'match_id'
 		),
-		'League' => array(
-			'className' => 'League',
-			'foreignKey' => 'league_id'
+		'Event' => array(
+			'className' => 'Event',
+			'foreignKey' => 'event_id'
 		)
 	);
 
@@ -76,7 +76,7 @@ class Game extends AppModel {
 			$conditions[] = array('Game.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Game.league_id' => $state['leagueID']);
+			$conditions[] = array('Game.event_id' => $state['leagueID']);
 	
 		$overall = $this->find('all', array(
 			'fields' => array(
@@ -225,7 +225,7 @@ class Game extends AppModel {
 			$conditions[] = array('Game.type' => $state['gametype']);
 		
 		if(isset($state['leagueID']) && $state['leagueID'] > 0)
-			$conditions[] = array('Game.league_id' => $state['leagueID']);
+			$conditions[] = array('Game.event_id' => $state['leagueID']);
 			
 		if(!is_null($date))
 			$conditions[] = array('DATE(Game.game_datetime)' => $date);
@@ -250,19 +250,14 @@ class Game extends AppModel {
 				'Game.id'
 			),
 			'contain' => array(
-				'Red_Scorecard' => array(
+				'Scorecard' => array(
 					'fields' => array(
-						'SUM(Red_Scorecard.score) as team_score',
-						'SUM(Red_Scorecard.team_elim) as total_elim'
-					)
+						'score',
+						'team_elim',
+						'team'
+					),
+					'Penalty'
 				),
-				'Green_Scorecard' => array(
-					'fields' => array(
-						'SUM(Green_Scorecard.score) as team_score',
-						'SUM(Green_Scorecard.team_elim) as total_elim'
-					)
-				),
-				'Match',
 				'Red_TeamPenalties',
 				'Green_TeamPenalties'
 			),
@@ -271,53 +266,55 @@ class Game extends AppModel {
 			)
 			
 		));
-		
-		$penalties = $this->find('first', array(
-			'fields' => array('id'),
-			'contain' => array(
-				'Scorecard' => array(
-					'fields' => array('id','team'),
-					'Penalty'
-				)
-			),
-			'conditions' => array(
-				'Game.id' => $id
-			)
-		));
+
+		if(count($scores['Scorecard']) < 1) {
+			//This is a manually edited game with no scorecards and we're going to skip it
+			return;
+		}
 		
 		$elim_bonus = 10000;
+		$red_raw = 0;
 		$red_bonus = 0;
 		$red_pens = 0;
 		$red_team_pens = 0;
 		$red_elim = 0;
+		$green_raw = 0;
 		$green_bonus = 0;
 		$green_pens = 0;
 		$green_team_pens = 0;
 		$green_elim = 0;
 		$winner = 'green';
+
+		foreach($scores['Scorecard'] as $scorecard) {
+			if($scorecard['team'] == 'red') {
+				$red_raw += $scorecard['score'];
+				$red_elim += $scorecard['team_elim'];
+			} else {
+				$green_raw += $scorecard['score'];
+				$green_elim += $scorecard['team_elim'];
+			}
+
+			if(!empty($scorecard['Penalty'])) {
+				foreach($scorecard['Penalty'] as $penalty) {
+					if($scorecard['team'] == 'red') {
+						$red_pens += $penalty['value'];
+					} else {
+						$green_pens += $penalty['value'];
+					}
+				}
+			}
+		}
+
 		
-		//Apply the elim bonus if the ooposing team was eliminated...both teams can get the bonus
-		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['total_elim'] > 0) {
+		//Apply the elim bonus if the opposing team was eliminated...both teams can get the bonus
+		if($red_elim > 0) {
 			$green_bonus += $elim_bonus;
 			$red_elim = 1;
 		}
 		
-		if($scores['Green_Scorecard'][0]['Green_Scorecard'][0]['total_elim'] > 0) {
+		if($green_elim > 0) {
 			$red_bonus += $elim_bonus;
 			$green_elim = 1;
-		}
-		
-		//load personal penalties in
-		foreach($penalties['Scorecard'] as $penalty) {
-			if(!empty($penalty['Penalty'])) {
-				foreach($penalty['Penalty'] as $single_penalty) {
-					if($penalty['team'] == 'red') {
-						$red_pens += $single_penalty['value'];
-					} else {
-						$green_pens += $single_penalty['value'];
-					}
-				}
-			}
 		}
 
 		//load team penalties in
@@ -329,21 +326,25 @@ class Game extends AppModel {
 			$green_team_pens += $team_penalty['value'];
 		}
 		
-		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'] + $red_bonus + $red_pens + $red_team_pens > $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'] + $green_bonus + $green_pens + $green_team_pens)
+		//calc the scores and assign the winner
+		if($red_raw + $red_bonus + $red_pens + $red_team_pens > $green_raw + $green_bonus + $green_pens + $green_team_pens) {
 			$winner = 'red';
+		} else {
+			$winner = 'green';
+		}
 
 		//force an elim to equal a win
-		if($scores['Red_Scorecard'][0]['Red_Scorecard'][0]['total_elim'] > 0) {
+		if($red_elim > 0) {
 			$winner = 'green';
 		}
 		
-		if($scores['Green_Scorecard'][0]['Green_Scorecard'][0]['total_elim'] > 0) {
+		if($green_elim > 0) {
 			$winner = 'red';
 		}
 			
 		$data = array('id' => $id,
-			'green_score' => $scores['Green_Scorecard'][0]['Green_Scorecard'][0]['team_score'],
-			'red_score' => $scores['Red_Scorecard'][0]['Red_Scorecard'][0]['team_score'],
+			'green_score' => $green_raw,
+			'red_score' => $red_raw,
 			'red_adj' => $red_bonus + $red_pens + $red_team_pens,
 			'green_adj' => $green_bonus + $green_pens + $green_team_pens,
 			'red_eliminated' => $red_elim,
@@ -352,6 +353,15 @@ class Game extends AppModel {
 		);
 		
 		$this->save($data);
+
+		$game = $this->find('first', array(
+			'contain' => array(
+				'Match'
+			),
+			'conditions' => array(
+				'Game.id' => $id
+			)
+		));
 		
 		if(isset($scores['Match']['id'])) {
 			$this->Match->updatePoints($scores['Match']['id']);
@@ -368,7 +378,7 @@ class Game extends AppModel {
 				'field' => 'game_id',
 				'value' => $game_id,
 				'conditions' => array(
-					'league_id' => $game['Game']['league_id']
+					'event_id' => $game['Game']['event_id']
 				)
 			));
 

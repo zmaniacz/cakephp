@@ -53,7 +53,7 @@ class AppController extends Controller {
     	)
 	);
 
-	public $uses = array('Center', 'League', 'Scorecard', 'Game');
+	public $uses = array('Center', 'Event', 'Scorecard', 'Game');
 
 	public function isAuthorized($user) {
 		if (isset($user['role']) && $user['role'] === 'admin') {
@@ -83,6 +83,12 @@ class AppController extends Controller {
 		} elseif(!$this->Session->check('state.leagueID')) {
 			$this->Session->write('state.leagueID', 0);
 		}
+
+		if(!is_null($this->request->query('isComp'))) {
+			$this->Session->write('state.isComp', $this->request->query('isComp'));
+		} elseif(!$this->Session->check('state.isComp')) {
+			$this->Session->write('state.isComp', 0);
+		}
 		
 		if(!$this->Session->check('state.show_rounds')) {
 			$this->Session->write('state.show_rounds', true);
@@ -92,22 +98,28 @@ class AppController extends Controller {
 		if(($this->Session->read('state.gametype') == 'all' || $this->Session->read('state.gametype') == 'social') && $this->Session->read('state.centerID') > 0) {
 			$this->set('selected_center', $this->Center->findById($this->Session->read('state.centerID')));
 		} elseif($this->Session->read('state.gametype') == 'league' && $this->Session->read('state.leagueID') > 0) {
-			$league = $this->League->find('first', array(
+			$event = $this->Event->find('first', array(
 				'contain' => array(
 					'Center'
 				),
 				'conditions' => array(
-					'League.id' => $this->Session->read('state.leagueID')
+					'Event.id' => $this->Session->read('state.leagueID')
 				)
 			));
-			$this->set('selected_league', $league);
-			$this->set('selected_center', $this->Center->findById($league['Center']['id']));
-			$this->Session->write('state.centerID', $league['Center']['id']);
+
+			if($event['Event']['is_comp']) {
+				$this->set('selected_league', $event);
+				$this->set('selected_center', $this->Center->findById($event['Center']['id']));
+				$this->Session->write('state.centerID', $event['Center']['id']);
+				$this->Session->write('state.isComp', $event['Event']['is_comp']);
+			} else {
+				$this->Session->write('state.leagueID', 0);
+			}
 		}
 		
 		$this->set('centers', $this->Center->find('list'));
-		$this->set('leagues', $this->League->find('list'));
-		$this->set('league_details', $this->League->find('all', array('order' => 'id DESC')));
+		$this->set('leagues', $this->Event->getLeagueList());
+		$this->set('league_details', $this->Event->getLeagueDetailList());
 		$this->set('scorecard_stats', $this->Scorecard->getDatabaseStats());
 		$this->set('game_stats', $this->Game->getDatabaseStats());
 	}

@@ -1,12 +1,8 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
- * Leagues Controller
- *
- * @property League $League
- */
+
 class TeamsController extends AppController {
-	public $uses = array('Team');
+	public $uses = array('EventTeam');
 	
 	public function beforeFilter() {
 		$this->Auth->allow('view');
@@ -14,11 +10,11 @@ class TeamsController extends AppController {
 	}
 	
 	public function view($id = null) {
-		if (!$this->Team->exists($id)) {
+		if (!$this->EventTeam->exists($id)) {
 			throw new NotFoundException(__('Invalid team'));
 		}
 
-		$team = $this->Team->find('first', array(
+		$team = $this->EventTeam->find('first', array(
 			'contain' => array(
 				'Red_Game' => array(
 					'Red_Scorecard'
@@ -28,12 +24,12 @@ class TeamsController extends AppController {
 				)
 			),
 			'conditions' => array(
-				'Team.id' => $id
+				'EventTeam.id' => $id
 			)
 		));
 
 		$this->set('team', $team);
-		$this->set('teams',  $this->League->Team->find('list', array('fields' => array('Team.name'), 'conditions' => array('league_id' => $this->Session->read('state.leagueID')))));
-		$this->set('details', $this->Team->getTeamMatches($id, $this->Session->read('state')));
+		$this->set('teams',  $this->Event->EventTeam->find('list', array('fields' => array('EventTeam.name'), 'conditions' => array('event_id' => $this->Session->read('state.leagueID')))));
+		$this->set('details', $this->EventTeam->getTeamMatches($id, $this->Session->read('state')));
 	}
 }
